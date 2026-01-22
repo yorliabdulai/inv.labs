@@ -1,216 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 :root {
-  /* --- Color Palette: High-Contrast Professional --- */
+  /* --- Innovate Premium V2 Palette --- */
 
-  /* Backgrounds - Stark & Clean */
-  --bg-page: #000000;
-  /* OLED Black */
-  --bg-surface: #111111;
-  /* Dark Grey for cards */
-  --bg-surface-elevated: #1A1A1A;
-  /* Slightly lighter for hover/modals */
+  /* Backgrounds */
+  --bg-page: #F6F7FF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F0F2FF;
 
-  /* Text - Optimised for Readability */
-  --text-primary: #FFFFFF;
-  /* Pure White for headings/body */
-  --text-secondary: #A1A1AA;
-  /* Zinc 400 - Readable Grey */
-  --text-tertiary: #52525B;
-  /* Zinc 600 - Subtitles */
+  /* Text */
+  --text-primary: #1A1C4E;
+  /* Deeper, more serious navy */
+  --text-secondary: #4B5563;
+  /* Mid-gray for body */
+  --text-tertiary: #9CA3AF;
 
-  /* Accents - Purposeful & Accessible */
-  --brand-primary: #E31837;
-  /* Professional Red (GSE) */
-  --brand-primary-hover: #F04D5E;
-  --brand-accent: #FFFFFF;
-  /* White accent for buttons */
+  /* Accents */
+  --brand-primary: #3730A3;
+  /* Sophisticated Indigo */
+  --brand-primary-hover: #312E81;
+  --brand-accent: #4F46E5;
 
   /* Semantic */
-  --color-success: #34D399;
-  /* Emerald 400 */
-  --color-warning: #FBBF24;
-  /* Amber 400 */
-  --color-error: #F87171;
-  /* Red 400 */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
 
   /* Borders */
-  --border-default: #27272A;
-  /* Zinc 800 */
-  --border-active: #3F3F46;
-  /* Zinc 700 */
+  --border-default: #E5E7EB;
+  --border-active: #3730A3;
 
-  /* Spacing & Layout */
-  --header-height: 80px;
-  --max-width: 1200px;
+  /* Spacing & Radius */
+  --header-height: 72px;
+  --max-width: 1280px;
+  --radius-xs: 6px;
+  --radius-md: 10px;
+  --radius-lg: 24px;
 
-  /* Compatibility Layer for User Components */
-  --color-primary: var(--brand-primary);
-  --color-primary-hover: var(--brand-primary-hover);
-  --color-secondary: #FFFFFF;
-  --color-surface: var(--bg-surface);
-  --color-surface-hover: var(--bg-surface-elevated);
-  --color-text-secondary: var(--text-secondary);
-  --radius-md: 6px;
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-html,
+/* Lenis Requirements */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Base Style */
 body {
-  height: 100%;
   background-color: var(--bg-page);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-secondary);
+  font-family: "Plus Jakarta Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Typography - Clean & Crisp */
-h1 {
-  font-size: clamp(3rem, 5vw, 4.5rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+/* Typography */
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
   color: var(--text-primary);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 h2 {
-  font-size: clamp(2rem, 3vw, 2.5rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-bottom: 1rem;
+  font-size: 3.5rem;
 }
 
 h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 p {
-  font-size: 1.125rem;
+  margin: 0;
   line-height: 1.6;
-  color: var(--text-secondary);
+  font-size: 1.125rem;
 }
 
-/* Utilities */
-.container {
-  width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 2rem;
+/* Navigation - Series A Polish */
+.glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Components */
-.btn {
+/* Premium Buttons - Minimalist & Technical */
+.btn-premium {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.875rem 2rem;
-  border-radius: 6px;
-  /* Professional rounded corners vs pill */
-  font-weight: 500;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
+  border: 1px solid transparent;
 }
 
-.btn-primary {
-  background: var(--brand-primary);
+.btn-premium-solid {
+  background: var(--text-primary);
   color: #FFFFFF;
-  border: 1px solid var(--brand-primary);
 }
 
-.btn-primary:hover {
-  background: var(--brand-primary-hover);
-  border-color: var(--brand-primary-hover);
+.btn-premium-solid:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
-.btn-secondary {
+.btn-premium-primary {
   background: #FFFFFF;
-  color: #000000;
-  border: 1px solid #FFFFFF;
-}
-
-.btn-secondary:hover {
-  background: #E4E4E7;
-}
-
-.btn-outline {
-  background: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border-active);
+  border-color: var(--border-default);
 }
 
-.btn-outline:hover {
-  background: var(--bg-surface);
+.btn-premium-primary:hover {
+  background: #F9FAFB;
   border-color: var(--text-primary);
 }
 
-/* Card System - Simple & Scalable */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+/* Cards - Floating & Precise */
+.glass-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.feature-panel {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  padding: 2.5rem;
-  border-radius: 12px;
-  transition: border-color 0.2s;
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
 }
 
-.feature-panel:hover {
-  border-color: var(--text-secondary);
+/* Trust Elements */
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(55, 48, 163, 0.05);
+  border: 1px solid rgba(55, 48, 163, 0.1);
+  border-radius: 99px;
+  color: var(--brand-primary);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-/* Navbar */
-.nav-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-default);
+/* Section Background Blobs */
+.bg-glow-main {
+  background: radial-gradient(60% 60% at 50% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 100%);
 }
 
-.nav-container {
-  height: var(--header-height);
+/* Avatars Stack */
+.avatar-stack {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
-/* Utility Defaults */
-.flex-col {
-  display: flex;
-  flexDirection: column;
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-page);
+  margin-left: -8px;
+  background: #27272A;
 }
 
-.items-center {
-  align-items: center;
+.avatar:first-child {
+  margin-left: 0;
 }
 
-.justify-center {
-  justify-content: center;
+/* Animation Hints */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-.text-center {
-  text-align: center;
+/* Grid Pattern Overlay */
+.grid-pattern {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-/* User Component Compatibility Utilities */
+/* Compatibility Layer for User Components */
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
