@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getStocks, type Stock } from "@/lib/market-data";
+// import { getStocks, type Stock } from "@/lib/market-data"; // REMOVED
+import { type Stock } from "@/lib/market-data";
+import { getMarketData } from "@/app/actions/market"; // NEW
 import { StockRow } from "@/components/market/StockRow";
-import { Search, SlidersHorizontal, ArrowUpRight } from "lucide-react";
+import { Search, SlidersHorizontal, ArrowUpRight, TrendingDown } from "lucide-react";
 
 export default function MarketPage() {
     const [stocks, setStocks] = useState<Stock[]>([]);
@@ -13,16 +15,23 @@ export default function MarketPage() {
 
     useEffect(() => {
         async function fetchStocks() {
-            const data = await getStocks();
-            setStocks(data);
-            setLoading(false);
+            try {
+                const data = await getMarketData(); // Using Server Action
+                setStocks(data);
+            } catch (err) {
+                console.error("Failed to load market data", err);
+            } finally {
+                setLoading(false);
+            }
         }
         fetchStocks();
 
-        // Auto-refresh every 60s
         const interval = setInterval(fetchStocks, 60000);
         return () => clearInterval(interval);
     }, []);
+
+    // ... rest of component
+
 
     const filteredStocks = stocks.filter(stock => {
         const matchesSearch = stock.symbol.toLowerCase().includes(search.toLowerCase()) ||

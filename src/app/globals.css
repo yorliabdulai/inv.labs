@@ -41,6 +41,15 @@
   /* Spacing & Layout */
   --header-height: 80px;
   --max-width: 1200px;
+
+  /* Compatibility Layer for User Components */
+  --color-primary: var(--brand-primary);
+  --color-primary-hover: var(--brand-primary-hover);
+  --color-secondary: #FFFFFF;
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-elevated);
+  --color-text-secondary: var(--text-secondary);
+  --radius-md: 6px;
 }
 
 html,
@@ -199,4 +208,73 @@ p {
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+/* User Component Compatibility Utilities */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--text-secondary);
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--brand-primary);
+}
+
+.text-primary {
+  color: var(--brand-primary);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
 }
