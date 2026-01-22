@@ -1,42 +1,202 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* --- Color Palette: High-Contrast Professional --- */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Backgrounds - Stark & Clean */
+  --bg-page: #000000;
+  /* OLED Black */
+  --bg-surface: #111111;
+  /* Dark Grey for cards */
+  --bg-surface-elevated: #1A1A1A;
+  /* Slightly lighter for hover/modals */
+
+  /* Text - Optimised for Readability */
+  --text-primary: #FFFFFF;
+  /* Pure White for headings/body */
+  --text-secondary: #A1A1AA;
+  /* Zinc 400 - Readable Grey */
+  --text-tertiary: #52525B;
+  /* Zinc 600 - Subtitles */
+
+  /* Accents - Purposeful & Accessible */
+  --brand-primary: #E31837;
+  /* Professional Red (GSE) */
+  --brand-primary-hover: #F04D5E;
+  --brand-accent: #FFFFFF;
+  /* White accent for buttons */
+
+  /* Semantic */
+  --color-success: #34D399;
+  /* Emerald 400 */
+  --color-warning: #FBBF24;
+  /* Amber 400 */
+  --color-error: #F87171;
+  /* Red 400 */
+
+  /* Borders */
+  --border-default: #27272A;
+  /* Zinc 800 */
+  --border-active: #3F3F46;
+  /* Zinc 700 */
+
+  /* Spacing & Layout */
+  --header-height: 80px;
+  --max-width: 1200px;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Typography - Clean & Crisp */
+h1 {
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-primary);
 }
 
-a {
-  color: inherit;
+h2 {
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+p {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Components */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: 6px;
+  /* Professional rounded corners vs pill */
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.btn-primary {
+  background: var(--brand-primary);
+  color: #FFFFFF;
+  border: 1px solid var(--brand-primary);
+}
+
+.btn-primary:hover {
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: #000000;
+  border: 1px solid #FFFFFF;
+}
+
+.btn-secondary:hover {
+  background: #E4E4E7;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-active);
+}
+
+.btn-outline:hover {
+  background: var(--bg-surface);
+  border-color: var(--text-primary);
+}
+
+/* Card System - Simple & Scalable */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 2.5rem;
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+
+.feature-panel:hover {
+  border-color: var(--text-secondary);
+}
+
+/* Navbar */
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.nav-container {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Utility Defaults */
+.flex-col {
+  display: flex;
+  flexDirection: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
 }
