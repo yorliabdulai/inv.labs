@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 :root {
@@ -37,10 +41,11 @@
   --radius-md: 10px;
   --radius-lg: 24px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  /* Shadows - Layered for Depth */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 /* Lenis Requirements */
@@ -71,31 +76,36 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Typography */
-h1,
-h2,
-h3,
-h4 {
+/* Typography - Scaling down for dashboard suitability */
+h1 {
+  font-size: 2.25rem;
   margin: 0;
   color: var(--text-primary);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.05;
+  line-height: 1.1;
 }
 
 h2 {
-  font-size: 3.5rem;
+  font-size: 1.875rem;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
 }
 
 p {
   margin: 0;
   line-height: 1.6;
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 /* Navigation - Series A Polish */
@@ -143,18 +153,92 @@ p {
   border-color: var(--text-primary);
 }
 
-/* Cards - Floating & Precise */
+/* Cards - Premium Bento Style */
 .glass-card {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-premium);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  border-color: rgba(55, 48, 163, 0.1);
+}
+
+/* Bento Grid Utilities - Robust Series A Grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(min-content, max-content);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.bento-col-12 {
+  grid-column: span 12;
+}
+
+.bento-col-8 {
+  grid-column: span 8;
+  min-height: 400px;
+}
+
+.bento-col-6 {
+  grid-column: span 6;
+  min-height: 300px;
+}
+
+.bento-col-4 {
+  grid-column: span 4;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bento-col-8,
+  .bento-col-6,
+  .bento-col-4 {
+    grid-column: span 1;
+    min-height: auto;
+  }
+}
+
+/* Data Viz Accents */
+.chart-container {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.delta-positive {
+  color: #10B981;
+}
+
+.delta-negative {
+  color: #EF4444;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 /* Trust Elements */

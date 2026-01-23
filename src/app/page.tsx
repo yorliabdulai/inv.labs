@@ -216,11 +216,46 @@ export default function Home() {
                   Institutional-grade analytics in your pocket.
                 </p>
                 <div style={{ display: "flex", gap: "20px" }}>
-                  <div className="glass-card" style={{ padding: "14px 28px", opacity: 0.5, cursor: "not-allowed", display: "flex", alignItems: "center", gap: "12px", border: "1px dashed var(--border-default)" }}>
-                    <Smartphone size={24} /> App Store
+                  {/* App Store Button */}
+                  <div className="glass-card" style={{
+                    padding: "12px 28px",
+                    opacity: 0.6,
+                    cursor: "not-allowed",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    border: "1px solid var(--border-default)",
+                    background: "var(--text-primary)",
+                    color: "#FFFFFF"
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.1 2.48-1.34.03-1.77-.79-3.31-.79-1.53 0-2.01.78-3.27.83-1.31.05-2.31-1.32-3.14-2.53C4.25 17 2.97 13.01 4.62 10.16c.82-1.42 2.29-2.32 3.89-2.35 1.21-.02 2.36.82 3.1.82.74 0 2.12-.99 3.56-.84 1.55.15 2.7.72 3.53 1.95-3.23 1.9-2.72 6.13.51 7.42-.64 1.35-1.52 2.76-2.5 4.34zM15.47 5.7c-.67.81-1.47 1.41-2.4 1.7-1.12-1.92.51-3.65 1.56-4.4a3.1 3.1 0 012.38.16 3.03 3.03 0 011.51 2.22c-.93.07-2.05.32-3.05 1.32z" />
+                    </svg>
+                    <div style={{ textAlign: "left" }}>
+                      <div style={{ fontSize: "0.6rem", fontWeight: 700, opacity: 0.7, lineHeight: 1 }}>Download on the</div>
+                      <div style={{ fontSize: "0.9375rem", fontWeight: 800 }}>App Store</div>
+                    </div>
                   </div>
-                  <div className="glass-card" style={{ padding: "14px 28px", opacity: 0.5, cursor: "not-allowed", display: "flex", alignItems: "center", gap: "12px", border: "1px dashed var(--border-default)" }}>
-                    <div style={{ width: "24px", height: "24px", background: "#333", borderRadius: "4px" }}></div> Play Store
+
+                  {/* Play Store Button */}
+                  <div className="glass-card" style={{
+                    padding: "12px 28px",
+                    opacity: 0.6,
+                    cursor: "not-allowed",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    border: "1px solid var(--border-default)",
+                    background: "var(--text-primary)",
+                    color: "#FFFFFF"
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.61 3 21.09 3 20.5ZM14.4 12.71L16.74 15.05L5.23 21.64C5.07 21.73 4.9 21.78 4.72 21.8L14.4 12.12L14.4 12.71ZM17.29 12L5.23 2.36C5.07 2.27 4.9 2.22 4.72 2.2L14.4 11.88L17.29 12ZM16.74 8.95L14.4 11.29L14.4 11.29L4.72 2.2L16.74 8.95Z" />
+                    </svg>
+                    <div style={{ textAlign: "left" }}>
+                      <div style={{ fontSize: "0.6rem", fontWeight: 700, opacity: 0.7, lineHeight: 1 }}>GET IT ON</div>
+                      <div style={{ fontSize: "0.9375rem", fontWeight: 800 }}>Google Play</div>
+                    </div>
                   </div>
                 </div>
               </div>

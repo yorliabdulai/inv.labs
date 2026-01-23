@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Award, Shield, Settings, CreditCard } from "lucide-react";
+import { LogOut, User, Award, Shield, Settings, CreditCard, ChevronRight, Mail, Calendar, TrendingUp } from "lucide-react";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 
 export default function ProfilePage() {
     const [user, setUser] = useState<any>(null);
@@ -17,120 +18,139 @@ export default function ProfilePage() {
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
-        router.push("/login");
+        router.push("/login"); // Redirect to Series A Login
     };
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", paddingBottom: "4rem" }}>
-            <h1 style={{ fontSize: "2rem", marginBottom: "2rem" }}>Account</h1>
+        <div className="max-w-4xl mx-auto pb-12">
+            <DashboardHeader />
 
-            {/* User Identity Card */}
-            <div className="feature-panel" style={{
-                padding: "2rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "1.5rem",
-                marginBottom: "2rem"
-            }}>
-                <div style={{
-                    width: "80px", height: "80px",
-                    backgroundColor: "var(--bg-surface-elevated)",
-                    borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    border: "1px solid var(--border-active)"
-                }}>
-                    <User size={32} color="var(--text-secondary)" />
-                </div>
-                <div>
-                    <h2 style={{ fontSize: "1.5rem", margin: 0, marginBottom: "0.25rem" }}>
-                        {user?.user_metadata?.full_name || "Investory User"}
-                    </h2>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{user?.email}</div>
-                    <div style={{ marginTop: "0.75rem" }}>
-                        <span style={{
-                            background: "var(--brand-primary)",
-                            color: "white",
-                            padding: "0.2rem 0.5rem",
-                            borderRadius: "4px",
-                            fontSize: "0.75rem",
-                            fontWeight: 600
-                        }}>PRO MEMBER</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Settings Sections */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-
-                {/* Section: Badges */}
-                <div className="feature-panel" style={{ padding: "0" }}>
-                    <div style={{ padding: "1rem 1.5rem", borderBottom: "1px solid var(--border-default)", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                        <Award size={18} color="var(--brand-primary)" />
-                        <h3 style={{ margin: 0, fontSize: "1rem" }}>Achievements</h3>
-                    </div>
-                    <div style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
-                        <div style={{ opacity: 1 }}>
-                            <div style={{ width: "40px", height: "40px", background: "var(--brand-primary)", borderRadius: "50%", margin: "0 auto 0.5rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <span style={{ fontSize: "1.2rem" }}>🏆</span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Identity & Stats */}
+                <div className="lg:col-span-1 space-y-6">
+                    {/* Identity Card */}
+                    <div className="glass-card p-6 text-center relative overflow-hidden">
+                        <div className="relative z-10 flex flex-col items-center">
+                            <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4">
+                                <span className="text-3xl font-bold text-white">
+                                    {user?.user_metadata?.full_name?.charAt(0) || "U"}
+                                </span>
                             </div>
-                            <div style={{ fontSize: "0.75rem", fontWeight: 500 }}>Early Bird</div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-1">
+                                {user?.user_metadata?.full_name || "Investory User"}
+                            </h2>
+                            <div className="text-sm text-gray-500 mb-4 flex items-center gap-1">
+                                <Mail size={12} /> {user?.email}
+                            </div>
+                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold tracking-wide uppercase">
+                                Pro Member
+                            </span>
                         </div>
-                        <div style={{ opacity: 0.3 }}>
-                            <div style={{ width: "40px", height: "40px", background: "var(--bg-surface-elevated)", borderRadius: "50%", margin: "0 auto 0.5rem" }}></div>
-                            <div style={{ fontSize: "0.75rem" }}>Trader</div>
+                        {/* Decor */}
+                        <div className="absolute top-0 left-0 w-full h-24 bg-gray-50 opacity-50 z-0"></div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="glass-card p-0 overflow-hidden">
+                        <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Trading Stats</h3>
                         </div>
-                        <div style={{ opacity: 0.3 }}>
-                            <div style={{ width: "40px", height: "40px", background: "var(--bg-surface-elevated)", borderRadius: "50%", margin: "0 auto 0.5rem" }}></div>
-                            <div style={{ fontSize: "0.75rem" }}>Whale</div>
-                        </div>
-                        <div style={{ opacity: 0.3 }}>
-                            <div style={{ width: "40px", height: "40px", background: "var(--bg-surface-elevated)", borderRadius: "50%", margin: "0 auto 0.5rem" }}></div>
-                            <div style={{ fontSize: "0.75rem" }}>Guru</div>
+                        <div className="divide-y divide-gray-100">
+                            <div className="p-4 flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Total Trades</span>
+                                <span className="font-mono font-bold text-gray-900">142</span>
+                            </div>
+                            <div className="p-4 flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Win Rate</span>
+                                <span className="font-mono font-bold text-emerald-500">68.5%</span>
+                            </div>
+                            <div className="p-4 flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Member Since</span>
+                                <span className="font-mono font-bold text-gray-900 flex items-center gap-1">
+                                    <Calendar size={12} className="text-gray-400" /> Jan 2026
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Section: General */}
-                <div className="feature-panel" style={{ padding: "0", overflow: "hidden" }}>
-                    <div style={{ padding: "1rem 1.5rem", borderBottom: "1px solid var(--border-default)", background: "var(--bg-surface-elevated)" }}>
-                        <h3 style={{ margin: 0, fontSize: "0.875rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Preferences</h3>
+                {/* Right Column: Settings & Badges */}
+                <div className="lg:col-span-2 space-y-6">
+
+                    {/* Badges Section */}
+                    <div className="glass-card p-6">
+                        <div className="flex items-center gap-2 mb-6">
+                            <Award className="text-indigo-600" size={24} />
+                            <h3 className="font-bold text-lg text-gray-900">Achievements</h3>
+                        </div>
+                        <div className="grid grid-cols-4 gap-4 text-center">
+                            <div className="group cursor-pointer">
+                                <div className="w-16 h-16 mx-auto bg-yellow-100 rounded-2xl flex items-center justify-center text-2xl mb-2 group-hover:scale-110 transition-transform">
+                                    🏆
+                                </div>
+                                <div className="text-xs font-bold text-gray-900">Early Bird</div>
+                                <div className="text-[10px] text-gray-500">Joined Beta</div>
+                            </div>
+                            <div className="group cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+                                <div className="w-16 h-16 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-2 grayscale">
+                                    📈
+                                </div>
+                                <div className="text-xs font-bold text-gray-400">Trader</div>
+                                <div className="text-[10px] text-gray-400">100 Trades</div>
+                            </div>
+                            <div className="group cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+                                <div className="w-16 h-16 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-2 grayscale">
+                                    🐋
+                                </div>
+                                <div className="text-xs font-bold text-gray-400">Whale</div>
+                                <div className="text-[10px] text-gray-400">GH₵1M Volume</div>
+                            </div>
+                            <div className="group cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+                                <div className="w-16 h-16 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-2 grayscale">
+                                    🧠
+                                </div>
+                                <div className="text-xs font-bold text-gray-400">Guru</div>
+                                <div className="text-[10px] text-gray-400">Top 1% Rank</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <button className="btn-ghost" style={{ width: "100%", textAlign: "left", padding: "1rem 1.5rem", borderRadius: 0, border: "none", borderBottom: "1px solid var(--border-default)", display: "flex", alignItems: "center", justifyContent: "space-between", color: "var(--text-primary)" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                            <Settings size={20} color="var(--text-secondary)" />
-                            <span>App Settings</span>
+                    {/* Preferences Menu */}
+                    <div className="glass-card p-0 overflow-hidden">
+                        <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Preferences</h3>
                         </div>
-                        <div style={{ color: "var(--text-secondary)" }}>&rarr;</div>
-                    </button>
-
-                    <button className="btn-ghost" style={{ width: "100%", textAlign: "left", padding: "1rem 1.5rem", borderRadius: 0, border: "none", borderBottom: "1px solid var(--border-default)", display: "flex", alignItems: "center", justifyContent: "space-between", color: "var(--text-primary)" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                            <Shield size={20} color="var(--text-secondary)" />
-                            <span>Security & Privacy</span>
+                        <div className="divide-y divide-gray-100">
+                            {[
+                                { icon: Settings, label: "App Settings", desc: "Theme, Language" },
+                                { icon: Shield, label: "Security & Privacy", desc: "2FA, Password" },
+                                { icon: CreditCard, label: "Billing & Subscription", desc: "Manage Plan" },
+                            ].map((item, i) => (
+                                <button key={i} className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors text-left group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                                            <item.icon size={20} />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-bold text-gray-900">{item.label}</div>
+                                            <div className="text-xs text-gray-500">{item.desc}</div>
+                                        </div>
+                                    </div>
+                                    <ChevronRight size={18} className="text-gray-300 group-hover:text-indigo-500 transition-colors" />
+                                </button>
+                            ))}
                         </div>
-                        <div style={{ color: "var(--text-secondary)" }}>&rarr;</div>
-                    </button>
+                    </div>
 
-                    <button className="btn-ghost" style={{ width: "100%", textAlign: "left", padding: "1rem 1.5rem", borderRadius: 0, border: "none", display: "flex", alignItems: "center", justifyContent: "space-between", color: "var(--text-primary)" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                            <CreditCard size={20} color="var(--text-secondary)" />
-                            <span>Billing</span>
-                        </div>
-                        <div style={{ color: "var(--text-secondary)" }}>&rarr;</div>
-                    </button>
-                </div>
-
-                <div style={{ marginTop: "1rem" }}>
                     <button
                         onClick={handleSignOut}
-                        className="btn btn-outline"
-                        style={{ width: "100%", color: "var(--color-error)", borderColor: "var(--border-default)" }}
+                        className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
                     >
-                        <LogOut size={18} style={{ marginRight: "0.5rem" }} /> Sign Out
+                        <LogOut size={18} /> Sign Out
                     </button>
-                    <div style={{ textAlign: "center", marginTop: "1.5rem", color: "var(--text-tertiary)", fontSize: "0.75rem" }}>
-                        Version 1.0.0 (Premium)
+
+                    <div className="text-center text-xs text-gray-400">
+                        GSE Labs Stable v2.4.0 • Build 8921
                     </div>
                 </div>
             </div>

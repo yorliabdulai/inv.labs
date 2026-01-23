@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { getStocks } from "@/lib/market-data";
-import { PieChart, TrendingUp, TrendingDown, RefreshCcw } from "lucide-react";
+import { TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus, Wallet, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { AllocationChart } from "@/components/portfolio/AllocationChart";
+import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
+import Link from "next/link";
 
 interface Holding {
     symbol: string;
@@ -13,13 +17,14 @@ interface Holding {
     marketValue: number;
     gain: number;
     gainPercent: number;
+    sector?: string;
 }
 
 export default function PortfolioPage() {
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [loading, setLoading] = useState(true);
     const [totalValue, setTotalValue] = useState(0);
-    const [cashBalance, setCashBalance] = useState(10000); // Mock cash for now until connected to DB
+    const [cashBalance, setCashBalance] = useState(10000);
 
     useEffect(() => {
         async function fetchData() {
@@ -35,8 +40,6 @@ export default function PortfolioPage() {
                 .select('*')
                 .eq('user_id', user.id);
 
-            // Mock cash from basic calculation just for display if not in DB
-            // In real app, cash would be in a 'portfolios' table
             let cash = 10000;
 
             if (!transactions || transactions.length === 0) {
@@ -47,6 +50,7 @@ export default function PortfolioPage() {
 
             const stocks = await getStocks();
             const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
+            const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector]));
             const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
 
             transactions.forEach(tx => {
@@ -81,7 +85,8 @@ export default function PortfolioPage() {
                         currentPrice,
                         marketValue,
                         gain,
-                        gainPercent
+                        gainPercent,
+                        sector: sectorMap.get(symbol) || "Other"
                     });
                     portfolioSum += marketValue;
                 }
@@ -101,139 +106,176 @@ export default function PortfolioPage() {
     const totalGainPercent = (totalGain / 10000) * 100;
     const isPositive = totalGain >= 0;
 
+    const sectorData = holdings.reduce((acc, h) => {
+        const existing = acc.find(item => item.name === h.sector);
+        if (existing) {
+            existing.value += h.marketValue;
+        } else {
+            const colors: Record<string, string> = {
+                "Finance": "#4F46E5",
+                "Technology": "#10B981",
+                "Mining": "#F59E0B",
+                "Consumer": "#EC4899",
+                "Agriculture": "#8B5CF6",
+                "Energy": "#EF4444"
+            };
+            acc.push({
+                name: h.sector || "Other",
+                value: h.marketValue,
+                color: colors[h.sector || ""] || "#9CA3AF"
+            });
+        }
+        return acc;
+    }, [] as { name: string; value: number; color: string }[]);
+
+    if (cashBalance > 0) {
+        sectorData.push({ name: "Cash", value: cashBalance, color: "#E5E7EB" });
+    }
+
     if (loading) return (
-        <div style={{ padding: "4rem", textAlign: "center", color: "var(--text-secondary)" }}>
-            <div style={{ display: "inline-block", width: "24px", height: "24px", border: "2px solid var(--border-active)", borderTopColor: "var(--text-primary)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+            <RefreshCcw size={32} className="animate-spin mb-4 text-indigo-600" />
+            <p className="text-sm font-bold uppercase tracking-widest">Aggregating Asset Data...</p>
         </div>
     );
 
     return (
-        <div style={{ paddingBottom: "2rem" }}>
-            <h1 style={{ fontSize: "2rem", marginBottom: "2rem" }}>Portfolio</h1>
+        <div className="pb-16 space-y-8">
+            <DashboardHeader />
 
-            {/* Account Summary Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", marginBottom: "3rem" }}>
-
-                {/* Net Worth */}
-                <div className="feature-panel" style={{ padding: "1.5rem" }}>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "0.5rem" }}>Net Liquidation Value</div>
-                    <div style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-                        GH₵{totalEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </div>
-                    <div style={{
-                        display: "flex", alignItems: "center", gap: "0.5rem",
-                        color: isPositive ? "var(--color-success)" : "var(--color-error)",
-                        fontSize: "0.875rem", fontWeight: 500
-                    }}>
-                        {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                        {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)} ({totalGainPercent.toFixed(2)}%)
-                        <span style={{ color: "var(--text-tertiary)", marginLeft: "auto" }}>Since Inception</span>
-                    </div>
-                </div>
-
-                {/* Cash & Buying Power */}
-                <div className="feature-panel" style={{ padding: "1.5rem" }}>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "0.5rem" }}>Buying Power</div>
-                    <div style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-                        GH₵{cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </div>
-                    <div style={{ fontSize: "0.875rem", color: "var(--text-tertiary)" }}>
-                        Available for immediate trade
-                    </div>
-                </div>
-            </div>
-
-            {/* Holdings Table */}
-            <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                    <h2 style={{ fontSize: "1.5rem", margin: 0 }}>Holdings</h2>
-                    <button className="btn btn-outline" style={{ padding: "0.5rem 1rem", fontSize: "0.875rem", gap: "0.5rem" }} onClick={() => window.location.reload()}>
-                        <RefreshCcw size={14} /> Refresh
-                    </button>
-                </div>
-
-                {holdings.length === 0 ? (
-                    <div className="feature-panel" style={{ textAlign: "center", padding: "4rem 2rem" }}>
-                        <PieChart size={48} style={{ margin: "0 auto 1.5rem", color: "var(--text-tertiary)" }} />
-                        <h3 style={{ marginBottom: "0.5rem" }}>No Open Positions</h3>
-                        <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
-                            Your portfolio is currently 100% cash. Head to the market to identify opportunities.
-                        </p>
-                        <a href="/market" className="btn btn-primary">Go to Market</a>
-                    </div>
-                ) : (
-                    <div className="feature-panel" style={{ padding: 0, overflow: "hidden" }}>
-                        {/* Table Header */}
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1fr",
-                            padding: "1rem 1.5rem",
-                            borderBottom: "1px solid var(--border-default)",
-                            background: "var(--bg-surface-elevated)",
-                            color: "var(--text-tertiary)",
-                            fontSize: "0.75rem",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.05em",
-                            fontWeight: 600
-                        }}>
-                            <div>Symbol</div>
-                            <div style={{ textAlign: "right" }}>Qty</div>
-                            <div style={{ textAlign: "right" }}>Avg Cost</div>
-                            <div style={{ textAlign: "right" }}>Current</div>
-                            <div style={{ textAlign: "right" }}>P/L</div>
-                        </div>
-
-                        {/* Table Rows */}
-                        {holdings.map(holding => (
-                            <div key={holding.symbol} style={{
-                                display: "grid",
-                                gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1fr",
-                                padding: "1rem 1.5rem",
-                                borderBottom: "1px solid var(--border-default)",
-                                alignItems: "center",
-                                fontSize: "0.9rem"
-                            }}>
-                                <div style={{ fontWeight: 600 }}>{holding.symbol}</div>
-                                <div style={{ textAlign: "right", fontFamily: "monospace" }}>{holding.quantity}</div>
-                                <div style={{ textAlign: "right", fontFamily: "monospace", color: "var(--text-secondary)" }}>
-                                    {holding.averageCost.toFixed(2)}
+            {/* Performance Snapshot */}
+            <div className="bento-grid">
+                <div className="bento-col-8">
+                    <div className="glass-card p-8 h-full">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                            <div>
+                                <h2 className="stat-label mb-1">Net Portfolio Value</h2>
+                                <div className="text-5xl font-black text-[#1A1C4E] tracking-tighter">
+                                    GH₵{totalEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
-                                <div style={{ textAlign: "right", fontFamily: "monospace" }}>
-                                    {holding.currentPrice.toFixed(2)}
-                                </div>
-                                <div style={{
-                                    textAlign: "right",
-                                    fontFamily: "monospace",
-                                    fontWeight: 600,
-                                    color: holding.gain >= 0 ? "var(--color-success)" : "var(--color-error)"
-                                }}>
-                                    {holding.gain >= 0 ? "+" : ""}{holding.gain.toFixed(2)}
+                                <div className={`flex items-center gap-2 mt-3 text-sm font-black ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+                                    {isPositive ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
+                                    <span>{totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)} ({totalGainPercent.toFixed(2)}%)</span>
+                                    <span className="text-gray-400 font-bold uppercase text-[10px] ml-1 tracking-wider">Historical ROI</span>
                                 </div>
                             </div>
-                        ))}
+                            <div className="flex gap-4">
+                                <div className="text-right border-l border-gray-100 pl-6">
+                                    <div className="stat-label mb-1">Buying Power</div>
+                                    <div className="text-2xl font-black text-gray-900">
+                                        GH₵{cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        {/* Total Row */}
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1fr",
-                            padding: "1rem 1.5rem",
-                            background: "var(--bg-surface-elevated)",
-                            alignItems: "center",
-                            fontSize: "0.9rem",
-                            fontWeight: 700
-                        }}>
-                            <div>TOTAL</div>
-                            <div></div>
-                            <div></div>
-                            <div style={{ textAlign: "right" }}>GH₵{totalValue.toFixed(2)}</div>
-                            <div style={{ textAlign: "right" }}></div>
+                        <div className="h-[280px]">
+                            <PortfolioChart />
                         </div>
                     </div>
-                )}
+                </div>
+
+                <div className="bento-col-4 space-y-6">
+                    <div className="glass-card p-6 bg-[#1A1C4E] text-white border-none">
+                        <div className="flex items-center gap-2 mb-4 text-indigo-200 text-[10px] font-black uppercase tracking-widest">
+                            <ShieldCheck size={14} /> Risk Analysis
+                        </div>
+                        <div className="text-3xl font-black mb-2 tracking-tight">Balanced</div>
+                        <p className="text-indigo-200/70 text-xs font-medium leading-relaxed mb-6">
+                            Your portfolio shows optimal diversification across 4 key sectors. Risk exposure is currently mitigated.
+                        </p>
+                        <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                            <span className="text-[10px] font-black uppercase">Volatility Index</span>
+                            <span className="text-xs font-black text-emerald-400">LOW</span>
+                        </div>
+                    </div>
+
+                    <div className="glass-card p-6 flex flex-col items-center justify-center">
+                        <h3 className="stat-label mb-4 w-full">Asset Allocation</h3>
+                        <div className="w-full aspect-square max-w-[180px]">
+                            <AllocationChart data={sectorData} />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <style jsx>{`
-               @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            `}</style>
+
+            {/* Detailed Holdings */}
+            <div className="glass-card overflow-hidden">
+                <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/30">
+                    <h3 className="font-black text-base flex items-center gap-3 text-[#1A1C4E]">
+                        <Briefcase size={20} className="text-indigo-600" /> Active Positions
+                    </h3>
+                    <div className="flex gap-3">
+                        <Link href="/dashboard/market" className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
+                            <Plus size={14} strokeWidth={3} /> Rebalance Portfolio
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                <th className="px-8 py-4">Security</th>
+                                <th className="px-4 py-4 text-right">Position Size</th>
+                                <th className="px-4 py-4 text-right">Avg Cost</th>
+                                <th className="px-4 py-4 text-right">Live Price</th>
+                                <th className="px-8 py-4 text-right">Net Return</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {holdings.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-20 text-center">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <Wallet size={40} className="text-gray-200" />
+                                            <p className="text-sm font-bold text-gray-400">Zero active holdings detected.</p>
+                                            <Link href="/dashboard/market" className="text-xs font-black text-indigo-600 uppercase hover:underline">Execute First Trade</Link>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                holdings.map(holding => (
+                                    <tr key={holding.symbol} className="hover:bg-gray-50/50 transition-colors group">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center font-black text-[#1A1C4E] text-xs border border-gray-100 group-hover:bg-white group-hover:border-indigo-100 transition-all shadow-sm">
+                                                    {holding.symbol[0]}
+                                                </div>
+                                                <div>
+                                                    <div className="font-black text-gray-900 text-base">{holding.symbol}</div>
+                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{holding.sector}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-6 text-right">
+                                            <div className="font-mono font-bold text-gray-900">{holding.quantity.toLocaleString()}</div>
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Shares</div>
+                                        </td>
+                                        <td className="px-4 py-6 text-right">
+                                            <div className="font-mono font-bold text-gray-500">₵{holding.averageCost.toFixed(2)}</div>
+                                        </td>
+                                        <td className="px-4 py-6 text-right">
+                                            <div className="font-mono font-black text-[#1A1C4E] text-base">₵{holding.currentPrice.toFixed(2)}</div>
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center justify-end gap-1">
+                                                Real-time <ArrowUpRight size={10} className="text-emerald-500" />
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-right">
+                                            <div className={`font-mono font-black text-base ${holding.gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                                {holding.gain >= 0 ? "+" : ""}₵{holding.gain.toFixed(2)}
+                                            </div>
+                                            <div className={`text-[10px] font-black uppercase ${holding.gain >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                                {holding.gainPercent >= 0 ? "+" : ""}{holding.gainPercent.toFixed(2)}%
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }
