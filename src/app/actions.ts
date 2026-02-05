@@ -1,8 +1,8 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/client';
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
+// import { createClient } from '@/lib/supabase/client';
+// import { redirect } from 'next/navigation';
+// import { headers } from 'next/headers';
 
 // Note: For Server Actions we usually need a server-side client, but for now
 // we will use the client-side auth flow mostly, or we can use the kookie-based approach.

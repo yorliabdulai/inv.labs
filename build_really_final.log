@@ -1,0 +1,49 @@
+
+> investmentsimulator@0.1.0 build
+> next build --webpack
+
+ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Abdulai Yorli\pnpm-lock.yaml as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Abdulai Yorli\Desktop\Projects\investmentsimulator\package-lock.json
+
+Γû▓ Next.js 16.1.4 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+ Γ£ô (pwa) Compiling for server...
+ Γ£ô (pwa) Compiling for server...
+ Γ£ô (pwa) Compiling for client (static)...
+ Γùï (pwa) Service worker: C:\Users\Abdulai Yorli\Desktop\Projects\investmentsimulator\public\sw.js
+ Γùï (pwa)   URL: /sw.js
+ Γùï (pwa)   Scope: /
+Failed to compile.
+
+./src/components/trade/TradeModal.tsx
+Error:   x Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+     ,-[C:\Users\Abdulai Yorli\Desktop\Projects\investmentsimulator\src\components\trade\TradeModal.tsx:373:1]
+ 370 |             </div>
+ 371 |         </div>
+ 372 |     );
+ 373 | }
+     : ^
+     `----
+  x Expected '</', got '<eof>'
+     ,-[C:\Users\Abdulai Yorli\Desktop\Projects\investmentsimulator\src\components\trade\TradeModal.tsx:373:3]
+ 371 |         </div>
+ 372 |     );
+ 373 | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/trade/TradeModal.tsx
+./src/components/market/StockRow.tsx
+./src/app/dashboard/market/page.tsx
+
+
+> Build failed because of webpack errors

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Stock } from "@/lib/market-data";
-import { TrendingUp, TrendingDown, MoreHorizontal, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, MoreHorizontal, ArrowUpRight, ArrowDownRight, Bookmark } from "lucide-react";
 import { useState } from "react";
 import { TradeModal } from "@/components/trade/TradeModal";
 import { Sparkline } from "./Sparkline";
@@ -28,59 +28,85 @@ export function StockRow({ stock }: StockRowProps) {
     return (
         <>
             <div
-                className="group flex flex-col md:grid md:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.4fr] items-center px-6 py-4 bg-white border border-gray-100 rounded-2xl hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-50/50 transition-all duration-300 cursor-pointer mb-3"
+                className="glass-card p-4 md:p-6 hover:shadow-2xl hover:shadow-indigo-100/50 transition-all duration-300 cursor-pointer group border border-gray-100 hover:border-indigo-200 touch-manipulation active:scale-[0.98]"
                 onClick={() => setIsModalOpen(true)}
             >
-                {/* Security Info */}
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm border transition-colors ${isPositive
-                            ? "bg-emerald-50 border-emerald-100 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white"
-                            : "bg-red-50 border-red-100 text-red-600 group-hover:bg-red-500 group-hover:text-white"
+                {/* Header */}
+                <div className="flex items-start justify-between mb-3 md:mb-4">
+                    <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-xs md:text-sm border-2 transition-all duration-200 flex-shrink-0 ${
+                            isPositive
+                                ? "bg-emerald-50 border-emerald-200 text-emerald-700 group-active:bg-emerald-500 group-active:text-white"
+                                : "bg-red-50 border-red-200 text-red-700 group-active:bg-red-500 group-active:text-white"
                         }`}>
-                        {stock.symbol.substring(0, 2)}
-                    </div>
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                            <h3 className="text-base font-black text-[#1A1C4E]">{stock.symbol}</h3>
-                            {isPositive && <ArrowUpRight size={14} className="text-emerald-500" />}
-                            {!isPositive && <ArrowDownRight size={14} className="text-red-500" />}
+                            {stock.symbol.substring(0, 2)}
                         </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest truncate max-w-[150px]">{stock.name}</p>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-base md:text-lg font-black text-[#1A1C4E] group-hover:text-indigo-600 transition-colors truncate">
+                                    {stock.symbol}
+                                </h3>
+                                {isPositive && <TrendingUp size={14} className="text-emerald-500 flex-shrink-0" />}
+                                {!isPositive && <TrendingDown size={14} className="text-red-500 flex-shrink-0" />}
+                            </div>
+                            <p className="text-xs md:text-sm font-medium text-gray-600 truncate">{stock.name}</p>
+                            <div className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">{stock.sector}</div>
+                        </div>
+                    </div>
+                    <button 
+                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 md:opacity-100 min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 flex-shrink-0"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // Handle bookmark
+                        }}
+                    >
+                        <Bookmark size={16} />
+                    </button>
+                </div>
+
+                {/* Price & Change */}
+                <div className="flex items-end justify-between mb-3 md:mb-4">
+                    <div className="flex-1 min-w-0">
+                        <div className="text-xl md:text-2xl font-black text-[#1A1C4E] font-mono">
+                            GH₵{stock.price.toFixed(2)}
+                        </div>
+                        <div className={`text-xs md:text-sm font-black ${isPositive ? 'text-emerald-600' : 'text-red-600'} flex items-center gap-1 mt-1`}>
+                            {isPositive ? '+' : ''}{stock.changePercent.toFixed(2)}%
+                            <span className="text-[10px] md:text-xs font-medium text-gray-400 ml-1">24h</span>
+                        </div>
+                    </div>
+                    <div className="text-right flex-shrink-0 ml-2">
+                        <div className="text-[10px] md:text-sm font-bold text-gray-500 uppercase tracking-wider">Volume</div>
+                        <div className="text-xs md:text-sm font-black text-gray-800">{(stock.volume / 1000).toFixed(1)}K</div>
                     </div>
                 </div>
 
-                {/* Pricing */}
-                <div className="flex flex-col items-end md:items-start w-full md:w-auto mt-4 md:mt-0">
-                    <div className="text-lg font-black text-[#1A1C4E] font-mono">
-                        ₵{stock.price.toFixed(2)}
-                    </div>
-                    <div className="stat-label text-[9px]">Last Price</div>
-                </div>
-
-                {/* Day Change */}
-                <div className="w-full md:w-auto mt-2 md:mt-0">
-                    <div className={`flex items-center gap-1.5 font-black text-sm ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
-                        {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                        {isPositive ? '+' : ''}{stock.changePercent.toFixed(2)}%
-                    </div>
-                    <div className="stat-label text-[9px]">24h Delta</div>
-                </div>
-
-                {/* Performance Curve */}
-                <div className="flex items-center gap-6 w-full md:w-auto mt-4 md:mt-0">
-                    <div className="flex-1 h-8 min-w-[100px]">
+                {/* Sparkline Chart */}
+                <div className="mb-3 md:mb-4">
+                    <div className="h-12 md:h-16 w-full">
                         <Sparkline data={history} color={isPositive ? "#10B981" : "#EF4444"} />
                     </div>
-                    <div className="text-right hidden xl:block">
-                        <div className="text-[11px] font-black text-gray-900 font-mono">{(stock.volume / 1000).toFixed(1)}K</div>
-                        <div className="stat-label text-[9px]">Volume</div>
-                    </div>
                 </div>
 
-                {/* Options */}
-                <div className="hidden md:flex justify-end w-full">
-                    <button className="p-2.5 hover:bg-gray-50 rounded-xl transition-colors text-gray-300 hover:text-indigo-600">
-                        <MoreHorizontal size={20} />
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                    <button 
+                        className="flex-1 py-3 md:py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all duration-200 text-xs md:text-sm shadow-lg shadow-indigo-100 min-h-[48px] touch-manipulation active:scale-95"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        Trade
+                    </button>
+                    <button 
+                        className="px-4 md:px-4 py-3 bg-gray-50 text-gray-600 font-bold rounded-xl hover:bg-gray-100 transition-all duration-200 text-xs md:text-sm min-h-[48px] min-w-[80px] touch-manipulation active:scale-95"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // Handle watch
+                        }}
+                    >
+                        Watch
                     </button>
                 </div>
             </div>

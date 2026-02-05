@@ -18,25 +18,38 @@ export function BottomNav() {
     ];
 
     return (
-        <nav className="fixed bottom-6 left-6 right-6 bg-white/90 backdrop-blur-xl border border-gray-100 shadow-2xl shadow-indigo-100/50 flex md:hidden justify-around items-center py-3 px-2 z-50 rounded-2xl border-white/50">
-            {navItems.map(({ href, label, icon: Icon }) => {
-                const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
-                return (
-                    <Link
-                        key={href}
-                        href={href}
-                        className={`flex flex-col items-center justify-center px-3 py-1 rounded-xl transition-all duration-300 ${active ? "text-indigo-600 scale-110" : "text-gray-400 hover:text-gray-600"
+        <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 safe-area-inset-bottom">
+            <div className="flex justify-around items-center h-16 px-2 max-w-screen-xl mx-auto">
+                {navItems.map(({ href, label, icon: Icon }) => {
+                    const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
+                    return (
+                        <Link
+                            key={href}
+                            href={href}
+                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation ${
+                                active
+                                    ? "text-indigo-600 scale-105"
+                                    : "text-gray-500 active:scale-95"
                             }`}
-                    >
-                        <div className={`relative transition-transform duration-300 ${active ? "-translate-y-1" : ""}`}>
-                            <Icon size={22} strokeWidth={active ? 2.5 : 2} />
-                            {active && (
-                                <span className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-indigo-600 rounded-full shadow-[0_0_8px_rgba(79,70,229,0.5)]"></span>
-                            )}
-                        </div>
-                    </Link>
-                );
-            })}
+                            aria-label={label}
+                        >
+                            <div className={`relative transition-all duration-300 ${active ? "-translate-y-0.5" : ""}`}>
+                                <Icon
+                                    size={24}
+                                    strokeWidth={active ? 2.5 : 2}
+                                    className={active ? "drop-shadow-sm" : ""}
+                                />
+                                {active && (
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-indigo-600 rounded-full shadow-[0_0_8px_rgba(79,70,229,0.5)] animate-pulse"></span>
+                                )}
+                            </div>
+                            <span className={`text-[10px] font-bold mt-0.5 transition-all ${active ? "opacity-100" : "opacity-60"}`}>
+                                {label}
+                            </span>
+                        </Link>
+                    );
+                })}
+            </div>
         </nav>
     );
 }

@@ -2,122 +2,222 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Zap } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
 
 export default function DashboardPage() {
-    // Mock User Data
-    const user = {
+    // Enhanced Mock User Data with real-time simulation
+    const [userData, setUserData] = useState({
         name: "Kwame",
         balance: 12450.00,
         dayChange: 2.5,
         totalReturn: 24.5,
-        buyingPower: 4500.00
-    };
+        buyingPower: 4500.00,
+        lastUpdate: new Date(),
+        portfolioValue: 12450.00,
+        riskScore: 65,
+        rank: 847,
+        totalUsers: 15420
+    });
+
+    const [mounted, setMounted] = useState(false);
+
+    // Simulate real-time updates
+    useEffect(() => {
+        setMounted(true);
+        const interval = setInterval(() => {
+            setUserData(prev => ({
+                ...prev,
+                balance: prev.balance + (Math.random() - 0.5) * 50,
+                dayChange: prev.dayChange + (Math.random() - 0.5) * 0.2,
+                lastUpdate: new Date()
+            }));
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
-        <div className="space-y-8 pb-12">
-            <DashboardHeader userInitial={user.name[0]} />
+        <div className="space-y-4 md:space-y-6 pb-24 md:pb-12">
+            <DashboardHeader userInitial={userData.name[0]} />
 
-            {/* Bento Grid Layout */}
-            <div className="bento-grid">
+            {/* Real-time Status Banner - Mobile Optimized */}
+            <div className="glass-card p-4 md:p-5 bg-gradient-to-r from-emerald-50/50 to-indigo-50/50 border-emerald-100/50 animate-fade-in-scale">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-0">
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <span className="relative flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-success opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-status-success"></span>
+                        </span>
+                        <span className="text-sm md:text-sm font-black text-emerald-800 uppercase tracking-wide">Market Live</span>
+                        <div className="h-4 w-px bg-emerald-200 hidden sm:block"></div>
+                        <span className="text-xs text-emerald-700 font-bold hidden sm:inline">
+                            Last update: {mounted ? userData.lastUpdate.toLocaleTimeString() : "--:--:--"}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-3 md:gap-4 flex-wrap">
+                        <div className="flex items-center gap-2 text-xs font-bold text-text-secondary min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-emerald-100/50 hover:bg-white transition-colors touch-manipulation">
+                            <Users size={14} className="text-brand" />
+                            <span className="hidden sm:inline">Rank #{userData.rank.toLocaleString()} of {userData.totalUsers.toLocaleString()}</span>
+                            <span className="sm:hidden">#{userData.rank.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs font-bold text-status-warning min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-amber-100/50 hover:bg-white transition-colors touch-manipulation">
+                            <AlertTriangle size={14} />
+                            <span>Risk: {userData.riskScore}/100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                {/* Main Performance Chart - span 8 */}
+            {/* Premium Bento Grid Layout - Mobile First */}
+            <div className="bento-grid stagger-children">
+
+                {/* Main Performance Chart - Mobile Optimized */}
                 <div className="bento-col-8">
-                    <div className="glass-card p-6 h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h3 className="stat-label">Portfolio Performance</h3>
-                                <div className="flex items-end gap-3 mt-1">
-                                    <span className="text-3xl font-black text-[#1A1C4E]">GH₵ {user.balance.toLocaleString()}</span>
-                                    <span className="mb-1 text-sm font-bold text-emerald-500 flex items-center gap-1">
-                                        <TrendingUp size={14} /> +8.5%
-                                    </span>
+                    <div className="glass-card p-4 md:p-8 h-full flex flex-col bg-background-surface">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0 mb-4 md:mb-8">
+                            <div className="flex-1">
+                                <h3 className="stat-label flex items-center gap-2 mb-2 md:mb-0">
+                                    <BarChart3 size={16} className="text-brand" />
+                                    Portfolio Performance
+                                </h3>
+                                <div className="flex flex-col md:flex-row md:items-end gap-3 md:gap-4 mt-2">
+                                    <div>
+                                        <span className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter">
+                                            GH₵ {userData.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        </span>
+                                        <div className="text-xs font-bold text-text-tertiary uppercase tracking-wider mt-1">
+                                            Total Equity
+                                        </div>
+                                    </div>
+                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg min-h-[36px] self-start md:self-end mb-1 ${userData.dayChange >= 0 ? 'bg-emerald-50 text-status-success border border-emerald-100' : 'bg-red-50 text-status-error border border-red-100'}`}>
+                                        {userData.dayChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                                        <span className="font-black text-sm">
+                                            {userData.dayChange >= 0 ? '+' : ''}{userData.dayChange.toFixed(2)}%
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
-                                {['1D', '1W', '1M', '1Y', 'ALL'].map((range) => (
+                            <div className="flex gap-1 bg-gray-50/80 p-1 rounded-xl border border-border overflow-x-auto touch-manipulation">
+                                {['1D', '1W', '1M', '3M', '1Y', 'ALL'].map((range) => (
                                     <button
                                         key={range}
-                                        className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all ${range === '1W' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-gray-400 hover:bg-gray-50'}`}
+                                        className={`px-3 md:px-4 py-1.5 rounded-lg text-xs font-black transition-all duration-200 min-w-[40px] touch-manipulation ${range === '1W'
+                                            ? 'bg-brand text-white shadow-md shadow-brand/20'
+                                            : 'text-text-tertiary hover:text-text-primary hover:bg-white'
+                                            }`}
                                     >
                                         {range}
                                     </button>
                                 ))}
                             </div>
                         </div>
-                        <div className="flex-1 min-h-[300px]">
+                        <div className="flex-1 min-h-[240px] md:min-h-[320px] w-full">
                             <PortfolioChart />
                         </div>
                     </div>
                 </div>
 
-                {/* Side Metrics - span 4 */}
-                <div className="bento-col-4 space-y-6">
-                    {/* Key Stat: Total Return */}
-                    <div className="glass-card p-6 bg-indigo-600 text-white border-none shadow-xl shadow-indigo-100">
-                        <div className="flex items-center gap-2 mb-4 text-indigo-100 text-[10px] font-black uppercase tracking-[0.1em]">
-                            <Zap size={14} fill="currentColor" /> Account Growth
+                {/* Enhanced Side Metrics - Mobile Stack */}
+                <div className="bento-col-4 space-y-4 md:space-y-6">
+                    {/* Account Growth with Trophy */}
+                    <div className="glass-card p-5 md:p-6 bg-gradient-to-br from-brand to-brand-accent text-white border-none shadow-xl shadow-brand/20 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-500"></div>
+                        <div className="relative">
+                            <div className="flex items-center gap-2 mb-3 md:mb-4 text-white/80 text-xs font-black uppercase tracking-wider">
+                                <Trophy size={14} fill="currentColor" /> Monthly Return
+                            </div>
+                            <div className="text-4xl md:text-5xl font-black tracking-tighter mb-2">
+                                +{userData.totalReturn.toFixed(1)}%
+                            </div>
+                            <p className="text-indigo-100/90 text-xs md:text-sm font-medium leading-relaxed mb-4 md:mb-6">
+                                Outperforming <span className="text-white font-bold">87%</span> of traders. <br />You are in the top 15%.
+                            </p>
+                            <div className="flex items-center justify-between bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+                                <span className="text-xs font-bold text-indigo-50 uppercase">Target</span>
+                                <div className="flex items-center gap-2">
+                                    <Target size={14} className="text-emerald-300" />
+                                    <span className="text-sm font-black text-emerald-300">85%</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="text-4xl font-black tracking-tighter mb-2">
-                            +{user.totalReturn}%
-                        </div>
-                        <p className="text-indigo-100/80 text-xs font-medium leading-relaxed">
-                            Your portfolio is outperforming 85% of simulator participants this month.
-                        </p>
                     </div>
 
-                    {/* Key Stat: Buying Power */}
-                    <div className="glass-card p-6">
-                        <div className="flex items-center gap-2 mb-2 text-gray-400 text-[10px] font-black uppercase tracking-[0.1em]">
-                            <DollarSign size={14} /> Buying Power
+                    {/* Buying Power with Shield */}
+                    <div className="glass-card p-5 md:p-6 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 border-emerald-100/50">
+                        <div className="flex items-center justify-between mb-3 md:mb-4">
+                            <div className="flex items-center gap-2 text-emerald-700 text-xs font-black uppercase tracking-wider">
+                                <Shield size={14} /> Buying Power
+                            </div>
+                            <button className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center hover:bg-emerald-200 transition-colors">
+                                <DollarSign size={12} />
+                            </button>
                         </div>
-                        <div className="text-2xl font-black text-[#1A1C4E]">
-                            GH₵ {user.buyingPower.toLocaleString()}
+                        <div className="text-3xl md:text-4xl font-black text-emerald-900 mb-2 tracking-tight">
+                            GH₵ {userData.buyingPower.toLocaleString()}
                         </div>
-                        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase">Cash Reserve</span>
-                            <span className="text-xs font-black text-gray-900">36.1%</span>
+                        <div className="mt-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-bold text-emerald-800/70 uppercase">Cash Sim</span>
+                                <span className="text-xs font-black text-emerald-800">36.1%</span>
+                            </div>
+                            <div className="w-full h-2 bg-emerald-100/50 rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: '36.1%' }}></div>
+                            </div>
+                            <div className="flex items-center gap-2 mt-3 text-[10px] font-bold text-emerald-600/80">
+                                <Clock size={10} />
+                                <span>Instant Settlement Available</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Market Movers - span 6 */}
+                {/* Market Intelligence Hub - Mobile Optimized */}
                 <div className="bento-col-6">
-                    <div className="glass-card p-6">
-                        <div className="flex items-center justify-between mb-6">
+                    <div className="glass-card p-4 md:p-6 bg-background-surface border-border h-full">
+                        <div className="flex items-center justify-between mb-4 md:mb-6">
                             <h3 className="stat-label flex items-center gap-2">
-                                <Activity size={14} className="text-indigo-600" /> Market Watch
+                                <Activity size={16} className="text-brand" />
+                                Market Intelligence
                             </h3>
-                            <Link href="/dashboard/market" className="text-[10px] font-black text-indigo-600 uppercase tracking-wider hover:underline flex items-center gap-1">
-                                Full Market <ArrowRight size={12} />
+                            <Link href="/dashboard/market" className="text-xs font-black text-brand uppercase tracking-wider hover:text-brand-hover flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
+                                View All <ArrowRight size={12} />
                             </Link>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-2 md:space-y-3">
                             {[
-                                { symbol: "MTNGH", name: "Scancom PLC", price: 1.55, change: 1.2 },
-                                { symbol: "EGH", name: "Ecobank Ghana", price: 6.80, change: -0.4 },
-                                { symbol: "CAL", name: "Cal Bank", price: 0.65, change: 2.1 },
+                                { symbol: "MTNGH", name: "Scancom PLC", price: 1.55, change: 1.2, volume: "2.4M", trend: "bullish" },
+                                { symbol: "EGH", name: "Ecobank Ghana", price: 6.80, change: -0.4, volume: "1.8M", trend: "bearish" },
+                                { symbol: "CAL", name: "Cal Bank", price: 0.65, change: 2.1, volume: "956K", trend: "bullish" },
                             ].map((stock, i) => (
                                 <Link
                                     href={`/dashboard/market?symbol=${stock.symbol}`}
                                     key={stock.symbol}
-                                    className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-200 group border border-transparent hover:border-gray-100 hover:shadow-sm min-h-[64px] touch-manipulation"
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center font-black text-[#1A1C4E] text-xs border border-gray-100 group-hover:bg-white group-hover:border-indigo-100 transition-colors">
-                                            {stock.symbol[0]}
+                                    <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+                                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-xs md:text-sm border-2 transition-all duration-200 flex-shrink-0 ${stock.change >= 0
+                                            ? "bg-emerald-50 border-emerald-100 text-status-success group-hover:bg-emerald-100"
+                                            : "bg-red-50 border-red-100 text-status-error group-hover:bg-red-100"
+                                            }`}>
+                                            {stock.symbol.substring(0, 2)}
                                         </div>
-                                        <div>
-                                            <div className="font-black text-gray-900 text-sm">{stock.symbol}</div>
-                                            <div className="text-[10px] font-bold text-gray-400 uppercase">{stock.name}</div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <div className="font-black text-text-primary text-sm md:text-sm truncate">{stock.symbol}</div>
+                                                {stock.trend === 'bullish' && <TrendingUp size={12} className="text-status-success flex-shrink-0" />}
+                                                {stock.trend === 'bearish' && <TrendingDown size={12} className="text-status-error flex-shrink-0" />}
+                                            </div>
+                                            <div className="text-xs font-bold text-text-tertiary uppercase tracking-wider truncate">{stock.name}</div>
+                                            <div className="text-[10px] font-medium text-text-tertiary hidden md:block mt-0.5">{stock.volume} vol</div>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <div className="font-black text-gray-900 text-sm">GH₵ {stock.price.toFixed(2)}</div>
-                                        <div className={`text-[10px] font-black ${stock.change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                    <div className="text-right flex-shrink-0 ml-2">
+                                        <div className="font-black text-text-primary text-base md:text-lg">GH₵ {stock.price.toFixed(2)}</div>
+                                        <div className={`text-xs font-black uppercase tracking-wider ${stock.change >= 0 ? 'text-status-success' : 'text-status-error'
+                                            }`}>
                                             {stock.change >= 0 ? '+' : ''}{stock.change}%
                                         </div>
                                     </div>
@@ -127,38 +227,55 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Portfolio Mix - span 6 */}
+                {/* Advanced Asset Allocation - Mobile Optimized */}
                 <div className="bento-col-6">
-                    <div className="glass-card p-6 h-full">
-                        <div className="flex items-center justify-between mb-6">
+                    <div className="glass-card p-4 md:p-6 h-full bg-background-surface border-border">
+                        <div className="flex items-center justify-between mb-4 md:mb-6">
                             <h3 className="stat-label flex items-center gap-2">
-                                <PieChart size={14} className="text-indigo-600" /> Asset Allocation
+                                <PieChart size={16} className="text-brand-accent" />
+                                Asset Allocation
                             </h3>
-                            <Link href="/dashboard/portfolio" className="text-[10px] font-black text-indigo-600 uppercase tracking-wider hover:underline flex items-center gap-1">
-                                Details <ArrowRight size={12} />
+                            <Link href="/dashboard/portfolio" className="text-xs font-black text-brand-accent uppercase tracking-wider hover:text-brand flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
+                                Analytics <ArrowRight size={12} />
                             </Link>
                         </div>
 
-                        <div className="flex items-center gap-8 py-4">
-                            <div className="w-32 h-32 rounded-full border-[12px] border-indigo-600 relative flex items-center justify-center">
-                                <div className="w-24 h-24 rounded-full border-[12px] border-emerald-500"></div>
-                                <div className="absolute inset-x-0 -bottom-4 flex justify-center">
-                                    <span className="bg-white px-2 py-0.5 rounded-full border border-gray-100 text-[10px] font-black shadow-sm text-gray-600">Diverse</span>
+                        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 py-2 md:py-4">
+                            {/* Enhanced Donut Chart - Mobile Centered */}
+                            <div className="relative mx-auto md:mx-0">
+                                <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-[10px] md:border-[12px] border-brand relative flex items-center justify-center shadow-lg shadow-brand/10">
+                                    <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-[10px] md:border-[12px] border-emerald-400 absolute inset-0 m-auto"></div>
+                                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[10px] md:border-[12px] border-amber-400 absolute inset-0 m-auto"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center bg-white rounded-full m-auto w-10 h-10 md:w-12 md:h-12 shadow-sm">
+                                        <span className="text-[10px] font-black text-text-primary">GSE</span>
+                                    </div>
+                                </div>
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+                                    <span className="bg-white px-3 py-1 rounded-full border border-gray-100 text-[10px] font-black shadow-md text-text-secondary whitespace-nowrap">
+                                        Balanced
+                                    </span>
                                 </div>
                             </div>
-                            <div className="flex-1 space-y-3">
+
+                            <div className="flex-1 space-y-3 w-full">
                                 {[
-                                    { label: 'Financials', value: 45, color: 'bg-indigo-600' },
-                                    { label: 'Technology', value: 30, color: 'bg-emerald-500' },
-                                    { label: 'Other', value: 25, color: 'bg-gray-200' },
+                                    { label: 'Financial Services', value: 45, color: 'bg-brand', change: '+2.1%' },
+                                    { label: 'Technology', value: 30, color: 'bg-emerald-500', change: '+4.7%' },
+                                    { label: 'Consumer Goods', value: 15, color: 'bg-amber-500', change: '-0.8%' },
+                                    { label: 'Cash Reserve', value: 10, color: 'bg-gray-300', change: '0.0%' },
                                 ].map((item) => (
-                                    <div key={item.label}>
-                                        <div className="flex justify-between text-[10px] font-black uppercase text-gray-400 mb-1">
-                                            <span>{item.label}</span>
-                                            <span>{item.value}%</span>
+                                    <div key={item.label} className="bg-gray-50/50 rounded-xl p-3 border border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${item.color}`}></div>
+                                                <span className="text-xs font-bold uppercase text-text-secondary truncate">{item.label}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 flex-shrink-0">
+                                                <span className="text-xs font-black text-text-primary">{item.value}%</span>
+                                            </div>
                                         </div>
-                                        <div className="w-full h-1.5 bg-gray-50 rounded-full overflow-hidden">
-                                            <div className={`h-full ${item.color}`} style={{ width: `${item.value}%` }}></div>
+                                        <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                            <div className={`h-full ${item.color} transition-all duration-1000 ease-out`} style={{ width: `${item.value}%` }}></div>
                                         </div>
                                     </div>
                                 ))}
@@ -167,6 +284,32 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
+            </div>
+
+            {/* Quick Actions Bar - Mobile Optimized */}
+            <div className="glass-card p-5 md:p-6 bg-text-primary text-white shadow-xl shadow-indigo-900/20 animate-fade-in-up">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
+                    <div className="flex-1">
+                        <h3 className="text-lg md:text-xl font-black mb-1">Ready to Trade?</h3>
+                        <p className="text-indigo-200 text-sm font-medium">Execute your next move with confidence</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <Link
+                            href="/dashboard/market"
+                            className="w-full sm:w-auto px-6 py-3.5 bg-white text-text-primary font-black rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-lg shadow-black/10 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation active:scale-95"
+                        >
+                            <Eye size={18} className="text-brand" />
+                            <span>Explore Markets</span>
+                        </Link>
+                        <Link
+                            href="/dashboard/portfolio"
+                            className="w-full sm:w-auto px-6 py-3.5 bg-brand text-white font-black rounded-xl hover:bg-brand-hover transition-all duration-200 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation active:scale-95 border border-white/10"
+                        >
+                            <Target size={18} />
+                            <span>Manage Portfolio</span>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

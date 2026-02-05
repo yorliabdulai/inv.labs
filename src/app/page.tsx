@@ -15,7 +15,7 @@ export default function Home() {
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       // 1. Initial Hero Animations
-      const title = new SplitType("#hero-title", { types: "chars, words" });
+      const title = new SplitType("#hero-title", { types: "chars,words" });
       const tl = gsap.timeline();
 
       tl.from(title.chars, {

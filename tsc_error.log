@@ -1,0 +1,9 @@
+src/app/dashboard/portfolio/page.tsx(201,34): error TS2304: Cannot find name 'BarChart3'.
+src/app/dashboard/portfolio/page.tsx(259,30): error TS2304: Cannot find name 'PieChart'.
+src/app/dashboard/portfolio/page.tsx(289,30): error TS2304: Cannot find name 'Activity'.
+src/app/dashboard/portfolio/page.tsx(315,30): error TS2304: Cannot find name 'BarChart3'.
+src/app/dashboard/portfolio/page.tsx(380,34): error TS2304: Cannot find name 'Eye'.
+src/app/page.tsx(18,52): error TS2820: Type '"chars, words"' is not assignable to type 'TypesList | undefined'. Did you mean '"chars,words"'?
+src/components/market/WatchlistPanel.tsx(238,82): error TS2345: Argument of type '"priceAbove"' is not assignable to parameter of type 'never'.
+src/components/market/WatchlistPanel.tsx(249,82): error TS2345: Argument of type '"volumeSpike"' is not assignable to parameter of type 'never'.
+src/components/ui/SmoothScroller.tsx(11,13): error TS2353: Object literal may only specify known properties, and 'direction' does not exist in type 'LenisOptions'.
