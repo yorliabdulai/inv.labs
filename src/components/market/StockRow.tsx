@@ -28,17 +28,16 @@ export function StockRow({ stock }: StockRowProps) {
     return (
         <>
             <div
-                className="glass-card p-4 md:p-6 hover:shadow-2xl hover:shadow-indigo-100/50 transition-all duration-300 cursor-pointer group border border-gray-100 hover:border-indigo-200 touch-manipulation active:scale-[0.98]"
+                className="bg-white rounded-[24px] p-4 md:p-6 shadow-premium hover:shadow-2xl hover:shadow-indigo-100/50 transition-shadow duration-300 cursor-pointer group border border-gray-100 hover:border-indigo-200 touch-manipulation"
                 onClick={() => setIsModalOpen(true)}
             >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3 md:mb-4">
                     <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-xs md:text-sm border-2 transition-all duration-200 flex-shrink-0 ${
-                            isPositive
-                                ? "bg-emerald-50 border-emerald-200 text-emerald-700 group-active:bg-emerald-500 group-active:text-white"
-                                : "bg-red-50 border-red-200 text-red-700 group-active:bg-red-500 group-active:text-white"
-                        }`}>
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-xs md:text-sm border-2 transition-all duration-200 flex-shrink-0 ${isPositive
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 group-active:bg-emerald-500 group-active:text-white"
+                            : "bg-red-50 border-red-200 text-red-700 group-active:bg-red-500 group-active:text-white"
+                            }`}>
                             {stock.symbol.substring(0, 2)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -53,8 +52,8 @@ export function StockRow({ stock }: StockRowProps) {
                             <div className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">{stock.sector}</div>
                         </div>
                     </div>
-                    <button 
-                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 md:opacity-100 min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 flex-shrink-0"
+                    <button
+                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400 hover:text-indigo-600 opacity-40 md:opacity-100 hover:opacity-100 min-h-[44px] min-w-[44px] touch-manipulation flex-shrink-0"
                         onClick={(e) => {
                             e.stopPropagation();
                             // Handle bookmark
@@ -88,10 +87,9 @@ export function StockRow({ stock }: StockRowProps) {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex gap-2">
-                    <button 
-                        className="flex-1 py-3 md:py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all duration-200 text-xs md:text-sm shadow-lg shadow-indigo-100 min-h-[48px] touch-manipulation active:scale-95"
+                    <button
+                        className="flex-1 py-3 md:py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-colors duration-200 text-xs md:text-sm shadow-lg shadow-indigo-100 min-h-[48px] touch-manipulation"
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsModalOpen(true);
@@ -99,8 +97,8 @@ export function StockRow({ stock }: StockRowProps) {
                     >
                         Trade
                     </button>
-                    <button 
-                        className="px-4 md:px-4 py-3 bg-gray-50 text-gray-600 font-bold rounded-xl hover:bg-gray-100 transition-all duration-200 text-xs md:text-sm min-h-[48px] min-w-[80px] touch-manipulation active:scale-95"
+                    <button
+                        className="px-4 md:px-4 py-3 bg-gray-50 text-gray-600 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-200 text-xs md:text-sm min-h-[48px] min-w-[80px] touch-manipulation"
                         onClick={(e) => {
                             e.stopPropagation();
                             // Handle watch

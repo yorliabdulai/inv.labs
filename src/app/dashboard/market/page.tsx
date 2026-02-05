@@ -30,6 +30,17 @@ export default function MarketPage() {
         return () => clearInterval(interval);
     }, []);
 
+    const [currentTime, setCurrentTime] = useState("");
+
+    useEffect(() => {
+        // Initialize clock on client only to prevent hydration mismatch
+        setCurrentTime(new Date().toLocaleTimeString('en-US', { hour12: false }));
+        const timer = setInterval(() => {
+            setCurrentTime(new Date().toLocaleTimeString('en-US', { hour12: false }));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     const filteredStocks = stocks.filter(stock => {
         const matchesSearch = stock.symbol.toLowerCase().includes(search.toLowerCase()) ||
             stock.name.toLowerCase().includes(search.toLowerCase());
@@ -63,7 +74,7 @@ export default function MarketPage() {
                             <span className="text-xs md:text-sm font-bold">Market Open</span>
                         </div>
                         <div className="text-right">
-                            <div className="text-sm md:text-lg font-black text-gray-800">{new Date().toLocaleTimeString('en-US', { hour12: false })}</div>
+                            <div className="text-sm md:text-lg font-black text-gray-800">{currentTime || "--:--:--"}</div>
                             <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">GSE Time</div>
                         </div>
                     </div>
