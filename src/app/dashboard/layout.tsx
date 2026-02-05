@@ -1,11 +1,18 @@
+"use client";
+
+import { useState } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { AtoFloatingButton } from "@/components/ai/AtoFloatingButton";
+import { AtoChat } from "@/components/ai/AtoChat";
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const [isChatOpen, setIsChatOpen] = useState(false);
+
     return (
         <div className="min-h-screen bg-background relative overflow-x-hidden">
             <Sidebar />
@@ -20,6 +27,10 @@ export default function DashboardLayout({
             </div>
 
             <BottomNav />
+
+            {/* Ato AI Assistant */}
+            <AtoFloatingButton onClick={() => setIsChatOpen(true)} />
+            <AtoChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
         </div>
     );
 }

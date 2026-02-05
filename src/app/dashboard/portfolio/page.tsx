@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { getStocks } from "@/lib/market-data";
+import { formatCurrency } from "@/lib/mutual-funds-data";
 import { TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus, Wallet, ShieldCheck, ArrowUpRight, BarChart3, PieChart, Activity, Eye } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { AllocationChart } from "@/components/portfolio/AllocationChart";
@@ -21,9 +23,12 @@ interface Holding {
 }
 
 export default function PortfolioPage() {
+    const router = useRouter();
     const [holdings, setHoldings] = useState<Holding[]>([]);
+    const [mutualFundHoldings, setMutualFundHoldings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [totalValue, setTotalValue] = useState(0);
+    const [mutualFundsValue, setMutualFundsValue] = useState(0);
     const [cashBalance, setCashBalance] = useState(10000);
 
     useEffect(() => {
@@ -35,6 +40,7 @@ export default function PortfolioPage() {
                 return;
             }
 
+            // Fetch stock transactions
             const { data: transactions } = await supabase
                 .from('transactions')
                 .select('*')
@@ -44,64 +50,86 @@ export default function PortfolioPage() {
 
             if (!transactions || transactions.length === 0) {
                 setHoldings([]);
-                setLoading(false);
-                return;
+            } else {
+                const stocks = await getStocks();
+                const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
+                const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector]));
+                const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
+
+                transactions.forEach(tx => {
+                    const current = holdingMap.get(tx.symbol) || { quantity: 0, totalCost: 0 };
+                    if (tx.type === 'BUY') {
+                        current.quantity += tx.quantity;
+                        current.totalCost += tx.total_amount;
+                        cash -= tx.total_amount;
+                    } else {
+                        const avgCost = current.totalCost / current.quantity;
+                        current.totalCost -= avgCost * tx.quantity;
+                        current.quantity -= tx.quantity;
+                        cash += tx.total_amount;
+                    }
+                    holdingMap.set(tx.symbol, current);
+                });
+
+                const calculatedHoldings: Holding[] = [];
+                let portfolioSum = 0;
+
+                holdingMap.forEach((data, symbol) => {
+                    if (data.quantity > 0) {
+                        const currentPrice = priceMap.get(symbol) || 0;
+                        const marketValue = data.quantity * currentPrice;
+                        const gain = marketValue - data.totalCost;
+                        const gainPercent = (gain / data.totalCost) * 100;
+
+                        calculatedHoldings.push({
+                            symbol,
+                            quantity: data.quantity,
+                            averageCost: data.totalCost / data.quantity,
+                            currentPrice,
+                            marketValue,
+                            gain,
+                            gainPercent,
+                            sector: sectorMap.get(symbol) || "Other"
+                        });
+                        portfolioSum += marketValue;
+                    }
+                });
+
+                setHoldings(calculatedHoldings);
+                setTotalValue(portfolioSum);
             }
 
-            const stocks = await getStocks();
-            const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
-            const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector]));
-            const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
+            // Fetch mutual funds holdings
+            const { getUserMutualFundHoldings } = await import('@/app/actions/mutual-funds');
+            const mfHoldings = await getUserMutualFundHoldings(user.id);
+            setMutualFundHoldings(mfHoldings);
+            const mfValue = mfHoldings.reduce((sum, h) => sum + (h.current_value || 0), 0);
+            setMutualFundsValue(mfValue);
 
-            transactions.forEach(tx => {
-                const current = holdingMap.get(tx.symbol) || { quantity: 0, totalCost: 0 };
-                if (tx.type === 'BUY') {
-                    current.quantity += tx.quantity;
-                    current.totalCost += tx.total_amount;
-                    cash -= tx.total_amount;
-                } else {
-                    const avgCost = current.totalCost / current.quantity;
-                    current.totalCost -= avgCost * tx.quantity;
-                    current.quantity -= tx.quantity;
-                    cash += tx.total_amount;
-                }
-                holdingMap.set(tx.symbol, current);
-            });
+            // Adjust cash for mutual fund transactions
+            const { data: mfTransactions } = await supabase
+                .from('mutual_fund_transactions')
+                .select('*')
+                .eq('user_id', user.id);
 
-            const calculatedHoldings: Holding[] = [];
-            let portfolioSum = 0;
-
-            holdingMap.forEach((data, symbol) => {
-                if (data.quantity > 0) {
-                    const currentPrice = priceMap.get(symbol) || 0;
-                    const marketValue = data.quantity * currentPrice;
-                    const gain = marketValue - data.totalCost;
-                    const gainPercent = (gain / data.totalCost) * 100;
-
-                    calculatedHoldings.push({
-                        symbol,
-                        quantity: data.quantity,
-                        averageCost: data.totalCost / data.quantity,
-                        currentPrice,
-                        marketValue,
-                        gain,
-                        gainPercent,
-                        sector: sectorMap.get(symbol) || "Other"
-                    });
-                    portfolioSum += marketValue;
-                }
-            });
+            if (mfTransactions) {
+                mfTransactions.forEach(tx => {
+                    if (tx.transaction_type === 'buy') {
+                        cash -= tx.net_amount;
+                    } else {
+                        cash += tx.net_amount;
+                    }
+                });
+            }
 
             setCashBalance(cash);
-            setHoldings(calculatedHoldings);
-            setTotalValue(portfolioSum);
             setLoading(false);
         }
 
         fetchData();
     }, []);
 
-    const totalEquity = totalValue + cashBalance;
+    const totalEquity = totalValue + mutualFundsValue + cashBalance;
     const totalGain = totalEquity - 10000;
     const totalGainPercent = (totalGain / 10000) * 100;
     const isPositive = totalGain >= 0;
@@ -127,6 +155,11 @@ export default function PortfolioPage() {
         }
         return acc;
     }, [] as { name: string; value: number; color: string }[]);
+
+    // Add mutual funds as a category
+    if (mutualFundsValue > 0) {
+        sectorData.push({ name: "Mutual Funds", value: mutualFundsValue, color: "#A855F7" });
+    }
 
     if (cashBalance > 0) {
         sectorData.push({ name: "Cash", value: cashBalance, color: "#E5E7EB" });
@@ -206,8 +239,8 @@ export default function PortfolioPage() {
                                     <button
                                         key={period}
                                         className={`px-3 md:px-4 py-2 rounded-lg text-xs font-black transition-all min-w-[44px] touch-manipulation active:scale-95 ${period === '1M'
-                                                ? 'bg-emerald-600 text-white shadow-lg'
-                                                : 'text-gray-500 hover:text-emerald-600 hover:bg-white/80'
+                                            ? 'bg-emerald-600 text-white shadow-lg'
+                                            : 'text-gray-500 hover:text-emerald-600 hover:bg-white/80'
                                             }`}
                                     >
                                         {period}
@@ -401,8 +434,8 @@ export default function PortfolioPage() {
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-4">
                                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm border-2 transition-all duration-200 ${holding.gain >= 0
-                                                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 group-hover:bg-emerald-500 group-hover:text-white"
-                                                            : "bg-red-50 border-red-200 text-red-700 group-hover:bg-red-500 group-hover:text-white"
+                                                        ? "bg-emerald-50 border-emerald-200 text-emerald-700 group-hover:bg-emerald-500 group-hover:text-white"
+                                                        : "bg-red-50 border-red-200 text-red-700 group-hover:bg-red-500 group-hover:text-white"
                                                         }`}>
                                                         {holding.symbol.substring(0, 2)}
                                                     </div>
@@ -476,8 +509,8 @@ export default function PortfolioPage() {
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3 flex-1 min-w-0">
                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm border-2 flex-shrink-0 ${holding.gain >= 0
-                                                    ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                                                    : "bg-red-50 border-red-200 text-red-700"
+                                                ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                                                : "bg-red-50 border-red-200 text-red-700"
                                                 }`}>
                                                 {holding.symbol.substring(0, 2)}
                                             </div>

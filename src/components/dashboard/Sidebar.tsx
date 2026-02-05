@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, ChevronRight, X, Menu } from "lucide-react";
+import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, ChevronRight, X, Menu, Briefcase } from "lucide-react";
 
 export function Sidebar() {
     const pathname = usePathname();
@@ -14,7 +14,8 @@ export function Sidebar() {
     const navItems = [
         { href: "/dashboard", label: "Dashboard", icon: Home },
         { href: "/dashboard/market", label: "Markets", icon: TrendingUp },
-        { href: "/dashboard/portfolio", label: "Portfolio", icon: PieChart },
+        { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart },
+        { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase },
         { href: "/dashboard/leaderboard", label: "Rankings", icon: Award },
         { href: "/dashboard/learn", label: "Education", icon: GraduationCap },
     ];
