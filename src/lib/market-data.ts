@@ -40,8 +40,19 @@ interface Quote {
 
 export async function getStocks(): Promise<Stock[]> {
     try {
-        const res = await fetch(`${GSE_API_BASE}/live`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error("Failed to fetch market data");
+        const res = await fetch(`${GSE_API_BASE}/live`, {
+            next: { revalidate: 60 },
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json",
+                "Cache-Control": "no-cache"
+            }
+        });
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error(`GSE API Error (${res.status}):`, errorText);
+            throw new Error(`Failed to fetch market data: ${res.status}`);
+        }
 
         const quotes: Quote[] = await res.json();
 
