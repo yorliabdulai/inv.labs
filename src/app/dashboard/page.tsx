@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle, Layers } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
+import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
 
 export default function DashboardPage() {
     // Enhanced Mock User Data with real-time simulation
@@ -22,10 +23,55 @@ export default function DashboardPage() {
     });
 
     const [mounted, setMounted] = useState(false);
+    const [topStocks, setTopStocks] = useState<Stock[]>([]);
+    const [loadingStocks, setLoadingStocks] = useState(true);
 
-    // Simulate real-time updates
+    // Fetch live data for dashboard
     useEffect(() => {
         setMounted(true);
+
+        async function fetchDashboardData() {
+            try {
+                // Priority 1: Direct Client Fetch
+                const response = await fetch(`${GSE_API_BASE}/live`, { cache: 'no-store' });
+                if (response.ok) {
+                    const rawData = await response.json();
+                    const stocks: Stock[] = rawData.map((quote: any) => {
+                        const knownMeta: Record<string, { name: string; sector: string }> = {
+                            "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
+                            "GCB": { name: "GCB Bank", sector: "Finance" },
+                            "EGH": { name: "Ecobank Ghana", sector: "Finance" },
+                            "CAL": { name: "CAL Bank", sector: "Finance" },
+                            "GOIL": { name: "Ghana Oil Company", sector: "Energy" }
+                        };
+                        const meta = knownMeta[quote.name] || { name: quote.name, sector: "Other" };
+                        const prev = quote.price - quote.change;
+                        return {
+                            symbol: quote.name,
+                            name: meta.name,
+                            sector: meta.sector,
+                            price: quote.price,
+                            change: quote.change,
+                            changePercent: prev !== 0 ? (quote.change / prev) * 100 : 0,
+                            volume: quote.volume
+                        };
+                    });
+                    setTopStocks(stocks.slice(0, 3));
+                    setLoadingStocks(false);
+                } else {
+                    const data = await getStocks();
+                    setTopStocks(data.slice(0, 3));
+                    setLoadingStocks(false);
+                }
+            } catch (err) {
+                console.error("Dashboard fetch error:", err);
+                const data = await getStocks();
+                setTopStocks(data.slice(0, 3));
+                setLoadingStocks(false);
+            }
+        }
+
+        fetchDashboardData();
         const interval = setInterval(() => {
             setUserData(prev => ({
                 ...prev,
@@ -187,10 +233,15 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="space-y-2 md:space-y-3">
-                            {[
-                                { symbol: "MTNGH", name: "Scancom PLC", price: 1.55, change: 1.2, trend: "bullish" },
-                                { symbol: "EGH", name: "Ecobank Ghana", price: 6.80, change: -0.4, trend: "bearish" },
-                            ].map((stock, i) => (
+                            {loadingStocks ? (
+                                <div className="space-y-2 animate-pulse">
+                                    {[1, 2].map(i => <div key={i} className="h-20 bg-gray-100 rounded-2xl w-full"></div>)}
+                                </div>
+                            ) : topStocks.length === 0 ? (
+                                <div className="text-center py-8 text-text-tertiary text-xs font-bold uppercase tracking-widest">
+                                    Syncing Assets...
+                                </div>
+                            ) : topStocks.map((stock, i) => (
                                 <Link
                                     href={`/dashboard/market?symbol=${stock.symbol}`}
                                     key={stock.symbol}
@@ -208,7 +259,7 @@ export default function DashboardPage() {
                                     <div className="text-right">
                                         <div className="font-black text-text-primary">GH₵ {stock.price.toFixed(2)}</div>
                                         <div className={`text-[10px] font-black uppercase ${stock.change >= 0 ? 'text-status-success' : 'text-status-error'}`}>
-                                            {stock.change >= 0 ? '+' : ''}{stock.change}%
+                                            {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)}
                                         </div>
                                     </div>
                                 </Link>

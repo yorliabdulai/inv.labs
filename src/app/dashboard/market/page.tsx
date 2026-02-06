@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type Stock } from "@/lib/market-data";
+import { type Stock, GSE_API_BASE } from "@/lib/market-data";
 import { getMarketData } from "@/app/actions/market";
 import { StockRow } from "@/components/market/StockRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -13,25 +13,65 @@ export default function MarketPage() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("All");
 
-    const fetchStocks = async (showLoading = false) => {
+    const fetchStocksData = async (showLoading = false) => {
         if (showLoading) setLoading(true);
         try {
+            // Priority 1: Direct Client Fetch (Bypasses server blocking)
+            const response = await fetch(`${GSE_API_BASE}/live`, {
+                cache: 'no-store',
+                mode: 'cors'
+            });
+
+            if (response.ok) {
+                const rawData = await response.json();
+                // Map raw data using the same mapping logic as the library for consistency
+                const mappedData: Stock[] = rawData.map((quote: any) => {
+                    const knownMeta: Record<string, { name: string; sector: string }> = {
+                        "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
+                        "GCB": { name: "GCB Bank", sector: "Finance" },
+                        "EGH": { name: "Ecobank Ghana", sector: "Finance" },
+                        "CAL": { name: "CAL Bank", sector: "Finance" },
+                        "GOIL": { name: "Ghana Oil Company", sector: "Energy" }
+                    };
+                    const meta = knownMeta[quote.name] || { name: quote.name, sector: "Other" };
+                    const previousPrice = quote.price - quote.change;
+                    const changePercent = previousPrice !== 0 ? (quote.change / previousPrice) * 100 : 0;
+                    return {
+                        symbol: quote.name,
+                        name: meta.name,
+                        sector: meta.sector,
+                        price: quote.price,
+                        change: quote.change,
+                        changePercent: changePercent,
+                        volume: quote.volume
+                    };
+                });
+                setStocks(mappedData);
+                return;
+            }
+
+            // Priority 2: Server Action Fallback
             const data = await getMarketData();
-            setStocks(data);
+            if (data && data.length > 0) {
+                setStocks(data);
+            }
         } catch (err) {
             console.error("Failed to load market data", err);
+            // Fallback to server action if direct fetch fails (e.g. extension blocking)
+            const data = await getMarketData();
+            if (data && data.length > 0) setStocks(data);
         } finally {
             setLoading(false);
         }
     };
 
     const handleRefresh = async (manual = false) => {
-        await fetchStocks(manual);
+        await fetchStocksData(manual);
     };
 
     useEffect(() => {
-        fetchStocks(true);
-        const interval = setInterval(() => fetchStocks(false), 60000);
+        fetchStocksData(true);
+        const interval = setInterval(() => fetchStocksData(false), 60000);
         return () => clearInterval(interval);
     }, []);
 

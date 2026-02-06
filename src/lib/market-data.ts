@@ -8,7 +8,7 @@ export interface Stock {
     volume: number;
 }
 
-const GSE_API_BASE = "https://dev.kwayisi.org/apis/gse";
+export const GSE_API_BASE = "https://dev.kwayisi.org/apis/gse";
 
 // Static metadata map for common GSE stocks to enhance the API data
 // The API /live endpoint only gives Ticker, Price, Change, Volume
@@ -41,11 +41,10 @@ interface Quote {
 export async function getStocks(): Promise<Stock[]> {
     try {
         const res = await fetch(`${GSE_API_BASE}/live`, {
-            next: { revalidate: 60 },
+            cache: 'no-store',
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept": "application/json",
-                "Cache-Control": "no-cache"
+                "Accept": "application/json"
             }
         });
         if (!res.ok) {

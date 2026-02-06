@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
-import { getStocks } from "@/lib/market-data";
+import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
 import { formatCurrency } from "@/lib/mutual-funds-data";
 import { TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus, Wallet, ShieldCheck, ArrowUpRight, BarChart3, PieChart, Activity, Eye } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -51,7 +51,39 @@ export default function PortfolioPage() {
             if (!transactions || transactions.length === 0) {
                 setHoldings([]);
             } else {
-                const stocks = await getStocks();
+                let stocks: Stock[] = [];
+                try {
+                    // Try direct fetch first (production safe)
+                    const response = await fetch(`${GSE_API_BASE}/live`, { cache: 'no-store' });
+                    if (response.ok) {
+                        const rawData = await response.json();
+                        stocks = rawData.map((quote: any) => {
+                            const knownMeta: Record<string, { name: string; sector: string }> = {
+                                "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
+                                "GCB": { name: "GCB Bank", sector: "Finance" },
+                                "EGH": { name: "Ecobank Ghana", sector: "Finance" },
+                                "CAL": { name: "CAL Bank", sector: "Finance" },
+                                "GOIL": { name: "Ghana Oil Company", sector: "Energy" }
+                            };
+                            const meta = knownMeta[quote.name] || { name: quote.name, sector: "Other" };
+                            const prev = quote.price - quote.change;
+                            return {
+                                symbol: quote.name,
+                                name: meta.name,
+                                sector: meta.sector,
+                                price: quote.price,
+                                change: quote.change,
+                                changePercent: prev !== 0 ? (quote.change / prev) * 100 : 0,
+                                volume: quote.volume
+                            };
+                        });
+                    } else {
+                        stocks = await getStocks();
+                    }
+                } catch (e) {
+                    stocks = await getStocks();
+                }
+
                 const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
                 const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector]));
                 const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
