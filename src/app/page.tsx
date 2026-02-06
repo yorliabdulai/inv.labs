@@ -1,388 +1,426 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BarChart3, Shield, Zap, TrendingUp, Globe, Smartphone, Server, Activity, ChevronRight } from "lucide-react";
+import {
+  ArrowRight,
+  TrendingUp,
+  Activity,
+  Menu,
+  X,
+  Layers,
+  Shield,
+  Zap,
+  Globe,
+  Lock,
+  ChevronDown,
+  LineChart,
+  BarChart4,
+  Cpu,
+  RefreshCcw,
+  CheckCircle2,
+  PieChart,
+  BrainCircuit,
+  Handshake,
+  Bot,
+  Sparkles,
+  ArrowUpRight,
+  GraduationCap,
+  Briefcase
+} from "lucide-react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.config({ ignoreMobileResize: true });
+    }
+
+    const title = new SplitType("#hero-title", { types: "words,chars" });
+    const sub = new SplitType("#hero-subtitle", { types: "words" }); // Added SplitType for subtitle
+
     const ctx = gsap.context(() => {
-      // 1. Initial Hero Animations
-      const title = new SplitType("#hero-title", { types: "chars,words" });
-      const tl = gsap.timeline();
+      // 1. Hero Entrance with Vibrant Stagger
+      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
       tl.from(title.chars, {
         opacity: 0,
-        y: 40,
-        stagger: 0.02,
-        duration: 1,
-        ease: "expo.out",
+        y: 80,
+        rotateX: -45,
+        stagger: 0.015,
+        duration: 2,
       })
-        .from("#hero-subtitle", {
+        .from(sub.words, { // Changed to use sub.words
           opacity: 0,
-          y: 20,
-          duration: 0.8,
-          ease: "power2.out"
-        }, "-=0.6")
-        .from(".hero-cta", {
+          y: 40,
+          stagger: 0.01, // Added stagger for words
+          duration: 1.5,
+        }, "-=1.5")
+        .from(".hero-action", {
           opacity: 0,
-          y: 20,
+          y: 30,
           stagger: 0.1,
-          duration: 0.6,
-          ease: "power2.out"
-        }, "-=0.4")
-        .from(".hero-mockup", {
-          opacity: 0,
-          y: 60,
-          scale: 0.95,
-          duration: 1.2,
-          ease: "expo.out"
-        }, "-=0.4");
+          duration: 1.5,
+        }, "-=1.2");
 
-      // 2. Continuous Floating Animation for Mockups
-      gsap.to(".floating-mockup", {
-        y: -20,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-
-      // 3. Scroll Reveal for Sections
-      const revealElements = gsap.utils.toArray<HTMLElement>(".reveal-up");
-      revealElements.forEach((el) => {
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: "top 85%",
-            toggleActions: "play none none reverse"
-          },
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out"
-        });
-      });
-
-      // 4. Feature Cards Reveal
-      gsap.from(".feature-card", {
+      // 2. Parallax Mockup
+      gsap.to(".hero-visual-layer", {
         scrollTrigger: {
-          trigger: ".feature-grid",
-          start: "top 80%",
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom center",
+          scrub: true,
         },
-        opacity: 0,
-        y: 30,
-        stagger: 0.1,
-        duration: 0.8,
-        ease: "power3.out"
+        y: 100,
+        scale: 0.95,
+      });
+
+      // 3. Reveal Elements
+      const reveals = gsap.utils.toArray<HTMLElement>(".reveal-text");
+      reveals.forEach((text) => {
+        gsap.from(text, {
+          scrollTrigger: {
+            trigger: text,
+            start: "top 90%",
+          },
+          opacity: 0,
+          y: 40,
+          duration: 1.5,
+          ease: "power4.out"
+        });
       });
 
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      title.revert();
+      sub.revert();
+    };
   }, []);
 
   return (
-    <div ref={containerRef} style={{ backgroundColor: "var(--bg-page)", color: "var(--text-secondary)" }}>
+    <div ref={containerRef} className="min-h-screen bg-white text-[#0F172A] selection:bg-[#4F46E5]/10 overflow-x-hidden font-sans">
 
-      {/* Top Engineering Indicator */}
-      <div style={{
-        background: "#0F172A",
-        color: "#94A3B8",
-        textAlign: "center",
-        padding: "10px 0",
-        fontSize: "0.75rem",
-        fontWeight: 600,
-        letterSpacing: "0.05em",
-        display: "flex",
-        justifyContent: "center",
-        gap: "32px",
-        position: "relative",
-        zIndex: 2000
-      }}>
-        <span className="flex items-center gap-2" style={{ color: "#10B981" }}><Activity size={14} /> API STATUS: 99.98% UPTIME</span>
-        <span className="flex items-center gap-2" style={{ color: "#6366F1" }}><Server size={14} /> LATENCY: {"<"} 45MS</span>
-        <span className="flex items-center gap-2" style={{ color: "#3B82F6" }}><Globe size={14} /> REGION: US-EAST-1</span>
-      </div>
-
-      {/* Navigation */}
-      <nav className="nav-fixed glass">
-        <div className="container" style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: "1280px" }}>
-          <div className="flex items-center gap-3" style={{ fontSize: "1.5rem", fontWeight: 900 }}>
-            <TrendingUp style={{ color: "var(--brand-primary)" }} size={32} />
-            <span style={{ color: "var(--text-primary)", letterSpacing: "-0.04em" }}>GSE<span style={{ opacity: 0.4 }}>.LABS</span></span>
+      {/* Modern Premium Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 p-6 lg:p-10 pointer-events-none">
+        <div className="container mx-auto max-w-7xl flex items-center justify-between pointer-events-auto">
+          <div className="flex items-center gap-3 group cursor-pointer">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-[#4F46E5]/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+              <div className="relative bg-white shadow-2xl shadow-[#4F46E5]/20 p-2.5 rounded-2xl border border-[#F1F5F9]">
+                <TrendingUp className="text-[#4F46E5]" size={28} />
+              </div>
+            </div>
+            <span className="text-2xl font-black tracking-[-0.05em] text-[#0F172A]">GSE<span className="text-[#4F46E5]">.LABS</span></span>
           </div>
 
-          <div className="flex items-center gap-12">
-            <Link href="/login" className="text-sm font-bold" style={{ color: "var(--text-primary)", textDecoration: "none", opacity: 0.8 }}>Log In</Link>
-            <Link href="/register" className="btn-premium btn-premium-solid" style={{ borderRadius: "10px" }}>
-              Request Sandbox Access
-            </Link>
+          <div className="hidden lg:flex items-center gap-2 p-1.5 bg-white/80 backdrop-blur-2xl border border-[#F1F5F9] rounded-2xl shadow-premium">
+            <Link href="#hero" className="px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.25em] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8F9FC] rounded-xl transition-all">Portal</Link>
+            <Link href="#journey" className="px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.25em] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8F9FC] rounded-xl transition-all">Journey</Link>
+            <Link href="#terminal" className="px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.25em] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8F9FC] rounded-xl transition-all">Terminal</Link>
+            <div className="w-[1px] h-4 bg-[#F1F5F9] mx-2" />
+            <Link href="/login" className="px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.25em] text-[#475569] hover:text-[#0F172A] transition-colors">Sign In</Link>
+            <Link href="/register" className="px-7 py-2.5 bg-[#0F172A] text-white text-[10px] font-black uppercase tracking-[0.25em] rounded-xl hover:bg-[#4F46E5] transition-all shadow-xl shadow-black/10">Deploy Terminal</Link>
           </div>
+
+          <button className="lg:hidden p-3 bg-white shadow-lg border border-[#F1F5F9] rounded-2xl text-[#0F172A]" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 bg-white z-[1999] p-10 flex flex-col justify-center gap-10 animate-fade-in">
+            <Link href="/market" className="text-5xl font-black text-[#0F172A] tracking-tighter" onClick={() => setIsMobileMenuOpen(false)}>Market.</Link>
+            <Link href="/learn" className="text-5xl font-black text-[#0F172A] tracking-tighter" onClick={() => setIsMobileMenuOpen(false)}>Learn.</Link>
+            <Link href="/register" className="text-xl font-black text-[#4F46E5] uppercase tracking-[0.3em] mt-10" onClick={() => setIsMobileMenuOpen(false)}>Deploy Terminal →</Link>
+          </div>
+        )}
       </nav>
 
       <main>
-        {/* Hero Section */}
-        <section style={{ paddingTop: "160px", paddingBottom: "120px", position: "relative" }} className="bg-glow-main">
-          <div className="container" style={{ textAlign: "center" }}>
 
-            <div className="reveal-up trust-badge mb-10">
-              STABLE RELEASE V2.4.0 • TRUSTED BY 56K+ INVESTORS
-            </div>
+        {/* Section 1: Hero - Theory to Practice */}
+        <section id="hero" className="relative pt-32 pb-40 lg:pt-52 lg:pb-72 bg-white overflow-hidden perspective-2000">
+          <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col lg:flex-row items-center gap-20 lg:gap-32">
 
-            <h1 id="hero-title" style={{
-              fontSize: "clamp(3.5rem, 8vw, 6.5rem)",
-              maxWidth: "1100px",
-              margin: "0 auto 3rem",
-              color: "var(--text-primary)",
-              lineHeight: 0.95,
-              letterSpacing: "-0.05em"
-            }}>
-              Practice Trading. <br />Institutional Precision.
-            </h1>
-
-            <p id="hero-subtitle" style={{
-              maxWidth: "680px",
-              margin: "0 auto 4rem",
-              fontSize: "1.25rem",
-              color: "var(--text-secondary)",
-              fontWeight: 500,
-              lineHeight: 1.6
-            }}>
-              Experience the Ghana Stock Exchange with a high-fidelity simulator that mirrors
-              real-world market depth, brokerage fees, and execution latency.
-            </p>
-
-            <div className="flex justify-center gap-6 mb-24">
-              <Link href="/register" className="hero-cta btn-premium btn-premium-solid" style={{ padding: "1.4rem 3.5rem", fontSize: "1rem" }}>
-                Open Trading Sandbox
-              </Link>
-              <Link href="/learn" className="hero-cta btn-premium btn-premium-primary" style={{ padding: "1.4rem 3.5rem", fontSize: "1rem" }}>
-                API Docs <ChevronRight size={20} style={{ marginLeft: "6px" }} />
-              </Link>
-            </div>
-
-            {/* Hero Mockup - Proprietary Visual */}
-            <div className="hero-mockup floating-mockup" style={{ position: "relative", maxWidth: "900px", margin: "0 auto" }}>
-              <div className="glass-card" style={{ padding: "10px", borderRadius: "32px", overflow: "hidden", display: "inline-block", border: "1px solid rgba(0,0,0,0.1)" }}>
-                <img
-                  src="/mockups/trading_view.png"
-                  alt="Simulator Portfolio Logic"
-                  style={{ width: "100%", height: "auto", display: "block", borderRadius: "24px" }}
-                />
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4F46E5]/5 border border-[#4F46E5]/10 text-[#4F46E5] text-[11px] font-black uppercase tracking-[0.25em] mb-12">
+                Financial Literacy to Real-World Wealth
               </div>
-
-              {/* Technical Floaties */}
-              <div className="reveal-up glass-card" style={{
-                position: "absolute", top: "15%", left: "-15%", padding: "24px 32px",
-                background: "rgba(255,255,255,0.95)", border: "1px solid var(--border-default)",
-                zIndex: 10
-              }}>
-                <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--text-tertiary)", marginBottom: "6px", letterSpacing: "0.1em" }}>FEED SPEED</div>
-                <div style={{ fontSize: "1.75rem", fontWeight: 900, color: "var(--text-primary)" }}>45ms <span style={{ color: "var(--color-success)", fontSize: "0.875rem" }}>GLOBAL</span></div>
+              <h1 id="hero-title" className="text-huge text-[#0F172A] mb-12">
+                Theory to <br className="hidden lg:block" />
+                <span className="text-[#4F46E5]">Practical.</span>
+              </h1>
+              <p id="hero-subtitle" className="max-w-xl text-lg lg:text-2xl text-[#475569] font-medium leading-relaxed mb-16 lg:mb-20 opacity-90 mx-auto lg:mx-0">
+                Bridge the gap between learning and investing. Master the GSE and Mutual Funds in a zero-risk sandbox built for students, diaspora investors, and technical learners.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center gap-8 lg:gap-10 justify-center lg:justify-start">
+                <Link href="/register" className="hero-action bg-[#0F172A] text-white px-12 py-6 rounded-3xl text-lg lg:text-2xl font-black shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] hover:bg-[#4F46E5] hover:scale-105 transition-all group text-center inline-flex items-center">
+                  Deploy Full Sandbox <ArrowRight className="inline ml-3 transition-transform group-hover:translate-x-2" size={26} />
+                </Link>
+                <Link href="#journey" className="hero-action text-[#475569] text-lg lg:text-2xl font-black flex items-center gap-3 hover:text-[#0F172A] transition-colors">
+                  The Investor Journey <ChevronDown size={28} className="animate-bounce" />
+                </Link>
               </div>
-
-              <div className="reveal-up glass-card" style={{
-                position: "absolute", bottom: "15%", right: "-10%", padding: "24px 32px",
-                background: "rgba(255,255,255,0.95)", border: "1px solid var(--border-default)",
-                zIndex: 10
-              }}>
-                <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--text-tertiary)", marginBottom: "6px", letterSpacing: "0.1em" }}>ORDER ROUTING</div>
-                <div style={{ fontSize: "1.125rem", fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "10px", height: "10px", background: "#10B981", borderRadius: "50%" }}></div> GSE SYNCED
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Coming Soon: Mobile Apps */}
-        <section style={{ padding: "160px 0", background: "#F9FAFB", position: "relative", overflow: "visible" }}>
-          <div className="container">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10rem", alignItems: "center" }}>
-              <div className="reveal-up">
-                <div className="trust-badge mb-6" style={{ background: "rgba(79, 70, 229, 0.1)" }}>MOBILE ECOSYSTEM</div>
-                <h2 style={{ marginBottom: "2.5rem", fontSize: "3.5rem" }}>Native Experience. <br />Arriving Q2 2026.</h2>
-                <p style={{ color: "var(--text-secondary)", marginBottom: "4rem", fontSize: "1.25rem", lineHeight: 1.6 }}>
-                  We're finalizing the most intuitive mobile interface for West African investors.
-                  Institutional-grade analytics in your pocket.
-                </p>
-                <div style={{ display: "flex", gap: "20px" }}>
-                  {/* App Store Button */}
-                  <div className="glass-card" style={{
-                    padding: "12px 28px",
-                    opacity: 0.6,
-                    cursor: "not-allowed",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    border: "1px solid var(--border-default)",
-                    background: "var(--text-primary)",
-                    color: "#FFFFFF"
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.1 2.48-1.34.03-1.77-.79-3.31-.79-1.53 0-2.01.78-3.27.83-1.31.05-2.31-1.32-3.14-2.53C4.25 17 2.97 13.01 4.62 10.16c.82-1.42 2.29-2.32 3.89-2.35 1.21-.02 2.36.82 3.1.82.74 0 2.12-.99 3.56-.84 1.55.15 2.7.72 3.53 1.95-3.23 1.9-2.72 6.13.51 7.42-.64 1.35-1.52 2.76-2.5 4.34zM15.47 5.7c-.67.81-1.47 1.41-2.4 1.7-1.12-1.92.51-3.65 1.56-4.4a3.1 3.1 0 012.38.16 3.03 3.03 0 011.51 2.22c-.93.07-2.05.32-3.05 1.32z" />
-                    </svg>
-                    <div style={{ textAlign: "left" }}>
-                      <div style={{ fontSize: "0.6rem", fontWeight: 700, opacity: 0.7, lineHeight: 1 }}>Download on the</div>
-                      <div style={{ fontSize: "0.9375rem", fontWeight: 800 }}>App Store</div>
-                    </div>
-                  </div>
-
-                  {/* Play Store Button */}
-                  <div className="glass-card" style={{
-                    padding: "12px 28px",
-                    opacity: 0.6,
-                    cursor: "not-allowed",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    border: "1px solid var(--border-default)",
-                    background: "var(--text-primary)",
-                    color: "#FFFFFF"
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.61 3 21.09 3 20.5ZM14.4 12.71L16.74 15.05L5.23 21.64C5.07 21.73 4.9 21.78 4.72 21.8L14.4 12.12L14.4 12.71ZM17.29 12L5.23 2.36C5.07 2.27 4.9 2.22 4.72 2.2L14.4 11.88L17.29 12ZM16.74 8.95L14.4 11.29L14.4 11.29L4.72 2.2L16.74 8.95Z" />
-                    </svg>
-                    <div style={{ textAlign: "left" }}>
-                      <div style={{ fontSize: "0.6rem", fontWeight: 700, opacity: 0.7, lineHeight: 1 }}>GET IT ON</div>
-                      <div style={{ fontSize: "0.9375rem", fontWeight: 800 }}>Google Play</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="reveal-up" style={{ position: "relative" }}>
-                <img
-                  src="/mockups/market_discover.png"
-                  alt="Mobile App Market Experience"
-                  style={{ width: "100%", height: "auto", borderRadius: "48px", boxShadow: "0 40px 100px -20px rgba(0,0,0,0.15)" }}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Engineering Standards */}
-        <section style={{ padding: "160px 0", background: "#FFFFFF" }}>
-          <div className="container">
-            <div className="reveal-up" style={{ textAlign: "center", marginBottom: "8rem" }}>
-              <h2 style={{ marginBottom: "2rem" }}>Reliable Data. Faster Execution.</h2>
-              <p style={{ maxWidth: "650px", margin: "0 auto", fontSize: "1.25rem" }}>
-                Our infrastructure is built to handle the next generation of financial simulation.
-                Secure, transparent, and high-performance.
+              <p className="mt-12 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.2em] opacity-60">
+                * Educational Platform. Not Financial Advice.
               </p>
             </div>
 
-            <div className="feature-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2.5rem" }}>
-              {/* Card 1 */}
-              <div className="feature-card glass-card" style={{ padding: "3.5rem" }}>
-                <BarChart3 style={{ color: "var(--brand-primary)", marginBottom: "2.5rem" }} size={48} />
-                <h3 style={{ marginBottom: "1.25rem" }}>Tick-Level Data</h3>
-                <p style={{ fontSize: "1.0625rem", color: "var(--text-secondary)" }}>Don't settle for delayed feeds. Access real-time price activity across 50+ list entries on the GSE.</p>
-              </div>
+            <div className="flex-1 relative hero-visual-layer">
+              <div className="absolute -inset-10 bg-[#4F46E5]/10 blur-[150px] rounded-full" />
+              <div className="relative glass-institutional p-3 rounded-[3.5rem] rotate-[-2deg] hover:rotate-0 transition-transform duration-1000 shadow-paynext">
+                <img src="/mockups/trading_view.png" alt="Unified Command Center" className="rounded-[3rem] w-full h-auto shadow-sm" />
 
-              {/* Card 2 */}
-              <div className="feature-card glass-card" style={{ padding: "3.5rem" }}>
-                <Shield style={{ color: "var(--brand-primary)", marginBottom: "2.5rem" }} size={48} />
-                <h3 style={{ marginBottom: "1.25rem" }}>Accurate Levies</h3>
-                <p style={{ fontSize: "1.0625rem", color: "var(--text-secondary)" }}>Automated SEC, GSE, and Brokerage fee simulations ensure your virtual profit reflects your potential reality.</p>
-              </div>
+                {/* Floating Analytics Layers */}
+                <div className="absolute -top-12 -right-12 parallax-layer-1 hidden lg:block">
+                  <div className="glass-institutional p-8 rounded-[2.5rem] shadow-institutional border-white/50 bg-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-[#4F46E5]/10 rounded-lg text-[#4F46E5]"><Bot size={18} /></div>
+                      <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Ato AI Mentor</p>
+                    </div>
+                    <p className="text-4xl font-black text-[#0F172A]">Knowledge</p>
+                    <p className="text-[10px] font-bold text-[#4F46E5] mt-2">TECHNICAL MASTERY</p>
+                  </div>
+                </div>
 
-              {/* Card 3 */}
-              <div className="feature-card glass-card" style={{ padding: "3.5rem" }}>
-                <Zap style={{ color: "var(--brand-primary)", marginBottom: "2.5rem" }} size={48} />
-                <h3 style={{ marginBottom: "1.25rem" }}>Zero-Slip Engine</h3>
-                <p style={{ fontSize: "1.0625rem", color: "var(--text-secondary)" }}>Engineered to simulate liquidity availability, preventing "fantasy" profits from unrealized market volume.</p>
+                <div className="absolute -bottom-16 -left-12 parallax-layer-2 hidden lg:block">
+                  <div className="bg-[#0F172A] p-8 rounded-[2.5rem] shadow-institutional text-white border border-white/10">
+                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-4">Sandbox Capital</p>
+                    <p className="text-4xl font-black text-white tracking-tighter">GH₵ 100K</p>
+                    <div className="h-1.5 w-full bg-white/10 rounded-full mt-6 overflow-hidden">
+                      <div className="h-full w-[100%] bg-[#10B981] rounded-full" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Context */}
-        <section style={{ padding: "180px 0", textAlign: "center", background: "var(--bg-page)" }}>
-          <div className="container">
-            <h2 className="reveal-up" style={{ fontSize: "4.5rem", marginBottom: "4rem", letterSpacing: "-0.04em" }}>Institutional Access. <br />Universal Reach.</h2>
-            <div className="reveal-up">
-              <Link href="/register" className="btn-premium btn-premium-solid" style={{ padding: "1.6rem 5rem", fontSize: "1.125rem", borderRadius: "12px" }}>
-                Create Sandbox Portfolio
+        {/* Section: Target Personas */}
+        <section className="py-24 bg-white border-y border-[#F1F5F9]">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
+              <div className="flex items-center gap-4">
+                <GraduationCap className="text-[#4F46E5]" size={32} />
+                <span className="text-xl font-black text-[#0F172A] tracking-tighter">University Students</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Globe className="text-[#4F46E5]" size={32} />
+                <span className="text-xl font-black text-[#0F172A] tracking-tighter">Diaspora Investors</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Shield className="text-[#4F46E5]" size={32} />
+                <span className="text-xl font-black text-[#0F172A] tracking-tighter">New Learners</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Briefcase className="text-[#4F46E5]" size={32} />
+                <span className="text-xl font-black text-[#0F172A] tracking-tighter">Qualified Leads</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section: The Investor Journey */}
+        <section id="journey" className="py-32 lg:py-60 bg-[#F8F9FC]">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center">
+              <div className="flex-1 reveal-text">
+                <h2 className="text-4xl lg:text-7xl font-black text-[#0F172A] leading-[0.9] mb-12">
+                  Move From Theory <br />
+                  <span className="text-[#4F46E5]">To Real Wealth.</span>
+                </h2>
+                <p className="text-xl lg:text-2xl text-[#475569] font-medium leading-relaxed mb-12">
+                  We've engineered a frictionless path for the next generation of investors.
+                  Master Ghanaian markets without the risk of financial loss.
+                </p>
+              </div>
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                {[
+                  { icon: <GraduationCap />, title: "Literacy", desc: "Master investment theory with learning paths." },
+                  { icon: <Activity />, title: "Simulation", desc: "Execute practical, risk-free trades." },
+                  { icon: <ArrowUpRight />, title: "Investment", desc: "Connect to real Brokers & Managers." }
+                ].map((step, i) => (
+                  <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-[#F1F5F9] flex flex-col gap-6 group hover:border-[#4F46E5] transition-all">
+                    <div className="w-14 h-14 bg-[#F8F9FC] rounded-2xl flex items-center justify-center text-[#4F46E5] group-hover:bg-[#4F46E5] group-hover:text-white transition-all">
+                      {step.icon}
+                    </div>
+                    <h3 className="text-xl font-black text-[#0F172A]">{step.title}</h3>
+                    <p className="text-sm font-medium text-[#475569] leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 2: Unified Terminal Map (Bento) */}
+        <section id="terminal" className="bg-white py-32 lg:py-60 relative">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="mb-32 lg:mb-52 reveal-text">
+              <h2 className="text-4xl lg:text-[7.5rem] font-black text-[#0F172A] tracking-[-0.06em] leading-[0.9] mb-12 lg:mb-20">
+                The Unified <br />
+                <span className="text-[#4F46E5]">Sandbox Map.</span>
+              </h2>
+              <p className="max-w-3xl text-xl lg:text-3xl text-[#475569] font-medium leading-relaxed opacity-80">
+                Explore every layer of the GSE Labs ecosystem. From AI mentorship to competitive rankings and deep educational paths.
+              </p>
+            </div>
+
+            <div className="space-y-10">
+              {/* Card 1: Ato AI Mentor */}
+              <div className="p-12 lg:p-24 rounded-[4rem] border border-[#F1F5F9] bg-[#F8F9FC] min-h-[500px] flex flex-col lg:flex-row items-center gap-20 hover:shadow-2xl transition-all duration-700">
+                <div className="flex-1">
+                  <div className="w-20 h-20 bg-[#0F172A] rounded-[2rem] flex items-center justify-center text-white mb-12 shadow-xl shadow-black/10">
+                    <Bot size={40} className="text-[#4F46E5]" />
+                  </div>
+                  <h3 className="text-4xl lg:text-7xl font-black text-[#0F172A] mb-8 tracking-tighter">Ato AI Mentor</h3>
+                  <p className="text-xl lg:text-2xl text-[#475569] leading-relaxed font-medium">
+                    Ato understands your trade patterns and behavior. Specifically designed for **University Students** and **Diaspora Investors** to navigate the landscape.
+                  </p>
+                  <p className="mt-6 text-xs font-bold text-[#94A3B8] uppercase tracking-widest">
+                    * Zero Financial Advice. Pure Knowledge.
+                  </p>
+                </div>
+                <div className="flex-1 w-full flex flex-col gap-6">
+                  <div className="bg-white p-10 rounded-[3.5rem] border border-[#F1F5F9] flex flex-col gap-8 shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <Bot className="text-[#4F46E5]" />
+                      <p className="font-bold text-[#0F172A]">Ato Pattern Recognition</p>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="p-4 bg-[#F8F9FC] rounded-2xl border border-[#4F46E5]/10">
+                        <p className="text-[10px] font-black text-[#4F46E5] uppercase mb-2">Behavior Insight</p>
+                        <p className="text-sm font-bold text-[#0F172A]">"You tend to over-allocate in Mutual Funds during market volatility."</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2 & 3: Market & Education (Grid) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div className="p-16 rounded-[4rem] border border-[#F1F5F9] bg-white flex flex-col justify-between hover:shadow-2xl transition-all group overflow-hidden">
+                  <div>
+                    <div className="w-16 h-16 bg-[#4F46E5] rounded-3xl flex items-center justify-center text-white mb-12"><Layers /></div>
+                    <h3 className="text-5xl font-black text-[#0F172A] mb-8 tracking-tighter">Market Labs</h3>
+                    <p className="text-xl text-[#475569] font-medium leading-relaxed">Trade Stocks and Funds with mechanics identical to the GSE.</p>
+                  </div>
+                  <img src="/mockups/trading_view.png" alt="Market" className="w-[150%] h-auto mt-20 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
+                </div>
+                <div className="p-16 rounded-[4rem] border border-[#F1F5F9] bg-[#0F172A] text-white flex flex-col justify-between hover:shadow-2xl transition-all">
+                  <div>
+                    <div className="w-16 h-16 bg-white/10 rounded-3xl flex items-center justify-center text-[#4F46E5] mb-12"><GraduationCap /></div>
+                    <h3 className="text-5xl font-black mb-8 tracking-tighter">Education Hub</h3>
+                    <p className="text-xl text-white/60 font-medium leading-relaxed mb-8">Master curated Learning Paths and earn Mastery Badges.</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="px-6 py-4 bg-white/5 rounded-2xl border border-white/10 font-black text-sm uppercase tracking-widest">GSE PRO</div>
+                    <div className="px-6 py-4 bg-[#4F46E5] rounded-2xl font-black text-sm uppercase tracking-widest">FUND MASTER</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 4: Technical Graduation (Lead Gen) */}
+              <div className="p-12 lg:p-24 rounded-[4rem] border-2 border-[#4F46E5]/10 bg-white min-h-[600px] flex flex-col lg:flex-row items-center gap-20 hover:border-[#4F46E5]/30 transition-all">
+                <div className="flex-1">
+                  <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4F46E5]/5 text-[#4F46E5] text-[11px] font-black uppercase tracking-[0.2em] mb-12">
+                    For Partners & Institutions
+                  </div>
+                  <h3 className="text-4xl lg:text-7xl font-black text-[#0F172A] mb-10 tracking-tighter leading-[0.9]">Technical <br />Graduation.</h3>
+                  <p className="text-xl lg:text-2xl text-[#475569] leading-relaxed font-medium mb-12">
+                    We qualify the capital before it reaches real markets. Master the sandbox and connect to partner **Brokers and Fund Managers**.
+                  </p>
+                  <Link href="/contact" className="bg-[#0F172A] text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-[#4F46E5] transition-all flex items-center gap-2 w-fit">
+                    Partner Inquiry <ArrowUpRight size={20} />
+                  </Link>
+                </div>
+                <div className="flex-1 w-full bg-[#F8F9FC] p-10 rounded-[3rem] border border-[#F1F5F9] shadow-sm">
+                  <div className="flex flex-col gap-6">
+                    <p className="text-[11px] font-black text-[#4F46E5] uppercase tracking-widest mb-4">Lead Intelligence</p>
+                    <div className="h-4 w-full bg-white rounded-full overflow-hidden border border-[#F1F5F9]">
+                      <div className="h-full w-[85%] bg-[#4F46E5]" />
+                    </div>
+                    <div className="flex justify-between items-center text-sm font-bold text-[#0F172A]">
+                      <span>Qualified Lead Status</span>
+                      <span className="text-[#10B981]">READY TO INVEST</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3: Professional CTA */}
+        <section className="py-40 lg:py-80 bg-[#F8F9FC] text-center flex flex-col items-center px-6">
+          <div className="reveal-text flex flex-col items-center">
+            <h2 className="text-huge text-[#0F172A] mb-20">
+              Bridge to <br />
+              Reality. <span className="text-[#4F46E5]">Start.</span>
+            </h2>
+
+            <div className="flex flex-col items-center gap-14">
+              <Link href="/register" className="bg-[#0F172A] text-white px-16 py-8 rounded-[2.5rem] text-xl lg:text-3xl font-black shadow-[0_60px_100px_-30px_rgba(0,0,0,0.3)] hover:bg-[#4F46E5] hover:scale-105 transition-all inline-flex items-center gap-5 group text-center">
+                Initialize Simulation <ArrowRight size={32} className="transition-transform group-hover:translate-x-3" />
               </Link>
+
+              <div className="flex flex-wrap justify-center gap-12 mt-10">
+                <div className="flex items-center gap-3 text-sm font-black text-[#94A3B8] uppercase tracking-[0.3em]">
+                  <CheckCircle2 className="text-[#10B981]" size={20} /> Student Friendly
+                </div>
+                <div className="flex items-center gap-3 text-sm font-black text-[#94A3B8] uppercase tracking-[0.3em]">
+                  <CheckCircle2 className="text-[#10B981]" size={20} /> Diaspora Insights
+                </div>
+                <div className="flex items-center gap-3 text-sm font-black text-[#94A3B8] uppercase tracking-[0.3em]">
+                  <CheckCircle2 className="text-[#10B981]" size={20} /> Learning Paths
+                </div>
+              </div>
             </div>
-            <p className="reveal-up" style={{ marginTop: "2.5rem", fontSize: "0.9375rem", color: "var(--text-tertiary)", fontWeight: 600 }}>
-              STABLE RELEASE V2.4.0 • 100% FREE SANDBOX
-            </p>
           </div>
         </section>
-
       </main>
 
-      <footer style={{ borderTop: "1px solid var(--border-default)", padding: "100px 0", background: "#FFFFFF" }}>
-        <div className="container" style={{ display: "grid", gridTemplateColumns: "1.8fr 1fr 1fr 1fr", gap: "6rem" }}>
-          <div>
-            <div className="flex items-center gap-3 mb-8" style={{ fontSize: "1.5rem", fontWeight: 900 }}>
-              <TrendingUp style={{ color: "var(--brand-primary)" }} size={32} />
-              <span style={{ color: "var(--text-primary)", letterSpacing: "-0.04em" }}>GSE<span style={{ opacity: 0.4 }}>.LABS</span></span>
+      <footer className="bg-white border-t border-[#F1F5F9] py-20 lg:py-32 px-6">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-20">
+            <div className="col-span-1 lg:col-span-2">
+              <div className="flex items-center gap-3 mb-8">
+                <TrendingUp className="text-[#4F46E5]" size={32} />
+                <span className="text-3xl font-black tracking-tighter text-[#0F172A]">GSE.LABS</span>
+              </div>
+              <p className="max-w-md text-lg text-[#475569] font-medium leading-relaxed">The technical bridge between financial literacy and real-world asset management in Ghana.</p>
             </div>
-            <p style={{ fontSize: "0.9375rem", color: "var(--text-tertiary)", maxWidth: "260px", lineHeight: 1.6 }}>The #1 standard for West African financial simulation. Built for trust.</p>
-          </div>
-          <div>
-            <h4 style={{ marginBottom: "1.75rem", fontSize: "1rem", color: "var(--text-primary)" }}>Platform</h4>
-            <div className="flex flex-col gap-4">
-              <Link href="/market" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Market Feed</Link>
-              <Link href="/status" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>System Status</Link>
-              <Link href="/docs" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>API Reference</Link>
+            <div className="flex flex-col gap-6">
+              <h4 className="text-xs font-black text-[#0F172A] uppercase tracking-[0.2em] mb-4">Platform</h4>
+              <Link href="/market" className="text-[#475569] hover:text-[#4F46E5] transition-colors font-bold">Market Labs</Link>
+              <Link href="/learn" className="text-[#475569] hover:text-[#4F46E5] transition-colors font-bold">Education Hub</Link>
             </div>
-          </div>
-          <div>
-            <h4 style={{ marginBottom: "1.75rem", fontSize: "1rem", color: "var(--text-primary)" }}>Company</h4>
-            <div className="flex flex-col gap-4">
-              <Link href="/about" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Engineering Story</Link>
-              <Link href="/careers" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Careers</Link>
-              <Link href="/privacy" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Privacy Hub</Link>
+            <div className="flex flex-col gap-6">
+              <h4 className="text-xs font-black text-[#0F172A] uppercase tracking-[0.2em] mb-4">Contact</h4>
+              <Link href="/contact" className="text-[#475569] hover:text-[#4F46E5] transition-colors font-bold">Partner Inquiry</Link>
+              <Link href="/support" className="text-[#475569] hover:text-[#4F46E5] transition-colors font-bold">Technical Support</Link>
             </div>
           </div>
-          <div>
-            <h4 style={{ marginBottom: "1.75rem", fontSize: "1rem", color: "var(--text-primary)" }}>Contact</h4>
-            <div className="flex flex-col gap-4">
-              <Link href="mailto:invest@gselabs.io" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Investor Relations</Link>
-              <Link href="mailto:support@gselabs.io" style={{ color: "var(--text-secondary)", textDecoration: "none", fontSize: "0.9375rem" }}>Technical Support</Link>
+          <div className="mt-20 pt-12 border-t border-[#F1F5F9] flex flex-col md:flex-row justify-between items-center gap-8 text-xs font-black text-[#94A3B8] uppercase tracking-widest">
+            <p>© 2026 GSE LABS LTD.</p>
+            <div className="flex gap-10">
+              <span>Privacy</span>
+              <span>Terms</span>
             </div>
           </div>
         </div>
       </footer>
-
-      <style jsx global>{`
-                .nav-fixed {
-                    position: fixed;
-                    top: 42px; left: 0; right: 0;
-                    height: var(--header-height);
-                    z-index: 1000;
-                }
-                .container {
-                    width: 100%;
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 0 1.5rem;
-                }
-                .flex { display: flex; }
-                .items-center { align-items: center; }
-                .justify-center { justify-content: center; }
-                .gap-3 { gap: 0.75rem; }
-                .gap-4 { gap: 1rem; }
-                .gap-6 { gap: 1.5rem; }
-                .gap-12 { gap: 3rem; }
-                .mb-6 { margin-bottom: 1.5rem; }
-                .mb-8 { margin-bottom: 2rem; }
-                .mb-10 { margin-bottom: 2.5rem; }
-                .mb-24 { margin-bottom: 6rem; }
-            `}</style>
     </div>
   );
 }

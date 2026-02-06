@@ -6,45 +6,104 @@
 :root {
   /* --- Innovate Premium V2 Palette --- */
 
-  /* Backgrounds */
-  --bg-page: #F6F7FF;
+  /* --- PayNext Inspired Palette --- */
+  --bg-page: #FDFDFF;
+  /* Ultra-clean near-white */
   --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #F0F2FF;
+  --bg-surface-secondary: #F8F9FC;
 
-  /* Text */
-  --text-primary: #1A1C4E;
-  /* Deeper, more serious navy */
-  --text-secondary: #4B5563;
-  /* Mid-gray for body */
-  --text-tertiary: #9CA3AF;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
 
-  /* Accents */
   --brand-primary: #3730A3;
-  /* Sophisticated Indigo */
-  --brand-primary-hover: #312E81;
   --brand-accent: #4F46E5;
 
-  /* Semantic */
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  --border-default: #F1F5F9;
+  --border-hover: #E2E8F0;
 
-  /* Borders */
-  --border-default: #E5E7EB;
-  --border-active: #3730A3;
+  --header-height: 80px;
+  --radius-xl: 32px;
 
-  /* Spacing & Radius */
-  --header-height: 72px;
-  --max-width: 1280px;
-  --radius-xs: 6px;
-  --radius-md: 10px;
-  --radius-lg: 24px;
+  --shadow-paynext: 0 40px 100px -20px rgba(0, 0, 0, 0.05);
+  --shadow-institutional: 0 60px 120px -20px rgba(15, 23, 42, 0.08), 0 30px 60px -30px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
 
-  /* Shadows - Layered for Depth */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+/* Institutional Typography Overrides */
+.text-huge {
+  font-size: clamp(3rem, 10vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  font-weight: 950;
+}
+
+/* Advanced Glassmorphism */
+.glass-institutional {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-institutional);
+}
+
+/* Stacking Card Physics */
+.stacking-card {
+  position: sticky;
+  top: 100px;
+  transform-origin: center top;
+}
+
+/* Live Ticker Animation */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker 60s linear infinite;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(1deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
 }
 
 /* Lenis Requirements */
@@ -283,7 +342,15 @@ p {
 
 /* Section Background Blobs */
 .bg-glow-main {
-  background: radial-gradient(60% 60% at 50% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 100%);
+  background:
+    radial-gradient(circle at 50% -20%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 10% 20%, rgba(55, 48, 163, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 40%);
+}
+
+.text-reveal {
+  overflow: hidden;
+  display: block;
 }
 
 /* Avatars Stack */

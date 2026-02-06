@@ -103,6 +103,15 @@ export async function chatWithAto(
     context: string,
     conversationHistory: AtoMessage[] = []
 ): Promise<AtoResponse> {
+    // Check if API key is missing
+    if (!process.env.ANTHROPIC_API_KEY) {
+        console.warn("ANTHROPIC_API_KEY is missing. Returning mock response.");
+        return {
+            content: "👋 Hello! I'm Ato. It looks like my API key hasn't been set up yet in the `.env.local` file. Once the `ANTHROPIC_API_KEY` is added, I'll be able to help you analyze your portfolio and learn about investing in Ghana! \n\nIn the meantime, feel free to explore the simulator!",
+            usage: { input_tokens: 0, output_tokens: 0 }
+        };
+    }
+
     try {
         // Build messages array
         const messages: Anthropic.MessageParam[] = [
@@ -136,9 +145,9 @@ export async function chatWithAto(
                 output_tokens: response.usage.output_tokens,
             },
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error calling Anthropic API:", error);
-        throw new Error("Failed to get response from Ato. Please try again.");
+        throw new Error(`Failed to get response from Ato: ${error.message || "Unknown error"}`);
     }
 }
 
