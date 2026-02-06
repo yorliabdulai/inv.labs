@@ -13,20 +13,25 @@ export default function MarketPage() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("All");
 
-    useEffect(() => {
-        async function fetchStocks() {
-            try {
-                const data = await getMarketData();
-                setStocks(data);
-            } catch (err) {
-                console.error("Failed to load market data", err);
-            } finally {
-                setLoading(false);
-            }
+    const fetchStocks = async (showLoading = false) => {
+        if (showLoading) setLoading(true);
+        try {
+            const data = await getMarketData();
+            setStocks(data);
+        } catch (err) {
+            console.error("Failed to load market data", err);
+        } finally {
+            setLoading(false);
         }
-        fetchStocks();
+    };
 
-        const interval = setInterval(fetchStocks, 60000);
+    const handleRefresh = async (manual = false) => {
+        await fetchStocks(manual);
+    };
+
+    useEffect(() => {
+        fetchStocks(true);
+        const interval = setInterval(() => fetchStocks(false), 60000);
         return () => clearInterval(interval);
     }, []);
 
@@ -73,9 +78,19 @@ export default function MarketPage() {
                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                             <span className="text-xs md:text-sm font-bold">Market Open</span>
                         </div>
-                        <div className="text-right">
-                            <div className="text-sm md:text-lg font-black text-gray-800">{currentTime || "--:--:--"}</div>
-                            <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">GSE Time</div>
+                        <div className="text-right flex items-center gap-4">
+                            <button
+                                onClick={() => handleRefresh(true)}
+                                disabled={loading}
+                                className={`p-2 rounded-lg bg-white/50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all ${loading ? 'animate-spin' : ''}`}
+                                title="Sync Quote"
+                            >
+                                <RefreshCw size={18} />
+                            </button>
+                            <div>
+                                <div className="text-sm md:text-lg font-black text-gray-800">{currentTime || "--:--:--"}</div>
+                                <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">GSE Time</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -198,32 +213,38 @@ export default function MarketPage() {
 
                 {/* Market Data Display */}
                 {loading ? (
-                    <div className="glass-card p-16 text-center">
+                    <div className="glass-card p-16 text-center border-none shadow-none">
                         <div className="max-w-md mx-auto">
-                            <RefreshCw size={48} className="animate-spin text-indigo-500 mx-auto mb-6" />
-                            <h3 className="text-lg font-black text-gray-800 mb-2">Loading Market Data</h3>
-                            <p className="text-gray-500">Connecting to Ghana Stock Exchange...</p>
-                            <div className="mt-6 flex justify-center">
-                                <div className="w-64 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-pulse"></div>
-                                </div>
+                            <div className="relative w-20 h-20 mx-auto mb-6">
+                                <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                                <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
                             </div>
+                            <h3 className="text-xl font-black text-gray-800 mb-2">Syncing Terminal...</h3>
+                            <p className="text-gray-500 font-medium">Fetching the latest quotes from GSE</p>
                         </div>
                     </div>
                 ) : filteredStocks.length === 0 ? (
-                    <div className="glass-card p-16 text-center">
+                    <div className="glass-card p-16 text-center bg-gray-50/50 border-dashed border-2 border-gray-200">
                         <div className="max-w-md mx-auto">
-                            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
+                            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-100">
                                 <Search size={32} className="text-gray-300" />
                             </div>
-                            <h3 className="text-lg font-black text-gray-800 mb-2">No Results Found</h3>
-                            <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria</p>
-                            <button
-                                onClick={() => { setSearch(""); setFilter("All"); }}
-                                className="px-6 py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
-                            >
-                                Clear Filters
-                            </button>
+                            <h3 className="text-xl font-black text-gray-800 mb-2">No Matching Assets</h3>
+                            <p className="text-gray-500 mb-8 font-medium">We couldn't find any stocks matching your current filters. Try resetting or adjusting your search.</p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <button
+                                    onClick={() => { setSearch(""); setFilter("All"); }}
+                                    className="w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
+                                >
+                                    Reset All Filters
+                                </button>
+                                <button
+                                    onClick={() => handleRefresh(true)}
+                                    className="w-full sm:w-auto px-8 py-4 bg-white text-gray-600 font-black rounded-xl border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all"
+                                >
+                                    Force Re-sync
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ) : (

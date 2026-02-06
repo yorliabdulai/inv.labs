@@ -105,6 +105,20 @@ export default function Home() {
     };
   }, []);
 
+  // Animate mobile menu when it opens
+  useLayoutEffect(() => {
+    if (isMobileMenuOpen) {
+      gsap.from(".mobile-menu-item a", {
+        y: 100,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power4.out",
+        delay: 0.2
+      });
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <div ref={containerRef} className="min-h-screen bg-white text-[#0F172A] selection:bg-[#4F46E5]/10 overflow-x-hidden font-sans">
 
@@ -135,12 +149,28 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu with GSAP Stagger */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 bg-white z-[1999] p-10 flex flex-col justify-center gap-10 animate-fade-in">
-            <Link href="/market" className="text-5xl font-black text-[#0F172A] tracking-tighter" onClick={() => setIsMobileMenuOpen(false)}>Market.</Link>
-            <Link href="/learn" className="text-5xl font-black text-[#0F172A] tracking-tighter" onClick={() => setIsMobileMenuOpen(false)}>Learn.</Link>
-            <Link href="/register" className="text-xl font-black text-[#4F46E5] uppercase tracking-[0.3em] mt-10" onClick={() => setIsMobileMenuOpen(false)}>Deploy Terminal →</Link>
+          <div className="lg:hidden fixed inset-0 bg-white z-[1999] p-10 flex flex-col justify-center gap-10 overflow-hidden">
+            <button
+              className="absolute top-10 right-10 p-4 bg-gray-50 rounded-full"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={32} />
+            </button>
+            <div className="space-y-8">
+              {['Market', 'Learn', 'Terminal'].map((item, i) => (
+                <div key={item} className="mobile-menu-item overflow-hidden">
+                  <Link
+                    href={item === 'Terminal' ? '/register' : `/${item.toLowerCase()}`}
+                    className={`block text-6xl font-black tracking-tighter ${item === 'Terminal' ? 'text-[#4F46E5]' : 'text-[#0F172A]'}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item}.
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </nav>

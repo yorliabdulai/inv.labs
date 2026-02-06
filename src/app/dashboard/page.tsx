@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle, Layers } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
 
@@ -173,52 +173,86 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Market Intelligence Hub - Mobile Optimized */}
-                <div className="bento-col-6">
+                {/* Market Intelligence Hub - Mobile Stacked */}
+                <div className="bento-col-12 lg:bento-col-6">
                     <div className="glass-card p-4 md:p-6 bg-background-surface border-border h-full">
                         <div className="flex items-center justify-between mb-4 md:mb-6">
                             <h3 className="stat-label flex items-center gap-2">
-                                <Activity size={16} className="text-brand" />
-                                Market Intelligence
+                                <TrendingUp size={16} className="text-brand" />
+                                Top Stocks
                             </h3>
                             <Link href="/dashboard/market" className="text-xs font-black text-brand uppercase tracking-wider hover:text-brand-hover flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
-                                View All <ArrowRight size={12} />
+                                Explorer <ArrowRight size={12} />
                             </Link>
                         </div>
 
                         <div className="space-y-2 md:space-y-3">
                             {[
-                                { symbol: "MTNGH", name: "Scancom PLC", price: 1.55, change: 1.2, volume: "2.4M", trend: "bullish" },
-                                { symbol: "EGH", name: "Ecobank Ghana", price: 6.80, change: -0.4, volume: "1.8M", trend: "bearish" },
-                                { symbol: "CAL", name: "Cal Bank", price: 0.65, change: 2.1, volume: "956K", trend: "bullish" },
+                                { symbol: "MTNGH", name: "Scancom PLC", price: 1.55, change: 1.2, trend: "bullish" },
+                                { symbol: "EGH", name: "Ecobank Ghana", price: 6.80, change: -0.4, trend: "bearish" },
                             ].map((stock, i) => (
                                 <Link
                                     href={`/dashboard/market?symbol=${stock.symbol}`}
                                     key={stock.symbol}
-                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-200 group border border-transparent hover:border-gray-100 hover:shadow-sm min-h-[64px] touch-manipulation"
+                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-200 group border border-transparent hover:border-gray-100 hover:shadow-sm"
                                 >
-                                    <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-                                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-xs md:text-sm border-2 transition-all duration-200 flex-shrink-0 ${stock.change >= 0
-                                            ? "bg-emerald-50 border-emerald-100 text-status-success group-hover:bg-emerald-100"
-                                            : "bg-red-50 border-red-100 text-status-error group-hover:bg-red-100"
-                                            }`}>
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border-2 ${stock.change >= 0 ? "bg-emerald-50 border-emerald-100 text-status-success" : "bg-red-50 border-red-100 text-status-error"}`}>
                                             {stock.symbol.substring(0, 2)}
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <div className="font-black text-text-primary text-sm md:text-sm truncate">{stock.symbol}</div>
-                                                {stock.trend === 'bullish' && <TrendingUp size={12} className="text-status-success flex-shrink-0" />}
-                                                {stock.trend === 'bearish' && <TrendingDown size={12} className="text-status-error flex-shrink-0" />}
-                                            </div>
-                                            <div className="text-xs font-bold text-text-tertiary uppercase tracking-wider truncate">{stock.name}</div>
-                                            <div className="text-[10px] font-medium text-text-tertiary hidden md:block mt-0.5">{stock.volume} vol</div>
+                                        <div>
+                                            <div className="font-black text-text-primary text-sm">{stock.symbol}</div>
+                                            <div className="text-[10px] font-bold text-text-tertiary uppercase truncate max-w-[100px]">{stock.name}</div>
                                         </div>
                                     </div>
-                                    <div className="text-right flex-shrink-0 ml-2">
-                                        <div className="font-black text-text-primary text-base md:text-lg">GH₵ {stock.price.toFixed(2)}</div>
-                                        <div className={`text-xs font-black uppercase tracking-wider ${stock.change >= 0 ? 'text-status-success' : 'text-status-error'
-                                            }`}>
+                                    <div className="text-right">
+                                        <div className="font-black text-text-primary">GH₵ {stock.price.toFixed(2)}</div>
+                                        <div className={`text-[10px] font-black uppercase ${stock.change >= 0 ? 'text-status-success' : 'text-status-error'}`}>
                                             {stock.change >= 0 ? '+' : ''}{stock.change}%
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Mutual Fund Gems - NEW SECTION */}
+                <div className="bento-col-12 lg:bento-col-6">
+                    <div className="glass-card p-4 md:p-6 bg-gradient-to-br from-amber-50/30 to-orange-50/30 border-amber-100/50 h-full">
+                        <div className="flex items-center justify-between mb-4 md:mb-6">
+                            <h3 className="stat-label flex items-center gap-2">
+                                <Layers size={16} className="text-amber-600" />
+                                Featured Funds
+                            </h3>
+                            <Link href="/dashboard/mutual-funds" className="text-xs font-black text-amber-600 uppercase tracking-wider hover:text-amber-700 flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
+                                All Funds <ArrowRight size={12} />
+                            </Link>
+                        </div>
+
+                        <div className="space-y-2 md:space-y-3">
+                            {[
+                                { name: "EDC Fixed Income", type: "Balanced", nav: 5.82, ytd: 18.4, trend: "up" },
+                                { name: "Databank MFund", type: "Money Market", nav: 2.14, ytd: 22.1, trend: "up" },
+                            ].map((fund, i) => (
+                                <Link
+                                    href="/dashboard/mutual-funds"
+                                    key={fund.name}
+                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-white/60 transition-all duration-200 group border border-transparent hover:border-amber-100 hover:shadow-sm"
+                                >
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center font-black text-amber-600 text-xs border-2 border-amber-200">
+                                            {fund.name.substring(0, 2)}
+                                        </div>
+                                        <div>
+                                            <div className="font-black text-amber-900 text-sm">{fund.name}</div>
+                                            <div className="text-[10px] font-bold text-amber-700 uppercase tracking-wide">{fund.type}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="font-black text-amber-900 text-sm">NAV {fund.nav.toFixed(2)}</div>
+                                        <div className="text-[10px] font-black uppercase text-emerald-600">
+                                            +{fund.ytd}% YTD
                                         </div>
                                     </div>
                                 </Link>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, PieChart, Award, GraduationCap } from "lucide-react";
+import { Home, TrendingUp, PieChart, Layers, GraduationCap } from "lucide-react";
 
 export function BottomNav() {
     const pathname = usePathname();
@@ -11,9 +11,9 @@ export function BottomNav() {
 
     const navItems = [
         { href: "/dashboard", label: "Home", icon: Home },
-        { href: "/dashboard/market", label: "Markets", icon: TrendingUp },
+        { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
+        { href: "/dashboard/mutual-funds", label: "Funds", icon: Layers },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: PieChart },
-        { href: "/dashboard/leaderboard", label: "Rank", icon: Award },
         { href: "/dashboard/learn", label: "Learn", icon: GraduationCap },
     ];
 
@@ -26,11 +26,10 @@ export function BottomNav() {
                         <Link
                             key={href}
                             href={href}
-                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation ${
-                                active
-                                    ? "text-indigo-600 scale-105"
-                                    : "text-gray-500 active:scale-95"
-                            }`}
+                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation ${active
+                                ? "text-indigo-600 scale-105"
+                                : "text-gray-500 active:scale-95"
+                                }`}
                             aria-label={label}
                         >
                             <div className={`relative transition-all duration-300 ${active ? "-translate-y-0.5" : ""}`}>
