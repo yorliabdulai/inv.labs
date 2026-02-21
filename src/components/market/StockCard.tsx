@@ -4,6 +4,7 @@ import type { Stock } from "@/lib/market-data";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { useState } from "react";
 import { TradeModal } from "@/components/trade/TradeModal";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 interface StockCardProps {
     stock: Stock;
@@ -12,6 +13,8 @@ interface StockCardProps {
 export function StockCard({ stock }: StockCardProps) {
     const isPositive = stock.change >= 0;
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { profile, refetch } = useUserProfile();
+    const userBalance = profile?.cash_balance ?? 0;
 
     return (
         <>
@@ -56,7 +59,11 @@ export function StockCard({ stock }: StockCardProps) {
                 stock={stock}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                userBalance={10000} // Mock balance, arguably should come from a context
+                userBalance={userBalance}
+                onSuccess={() => {
+                    setIsModalOpen(false);
+                    refetch();
+                }}
             />
         </>
     );

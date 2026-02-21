@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { AtoFloatingButton } from "@/components/ai/AtoFloatingButton";
 import { AtoChat } from "@/components/ai/AtoChat";
+import { UserProfileProvider } from "@/lib/UserProfileContext";
 
 export default function DashboardLayout({
     children,
@@ -14,23 +15,28 @@ export default function DashboardLayout({
     const [isChatOpen, setIsChatOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-background relative overflow-x-hidden">
-            <Sidebar />
+        // UserProfileProvider loads the user profile ONCE here.
+        // Every component inside (Sidebar, DashboardHeader, StockRow, etc.)
+        // reads from the same cached context — no more per-component fetches.
+        <UserProfileProvider>
+            <div className="min-h-screen bg-background relative overflow-x-hidden">
+                <Sidebar />
 
-            <div className="flex flex-col min-h-screen md:pl-64 transition-all duration-300 ease-out">
-                <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-4 md:px-10 md:py-10 pb-24 md:pb-12 safe-area-inset-bottom">
-                    {/* Mobile Header Spacer */}
-                    <div className="h-2 md:hidden"></div>
+                <div className="flex flex-col min-h-screen md:pl-64 transition-all duration-300 ease-out">
+                    <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-4 md:px-10 md:py-10 pb-24 md:pb-12 safe-area-inset-bottom">
+                        {/* Mobile Header Spacer */}
+                        <div className="h-2 md:hidden"></div>
 
-                    {children}
-                </main>
+                        {children}
+                    </main>
+                </div>
+
+                <BottomNav />
+
+                {/* Ato AI Assistant */}
+                <AtoFloatingButton onClick={() => setIsChatOpen(true)} />
+                <AtoChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
             </div>
-
-            <BottomNav />
-
-            {/* Ato AI Assistant */}
-            <AtoFloatingButton onClick={() => setIsChatOpen(true)} />
-            <AtoChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-        </div>
+        </UserProfileProvider>
     );
 }

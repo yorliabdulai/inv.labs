@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, ChevronRight, X, Menu, Briefcase } from "lucide-react";
+import { useUserProfile } from "@/lib/useUserProfile";
+import { supabase } from "@/lib/supabase/client";
 
 export function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const { displayName, displayInitial, loading } = useUserProfile();
 
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
@@ -20,12 +24,10 @@ export function Sidebar() {
         { href: "/dashboard/learn", label: "Education", icon: GraduationCap },
     ];
 
-    // Close mobile menu when route changes
     useEffect(() => {
         setIsMobileOpen(false);
     }, [pathname]);
 
-    // Prevent body scroll when mobile menu is open
     useEffect(() => {
         if (isMobileOpen) {
             document.body.style.overflow = 'hidden';
@@ -37,9 +39,31 @@ export function Sidebar() {
         };
     }, [isMobileOpen]);
 
+    const handleSignOut = async () => {
+        await supabase.auth.signOut();
+        router.push("/login");
+    };
+
+    const UserCard = ({ compact = false }: { compact?: boolean }) => (
+        <div className={`flex items-center gap-3 ${compact ? '' : 'w-full'}`}>
+            <div className={`${compact ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-gradient-to-br from-brand to-brand-accent text-white flex items-center justify-center font-bold ${compact ? 'text-xs' : 'text-sm'} ring-2 ring-white flex-shrink-0`}>
+                {loading ? "·" : displayInitial}
+            </div>
+            <div className="flex-1 overflow-hidden min-w-0">
+                <div className={`${compact ? 'text-xs' : 'text-sm'} font-bold text-text-primary truncate`}>
+                    {loading ? "Loading..." : displayName}
+                </div>
+                <div className={`${compact ? 'text-[10px]' : 'text-xs'} font-medium text-text-tertiary`}>
+                    Investor Account
+                </div>
+            </div>
+            <ChevronRight size={compact ? 14 : 16} className="text-text-tertiary flex-shrink-0" />
+        </div>
+    );
+
     return (
         <>
-            {/* Mobile Menu Button - Floating for easy access */}
+            {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileOpen(true)}
                 className="md:hidden fixed top-3 left-4 z-50 w-10 h-10 bg-background-surface rounded-xl shadow-premium border border-border flex items-center justify-center hover:bg-background-elevated transition-all touch-manipulation active:scale-95"
@@ -59,7 +83,7 @@ export function Sidebar() {
 
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-border bg-background-surface z-50">
-                {/* Logo Area */}
+                {/* Logo */}
                 <div className="h-header flex items-center px-6 border-b border-gray-50/50">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
@@ -71,7 +95,7 @@ export function Sidebar() {
                     </div>
                 </div>
 
-                {/* Navigation Sections */}
+                {/* Navigation */}
                 <nav className="flex-1 px-4 py-8 space-y-8 overflow-y-auto">
                     <div>
                         <h3 className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.15em] px-3 mb-3">Main Navigation</h3>
@@ -115,22 +139,19 @@ export function Sidebar() {
                     </div>
                 </nav>
 
-                {/* User Account / Footer */}
+                {/* Desktop Footer */}
                 <div className="p-4 mt-auto">
-                    <div className="glass-card bg-gray-50/50 border-none p-0 mb-2">
-                        <div className="p-3 rounded-xl flex items-center gap-3 hover:bg-white transition-colors cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm">
-                            <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
-                                K
+                    <Link href="/dashboard/profile" className="block mb-2">
+                        <div className="glass-card bg-gray-50/50 border-none p-0">
+                            <div className="p-3 rounded-xl hover:bg-white transition-colors cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm">
+                                <UserCard compact />
                             </div>
-                            <div className="flex-1 overflow-hidden">
-                                <div className="text-xs font-bold text-text-primary truncate">Kwame Nkrumah</div>
-                                <div className="text-[10px] font-medium text-text-tertiary truncate">Pro Account</div>
-                            </div>
-                            <ChevronRight size={14} className="text-text-tertiary" />
                         </div>
-                    </div>
-
-                    <button className="flex items-center gap-2 w-full px-3 py-3 text-xs font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[44px]">
+                    </Link>
+                    <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 w-full px-3 py-3 text-xs font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[44px]"
+                    >
                         <LogOut size={16} /> Sign Out
                     </button>
                 </div>
@@ -193,19 +214,11 @@ export function Sidebar() {
                     <div>
                         <h3 className="text-xs font-bold text-text-tertiary uppercase tracking-wider px-3 mb-3">Settings & Tools</h3>
                         <div className="space-y-2">
-                            <Link
-                                href="/dashboard/profile"
-                                onClick={() => setIsMobileOpen(false)}
-                                className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]"
-                            >
+                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]">
                                 <User size={22} className="text-text-tertiary" />
                                 <span>Profile</span>
                             </Link>
-                            <Link
-                                href="/dashboard/settings"
-                                onClick={() => setIsMobileOpen(false)}
-                                className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]"
-                            >
+                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]">
                                 <Settings size={22} className="text-text-tertiary" />
                                 <span>Preferences</span>
                             </Link>
@@ -215,16 +228,15 @@ export function Sidebar() {
 
                 {/* Mobile Footer */}
                 <div className="p-4 border-t border-border bg-gray-50/50">
-                    <div className="p-4 mb-3 rounded-xl bg-white border border-border flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center font-bold text-sm">
-                            K
+                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-3">
+                        <div className="p-4 rounded-xl bg-white border border-border">
+                            <UserCard />
                         </div>
-                        <div className="flex-1 overflow-hidden">
-                            <div className="text-sm font-bold text-text-primary truncate">Kwame Nkrumah</div>
-                            <div className="text-xs font-medium text-text-tertiary truncate">Pro Account</div>
-                        </div>
-                    </div>
-                    <button className="flex items-center justify-center gap-2 w-full px-4 py-4 text-sm font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[52px]">
+                    </Link>
+                    <button
+                        onClick={handleSignOut}
+                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-sm font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[52px]"
+                    >
                         <LogOut size={18} /> Sign Out
                     </button>
                 </div>

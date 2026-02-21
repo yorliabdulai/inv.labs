@@ -1,10 +1,11 @@
 "use client";
 
 import type { Stock } from "@/lib/market-data";
-import { TrendingUp, TrendingDown, MoreHorizontal, ArrowUpRight, ArrowDownRight, Bookmark } from "lucide-react";
+import { TrendingUp, TrendingDown, Bookmark } from "lucide-react";
 import { useState } from "react";
 import { TradeModal } from "@/components/trade/TradeModal";
 import { Sparkline } from "./Sparkline";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 interface StockRowProps {
     stock: Stock;
@@ -13,6 +14,8 @@ interface StockRowProps {
 export function StockRow({ stock }: StockRowProps) {
     const isPositive = stock.change >= 0;
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { profile, refetch } = useUserProfile();
+    const userBalance = profile?.cash_balance ?? 0;
 
     // Mock history for sparkline
     const history = Array.from({ length: 15 }, () => {
@@ -113,7 +116,11 @@ export function StockRow({ stock }: StockRowProps) {
                 stock={stock}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                userBalance={12450}
+                userBalance={userBalance}
+                onSuccess={() => {
+                    setIsModalOpen(false);
+                    refetch();
+                }}
             />
         </>
     );

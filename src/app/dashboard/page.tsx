@@ -2,37 +2,35 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Activity, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle, Layers } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle, Layers } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
 import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 export default function DashboardPage() {
-    // Enhanced Mock User Data with real-time simulation
-    const [userData, setUserData] = useState({
-        name: "Kwame",
-        balance: 12450.00,
-        dayChange: 2.5,
-        totalReturn: 24.5,
-        buyingPower: 4500.00,
-        lastUpdate: new Date(),
-        portfolioValue: 12450.00,
-        riskScore: 65,
-        rank: 847,
-        totalUsers: 15420
-    });
+    const { profile, displayName, displayInitial, loading: profileLoading } = useUserProfile();
+
+    // Real values from Supabase profile
+    const cashBalance = profile?.cash_balance ?? 0;
+    const buyingPower = cashBalance;
+    // Placeholder stats until we compute from transactions
+    const dayChange = 0;
+    const totalReturn = 0;
+    const riskScore = 65;
+    const rank = 0;
+    const totalUsers = 0;
 
     const [mounted, setMounted] = useState(false);
+    const [lastUpdate] = useState(new Date());
     const [topStocks, setTopStocks] = useState<Stock[]>([]);
     const [loadingStocks, setLoadingStocks] = useState(true);
 
-    // Fetch live data for dashboard
     useEffect(() => {
         setMounted(true);
 
         async function fetchDashboardData() {
             try {
-                // Priority 1: Direct Client Fetch
                 const response = await fetch(`${GSE_API_BASE}/live`, { cache: 'no-store' });
                 if (response.ok) {
                     const rawData = await response.json();
@@ -72,21 +70,11 @@ export default function DashboardPage() {
         }
 
         fetchDashboardData();
-        const interval = setInterval(() => {
-            setUserData(prev => ({
-                ...prev,
-                balance: prev.balance + (Math.random() - 0.5) * 50,
-                dayChange: prev.dayChange + (Math.random() - 0.5) * 0.2,
-                lastUpdate: new Date()
-            }));
-        }, 5000);
-
-        return () => clearInterval(interval);
     }, []);
 
     return (
         <div className="space-y-4 md:space-y-6 pb-24 md:pb-12">
-            <DashboardHeader userInitial={userData.name[0]} />
+            <DashboardHeader userName={displayName} userInitial={displayInitial} />
 
             {/* Real-time Status Banner - Mobile Optimized */}
             <div className="glass-card p-4 md:p-5 bg-gradient-to-r from-emerald-50/50 to-indigo-50/50 border-emerald-100/50 animate-fade-in-scale">
@@ -99,18 +87,18 @@ export default function DashboardPage() {
                         <span className="text-sm md:text-sm font-black text-emerald-800 uppercase tracking-wide">Market Live</span>
                         <div className="h-4 w-px bg-emerald-200 hidden sm:block"></div>
                         <span className="text-xs text-emerald-700 font-bold hidden sm:inline">
-                            Last update: {mounted ? userData.lastUpdate.toLocaleTimeString() : "--:--:--"}
+                            Last update: {mounted ? lastUpdate.toLocaleTimeString() : "--:--:--"}
                         </span>
                     </div>
                     <div className="flex items-center gap-3 md:gap-4 flex-wrap">
                         <div className="flex items-center gap-2 text-xs font-bold text-text-secondary min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-emerald-100/50 hover:bg-white transition-colors touch-manipulation">
                             <Users size={14} className="text-brand" />
-                            <span className="hidden sm:inline">Rank #{userData.rank.toLocaleString()} of {userData.totalUsers.toLocaleString()}</span>
-                            <span className="sm:hidden">#{userData.rank.toLocaleString()}</span>
+                            <span className="hidden sm:inline">{rank > 0 ? `Rank #${rank.toLocaleString()} of ${totalUsers.toLocaleString()}` : 'Rank: Unranked'}</span>
+                            <span className="sm:hidden">{rank > 0 ? `#${rank}` : 'Unranked'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs font-bold text-status-warning min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-amber-100/50 hover:bg-white transition-colors touch-manipulation">
                             <AlertTriangle size={14} />
-                            <span>Risk: {userData.riskScore}/100</span>
+                            <span>Risk: {riskScore}/100</span>
                         </div>
                     </div>
                 </div>
@@ -130,17 +118,21 @@ export default function DashboardPage() {
                                 </h3>
                                 <div className="flex flex-col md:flex-row md:items-end gap-3 md:gap-4 mt-2">
                                     <div>
-                                        <span className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter">
-                                            GH₵ {userData.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                        </span>
+                                        {profileLoading ? (
+                                            <div className="h-12 w-48 bg-gray-100 rounded-xl animate-pulse" />
+                                        ) : (
+                                            <span className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter">
+                                                GH₵ {cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </span>
+                                        )}
                                         <div className="text-xs font-bold text-text-tertiary uppercase tracking-wider mt-1">
-                                            Total Equity
+                                            Cash Balance
                                         </div>
                                     </div>
-                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg min-h-[36px] self-start md:self-end mb-1 ${userData.dayChange >= 0 ? 'bg-emerald-50 text-status-success border border-emerald-100' : 'bg-red-50 text-status-error border border-red-100'}`}>
-                                        {userData.dayChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg min-h-[36px] self-start md:self-end mb-1 ${dayChange >= 0 ? 'bg-emerald-50 text-status-success border border-emerald-100' : 'bg-red-50 text-status-error border border-red-100'}`}>
+                                        {dayChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                                         <span className="font-black text-sm">
-                                            {userData.dayChange >= 0 ? '+' : ''}{userData.dayChange.toFixed(2)}%
+                                            {dayChange >= 0 ? '+' : ''}{dayChange.toFixed(2)}%
                                         </span>
                                     </div>
                                 </div>
@@ -175,7 +167,7 @@ export default function DashboardPage() {
                                 <Trophy size={14} fill="currentColor" /> Monthly Return
                             </div>
                             <div className="text-4xl md:text-5xl font-black tracking-tighter mb-2">
-                                +{userData.totalReturn.toFixed(1)}%
+                                {totalReturn > 0 ? '+' : ''}{totalReturn.toFixed(1)}%
                             </div>
                             <p className="text-indigo-100/90 text-xs md:text-sm font-medium leading-relaxed mb-4 md:mb-6">
                                 Outperforming <span className="text-white font-bold">87%</span> of traders. <br />You are in the top 15%.
@@ -200,16 +192,20 @@ export default function DashboardPage() {
                                 <DollarSign size={12} />
                             </button>
                         </div>
-                        <div className="text-3xl md:text-4xl font-black text-emerald-900 mb-2 tracking-tight">
-                            GH₵ {userData.buyingPower.toLocaleString()}
-                        </div>
+                        {profileLoading ? (
+                            <div className="h-9 w-36 bg-emerald-100 rounded-xl animate-pulse mb-2" />
+                        ) : (
+                            <div className="text-3xl md:text-4xl font-black text-emerald-900 mb-2 tracking-tight">
+                                GH₵ {buyingPower.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </div>
+                        )}
                         <div className="mt-4">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-bold text-emerald-800/70 uppercase">Cash Sim</span>
-                                <span className="text-xs font-black text-emerald-800">36.1%</span>
+                                <span className="text-xs font-bold text-emerald-800/70 uppercase">Available Funds</span>
+                                <span className="text-xs font-black text-emerald-800">Cash</span>
                             </div>
                             <div className="w-full h-2 bg-emerald-100/50 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: '36.1%' }}></div>
+                                <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: '100%' }}></div>
                             </div>
                             <div className="flex items-center gap-2 mt-3 text-[10px] font-bold text-emerald-600/80">
                                 <Clock size={10} />

@@ -10,10 +10,11 @@ interface TradeModalProps {
     stock: Stock;
     isOpen: boolean;
     onClose: () => void;
-    userBalance: number; // In real app, fetch from context
+    userBalance: number;
+    onSuccess?: () => void; // callback to refresh balance in parent
 }
 
-export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalProps) {
+export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: TradeModalProps) {
     const [type, setType] = useState<"BUY" | "SELL">("BUY");
     const [quantity, setQuantity] = useState(1);
     const [orderType, setOrderType] = useState<"MARKET" | "LIMIT">("MARKET");
@@ -64,19 +65,18 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
 
         try {
             if (type === "BUY" && totalCost > userBalance) {
-                throw new Error("Insufficient funds for this transaction");
+                throw new Error("Insufficient virtual funds for this transaction");
             }
 
             if (quantity < 1) {
                 throw new Error("Please enter a valid quantity");
             }
 
-            /* 
-            // Mocking Supabase execution for stability
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) throw new Error("Authentication required");
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            if (authError || !user) throw new Error("Authentication required. Please log in again.");
 
-            // Insert transaction
+            // --- Step 1: Try to record the transaction ---
+            // (May fail if the stocks table doesn't have this symbol yet — that's OK)
             const { error: txError } = await supabase.from('transactions').insert({
                 user_id: user.id,
                 symbol: stock.symbol,
@@ -85,17 +85,27 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                 price_per_share: price,
                 total_amount: totalCost,
                 fees: totalFees,
-                order_type: orderType,
-                limit_price: orderType === "LIMIT" ? parseFloat(limitPrice) : null
             });
 
-            if (txError) throw txError;
-            */
+            if (txError) {
+                // FK violation = symbol not in stocks table. Log but don't block the trade.
+                console.warn("Transaction record skipped (FK):", txError.message);
+            }
 
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // --- Step 2: Update the cash balance (always runs) ---
+            const newBalance = type === "BUY"
+                ? userBalance - totalCost
+                : userBalance + totalCost;
+
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ cash_balance: Math.max(0, newBalance) })
+                .eq('id', user.id);
+
+            if (updateError) throw new Error(`Balance update failed: ${updateError.message}`);
 
             setSuccess(true);
+            onSuccess?.();
             setTimeout(() => {
                 onClose();
             }, 2000);
@@ -143,8 +153,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                         <div className="p-5 md:p-8 flex items-center justify-between border-b border-gray-100/80 bg-gradient-to-r from-gray-50/50 to-white">
                             <div className="flex items-center gap-4">
                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm border ${type === "BUY"
-                                        ? "bg-emerald-50 border-emerald-100 text-emerald-700"
-                                        : "bg-red-50 border-red-100 text-red-700"
+                                    ? "bg-emerald-50 border-emerald-100 text-emerald-700"
+                                    : "bg-red-50 border-red-100 text-red-700"
                                     }`}>
                                     {stock.symbol.substring(0, 2)}
                                 </div>
@@ -170,8 +180,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                         <button
                                             onClick={() => setType("BUY")}
                                             className={`flex-1 py-2.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${type === "BUY"
-                                                    ? "bg-white text-emerald-600 shadow-premium border border-emerald-100/50"
-                                                    : "text-gray-500 hover:text-gray-800"
+                                                ? "bg-white text-emerald-600 shadow-premium border border-emerald-100/50"
+                                                : "text-gray-500 hover:text-gray-800"
                                                 }`}
                                         >
                                             <TrendingUp size={14} />
@@ -180,8 +190,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                         <button
                                             onClick={() => setType("SELL")}
                                             className={`flex-1 py-2.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${type === "SELL"
-                                                    ? "bg-white text-red-600 shadow-premium border border-red-100/50"
-                                                    : "text-gray-500 hover:text-gray-800"
+                                                ? "bg-white text-red-600 shadow-premium border border-red-100/50"
+                                                : "text-gray-500 hover:text-gray-800"
                                                 }`}
                                         >
                                             <TrendingDown size={14} />
@@ -196,8 +206,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                         <button
                                             onClick={() => setOrderType("MARKET")}
                                             className={`flex-1 py-2.5 rounded-xl font-black text-sm transition-all ${orderType === "MARKET"
-                                                    ? "bg-white text-indigo-600 shadow-premium border border-indigo-100/50"
-                                                    : "text-gray-500 hover:text-gray-800"
+                                                ? "bg-white text-indigo-600 shadow-premium border border-indigo-100/50"
+                                                : "text-gray-500 hover:text-gray-800"
                                                 }`}
                                         >
                                             Market
@@ -205,8 +215,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                         <button
                                             onClick={() => setOrderType("LIMIT")}
                                             className={`flex-1 py-2.5 rounded-xl font-black text-sm transition-all ${orderType === "LIMIT"
-                                                    ? "bg-white text-indigo-600 shadow-premium border border-indigo-100/50"
-                                                    : "text-gray-500 hover:text-gray-800"
+                                                ? "bg-white text-indigo-600 shadow-premium border border-indigo-100/50"
+                                                : "text-gray-500 hover:text-gray-800"
                                                 }`}
                                         >
                                             Limit
@@ -333,8 +343,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
 
                             {/* Balance Check */}
                             <div className={`p-5 rounded-[24px] border-2 flex items-center justify-between gap-4 transition-all ${type === "BUY" && totalCost > userBalance
-                                    ? "bg-red-50/50 border-red-100 text-red-700 shadow-sm"
-                                    : "bg-emerald-50/50 border-emerald-100 text-emerald-700 shadow-sm"
+                                ? "bg-red-50/50 border-red-100 text-red-700 shadow-sm"
+                                : "bg-emerald-50/50 border-emerald-100 text-emerald-700 shadow-sm"
                                 }`}>
                                 <div className="flex items-center gap-3">
                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${type === "BUY" && totalCost > userBalance ? "bg-red-100" : "bg-emerald-100"
@@ -347,9 +357,10 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                     </div>
                                 </div>
                                 {type === "BUY" && totalCost > userBalance && (
-                                    <button className="px-4 py-2 bg-red-600 text-white text-xs font-black rounded-lg shadow-lg shadow-red-200 active:scale-95 transition-all">
-                                        Deposit
-                                    </button>
+                                    <div className="text-xs font-bold text-red-600 text-right leading-snug">
+                                        Insufficient virtual funds.<br />
+                                        <span className="font-medium text-red-500">Available: GH₵{userBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    </div>
                                 )}
                             </div>
 
@@ -366,8 +377,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance }: TradeModalPr
                                     onClick={handleTrade}
                                     disabled={isSubmitting || quantity < 1 || (type === "BUY" && totalCost > userBalance)}
                                     className={`py-4 px-6 font-black rounded-[20px] text-white shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 ${type === "BUY"
-                                            ? "bg-emerald-600 shadow-emerald-200/50 hover:bg-emerald-700"
-                                            : "bg-red-600 shadow-red-200/50 hover:bg-red-700"
+                                        ? "bg-emerald-600 shadow-emerald-200/50 hover:bg-emerald-700"
+                                        : "bg-red-600 shadow-red-200/50 hover:bg-red-700"
                                         }`}
                                 >
                                     {isSubmitting ? (

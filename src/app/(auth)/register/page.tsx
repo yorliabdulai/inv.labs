@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { TrendingUp, ShieldCheck, User, AtSign, Lock, Eye, EyeOff, Loader2, Check, X } from "lucide-react";
+import { TrendingUp, AlertCircle, User, AtSign, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import gsap from "gsap";
 
 export default function RegisterPage() {
@@ -91,22 +91,28 @@ export default function RegisterPage() {
 
     return (
         <div ref={containerRef} className="auth-container">
-            {/* Background Decorative Element */}
-            <div className="auth-bg-glow"></div>
+            {/* Animated background */}
+            <div className="auth-bg-orbs">
+                <div className="orb orb-1" />
+                <div className="orb orb-2" />
+                <div className="orb orb-3" />
+            </div>
 
             <div className="auth-card glass-card">
                 <div className="auth-item auth-header">
                     <div className="auth-logo">
-                        <TrendingUp className="logo-icon" size={32} />
-                        <span className="logo-text">GSE<span className="logo-labs">.LABS</span></span>
+                        <div className="logo-icon-wrap">
+                            <TrendingUp size={22} className="logo-icon" />
+                        </div>
+                        <span className="logo-text">GSE<span className="logo-highlight">.LABS</span></span>
                     </div>
-                    <h1 className="auth-title">Start Trading</h1>
-                    <p className="auth-subtitle">Join 56k+ investors and start with virtual GH₵10,000.</p>
+                    <h1 className="auth-title">Start Investing</h1>
+                    <p className="auth-subtitle">Join thousands of investors. Start with <strong className="text-emerald-600">GH₵10,000</strong> simulated funds — free.</p>
                 </div>
 
                 {error && (
                     <div className="auth-item error-banner">
-                        <ShieldCheck size={18} /> {error}
+                        <AlertCircle size={16} /> {error}
                     </div>
                 )}
 
@@ -135,19 +141,19 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="auth-item auth-divider">
-                    <div className="divider-line"></div>
-                    <span className="divider-text">Or join via email</span>
-                    <div className="divider-line"></div>
+                    <div className="divider-line" />
+                    <span className="divider-text">or sign up with email</span>
+                    <div className="divider-line" />
                 </div>
 
                 <form onSubmit={handleRegister} className="auth-form">
                     <div className="form-group">
-                        <label className="form-label">Legal Full Name</label>
+                        <label className="form-label">Full Name</label>
                         <div className="input-with-icon">
                             <User size={18} className="input-icon" />
                             <input
                                 type="text"
-                                placeholder="Kwame Nkrumah"
+                                placeholder="Your full name"
                                 className="form-input with-icon"
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
@@ -157,12 +163,12 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">Institutional Email</label>
+                        <label className="form-label">Email Address</label>
                         <div className="input-with-icon">
                             <AtSign size={18} className="input-icon" />
                             <input
                                 type="email"
-                                placeholder="name@organization.com"
+                                placeholder="your@email.com"
                                 className="form-input with-icon"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -203,7 +209,7 @@ export default function RegisterPage() {
                                             style={{
                                                 backgroundColor: bar <= passwordStrength.score
                                                     ? passwordStrength.color
-                                                    : "#E5E7EB"
+                                                    : "#E2E8F0"
                                             }}
                                         />
                                     ))}
@@ -217,13 +223,13 @@ export default function RegisterPage() {
 
                     <button
                         type="submit"
-                        className="btn-premium btn-premium-solid submit-btn"
+                        className="submit-btn"
                         disabled={loading}
                     >
                         {loading ? (
                             <>
                                 <Loader2 className="spinner" size={18} />
-                                Initializing Sandbox...
+                                Creating account...
                             </>
                         ) : (
                             "Create Free Account"
@@ -233,7 +239,7 @@ export default function RegisterPage() {
 
                 <div className="auth-footer">
                     <p className="footer-text">
-                        Already have an account? <Link href="/login" className="footer-link">Institutional log in</Link>
+                        Already have an account? <Link href="/login" className="footer-link">Sign in</Link>
                     </p>
                 </div>
             </div>
@@ -244,30 +250,61 @@ export default function RegisterPage() {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background-color: var(--bg-page);
+                    background: linear-gradient(135deg, #0F0F1A 0%, #1A1C3A 50%, #0F1A2A 100%);
                     position: relative;
                     overflow: hidden;
                     padding: 1rem;
                 }
 
-                .auth-bg-glow {
+                .auth-bg-orbs {
                     position: absolute;
+                    inset: 0;
+                    pointer-events: none;
+                }
+
+                .orb {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(80px);
+                    opacity: 0.15;
+                }
+
+                .orb-1 {
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, #4F46E5, transparent);
+                    top: -100px;
+                    left: -100px;
+                }
+
+                .orb-2 {
+                    width: 400px;
+                    height: 400px;
+                    background: radial-gradient(circle, #10B981, transparent);
+                    bottom: -80px;
+                    right: -80px;
+                }
+
+                .orb-3 {
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, #A855F7, transparent);
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    width: 800px;
-                    height: 800px;
-                    background: radial-gradient(circle, rgba(55, 48, 163, 0.04) 0%, transparent 70%);
-                    z-index: 0;
                 }
 
                 .auth-card {
                     width: 100%;
                     max-width: 480px;
-                    padding: 2rem;
+                    padding: 2.5rem;
                     position: relative;
                     z-index: 1;
-                    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.08);
+                    background: rgba(255, 255, 255, 0.97);
+                    backdrop-filter: blur(20px);
+                    border-radius: 28px;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05);
                 }
 
                 .auth-header {
@@ -279,46 +316,59 @@ export default function RegisterPage() {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 0.5rem;
+                    gap: 0.625rem;
                     margin-bottom: 1.5rem;
                 }
 
+                .logo-icon-wrap {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 12px;
+                    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+                }
+
                 .logo-icon {
-                    color: var(--brand-primary);
+                    color: white;
                 }
 
                 .logo-text {
                     font-size: 1.5rem;
                     font-weight: 900;
-                    color: var(--text-primary);
+                    color: #1A1C4E;
                     letter-spacing: -0.04em;
                 }
 
-                .logo-labs {
-                    opacity: 0.4;
+                .logo-highlight {
+                    color: #4F46E5;
                 }
 
                 .auth-title {
-                    font-size: 2rem;
-                    margin-bottom: 0.75rem;
-                    color: var(--text-primary);
+                    font-size: 1.875rem;
+                    margin-bottom: 0.5rem;
+                    color: #0F172A;
                     font-weight: 800;
+                    letter-spacing: -0.02em;
                 }
 
                 .auth-subtitle {
-                    font-size: 1rem;
-                    color: var(--text-secondary);
-                    line-height: 1.5;
+                    font-size: 0.9375rem;
+                    color: #64748B;
+                    line-height: 1.6;
                 }
 
                 .error-banner {
-                    background-color: #FEF2F2;
-                    border: 1px solid #FEE2E2;
+                    background: linear-gradient(135deg, #FEF2F2, #FFF5F5);
+                    border: 1px solid #FECACA;
                     color: #B91C1C;
-                    padding: 1rem;
-                    border-radius: 12px;
+                    padding: 0.875rem 1rem;
+                    border-radius: 14px;
                     margin-bottom: 1.5rem;
                     font-size: 0.875rem;
+                    font-weight: 600;
                     display: flex;
                     align-items: center;
                     gap: 8px;
@@ -328,7 +378,7 @@ export default function RegisterPage() {
                     display: flex;
                     flex-direction: column;
                     gap: 0.75rem;
-                    margin-bottom: 2rem;
+                    margin-bottom: 1.75rem;
                 }
 
                 .oauth-btn {
@@ -338,60 +388,59 @@ export default function RegisterPage() {
                     width: 100%;
                     gap: 10px;
                     padding: 0.875rem 1.5rem;
-                    border-radius: 10px;
+                    border-radius: 14px;
                     font-weight: 700;
-                    font-size: 0.875rem;
+                    font-size: 0.9375rem;
                     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                     cursor: pointer;
                     text-decoration: none;
-                    border: 1px solid var(--border-default);
+                    border: 1.5px solid #E2E8F0;
                     background: #FFFFFF;
-                    color: var(--text-primary);
+                    color: #1A1A2E;
                 }
 
                 .oauth-btn:hover {
-                    background: #F9FAFB;
-                    border-color: var(--text-primary);
+                    background: #F8FAFC;
+                    border-color: #CBD5E1;
                     transform: translateY(-1px);
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
                 }
 
                 .oauth-btn-apple {
-                    background: #000000 !important;
+                    background: #0F172A !important;
                     color: #FFFFFF !important;
-                    border-color: #000000 !important;
+                    border-color: #0F172A !important;
                 }
 
                 .oauth-btn-apple:hover {
-                    background: #1a1a1a !important;
-                    border-color: #1a1a1a !important;
+                    background: #1E293B !important;
+                    border-color: #1E293B !important;
                 }
 
                 .auth-divider {
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
-                    margin-bottom: 2rem;
+                    gap: 0.875rem;
+                    margin-bottom: 1.75rem;
                 }
 
                 .divider-line {
                     flex: 1;
                     height: 1px;
-                    background: var(--border-default);
+                    background: #E2E8F0;
                 }
 
                 .divider-text {
                     font-size: 0.75rem;
-                    font-weight: 700;
-                    color: var(--text-tertiary);
-                    text-transform: uppercase;
-                    letter-spacing: 0.05em;
+                    font-weight: 600;
+                    color: #94A3B8;
+                    white-space: nowrap;
                 }
 
                 .auth-form {
                     display: flex;
                     flex-direction: column;
-                    gap: 1.25rem;
+                    gap: 1.125rem;
                 }
 
                 .form-group {
@@ -403,7 +452,7 @@ export default function RegisterPage() {
                 .form-label {
                     font-size: 0.875rem;
                     font-weight: 700;
-                    color: var(--text-primary);
+                    color: #1E293B;
                 }
 
                 .input-with-icon {
@@ -416,40 +465,38 @@ export default function RegisterPage() {
                     left: 1rem !important;
                     top: 50% !important;
                     transform: translateY(-50%) !important;
-                    color: var(--text-tertiary) !important;
+                    color: #94A3B8 !important;
                     pointer-events: none !important;
                     z-index: 10 !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
                 }
 
                 .form-input {
                     width: 100%;
                     padding: 0.875rem 1rem;
-                    border-radius: 10px;
-                    border: 1px solid var(--border-default);
+                    border-radius: 14px;
+                    border: 1.5px solid #E2E8F0;
                     outline: none;
                     font-size: 1rem;
                     transition: all 0.2s;
-                    background: var(--bg-surface);
-                    color: var(--text-primary);
+                    background: #F8FAFC;
+                    color: #0F172A;
                     box-sizing: border-box;
+                    font-weight: 500;
                 }
 
                 .form-input.with-icon {
-                    padding-left: 2.8rem;
+                    padding-left: 2.75rem;
                     padding-right: 3rem;
                 }
 
                 .form-input:focus {
-                    border-color: var(--brand-primary);
-                    box-shadow: 0 0 0 4px rgba(55, 48, 163, 0.05);
+                    border-color: #4F46E5;
+                    background: #FFFFFF;
+                    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
                 }
 
-                .password-input-wrapper {
-                    position: relative;
-                    width: 100%;
+                .form-input::placeholder {
+                    color: #94A3B8;
                 }
 
                 .password-toggle {
@@ -460,7 +507,7 @@ export default function RegisterPage() {
                     background: none;
                     border: none;
                     cursor: pointer;
-                    color: var(--text-tertiary);
+                    color: #94A3B8;
                     padding: 0;
                     display: flex;
                     align-items: center;
@@ -470,14 +517,14 @@ export default function RegisterPage() {
                 }
 
                 .password-toggle:hover {
-                    color: var(--text-secondary);
+                    color: #64748B;
                 }
 
                 .password-strength {
                     display: flex;
                     align-items: center;
                     gap: 0.75rem;
-                    margin-top: 0.5rem;
+                    margin-top: 0.25rem;
                 }
 
                 .strength-bars {
@@ -496,7 +543,7 @@ export default function RegisterPage() {
                 .strength-label {
                     font-size: 0.75rem;
                     font-weight: 700;
-                    min-width: 60px;
+                    min-width: 50px;
                     text-align: right;
                 }
 
@@ -504,11 +551,25 @@ export default function RegisterPage() {
                     width: 100%;
                     padding: 1rem;
                     font-size: 1rem;
-                    margin-top: 1rem;
+                    margin-top: 0.5rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     gap: 0.5rem;
+                    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+                    color: white;
+                    border: none;
+                    border-radius: 14px;
+                    font-weight: 800;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+                    letter-spacing: 0.01em;
+                }
+
+                .submit-btn:hover:not(:disabled) {
+                    transform: translateY(-1px);
+                    box-shadow: 0 12px 32px rgba(79, 70, 229, 0.45);
                 }
 
                 .submit-btn:disabled {
@@ -521,27 +582,24 @@ export default function RegisterPage() {
                 }
 
                 @keyframes spin {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(360deg);
-                    }
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
                 }
 
                 .auth-footer {
                     text-align: center;
-                    margin-top: 2.5rem;
+                    margin-top: 1.75rem;
                 }
 
                 .footer-text {
-                    font-size: 0.875rem;
-                    color: var(--text-secondary);
+                    font-size: 0.9375rem;
+                    color: #64748B;
+                    font-weight: 500;
                 }
 
                 .footer-link {
                     font-weight: 700;
-                    color: var(--brand-primary);
+                    color: #4F46E5;
                     text-decoration: none;
                     transition: opacity 0.2s;
                 }
@@ -550,50 +608,19 @@ export default function RegisterPage() {
                     opacity: 0.8;
                 }
 
-                /* Responsive Design */
-                @media (max-width: 640px) {
-                    .auth-card {
-                        padding: 1.5rem;
-                    }
-
-                    .auth-title {
-                        font-size: 1.75rem;
-                    }
-
-                    .auth-subtitle {
-                        font-size: 0.9375rem;
-                    }
-
-                    .logo-text {
-                        font-size: 1.25rem;
-                    }
-                }
-
                 @media (max-width: 480px) {
-                    .auth-container {
-                        padding: 0.5rem;
-                    }
-
                     .auth-card {
-                        padding: 1.25rem;
+                        padding: 1.75rem 1.5rem;
+                        border-radius: 24px;
                     }
 
                     .auth-title {
-                        font-size: 1.5rem;
+                        font-size: 1.625rem;
                     }
 
                     .oauth-btn {
-                        font-size: 0.8125rem;
+                        font-size: 0.875rem;
                         padding: 0.75rem;
-                    }
-
-                    .form-input {
-                        font-size: 0.9375rem;
-                    }
-
-                    .strength-label {
-                        font-size: 0.6875rem;
-                        min-width: 50px;
                     }
                 }
             `}</style>

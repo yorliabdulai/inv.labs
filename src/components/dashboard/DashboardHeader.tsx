@@ -1,36 +1,51 @@
 "use client";
 
-import { Activity, Globe, Bell, Search } from "lucide-react";
+import { Activity, Globe, Bell, Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function DashboardHeader({ userInitial = "K" }: { userInitial?: string }) {
-    const [currentTime, setCurrentTime] = useState("");
+function getGreeting(hour: number): { text: string; icon: React.ElementType } {
+    if (hour < 12) return { text: "Good morning", icon: Sun };
+    if (hour < 17) return { text: "Good afternoon", icon: Sunset };
+    return { text: "Good evening", icon: Moon };
+}
 
+export function DashboardHeader({
+    userName = "",
+    userInitial = "T",
+}: {
+    userName?: string;
+    userInitial?: string;
+}) {
+    const [currentTime, setCurrentTime] = useState("");
     const [dateStr, setDateStr] = useState("");
+    const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Welcome back", icon: Sun });
 
     useEffect(() => {
-        // Set date string on client side only
-        setDateStr(new Date().toLocaleDateString('en-US', {
+        const now = new Date();
+        setDateStr(now.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         }));
+        setGreeting(getGreeting(now.getHours()));
 
         const updateTime = () => {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', {
+            const n = new Date();
+            setCurrentTime(n.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
-            });
-            setCurrentTime(timeStr);
+            }));
         };
         updateTime();
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
     }, []);
+
+    const GreetIcon = greeting.icon;
+    const firstName = userName.split(" ")[0] || "";
 
     return (
         <header className="relative z-10 mb-8 w-full">
@@ -56,10 +71,8 @@ export function DashboardHeader({ userInitial = "K" }: { userInitial?: string })
                         <div className="hidden sm:flex items-center gap-2 text-xs text-text-tertiary font-medium">
                             <span className="flex items-center gap-1">
                                 <Globe size={12} />
-                                ACC-01
+                                GSE-Live
                             </span>
-                            <span className="text-text-tertiary/30">•</span>
-                            <span>42ms</span>
                         </div>
                         <div className="bg-text-primary text-white px-3 py-1 rounded-lg font-mono text-xs font-black shadow-lg shadow-text-primary/20">
                             {currentTime}
@@ -68,19 +81,20 @@ export function DashboardHeader({ userInitial = "K" }: { userInitial?: string })
                 </div>
             </div>
 
-            {/* Main Title Area - Mobile Optimized */}
+            {/* Main Title Area */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4 md:px-0">
                 <div className="flex-1">
                     <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-2">
                         Control Center
                     </h1>
-                    <p className="text-sm text-text-secondary font-medium">
-                        Welcome back, {userInitial}. Here's your market overview.
+                    <p className="text-sm text-text-secondary font-medium flex items-center gap-1.5">
+                        <GreetIcon size={14} className="text-amber-500 flex-shrink-0" />
+                        {greeting.text}{firstName ? `, ${firstName}` : ""}. Here&apos;s your market overview.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Mobile Search - Compact */}
+                    {/* Mobile Search */}
                     <div className="relative md:hidden">
                         <button className="p-3 bg-background-surface rounded-xl border border-border hover:bg-gray-50 transition-colors min-h-[44px] min-w-[44px] touch-manipulation active:scale-95">
                             <Search size={18} className="text-text-tertiary" />
