@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -14,14 +22,8 @@ export interface UserProfile {
     created_at: string | null;
 }
 
-export interface AuthUser {
-    id: string;
-    email: string | null;
-    user_metadata: { full_name?: string; avatar_url?: string };
-}
-
 export interface UserProfileContextValue {
-    user: AuthUser | null;
+    user: User | null;
     profile: UserProfile | null;
     loading: boolean;
     displayName: string;
@@ -36,143 +38,171 @@ const UserProfileContext = createContext<UserProfileContextValue>({
     user: null,
     profile: null,
     loading: true,
-    displayName: "Trader",
-    displayInitial: "T",
-    firstName: "Trader",
+    displayName: "",
+    displayInitial: "",
+    firstName: "",
     refetch: () => { },
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 const STARTING_BALANCE = 10000;
 
-function deriveName(profile: UserProfile | null, user: AuthUser | null): string {
+// ─── Helper ───────────────────────────────────────────────────────────────────
+
+/** Derive the best available display name for this user. */
+function getDisplayName(profile: UserProfile | null, user: User | null): string {
     return (
-        profile?.full_name ||
-        user?.user_metadata?.full_name ||
+        profile?.full_name?.trim() ||
+        (user?.user_metadata?.full_name as string | undefined)?.trim() ||
         user?.email?.split("@")[0] ||
-        "Trader"
+        ""
     );
 }
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function UserProfileProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<AuthUser | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
-    const [trigger, setTrigger] = useState(0);
     const mountedRef = useRef(true);
+    const fetchingRef = useRef(false);
 
     useEffect(() => {
         mountedRef.current = true;
         return () => { mountedRef.current = false; };
     }, []);
 
-    useEffect(() => {
-        async function load() {
-            setLoading(true);
-            try {
-                // 1. Get the authenticated user
-                const { data: { user: authUser }, error: authErr } = await supabase.auth.getUser();
-                if (authErr || !authUser || !mountedRef.current) {
-                    if (mountedRef.current) setLoading(false);
-                    return;
-                }
-                if (mountedRef.current) setUser(authUser as AuthUser);
+    /**
+     * Fetches and normalises the profile row for a given user.
+     * - Creates the row if it doesn't exist
+     * - Seeds GH₵10,000 if balance is missing
+     * - Syncs full_name from user_metadata if the DB row has null
+     */
+    const fetchProfile = useCallback(async (authUser: User) => {
+        if (fetchingRef.current) return;
+        fetchingRef.current = true;
 
-                // 2. Fetch the profile row
-                const { data: profileData } = await supabase
+        try {
+            const { data: existingProfile } = await supabase
+                .from("profiles")
+                .select("id, full_name, avatar_url, cash_balance, username, created_at")
+                .eq("id", authUser.id)
+                .single();
+
+            if (!mountedRef.current) return;
+
+            const metaName = (authUser.user_metadata?.full_name as string | undefined) || null;
+
+            if (existingProfile) {
+                const balance = Number(existingProfile.cash_balance ?? 0);
+                const needsBalance = balance <= 0;
+                const needsName = !existingProfile.full_name && !!metaName;
+
+                // Show data immediately (optimistic)
+                if (mountedRef.current) {
+                    setProfile({
+                        ...(existingProfile as UserProfile),
+                        cash_balance: needsBalance ? STARTING_BALANCE : balance,
+                        full_name: needsName ? metaName : existingProfile.full_name,
+                    });
+                }
+
+                // Fire-and-forget any necessary DB updates
+                if (needsBalance || needsName) {
+                    const updates: Record<string, unknown> = {};
+                    if (needsBalance) updates.cash_balance = STARTING_BALANCE;
+                    if (needsName) updates.full_name = metaName;
+
+                    supabase
+                        .from("profiles")
+                        .update(updates)
+                        .eq("id", authUser.id)
+                        .then(({ error }) => {
+                            if (error) console.warn("[profile] update error:", error.message);
+                        });
+                }
+            } else {
+                // No profile row yet — create it
+                const { data: newProfile } = await supabase
                     .from("profiles")
+                    .insert({
+                        id: authUser.id,
+                        full_name: metaName,
+                        cash_balance: STARTING_BALANCE,
+                    })
                     .select("id, full_name, avatar_url, cash_balance, username, created_at")
-                    .eq("id", authUser.id)
                     .single();
 
-                if (!mountedRef.current) return;
-
-                if (profileData) {
-                    const balance = Number(profileData.cash_balance ?? 0);
-
-                    if (balance <= 0) {
-                        // Show balance optimistically immediately
-                        if (mountedRef.current) {
-                            setProfile({ ...(profileData as UserProfile), cash_balance: STARTING_BALANCE });
-                        }
-                        // Fire-and-forget DB seed (avoids AbortError blocking the UI)
-                        supabase
-                            .from("profiles")
-                            .update({ cash_balance: STARTING_BALANCE })
-                            .eq("id", authUser.id)
-                            .then(({ error }) => {
-                                if (error) console.warn("balance seed:", error.message);
-                            });
-                    } else {
-                        if (mountedRef.current) setProfile(profileData as UserProfile);
-                    }
-                } else {
-                    // No profile yet — create with GH₵10,000
-                    const fullName = authUser.user_metadata?.full_name || null;
-                    const { data: newProfile } = await supabase
-                        .from("profiles")
-                        .insert({
-                            id: authUser.id,
-                            full_name: fullName,
-                            cash_balance: STARTING_BALANCE,
-                        })
-                        .select("id, full_name, avatar_url, cash_balance, username, created_at")
-                        .single();
-
-                    if (mountedRef.current) {
-                        setProfile(
-                            newProfile
-                                ? (newProfile as UserProfile)
-                                : {
-                                    id: authUser.id,
-                                    full_name: fullName,
-                                    avatar_url: null,
-                                    cash_balance: STARTING_BALANCE,
-                                    username: null,
-                                    created_at: null,
-                                }
-                        );
-                    }
+                if (mountedRef.current) {
+                    setProfile(
+                        newProfile
+                            ? (newProfile as UserProfile)
+                            : {
+                                id: authUser.id,
+                                full_name: metaName,
+                                avatar_url: null,
+                                cash_balance: STARTING_BALANCE,
+                                username: null,
+                                created_at: null,
+                            }
+                    );
                 }
-            } catch (err: any) {
-                if (err?.name !== "AbortError") console.error("UserProfileContext error:", err);
-            } finally {
-                if (mountedRef.current) setLoading(false);
             }
+        } catch (err: any) {
+            if (err?.name !== "AbortError") {
+                console.error("[UserProfileContext] fetchProfile error:", err);
+            }
+        } finally {
+            fetchingRef.current = false;
+            if (mountedRef.current) setLoading(false);
         }
-
-        load();
-    }, [trigger]);
-
-    // Listen for Supabase auth state changes (login / logout)
-    useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-            if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-                setTrigger(t => t + 1);
-            }
-            if (event === "SIGNED_OUT") {
-                setUser(null);
-                setProfile(null);
-            }
-        });
-        return () => subscription.unsubscribe();
     }, []);
 
-    const refetch = useCallback(() => setTrigger(t => t + 1), []);
+    useEffect(() => {
+        /**
+         * onAuthStateChange is the SINGLE source of truth for auth state.
+         *
+         * The INITIAL_SESSION event fires synchronously with the cached session
+         * on mount — so the user object is available instantly on every page
+         * navigation, with zero network round-trips for the name display.
+         *
+         * We then fetch the full profile row from the DB in the background.
+         */
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (!mountedRef.current) return;
 
-    const rawName = deriveName(profile, user);
+            if (session?.user) {
+                // Set user immediately — name shows from user_metadata right away
+                setUser(session.user);
+                // Then load full profile (balance, custom name, etc.)
+                await fetchProfile(session.user);
+            } else {
+                // Signed out
+                setUser(null);
+                setProfile(null);
+                setLoading(false);
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [fetchProfile]);
+
+    const refetch = useCallback(() => {
+        if (user) fetchProfile(user);
+    }, [user, fetchProfile]);
+
+    const rawName = getDisplayName(profile, user);
     const firstName = rawName.split(" ")[0];
 
     const value: UserProfileContextValue = {
         user,
         profile,
         loading,
-        displayName: rawName,
-        displayInitial: firstName.charAt(0).toUpperCase(),
-        firstName,
+        displayName: rawName || "Trader",
+        displayInitial: (firstName.charAt(0) || "T").toUpperCase(),
+        firstName: firstName || "Trader",
         refetch,
     };
 
@@ -186,8 +216,8 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * Use this hook in any component inside the dashboard to get the shared user profile.
- * The profile is loaded ONCE at the layout level and cached — no per-component fetches.
+ * Use inside any component within the dashboard layout.
+ * Returns the shared user profile loaded ONCE at the layout level.
  */
 export function useUserProfile(): UserProfileContextValue {
     return useContext(UserProfileContext);

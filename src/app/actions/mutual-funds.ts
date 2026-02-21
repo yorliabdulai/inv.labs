@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase/client";
+import { createServerClient } from "@/lib/supabase/server";
 import {
     type MutualFund,
     type MutualFundNAVHistory,
@@ -22,6 +22,7 @@ import {
  */
 export async function getMutualFunds(): Promise<MutualFund[]> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_funds")
             .select("*")
@@ -41,6 +42,7 @@ export async function getMutualFunds(): Promise<MutualFund[]> {
  */
 export async function getMutualFund(fundId: string): Promise<MutualFund | null> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_funds")
             .select("*")
@@ -63,6 +65,7 @@ export async function getMutualFundNAVHistory(
     days: number = 365
 ): Promise<MutualFundNAVHistory[]> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_fund_nav_history")
             .select("*")
@@ -85,6 +88,7 @@ export async function getMutualFundPerformance(
     fundId: string
 ): Promise<MutualFundPerformance[]> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_fund_performance")
             .select("*")
@@ -105,6 +109,7 @@ export async function getUserMutualFundHoldings(
     userId: string
 ): Promise<UserMutualFundHolding[]> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("user_mutual_fund_holdings")
             .select(`
@@ -155,6 +160,7 @@ export async function getUserMutualFundTransactions(
     userId: string
 ): Promise<MutualFundTransaction[]> {
     try {
+        const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_fund_transactions")
             .select(`
@@ -191,6 +197,8 @@ export async function buyMutualFundUnits(
     investmentAmount: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
     try {
+        const supabase = await createServerClient();
+
         // Get fund details
         const fund = await getMutualFund(fundId);
         if (!fund) {
@@ -222,10 +230,9 @@ export async function buyMutualFundUnits(
         if (profileError) throw profileError;
 
         if (profile.cash_balance < totalCost) {
-            return { success: false, message: "Insufficient cash balance" };
+            return { success: false, message: "Insufficient virtual cash balance" };
         }
 
-        // Start transaction
         // 1. Deduct cash from user
         const { error: updateCashError } = await supabase
             .from("profiles")
@@ -263,7 +270,6 @@ export async function buyMutualFundUnits(
             .single();
 
         if (existingHolding) {
-            // Update existing holding
             const newUnits = existingHolding.units_held + units;
             const newTotalInvested = existingHolding.total_invested + totalCost;
             const newAverageNav = newTotalInvested / newUnits;
@@ -281,7 +287,6 @@ export async function buyMutualFundUnits(
 
             if (updateError) throw updateError;
         } else {
-            // Create new holding
             const { error: insertError } = await supabase
                 .from("user_mutual_fund_holdings")
                 .insert({
@@ -315,6 +320,8 @@ export async function redeemMutualFundUnits(
     unitsToRedeem: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
     try {
+        const supabase = await createServerClient();
+
         // Get fund details
         const fund = await getMutualFund(fundId);
         if (!fund) {
@@ -357,8 +364,7 @@ export async function redeemMutualFundUnits(
             fund.exit_fee
         );
 
-        // Start transaction
-        // 1. Add cash to user
+        // 1. Get current balance and add proceeds
         const { data: profile, error: profileError } = await supabase
             .from("profiles")
             .select("cash_balance")
@@ -412,7 +418,6 @@ export async function redeemMutualFundUnits(
 
             if (updateError) throw updateError;
         } else {
-            // Delete holding if all units redeemed
             const { error: deleteError } = await supabase
                 .from("user_mutual_fund_holdings")
                 .delete()
