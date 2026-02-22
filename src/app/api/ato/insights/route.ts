@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 import { generateQuickInsight } from "@/lib/ai/ato-service";
 import { buildCompleteContext } from "@/lib/ai/ato-context";
 
