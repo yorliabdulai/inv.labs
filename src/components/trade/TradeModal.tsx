@@ -7,6 +7,7 @@ import { X, TrendingUp, TrendingDown, DollarSign, Calculator, AlertTriangle, Che
 import { supabase } from "@/lib/supabase/client";
 import { executeStockTrade } from "@/app/actions/stocks";
 import { formatCurrency } from "@/lib/mutual-funds-data";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 interface TradeModalProps {
     stock: Stock;
@@ -17,6 +18,7 @@ interface TradeModalProps {
 }
 
 export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: TradeModalProps) {
+    const { user } = useUserProfile();
     const [type, setType] = useState<"BUY" | "SELL">("BUY");
     const [quantity, setQuantity] = useState(1);
     const [orderType, setOrderType] = useState<"MARKET" | "LIMIT">("MARKET");
@@ -68,8 +70,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 throw new Error("Invalid quantity");
             }
 
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
-            if (authError || !user) throw new Error("Authentication required");
+            if (!user) throw new Error("Authentication required");
 
             const result = await executeStockTrade({
                 userId: user.id,

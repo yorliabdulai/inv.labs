@@ -81,7 +81,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     userBalance={userBalance}
-                    onSuccess={() => { setIsModalOpen(false); refetch(); }}
+                    onSuccess={() => { refetch(); }}
                 />
             </>
         );
@@ -186,7 +186,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 userBalance={userBalance}
-                onSuccess={() => { setIsModalOpen(false); refetch(); }}
+                onSuccess={() => { refetch(); }}
             />
         </>
     );

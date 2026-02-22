@@ -22,9 +22,11 @@ import {
     Search, PieChart, TrendingUp, RefreshCw,
     Filter, Zap, ShieldCheck, Wallet, ArrowUpRight
 } from "lucide-react";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 export default function MutualFundsPage() {
     const router = useRouter();
+    const { user, profile: userProfile, loading: profileLoading } = useUserProfile();
     const [funds, setFunds] = useState<MutualFund[]>([]);
     const [performance, setPerformance] = useState<MutualFundPerformance[]>([]);
     const [latestNavs, setLatestNavs] = useState<Record<string, number>>({});
@@ -35,17 +37,15 @@ export default function MutualFundsPage() {
     const [filterRisk, setFilterRisk] = useState(0);
     const [cashBalance, setCashBalance] = useState(0);
 
-    const fetchData = async (showLoader = false) => {
+    const fetchData = async (showLoader = false, userId?: string) => {
         if (showLoader) setLoading(true);
         try {
-            const { data: { user } } = await supabase.auth.getUser();
-
             // Parallel fetches
             const [fundsData, perfData, navData, userHoldings] = await Promise.all([
                 getMutualFunds(),
                 getAllMutualFundsPerformance(),
                 getAllMutualFundsLatestNAV(),
-                user ? getUserMutualFundHoldings(user.id) : Promise.resolve([])
+                userId ? getUserMutualFundHoldings(userId) : Promise.resolve([])
             ]);
 
             setFunds(fundsData);
@@ -75,8 +75,9 @@ export default function MutualFundsPage() {
     };
 
     useEffect(() => {
-        fetchData(true);
-    }, []);
+        if (profileLoading) return;
+        fetchData(true, user?.id);
+    }, [user, profileLoading]);
 
     // ─── Derived Data ─────────────────────────────────────────────────────────
     const fundTypes = useMemo(() => ["All", ...Array.from(new Set(funds.map((f) => f.fund_type)))], [funds]);
@@ -151,7 +152,11 @@ export default function MutualFundsPage() {
                             <div className="text-3xl font-black mb-4">
                                 {formatCurrency(totalPortfolioValue)}
                             </div>
-                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="text-sm font-medium opacity-80">Portfolio Value</div>
+                                <div className="text-sm font-bold text-right">{formatCurrency(totalPortfolioValue)}</div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 mt-2 mb-4 pt-4 border-t border-white/10">
                                 <div>
                                     <div className="text-[10px] font-bold text-indigo-200 uppercase mb-1">Total Funds</div>
                                     <div className="text-lg font-black">{holdings.length}</div>
@@ -247,8 +252,8 @@ export default function MutualFundsPage() {
                             key={type}
                             onClick={() => setFilterType(type)}
                             className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${filterType === type
-                                    ? "bg-[#1A1C4E] text-white shadow-lg shadow-indigo-100"
-                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                ? "bg-[#1A1C4E] text-white shadow-lg shadow-indigo-100"
+                                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                                 }`}
                         >
                             {type === "All" ? "All Strategies" : type}
@@ -264,8 +269,8 @@ export default function MutualFundsPage() {
                                 key={risk}
                                 onClick={() => setFilterRisk(risk)}
                                 className={`w-9 h-9 flex items-center justify-center rounded-xl text-xs font-black transition-all border ${filterRisk === risk
-                                        ? "bg-indigo-600 border-indigo-600 text-white"
-                                        : "bg-white border-gray-200 text-gray-400 hover:border-indigo-200 hover:text-indigo-600"
+                                    ? "bg-indigo-600 border-indigo-600 text-white"
+                                    : "bg-white border-gray-200 text-gray-400 hover:border-indigo-200 hover:text-indigo-600"
                                     }`}
                             >
                                 {risk === 0 ? "All" : risk}

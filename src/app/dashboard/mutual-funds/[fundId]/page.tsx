@@ -42,11 +42,13 @@ import {
     DollarSign,
     RefreshCw,
 } from "lucide-react";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 export default function MutualFundDetailPage() {
     const params = useParams();
     const router = useRouter();
     const fundId = params.fundId as string;
+    const { user, profile: userProfile, loading: profileLoading } = useUserProfile();
 
     const [fund, setFund] = useState<MutualFund | null>(null);
     const [navHistory, setNavHistory] = useState<MutualFundNAVHistory[]>([]);
@@ -57,18 +59,15 @@ export default function MutualFundDetailPage() {
     const [showBuyModal, setShowBuyModal] = useState(false);
     const [showRedeemModal, setShowRedeemModal] = useState(false);
     const [cashBalance, setCashBalance] = useState(10000);
-    const [userId, setUserId] = useState("");
 
     useEffect(() => {
+        if (profileLoading) return;
+
         async function fetchData() {
             try {
                 setLoading(true);
 
-                // Get user
-                const { data: { user } } = await supabase.auth.getUser();
                 if (user) {
-                    setUserId(user.id);
-
                     // Get cash balance
                     const { data: profile } = await supabase
                         .from("profiles")
@@ -111,7 +110,6 @@ export default function MutualFundDetailPage() {
     }, [fundId]);
 
     const refreshData = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             const { data: profile } = await supabase
                 .from("profiles")
@@ -204,8 +202,8 @@ export default function MutualFundDetailPage() {
                                                 <div
                                                     key={level}
                                                     className={`h-full flex-1 transition-all ${level <= fund.risk_rating
-                                                            ? `bg-${riskColor}-500`
-                                                            : 'bg-gray-200'
+                                                        ? `bg-${riskColor}-500`
+                                                        : 'bg-gray-200'
                                                         }`}
                                                 />
                                             ))}
@@ -498,7 +496,7 @@ export default function MutualFundDetailPage() {
             {showBuyModal && (
                 <BuyMutualFundModal
                     fund={fund}
-                    userId={userId}
+                    userId={user?.id || ""}
                     cashBalance={cashBalance}
                     isOpen={showBuyModal}
                     onClose={() => setShowBuyModal(false)}
@@ -510,7 +508,7 @@ export default function MutualFundDetailPage() {
                 <RedeemMutualFundModal
                     fund={fund}
                     holding={userHolding}
-                    userId={userId}
+                    userId={user?.id || ""}
                     isOpen={showRedeemModal}
                     onClose={() => setShowRedeemModal(false)}
                     onSuccess={refreshData}

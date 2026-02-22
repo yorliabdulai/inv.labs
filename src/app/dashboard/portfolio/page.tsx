@@ -9,23 +9,13 @@ import {
     Activity, Eye, Layers, Target, Zap, AlertTriangle, CheckCircle2
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { useUserProfile } from "@/lib/useUserProfile";
 import { AllocationChart } from "@/components/portfolio/AllocationChart";
 import { PortfolioChart, type PortfolioDataPoint } from "@/components/dashboard/PortfolioChart";
 import Link from "next/link";
+import { getPortfolioData, type PortfolioData, type Holding } from "@/app/actions/portfolio";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
-interface Holding {
-    symbol: string;
-    quantity: number;
-    averageCost: number;
-    totalCost: number;
-    currentPrice: number;
-    marketValue: number;
-    gain: number;
-    gainPercent: number;
-    sector: string;
-}
-
+// Local types moved to actions/portfolio.ts or reused
 interface RawTransaction {
     id: string;
     type: "BUY" | "SELL";
@@ -136,6 +126,7 @@ const PERIODS = ["1W", "1M", "3M", "1Y", "ALL"] as const;
 type Period = typeof PERIODS[number];
 
 export default function PortfolioPage() {
+    const { user, loading: profileLoading } = useUserProfile();
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [mutualFundHoldings, setMutualFundHoldings] = useState<any[]>([]);
     const [allTransactions, setAllTransactions] = useState<RawTransaction[]>([]);
@@ -150,101 +141,41 @@ export default function PortfolioPage() {
 
     const STARTING_BALANCE = 10000;
 
-    async function fetchData(isRefresh = false) {
+    async function fetchData(isRefresh = false, userId?: string) {
         if (isRefresh) setRefreshing(true); else setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { setLoading(false); return; }
+        if (!userId) { setLoading(false); setRefreshing(false); return; }
 
-        // ── Stock transactions ─────────────
-        const { data: txData } = await supabase
-            .from("transactions").select("*").eq("user_id", user.id);
-        const transactions: RawTransaction[] = txData ?? [];
-        setAllTransactions(transactions);
-
-        // ── Live prices ────────────────────
-        let stocks: Stock[] = [];
         try {
-            const r = await fetch(`${GSE_API_BASE}/live`, { cache: "no-store" });
-            if (r.ok) {
-                const raw = await r.json();
-                stocks = raw.map((q: any) => {
-                    const meta: Record<string, { name: string; sector: string }> = {
-                        MTNGH: { name: "MTN Ghana", sector: "Telecom" },
-                        GCB: { name: "GCB Bank", sector: "Finance" },
-                        EGH: { name: "Ecobank Ghana", sector: "Finance" },
-                        CAL: { name: "CAL Bank", sector: "Finance" },
-                        GOIL: { name: "Ghana Oil Company", sector: "Energy" },
-                    };
-                    const m = meta[q.name] ?? { name: q.name, sector: "Other" };
-                    const prev = q.price - q.change;
-                    return { symbol: q.name, name: m.name, sector: m.sector, price: q.price, change: q.change, changePercent: prev !== 0 ? (q.change / prev) * 100 : 0, volume: q.volume };
-                });
-            } else { stocks = await getStocks(); }
-        } catch { stocks = await getStocks(); }
+            const data = await getPortfolioData();
+            if (data) {
+                setHoldings(data.holdings);
+                setMutualFundHoldings(data.mutualFundHoldings);
+                setCashBalance(data.cashBalance);
+                setTotalValue(data.totalValue);
+                setMutualFundsValue(data.mutualFundsValue);
 
-        const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
-        const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector ?? "Other"]));
-        setPriceMapState(priceMap);
+                // Fetch transactions for the chart
+                const { data: txData } = await supabase
+                    .from("transactions").select("*").eq("user_id", userId);
+                setAllTransactions(txData ?? []);
 
-        // ── Aggregate holdings ─────────────
-        let cash = STARTING_BALANCE;
-        const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
-
-        transactions.forEach(tx => {
-            const cur = holdingMap.get(tx.symbol) ?? { quantity: 0, totalCost: 0 };
-            if (tx.type === "BUY") {
-                cur.quantity += tx.quantity;
-                cur.totalCost += tx.total_amount;
-                cash -= tx.total_amount;
-            } else {
-                const avg = cur.quantity > 0 ? cur.totalCost / cur.quantity : 0;
-                cur.totalCost = Math.max(0, cur.totalCost - avg * tx.quantity);
-                cur.quantity = Math.max(0, cur.quantity - tx.quantity);
-                cash += tx.total_amount;
+                // Set price map for the chart logic if needed
+                const priceMap = new Map(data.holdings.map(h => [h.symbol, h.currentPrice]));
+                setPriceMapState(priceMap);
             }
-            holdingMap.set(tx.symbol, cur);
-        });
-
-        let portfolioSum = 0;
-        const computed: Holding[] = [];
-        holdingMap.forEach((d, sym) => {
-            if (d.quantity > 0) {
-                const price = priceMap.get(sym) ?? 0;
-                const mv = d.quantity * price;
-                const gain = mv - d.totalCost;
-                computed.push({
-                    symbol: sym, quantity: d.quantity,
-                    averageCost: d.quantity > 0 ? d.totalCost / d.quantity : 0,
-                    totalCost: d.totalCost, currentPrice: price, marketValue: mv,
-                    gain, gainPercent: d.totalCost > 0 ? (gain / d.totalCost) * 100 : 0,
-                    sector: sectorMap.get(sym) ?? "Other",
-                });
-                portfolioSum += mv;
-            }
-        });
-        setHoldings(computed);
-        setTotalValue(portfolioSum);
-
-        // ── Mutual funds ────────────────────
-        const { getUserMutualFundHoldings } = await import("@/app/actions/mutual-funds");
-        const mfHoldings = await getUserMutualFundHoldings(user.id);
-        setMutualFundHoldings(mfHoldings);
-        const mfValue = mfHoldings.reduce((s: number, h: any) => s + (h.current_value ?? 0), 0);
-        setMutualFundsValue(mfValue);
-
-        const { data: mfTx } = await supabase
-            .from("mutual_fund_transactions").select("*").eq("user_id", user.id);
-        (mfTx ?? []).forEach((tx: any) => {
-            if (tx.transaction_type === "buy") cash -= tx.net_amount;
-            else cash += tx.net_amount;
-        });
-
-        setCashBalance(cash);
-        setLoading(false);
-        setRefreshing(false);
+        } catch (error) {
+            console.error("Error fetching portfolio data:", error);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
     }
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => {
+        if (!profileLoading) {
+            fetchData(false, user?.id);
+        }
+    }, [user, profileLoading]);
 
     // ─── Derived Metrics ──────────────────────────────────────────────────────
     const totalEquity = totalValue + mutualFundsValue + cashBalance;

@@ -52,7 +52,7 @@ function buildHoldingsMap(txns: RawTransaction[], priceMap: Record<string, numbe
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 export default function StocksPage() {
-    const { profile } = useUserProfile();
+    const { user, profile, loading: profileLoading } = useUserProfile();
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -102,29 +102,32 @@ export default function StocksPage() {
     };
 
     // Fetch user holdings from Supabase
-    const fetchHoldings = async (priceMap: Record<string, number>) => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+    const fetchHoldings = async (userId: string, priceMap: Record<string, number>) => {
         const { data: txns } = await supabase
             .from("transactions")
             .select("symbol, type, quantity, price_per_share")
-            .eq("user_id", user.id);
+            .eq("user_id", userId);
         if (txns && txns.length > 0) {
             setHoldings(buildHoldingsMap(txns as RawTransaction[], priceMap));
         }
     };
 
     useEffect(() => {
+        if (profileLoading) return;
+
         (async () => {
             const fetched = await fetchStocks(true);
             const priceMap: Record<string, number> = {};
             fetched.forEach((s) => { priceMap[s.symbol] = s.price; });
-            await fetchHoldings(priceMap);
+
+            if (user) {
+                await fetchHoldings(user.id, priceMap);
+            }
         })();
 
         const interval = setInterval(() => fetchStocks(false), 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, [user, profileLoading]);
 
     // ─── Derived data ─────────────────────────────────────────────────────────
     const sectors = useMemo(() => {
@@ -259,8 +262,8 @@ export default function StocksPage() {
                             key={sec}
                             onClick={() => setSectorFilter(sec)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${sectorFilter === sec
-                                    ? "bg-indigo-600 text-white shadow-sm"
-                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                ? "bg-indigo-600 text-white shadow-sm"
+                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                 }`}
                         >
                             {sec}
@@ -277,8 +280,8 @@ export default function StocksPage() {
                                 key={key}
                                 onClick={() => toggleSort(key)}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${sortKey === key
-                                        ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
-                                        : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-transparent"
+                                    ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                    : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-transparent"
                                     }`}
                             >
                                 {key.charAt(0).toUpperCase() + key.slice(1)}

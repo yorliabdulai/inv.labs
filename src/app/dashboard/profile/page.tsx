@@ -5,16 +5,11 @@ import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { LogOut, User, Award, Shield, Settings, CreditCard, ChevronRight, Mail, Calendar, TrendingUp, Edit2, Bell, Lock, Globe } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 export default function ProfilePage() {
-    const [user, setUser] = useState<any>(null);
+    const { user, loading } = useUserProfile();
     const router = useRouter();
-
-    useEffect(() => {
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            setUser(user);
-        });
-    }, []);
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
