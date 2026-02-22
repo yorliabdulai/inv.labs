@@ -16,7 +16,7 @@ export function Sidebar() {
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
     const navItems = [
-        { href: "/dashboard", label: "Dashboard", icon: Home },
+        { href: "/dashboard", label: "Command Center", icon: Home },
         { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
         { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase },

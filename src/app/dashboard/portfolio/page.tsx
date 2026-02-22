@@ -349,8 +349,8 @@ export default function PortfolioPage() {
                                 <Briefcase size={20} className="text-white" />
                             </div>
                             <div>
-                                <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">Portfolio Analytics</h1>
-                                <p className="text-indigo-200 text-sm font-medium">Real-time performance &amp; insights</p>
+                                <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">Portfolio Command Center</h1>
+                                <p className="text-indigo-200 text-sm font-medium">Detailed asset breakdown & oversight</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

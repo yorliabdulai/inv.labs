@@ -56,10 +56,10 @@ export function DashboardHeader() {
     return (
         <header className="relative z-10 mb-8 w-full">
             {/* Mobile-First Status Bar */}
-            <div className="bg-background-surface/80 backdrop-blur-sm border-b border-border/50 rounded-b-2xl mx-4 mb-6 shadow-sm md:mx-0 md:rounded-lg md:border md:mb-8 transition-all duration-300">
+            <div className="bg-background-surface/80 backdrop-blur-sm border-b border-border/50 rounded-b-[24px] mx-4 mb-6 shadow-sm md:mx-0 md:rounded-2xl md:border md:mb-8 transition-all duration-300">
                 <div className="flex items-center justify-between p-3 md:p-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
+                        <div className="w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
                             <Activity size={16} className="text-white" />
                         </div>
                         <div>
@@ -70,13 +70,13 @@ export function DashboardHeader() {
                                 </span>
                                 <span className="text-xs font-black text-brand uppercase tracking-wider">Live Feed</span>
                             </div>
-                            <div className="text-[10px] md:text-xs text-text-tertiary font-bold uppercase">{dateStr}</div>
+                            <div className="text-[10px] md:text-xs text-text-secondary font-black uppercase tracking-wide">{dateStr}</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="hidden sm:flex items-center gap-2 text-xs text-text-tertiary font-medium">
+                        <div className="hidden sm:flex items-center gap-2 text-xs text-text-primary font-black uppercase tracking-tight">
                             <span className="flex items-center gap-1">
-                                <Globe size={12} />
+                                <Globe size={12} className="text-brand" />
                                 GSE-Live
                             </span>
                         </div>
@@ -90,15 +90,15 @@ export function DashboardHeader() {
             {/* Main Title Area */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4 md:px-0">
                 <div className="flex-1">
-                    <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-2">
+                    <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tighter mb-2">
                         Control Center
                     </h1>
-                    <div className="text-sm text-text-secondary font-medium flex items-center gap-1.5 min-h-[20px]">
+                    <div className="text-sm text-text-primary font-black flex items-center gap-1.5 min-h-[20px] uppercase tracking-wide">
                         <GreetIcon size={14} className="text-amber-500 flex-shrink-0" />
                         {showSkeleton ? (
                             <span className="inline-block w-32 h-4 bg-gray-100 animate-pulse rounded" />
                         ) : (
-                            <span>{greeting.text}, {name}. Here&apos;s your market overview.</span>
+                            <span>{greeting.text}, {name}.</span>
                         )}
                     </div>
                 </div>
@@ -110,18 +110,18 @@ export function DashboardHeader() {
                         <input
                             type="text"
                             placeholder="Search markets, stocks..."
-                            className="bg-background-surface border border-border rounded-xl pl-12 pr-4 py-3 text-sm font-medium w-72 focus:ring-2 focus:ring-brand/10 focus:border-brand-accent transition-all outline-none shadow-sm placeholder:text-text-tertiary/70"
+                            className="bg-background-surface border border-border rounded-2xl pl-12 pr-4 py-3 text-sm font-black w-72 focus:ring-2 focus:ring-brand/10 focus:border-brand-accent transition-all outline-none shadow-premium placeholder:text-text-tertiary/70"
                         />
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2">
-                        <button className="relative p-3 bg-background-surface rounded-xl border border-border hover:bg-brand/5 hover:border-brand/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-95">
-                            <Bell size={18} className="text-text-tertiary group-hover:text-brand transition-colors" />
+                        <button className="relative p-3 bg-background-surface rounded-2xl border border-border hover:bg-brand/5 hover:border-brand/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 shadow-sm">
+                            <Bell size={18} className="text-text-secondary group-hover:text-brand transition-colors" />
                             <span className="absolute -top-1 -right-1 w-3 h-3 bg-status-error rounded-full border-2 border-white animate-pulse"></span>
                         </button>
 
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-brand to-brand-accent text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand/30 hover:shadow-xl transition-all cursor-pointer touch-manipulation active:scale-95 ring-2 ring-transparent hover:ring-brand/20">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand/30 hover:shadow-xl transition-all cursor-pointer touch-manipulation active:scale-95 ring-2 ring-transparent hover:ring-brand/20">
                             {initial}
                         </div>
                     </div>

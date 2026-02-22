@@ -1,393 +1,324 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PieChart, Eye, Target, Clock, Shield, BarChart3, Users, Trophy, AlertTriangle, Layers } from "lucide-react";
+import {
+    ArrowRight,
+    TrendingUp,
+    TrendingDown,
+    DollarSign,
+    PieChart,
+    Eye,
+    Target,
+    Clock,
+    Shield,
+    BarChart3,
+    Trophy,
+    AlertTriangle,
+    Layers,
+    Activity,
+    Briefcase,
+    Zap,
+    ChevronRight,
+    Search
+} from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
-import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
-import { useUserProfile } from "@/lib/useUserProfile";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { getDashboardData, type DashboardData } from "@/app/actions/dashboard";
+import { formatCurrency } from "@/lib/mutual-funds-data";
+import { AllocationChart } from "@/components/portfolio/AllocationChart";
 
 export default function DashboardPage() {
-    const { profile, displayName, displayInitial, loading: profileLoading } = useUserProfile();
-
-    // Real values from Supabase profile
-    const cashBalance = profile?.cash_balance ?? 0;
-    const buyingPower = cashBalance;
-    // Placeholder stats until we compute from transactions
-    const dayChange = 0;
-    const totalReturn = 0;
-    const riskScore = 65;
-    const rank = 0;
-    const totalUsers = 0;
-
+    const [data, setData] = useState<DashboardData | null>(null);
+    const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
-    const [lastUpdate] = useState(new Date());
-    const [topStocks, setTopStocks] = useState<Stock[]>([]);
-    const [loadingStocks, setLoadingStocks] = useState(true);
+    const [activeRange, setActiveRange] = useState('1M');
 
     useEffect(() => {
         setMounted(true);
-
-        async function fetchDashboardData() {
-            try {
-                const response = await fetch(`${GSE_API_BASE}/live`, { cache: 'no-store' });
-                if (response.ok) {
-                    const rawData = await response.json();
-                    const stocks: Stock[] = rawData.map((quote: any) => {
-                        const knownMeta: Record<string, { name: string; sector: string }> = {
-                            "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
-                            "GCB": { name: "GCB Bank", sector: "Finance" },
-                            "EGH": { name: "Ecobank Ghana", sector: "Finance" },
-                            "CAL": { name: "CAL Bank", sector: "Finance" },
-                            "GOIL": { name: "Ghana Oil Company", sector: "Energy" }
-                        };
-                        const meta = knownMeta[quote.name] || { name: quote.name, sector: "Other" };
-                        const prev = quote.price - quote.change;
-                        return {
-                            symbol: quote.name,
-                            name: meta.name,
-                            sector: meta.sector,
-                            price: quote.price,
-                            change: quote.change,
-                            changePercent: prev !== 0 ? (quote.change / prev) * 100 : 0,
-                            volume: quote.volume
-                        };
-                    });
-                    setTopStocks(stocks.slice(0, 3));
-                    setLoadingStocks(false);
-                } else {
-                    const data = await getStocks();
-                    setTopStocks(data.slice(0, 3));
-                    setLoadingStocks(false);
-                }
-            } catch (err) {
-                console.error("Dashboard fetch error:", err);
-                const data = await getStocks();
-                setTopStocks(data.slice(0, 3));
-                setLoadingStocks(false);
-            }
+        async function fetchInitialData() {
+            const result = await getDashboardData();
+            setData(result);
+            setLoading(false);
         }
-
-        fetchDashboardData();
+        fetchInitialData();
     }, []);
 
+    const isPositive = (data?.dailyChange ?? 0) >= 0;
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                <p className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] animate-pulse">
+                    Synchronizing Command Center...
+                </p>
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-4 md:space-y-6 pb-24 md:pb-12">
+        <div className="space-y-6 md:space-y-8 pb-24 md:pb-12 animate-in fade-in duration-700">
             <DashboardHeader />
 
-            {/* Real-time Status Banner - Mobile Optimized */}
-            <div className="glass-card p-4 md:p-5 bg-gradient-to-r from-emerald-50/50 to-indigo-50/50 border-emerald-100/50 animate-fade-in-scale">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-0">
-                    <div className="flex items-center gap-3 flex-wrap">
-                        <span className="relative flex h-2.5 w-2.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-success opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-status-success"></span>
-                        </span>
-                        <span className="text-sm md:text-sm font-black text-emerald-800 uppercase tracking-wide">Market Live</span>
-                        <div className="h-4 w-px bg-emerald-200 hidden sm:block"></div>
-                        <span className="text-xs text-emerald-700 font-bold hidden sm:inline">
-                            Last update: {mounted ? lastUpdate.toLocaleTimeString() : "--:--:--"}
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3 md:gap-4 flex-wrap">
-                        <div className="flex items-center gap-2 text-xs font-bold text-text-secondary min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-emerald-100/50 hover:bg-white transition-colors touch-manipulation">
-                            <Users size={14} className="text-brand" />
-                            <span className="hidden sm:inline">{rank > 0 ? `Rank #${rank.toLocaleString()} of ${totalUsers.toLocaleString()}` : 'Rank: Unranked'}</span>
-                            <span className="sm:hidden">{rank > 0 ? `#${rank}` : 'Unranked'}</span>
+            {/* Premium Command Center Header - Real Stats */}
+            <div className="relative isolate overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+                    {/* Total Value Hero */}
+                    <div className="md:col-span-2 glass-card p-6 md:p-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 border-indigo-500/20 text-white relative group overflow-hidden shadow-2xl shadow-indigo-500/10">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-20 -mt-20 blur-3xl animate-pulse" />
+
+                        <div className="relative">
+                            <div className="flex items-center gap-2 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                                    <Briefcase size={20} className="text-indigo-300" />
+                                </div>
+                                <span className="text-xs font-black text-indigo-100 uppercase tracking-[0.2em] opacity-90">Portfolio Intelligence</span>
+                            </div>
+
+                            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                                <div>
+                                    <div className="text-4xl md:text-6xl font-black tracking-tighter mb-2">
+                                        {formatCurrency(data?.totalEquity ?? 0)}
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl font-black text-xs ${isPositive ? 'bg-emerald-500/30 text-emerald-300' : 'bg-red-500/30 text-red-300'}`}>
+                                            {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                            <span>{isPositive ? '+' : ''}{data?.dailyChangePercent.toFixed(2)}% TODAY</span>
+                                        </div>
+                                        <div className="h-4 w-px bg-white/20" />
+                                        <div className="text-xs font-black text-indigo-100 uppercase tracking-widest">
+                                            {formatCurrency(data?.dailyChange ?? 0)} Movement
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 min-w-[140px]">
+                                        <div className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Total Return</div>
+                                        <div className="text-xl font-black text-white">{data?.totalGainPercent.toFixed(1)}%</div>
+                                        <div className="text-[10px] font-bold text-indigo-400 mt-1">{formatCurrency(data?.totalGain ?? 0)} PROFIT</div>
+                                    </div>
+                                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 min-w-[140px]">
+                                        <div className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Buying Power</div>
+                                        <div className="text-xl font-black text-white">{formatCurrency(data?.cashBalance ?? 0)}</div>
+                                        <div className="text-[10px] font-bold text-indigo-400 mt-1">AVAILABLE CASH</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-bold text-status-warning min-h-[36px] px-3 py-1.5 rounded-lg bg-white/60 border border-amber-100/50 hover:bg-white transition-colors touch-manipulation">
-                            <AlertTriangle size={14} />
-                            <span>Risk: {riskScore}/100</span>
+                    </div>
+
+                    {/* Risk & Health Metrics */}
+                    <div className="glass-card p-6 bg-white border-border shadow-md flex flex-col justify-between group h-full">
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="stat-label flex items-center gap-2">
+                                    <Shield size={16} className="text-brand" />
+                                    Portfolio Health
+                                </h3>
+                                <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-brand/5 transition-colors">
+                                    <Zap size={14} className="text-brand" />
+                                </div>
+                            </div>
+
+                            <div className="text-center mb-6">
+                                <div className={`text-4xl font-black mb-1 ${data?.riskColor}`}>
+                                    {data?.riskLabel}
+                                </div>
+                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Risk Assessment Score: {data?.riskScore}/100</div>
+                            </div>
+
+                            <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden mb-6">
+                                <div
+                                    className={`h-full transition-all duration-1000 ease-out rounded-full`}
+                                    style={{
+                                        width: `${data?.riskScore ?? 0}%`,
+                                        background: `linear-gradient(90deg, #10B981, ${(data?.riskScore ?? 0) > 50 ? ((data?.riskScore ?? 0) > 75 ? '#EF4444' : '#F59E0B') : '#10B981'})`
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-white transition-colors">
+                                <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Diversification</span>
+                                <span className="text-xs font-black text-gray-900">{data?.allocation.length} Asset Segments</span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-white transition-colors">
+                                <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Asset Classes</span>
+                                <span className="text-xs font-black text-gray-900">
+                                    {[data?.stockMarketValue && 'Stocks', data?.mutualFundsValue && 'Funds'].filter(Boolean).length} Active Types
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Premium Bento Grid Layout - Mobile First */}
-            <div className="bento-grid stagger-children">
-
-                {/* Main Performance Chart - Mobile Optimized */}
-                <div className="bento-col-8">
-                    <div className="glass-card p-4 md:p-8 h-full flex flex-col bg-background-surface">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0 mb-4 md:mb-8">
-                            <div className="flex-1">
-                                <h3 className="stat-label flex items-center gap-2 mb-2 md:mb-0">
-                                    <BarChart3 size={16} className="text-brand" />
-                                    Portfolio Performance
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Performance Visualizer */}
+                <div className="lg:col-span-8 flex flex-col gap-6">
+                    <div className="glass-card p-6 bg-white flex flex-col min-h-[440px] shadow-sm">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 className="text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                                    <BarChart3 size={18} className="text-indigo-600" />
+                                    Growth Analysis
                                 </h3>
-                                <div className="flex flex-col md:flex-row md:items-end gap-3 md:gap-4 mt-2">
-                                    <div>
-                                        {profileLoading ? (
-                                            <div className="h-12 w-48 bg-gray-100 rounded-xl animate-pulse" />
-                                        ) : (
-                                            <span className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter">
-                                                GH₵ {cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                            </span>
-                                        )}
-                                        <div className="text-xs font-bold text-text-tertiary uppercase tracking-wider mt-1">
-                                            Cash Balance
-                                        </div>
-                                    </div>
-                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg min-h-[36px] self-start md:self-end mb-1 ${dayChange >= 0 ? 'bg-emerald-50 text-status-success border border-emerald-100' : 'bg-red-50 text-status-error border border-red-100'}`}>
-                                        {dayChange >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                                        <span className="font-black text-sm">
-                                            {dayChange >= 0 ? '+' : ''}{dayChange.toFixed(2)}%
-                                        </span>
-                                    </div>
-                                </div>
+                                <p className="text-xs text-gray-400 font-medium mt-1 uppercase tracking-widest">Projected vs Actual performance</p>
                             </div>
-                            <div className="flex gap-1 bg-gray-50/80 p-1 rounded-xl border border-border overflow-x-auto touch-manipulation">
-                                {['1D', '1W', '1M', '3M', '1Y', 'ALL'].map((range) => (
+                            <div className="flex gap-1.5 bg-gray-100/80 p-1.5 rounded-2xl border border-gray-100">
+                                {['1D', '1W', '1M', '3M', '1Y'].map((range) => (
                                     <button
                                         key={range}
-                                        className={`px-3 md:px-4 py-1.5 rounded-lg text-xs font-black transition-all duration-200 min-w-[40px] touch-manipulation ${range === '1W'
-                                            ? 'bg-brand text-white shadow-md shadow-brand/20'
-                                            : 'text-text-tertiary hover:text-text-primary hover:bg-white'
-                                            }`}
+                                        onClick={() => setActiveRange(range)}
+                                        className={`px-4 py-2 rounded-2xl text-xs font-black transition-all ${activeRange === range ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 ring-2 ring-indigo-600/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'}`}
                                     >
                                         {range}
                                     </button>
                                 ))}
                             </div>
                         </div>
-                        <div className="flex-1 min-h-[240px] md:min-h-[320px] w-full">
-                            <PortfolioChart />
+
+                        <div className="flex-1 min-h-[300px]">
+                            <PortfolioChart period={activeRange} startingValue={10000} />
+                        </div>
+                    </div>
+
+                    {/* Holdings Snapshot */}
+                    <div className="glass-card p-6 bg-white shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                                <Layers size={18} className="text-brand" />
+                                Core Holdings
+                            </h3>
+                            <Link href="/dashboard/portfolio" className="text-[10px] font-black text-brand uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                                FULL PORTFOLIO <ChevronRight size={12} />
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {data?.holdings.slice(0, 4).map((holding) => (
+                                <div key={holding.symbol} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-md transition-all group">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border-2 shadow-sm transition-transform group-hover:scale-105 ${holding.type === 'STOCK' ? 'bg-indigo-50 border-indigo-100 text-indigo-600' : 'bg-purple-50 border-purple-100 text-purple-600'
+                                            }`}>
+                                            {holding.symbol.substring(0, 2)}
+                                        </div>
+                                        <div>
+                                            <div className="font-black text-gray-900 text-sm truncate max-w-[120px]">{holding.name}</div>
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{holding.symbol}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="font-black text-gray-900">{formatCurrency(holding.value)}</div>
+                                        <div className={`text-[10px] font-black ${holding.change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                            {holding.change >= 0 ? '+' : ''}{holding.change.toFixed(2)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {(!data?.holdings || data.holdings.length === 0) && (
+                                <div className="col-span-2 py-12 text-center text-gray-400">
+                                    <Briefcase size={32} className="mx-auto mb-3 opacity-20" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">No Active Holdings</p>
+                                    <Link href="/dashboard/market" className="text-xs font-black text-brand underline mt-2 inline-block">Execute your first trade</Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Enhanced Side Metrics - Mobile Stack */}
-                <div className="bento-col-4 space-y-4 md:space-y-6">
-                    {/* Account Growth with Trophy */}
-                    <div className="glass-card p-5 md:p-6 bg-gradient-to-br from-brand to-brand-accent text-white border-none shadow-xl shadow-brand/20 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-500"></div>
-                        <div className="relative">
-                            <div className="flex items-center gap-2 mb-3 md:mb-4 text-white/80 text-xs font-black uppercase tracking-wider">
-                                <Trophy size={14} fill="currentColor" /> Monthly Return
-                            </div>
-                            <div className="text-4xl md:text-5xl font-black tracking-tighter mb-2">
-                                {totalReturn > 0 ? '+' : ''}{totalReturn.toFixed(1)}%
-                            </div>
-                            <p className="text-indigo-100/90 text-xs md:text-sm font-medium leading-relaxed mb-4 md:mb-6">
-                                Outperforming <span className="text-white font-bold">87%</span> of traders. <br />You are in the top 15%.
-                            </p>
-                            <div className="flex items-center justify-between bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
-                                <span className="text-xs font-bold text-indigo-50 uppercase">Target</span>
-                                <div className="flex items-center gap-2">
-                                    <Target size={14} className="text-emerald-300" />
-                                    <span className="text-sm font-black text-emerald-300">85%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Buying Power with Shield */}
-                    <div className="glass-card p-5 md:p-6 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 border-emerald-100/50">
-                        <div className="flex items-center justify-between mb-3 md:mb-4">
-                            <div className="flex items-center gap-2 text-emerald-700 text-xs font-black uppercase tracking-wider">
-                                <Shield size={14} /> Buying Power
-                            </div>
-                            <button className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center hover:bg-emerald-200 transition-colors">
-                                <DollarSign size={12} />
+                {/* Secondary Insights & Activity */}
+                <div className="lg:col-span-4 flex flex-col gap-6">
+                    {/* Recent Activity Feed */}
+                    <div className="glass-card p-6 bg-white shadow-sm flex flex-col h-full min-h-[500px]">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                                <Activity size={18} className="text-orange-500" />
+                                Recent Activity
+                            </h3>
+                            <button className="p-2 bg-gray-50 rounded-lg text-gray-400 hover:text-gray-900 transition-colors">
+                                <Search size={14} />
                             </button>
                         </div>
-                        {profileLoading ? (
-                            <div className="h-9 w-36 bg-emerald-100 rounded-xl animate-pulse mb-2" />
-                        ) : (
-                            <div className="text-3xl md:text-4xl font-black text-emerald-900 mb-2 tracking-tight">
-                                GH₵ {buyingPower.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                            </div>
-                        )}
-                        <div className="mt-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-bold text-emerald-800/70 uppercase">Available Funds</span>
-                                <span className="text-xs font-black text-emerald-800">Cash</span>
-                            </div>
-                            <div className="w-full h-2 bg-emerald-100/50 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: '100%' }}></div>
-                            </div>
-                            <div className="flex items-center gap-2 mt-3 text-[10px] font-bold text-emerald-600/80">
-                                <Clock size={10} />
-                                <span>Instant Settlement Available</span>
-                            </div>
+
+                        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                            <RecentActivity transactions={data?.recentActivity ?? []} />
                         </div>
                     </div>
-                </div>
 
-                {/* Market Intelligence Hub - Mobile Stacked */}
-                <div className="bento-col-12 lg:bento-col-6">
-                    <div className="glass-card p-4 md:p-6 bg-background-surface border-border h-full">
-                        <div className="flex items-center justify-between mb-4 md:mb-6">
+                    {/* Allocation Insight */}
+                    <div className="glass-card p-6 bg-gradient-to-br from-slate-50 to-white border-border shadow-sm group">
+                        <div className="flex items-center justify-between mb-8">
                             <h3 className="stat-label flex items-center gap-2">
-                                <TrendingUp size={16} className="text-brand" />
-                                Top Stocks
+                                <PieChart size={16} className="text-purple-600" />
+                                Distribution
                             </h3>
-                            <Link href="/dashboard/market" className="text-xs font-black text-brand uppercase tracking-wider hover:text-brand-hover flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
-                                Explorer <ArrowRight size={12} />
-                            </Link>
+                            <div className="text-[10px] font-black text-purple-600 bg-purple-50 px-2 py-1 rounded">
+                                REAL-TIME
+                            </div>
                         </div>
 
-                        <div className="space-y-2 md:space-y-3">
-                            {loadingStocks ? (
-                                <div className="space-y-2 animate-pulse">
-                                    {[1, 2].map(i => <div key={i} className="h-20 bg-gray-100 rounded-2xl w-full"></div>)}
+                        <div className="h-48 mb-8 group-hover:scale-105 transition-transform duration-500">
+                            {data && data.allocation.length > 0 ? (
+                                <AllocationChart data={data.allocation} />
+                            ) : (
+                                <div className="h-full flex items-center justify-center text-gray-300 font-bold uppercase text-[10px] tracking-widest border-2 border-dashed border-gray-100 rounded-3xl">
+                                    No Data Available
                                 </div>
-                            ) : topStocks.length === 0 ? (
-                                <div className="text-center py-8 text-text-tertiary text-xs font-bold uppercase tracking-widest">
-                                    Syncing Assets...
-                                </div>
-                            ) : topStocks.map((stock, i) => (
-                                <Link
-                                    href={`/dashboard/market?symbol=${stock.symbol}`}
-                                    key={stock.symbol}
-                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-gray-50 transition-all duration-200 group border border-transparent hover:border-gray-100 hover:shadow-sm"
-                                >
-                                    <div className="flex items-center gap-3 md:gap-4">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border-2 ${stock.change >= 0 ? "bg-emerald-50 border-emerald-100 text-status-success" : "bg-red-50 border-red-100 text-status-error"}`}>
-                                            {stock.symbol.substring(0, 2)}
-                                        </div>
-                                        <div>
-                                            <div className="font-black text-text-primary text-sm">{stock.symbol}</div>
-                                            <div className="text-[10px] font-bold text-text-tertiary uppercase truncate max-w-[100px]">{stock.name}</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-black text-text-primary">GH₵ {stock.price.toFixed(2)}</div>
-                                        <div className={`text-[10px] font-black uppercase ${stock.change >= 0 ? 'text-status-success' : 'text-status-error'}`}>
-                                            {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)}
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mutual Fund Gems - NEW SECTION */}
-                <div className="bento-col-12 lg:bento-col-6">
-                    <div className="glass-card p-4 md:p-6 bg-gradient-to-br from-amber-50/30 to-orange-50/30 border-amber-100/50 h-full">
-                        <div className="flex items-center justify-between mb-4 md:mb-6">
-                            <h3 className="stat-label flex items-center gap-2">
-                                <Layers size={16} className="text-amber-600" />
-                                Featured Funds
-                            </h3>
-                            <Link href="/dashboard/mutual-funds" className="text-xs font-black text-amber-600 uppercase tracking-wider hover:text-amber-700 flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
-                                All Funds <ArrowRight size={12} />
-                            </Link>
+                            )}
                         </div>
 
-                        <div className="space-y-2 md:space-y-3">
-                            {[
-                                { name: "EDC Fixed Income", type: "Balanced", nav: 5.82, ytd: 18.4, trend: "up" },
-                                { name: "Databank MFund", type: "Money Market", nav: 2.14, ytd: 22.1, trend: "up" },
-                            ].map((fund, i) => (
-                                <Link
-                                    href="/dashboard/mutual-funds"
-                                    key={fund.name}
-                                    className="flex items-center justify-between p-3 md:p-4 rounded-2xl hover:bg-white/60 transition-all duration-200 group border border-transparent hover:border-amber-100 hover:shadow-sm"
-                                >
-                                    <div className="flex items-center gap-3 md:gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center font-black text-amber-600 text-xs border-2 border-amber-200">
-                                            {fund.name.substring(0, 2)}
-                                        </div>
-                                        <div>
-                                            <div className="font-black text-amber-900 text-sm">{fund.name}</div>
-                                            <div className="text-[10px] font-bold text-amber-700 uppercase tracking-wide">{fund.type}</div>
-                                        </div>
+                        <div className="space-y-3">
+                            {data?.allocation.slice(0, 3).map((item) => (
+                                <div key={item.name} className="flex items-center justify-between group/item">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
+                                        <span className="text-xs font-bold text-gray-600 group-hover/item:text-gray-900 transition-colors uppercase truncate max-w-[120px]">{item.name}</span>
                                     </div>
-                                    <div className="text-right">
-                                        <div className="font-black text-amber-900 text-sm">NAV {fund.nav.toFixed(2)}</div>
-                                        <div className="text-[10px] font-black uppercase text-emerald-600">
-                                            +{fund.ytd}% YTD
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Advanced Asset Allocation - Mobile Optimized */}
-                <div className="bento-col-6">
-                    <div className="glass-card p-4 md:p-6 h-full bg-background-surface border-border">
-                        <div className="flex items-center justify-between mb-4 md:mb-6">
-                            <h3 className="stat-label flex items-center gap-2">
-                                <PieChart size={16} className="text-brand-accent" />
-                                Asset Allocation
-                            </h3>
-                            <Link href="/dashboard/portfolio" className="text-xs font-black text-brand-accent uppercase tracking-wider hover:text-brand flex items-center gap-1 transition-colors min-h-[44px] px-2 touch-manipulation">
-                                Analytics <ArrowRight size={12} />
-                            </Link>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 py-2 md:py-4">
-                            {/* Enhanced Donut Chart - Mobile Centered */}
-                            <div className="relative mx-auto md:mx-0">
-                                <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-[10px] md:border-[12px] border-brand relative flex items-center justify-center shadow-lg shadow-brand/10">
-                                    <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-[10px] md:border-[12px] border-emerald-400 absolute inset-0 m-auto"></div>
-                                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[10px] md:border-[12px] border-amber-400 absolute inset-0 m-auto"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center bg-white rounded-full m-auto w-10 h-10 md:w-12 md:h-12 shadow-sm">
-                                        <span className="text-[10px] font-black text-text-primary">GSE</span>
-                                    </div>
-                                </div>
-                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                                    <span className="bg-white px-3 py-1 rounded-full border border-gray-100 text-[10px] font-black shadow-md text-text-secondary whitespace-nowrap">
-                                        Balanced
+                                    <span className="text-xs font-black text-gray-900">
+                                        {((item.value / data.totalEquity) * 100).toFixed(1)}%
                                     </span>
                                 </div>
-                            </div>
-
-                            <div className="flex-1 space-y-3 w-full">
-                                {[
-                                    { label: 'Financial Services', value: 45, color: 'bg-brand', change: '+2.1%' },
-                                    { label: 'Technology', value: 30, color: 'bg-emerald-500', change: '+4.7%' },
-                                    { label: 'Consumer Goods', value: 15, color: 'bg-amber-500', change: '-0.8%' },
-                                    { label: 'Cash Reserve', value: 10, color: 'bg-gray-300', change: '0.0%' },
-                                ].map((item) => (
-                                    <div key={item.label} className="bg-gray-50/50 rounded-xl p-3 border border-gray-100 hover:bg-gray-50 transition-colors">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${item.color}`}></div>
-                                                <span className="text-xs font-bold uppercase text-text-secondary truncate">{item.label}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 flex-shrink-0">
-                                                <span className="text-xs font-black text-text-primary">{item.value}%</span>
-                                            </div>
-                                        </div>
-                                        <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                            <div className={`h-full ${item.color} transition-all duration-1000 ease-out`} style={{ width: `${item.value}%` }}></div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            {/* Quick Actions Bar - Mobile Optimized */}
-            <div className="glass-card p-5 md:p-6 bg-text-primary text-white shadow-xl shadow-indigo-900/20 animate-fade-in-up">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
-                    <div className="flex-1">
-                        <h3 className="text-lg md:text-xl font-black mb-1">Ready to Trade?</h3>
-                        <p className="text-indigo-200 text-sm font-medium">Execute your next move with confidence</p>
+            {/* Market Intelligence Context Banner */}
+            <div className="glass-card p-6 md:p-8 bg-text-primary text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-brand/10 rounded-full -mr-48 -mt-48 blur-3xl" />
+
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative">
+                    <div className="max-w-xl">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Zap size={18} className="text-brand" fill="currentColor" />
+                            <span className="text-xs font-black text-brand uppercase tracking-[0.2em]">Platform Opportunity</span>
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-black mb-3 text-white leading-tight">Your capital is growing. <br />Optimize your next move.</h3>
+                        <p className="text-indigo-200/80 text-sm font-medium leading-relaxed">
+                            Based on your {data?.riskLabel.toLowerCase()} risk profile, we&apos;ve identified emerging trends in the {data?.allocation[0]?.name || 'Financial'} sector. Check out the latest opportunities on the market.
+                        </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+
+                    <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
                         <Link
                             href="/dashboard/market"
-                            className="w-full sm:w-auto px-6 py-3.5 bg-white text-text-primary font-black rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-lg shadow-black/10 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation active:scale-95"
+                            className="px-8 py-4 bg-white text-text-primary font-black rounded-2xl hover:bg-gray-50 hover:scale-105 transition-all shadow-lg flex items-center justify-center gap-2"
                         >
                             <Eye size={18} className="text-brand" />
-                            <span>Explore Markets</span>
+                            Explore Markets
                         </Link>
                         <Link
                             href="/dashboard/portfolio"
-                            className="w-full sm:w-auto px-6 py-3.5 bg-brand text-white font-black rounded-xl hover:bg-brand-hover transition-all duration-200 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation active:scale-95 border border-white/10"
+                            className="px-8 py-4 bg-brand text-white font-black rounded-2xl hover:bg-brand-hover hover:scale-105 transition-all shadow-lg border border-white/10 flex items-center justify-center gap-2"
                         >
                             <Target size={18} />
-                            <span>Manage Portfolio</span>
+                            Manage Portfolio
                         </Link>
                     </div>
                 </div>

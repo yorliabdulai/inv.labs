@@ -75,34 +75,18 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
             const { data: { user }, error: authError } = await supabase.auth.getUser();
             if (authError || !user) throw new Error("Authentication required. Please log in again.");
 
-            // --- Step 1: Try to record the transaction ---
-            // (May fail if the stocks table doesn't have this symbol yet — that's OK)
-            const { error: txError } = await supabase.from('transactions').insert({
-                user_id: user.id,
+            const { executeStockTrade } = await import("@/app/actions/stocks");
+            const result = await executeStockTrade({
+                userId: user.id,
                 symbol: stock.symbol,
                 type,
                 quantity,
-                price_per_share: price,
-                total_amount: totalCost,
-                fees: totalFees,
+                price,
+                totalCost,
+                fees: totalFees
             });
 
-            if (txError) {
-                // FK violation = symbol not in stocks table. Log but don't block the trade.
-                console.warn("Transaction record skipped (FK):", txError.message);
-            }
-
-            // --- Step 2: Update the cash balance (always runs) ---
-            const newBalance = type === "BUY"
-                ? userBalance - totalCost
-                : userBalance + totalCost;
-
-            const { error: updateError } = await supabase
-                .from('profiles')
-                .update({ cash_balance: Math.max(0, newBalance) })
-                .eq('id', user.id);
-
-            if (updateError) throw new Error(`Balance update failed: ${updateError.message}`);
+            if (!result.success) throw new Error(result.message);
 
             setSuccess(true);
             onSuccess?.();

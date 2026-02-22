@@ -202,6 +202,8 @@ export async function getUserMutualFundHoldings(
     }
 }
 
+import { revalidatePath } from "next/cache";
+
 /**
  * Get user's mutual fund transactions
  */
@@ -348,6 +350,10 @@ export async function buyMutualFundUnits(
 
             if (insertError) throw insertError;
         }
+
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/portfolio");
+        revalidatePath("/dashboard/mutual-funds");
 
         return {
             success: true,
