@@ -194,16 +194,18 @@ export default function MutualFundDetailPage() {
                                     <span className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-${fundColor}-50 text-${fundColor}-700 border border-${fundColor}-200`}>
                                         {fund.fund_type}
                                     </span>
-                                    <div className="flex items-center gap-1 px-3 py-1 bg-white rounded-lg border border-gray-200">
-                                        <span className="text-xs font-bold text-gray-500">Risk:</span>
-                                        <div className="flex items-center gap-0.5">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <Star
-                                                    key={star}
-                                                    size={12}
-                                                    className={`${star <= fund.risk_rating
-                                                            ? `fill-${riskColor}-500 text-${riskColor}-500`
-                                                            : "fill-gray-200 text-gray-200"
+                                    <div className="flex flex-col gap-1.5 px-3 py-2 bg-white rounded-xl border border-gray-200 min-w-[140px]">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Risk Profile</span>
+                                            <span className="text-[10px] font-black text-gray-900">{fund.risk_rating}/5</span>
+                                        </div>
+                                        <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden flex gap-0.5">
+                                            {[1, 2, 3, 4, 5].map((level) => (
+                                                <div
+                                                    key={level}
+                                                    className={`h-full flex-1 transition-all ${level <= fund.risk_rating
+                                                            ? `bg-${riskColor}-500`
+                                                            : 'bg-gray-200'
                                                         }`}
                                                 />
                                             ))}
@@ -304,8 +306,8 @@ export default function MutualFundDetailPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={`flex items-center gap-2 px-4 md:px-6 py-4 font-black text-sm whitespace-nowrap transition-all border-b-2 ${activeTab === tab.id
-                                        ? "border-indigo-600 text-indigo-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                    ? "border-indigo-600 text-indigo-600"
+                                    : "border-transparent text-gray-500 hover:text-gray-700"
                                     }`}
                             >
                                 <tab.icon size={16} />
@@ -442,8 +444,8 @@ export default function MutualFundDetailPage() {
                                             <div
                                                 key={perf.period}
                                                 className={`rounded-xl p-4 border ${isPositive
-                                                        ? "bg-emerald-50 border-emerald-200"
-                                                        : "bg-red-50 border-red-200"
+                                                    ? "bg-emerald-50 border-emerald-200"
+                                                    : "bg-red-50 border-red-200"
                                                     }`}
                                             >
                                                 <div className={`text-xs font-bold mb-1 ${isPositive ? "text-emerald-600" : "text-red-600"}`}>

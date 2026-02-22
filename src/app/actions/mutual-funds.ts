@@ -85,19 +85,68 @@ export async function getMutualFundNAVHistory(
  * Get performance metrics for a fund
  */
 export async function getMutualFundPerformance(
-    fundId: string
+    fund_id: string
 ): Promise<MutualFundPerformance[]> {
     try {
         const supabase = await createServerClient();
         const { data, error } = await supabase
             .from("mutual_fund_performance")
             .select("*")
-            .eq("fund_id", fundId);
+            .eq("fund_id", fund_id);
 
         if (error) throw error;
         return data || [];
     } catch (error) {
         console.error("Error fetching performance:", error);
+        return [];
+    }
+}
+
+/**
+ * Get performance metrics for ALL funds
+ */
+export async function getAllMutualFundsPerformance(): Promise<MutualFundPerformance[]> {
+    try {
+        const supabase = await createServerClient();
+        const { data, error } = await supabase
+            .from("mutual_fund_performance")
+            .select("*");
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Error fetching all performance:", error);
+        return [];
+    }
+}
+
+/**
+ * Get the latest NAV entry for all funds (for daily change calculation)
+ */
+export async function getAllMutualFundsLatestNAV(): Promise<MutualFundNAVHistory[]> {
+    try {
+        const supabase = await createServerClient();
+        // This is a complex query to get just the latest row per fund_id
+        // In Supabase/PostgREST we can use order + limit or a view
+        // For simplicity and correctness across all fund_ids:
+        const { data, error } = await supabase
+            .from("mutual_fund_nav_history")
+            .select("*")
+            .order("date", { ascending: false });
+
+        if (error) throw error;
+
+        // Keep only the first (latest) entry for each fund_id
+        const latestByFund: Record<string, MutualFundNAVHistory> = {};
+        (data || []).forEach(row => {
+            if (!latestByFund[row.fund_id]) {
+                latestByFund[row.fund_id] = row;
+            }
+        });
+
+        return Object.values(latestByFund);
+    } catch (error) {
+        console.error("Error fetching latest NAVs:", error);
         return [];
     }
 }
