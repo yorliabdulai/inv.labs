@@ -2,6 +2,7 @@
 
 import { Activity, Globe, Bell, Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useUserProfile } from "@/lib/useUserProfile";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -9,13 +10,12 @@ function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     return { text: "Good evening", icon: Moon };
 }
 
-export function DashboardHeader({
-    userName = "",
-    userInitial = "T",
-}: {
-    userName?: string;
-    userInitial?: string;
-}) {
+/**
+ * DashboardHeader now pulls directly from UserProfileContext.
+ * This ensures EVERY page shows the user's name correctly without needing props.
+ */
+export function DashboardHeader() {
+    const { displayName, displayInitial, firstName, loading } = useUserProfile();
     const [currentTime, setCurrentTime] = useState("");
     const [dateStr, setDateStr] = useState("");
     const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Welcome back", icon: Sun });
@@ -45,7 +45,6 @@ export function DashboardHeader({
     }, []);
 
     const GreetIcon = greeting.icon;
-    const firstName = userName.split(" ")[0] || "";
 
     return (
         <header className="relative z-10 mb-8 w-full">
@@ -87,21 +86,18 @@ export function DashboardHeader({
                     <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-2">
                         Control Center
                     </h1>
-                    <p className="text-sm text-text-secondary font-medium flex items-center gap-1.5">
+                    <div className="text-sm text-text-secondary font-medium flex items-center gap-1.5 min-h-[20px]">
                         <GreetIcon size={14} className="text-amber-500 flex-shrink-0" />
-                        {greeting.text}{firstName ? `, ${firstName}` : ""}. Here&apos;s your market overview.
-                    </p>
+                        {loading ? (
+                            <span className="inline-block w-32 h-4 bg-gray-100 animate-pulse rounded" />
+                        ) : (
+                            <p>{greeting.text}, {firstName}. Here&apos;s your market overview.</p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Mobile Search */}
-                    <div className="relative md:hidden">
-                        <button className="p-3 bg-background-surface rounded-xl border border-border hover:bg-gray-50 transition-colors min-h-[44px] min-w-[44px] touch-manipulation active:scale-95">
-                            <Search size={18} className="text-text-tertiary" />
-                        </button>
-                    </div>
-
-                    {/* Desktop Search */}
+                    {/* Search Field */}
                     <div className="relative hidden lg:flex group">
                         <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary group-focus-within:text-brand transition-colors" />
                         <input
@@ -119,7 +115,7 @@ export function DashboardHeader({
                         </button>
 
                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-brand to-brand-accent text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand/30 hover:shadow-xl transition-all cursor-pointer touch-manipulation active:scale-95 ring-2 ring-transparent hover:ring-brand/20">
-                            {userInitial}
+                            {loading ? "·" : displayInitial}
                         </div>
                     </div>
                 </div>

@@ -101,7 +101,7 @@ export default function MarketPage() {
 
     return (
         <div className="pb-20 space-y-4 md:space-y-8">
-            <DashboardHeader userName={displayName} userInitial={displayInitial} />
+            <DashboardHeader />
 
             {/* Market Intelligence Dashboard - Mobile Optimized */}
             <div className="glass-card p-4 md:p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">

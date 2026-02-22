@@ -74,7 +74,7 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 pb-24 md:pb-12">
-            <DashboardHeader userName={displayName} userInitial={displayInitial} />
+            <DashboardHeader />
 
             {/* Real-time Status Banner - Mobile Optimized */}
             <div className="glass-card p-4 md:p-5 bg-gradient-to-r from-emerald-50/50 to-indigo-50/50 border-emerald-100/50 animate-fade-in-scale">

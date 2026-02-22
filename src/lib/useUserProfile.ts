@@ -7,6 +7,5 @@ export {
     useUserProfile,
     UserProfileProvider,
     type UserProfile,
-    type AuthUser,
     type UserProfileContextValue,
 } from "./UserProfileContext";

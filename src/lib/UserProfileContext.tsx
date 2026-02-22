@@ -9,7 +9,7 @@ import {
     useState,
 } from "react";
 import type { User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase/client";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,167 +34,119 @@ export interface UserProfileContextValue {
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 
-const UserProfileContext = createContext<UserProfileContextValue>({
-    user: null,
-    profile: null,
-    loading: true,
-    displayName: "",
-    displayInitial: "",
-    firstName: "",
-    refetch: () => { },
-});
+const UserProfileContext = createContext<UserProfileContextValue | undefined>(undefined);
 
 const STARTING_BALANCE = 10000;
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
-
-/** Derive the best available display name for this user. */
-function getDisplayName(profile: UserProfile | null, user: User | null): string {
-    return (
-        profile?.full_name?.trim() ||
-        (user?.user_metadata?.full_name as string | undefined)?.trim() ||
-        user?.email?.split("@")[0] ||
-        ""
-    );
-}
-
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
-export function UserProfileProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(true);
+interface UserProfileProviderProps {
+    children: React.ReactNode;
+    initialUser: User | null;
+    initialProfile: UserProfile | null;
+}
+
+/**
+ * UserProfileProvider with Server-to-Client Hydration.
+ * 
+ * By accepting initialUser and initialProfile from a Server Component Layout,
+ * we ensure that the user's name and balance are visible immediately on load
+ * with ZERO flash-of-unauthenticated-content.
+ */
+export function UserProfileProvider({
+    children,
+    initialUser,
+    initialProfile
+}: UserProfileProviderProps) {
+    const [user, setUser] = useState<User | null>(initialUser);
+    const [profile, setProfile] = useState<UserProfile | null>(initialProfile);
+    const [loading, setLoading] = useState(false);
+    const [initializing, setInitializing] = useState(!initialUser);
     const mountedRef = useRef(true);
     const fetchingRef = useRef(false);
+    const supabase = createBrowserClient();
 
     useEffect(() => {
         mountedRef.current = true;
         return () => { mountedRef.current = false; };
     }, []);
 
-    /**
-     * Fetches and normalises the profile row for a given user.
-     * - Creates the row if it doesn't exist
-     * - Seeds GH₵10,000 if balance is missing
-     * - Syncs full_name from user_metadata if the DB row has null
-     */
     const fetchProfile = useCallback(async (authUser: User) => {
-        if (fetchingRef.current) return;
+        if (!mountedRef.current || fetchingRef.current) return;
         fetchingRef.current = true;
+        setLoading(true);
 
         try {
-            const { data: existingProfile } = await supabase
+            const { data: existing } = await supabase
                 .from("profiles")
-                .select("id, full_name, avatar_url, cash_balance, username, created_at")
+                .select("*")
                 .eq("id", authUser.id)
                 .single();
 
             if (!mountedRef.current) return;
 
-            const metaName = (authUser.user_metadata?.full_name as string | undefined) || null;
-
-            if (existingProfile) {
-                const balance = Number(existingProfile.cash_balance ?? 0);
-                const needsBalance = balance <= 0;
-                const needsName = !existingProfile.full_name && !!metaName;
-
-                // Show data immediately (optimistic)
-                if (mountedRef.current) {
-                    setProfile({
-                        ...(existingProfile as UserProfile),
-                        cash_balance: needsBalance ? STARTING_BALANCE : balance,
-                        full_name: needsName ? metaName : existingProfile.full_name,
-                    });
-                }
-
-                // Fire-and-forget any necessary DB updates
-                if (needsBalance || needsName) {
-                    const updates: Record<string, unknown> = {};
-                    if (needsBalance) updates.cash_balance = STARTING_BALANCE;
-                    if (needsName) updates.full_name = metaName;
-
-                    supabase
-                        .from("profiles")
-                        .update(updates)
-                        .eq("id", authUser.id)
-                        .then(({ error }) => {
-                            if (error) console.warn("[profile] update error:", error.message);
-                        });
-                }
-            } else {
-                // No profile row yet — create it
-                const { data: newProfile } = await supabase
-                    .from("profiles")
-                    .insert({
-                        id: authUser.id,
-                        full_name: metaName,
-                        cash_balance: STARTING_BALANCE,
-                    })
-                    .select("id, full_name, avatar_url, cash_balance, username, created_at")
-                    .single();
-
-                if (mountedRef.current) {
-                    setProfile(
-                        newProfile
-                            ? (newProfile as UserProfile)
-                            : {
-                                id: authUser.id,
-                                full_name: metaName,
-                                avatar_url: null,
-                                cash_balance: STARTING_BALANCE,
-                                username: null,
-                                created_at: null,
-                            }
-                    );
-                }
+            if (existing) {
+                setProfile(existing as UserProfile);
             }
-        } catch (err: any) {
-            if (err?.name !== "AbortError") {
-                console.error("[UserProfileContext] fetchProfile error:", err);
-            }
+        } catch (err) {
+            console.error("[UserProfileContext] Refresh error:", err);
         } finally {
             fetchingRef.current = false;
-            if (mountedRef.current) setLoading(false);
+            if (mountedRef.current) {
+                setLoading(false);
+                setInitializing(false);
+            }
         }
-    }, []);
+    }, [supabase]);
 
     useEffect(() => {
-        /**
-         * onAuthStateChange is the SINGLE source of truth for auth state.
-         *
-         * The INITIAL_SESSION event fires synchronously with the cached session
-         * on mount — so the user object is available instantly on every page
-         * navigation, with zero network round-trips for the name display.
-         *
-         * We then fetch the full profile row from the DB in the background.
-         */
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (!mountedRef.current) return;
+        // HYDRATION: If we have a user but no profile, fetch it immediately
+        if (user && !profile && !fetchingRef.current) {
+            fetchProfile(user);
+        } else if (user && profile) {
+            setInitializing(false);
+        } else if (!user) {
+            setInitializing(false);
+        }
+    }, [user, profile, fetchProfile]);
+
+    useEffect(() => {
+        let isEffectActive = true;
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (!isEffectActive) return;
 
             if (session?.user) {
-                // Set user immediately — name shows from user_metadata right away
                 setUser(session.user);
-                // Then load full profile (balance, custom name, etc.)
-                await fetchProfile(session.user);
+                if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+                    await fetchProfile(session.user);
+                }
             } else {
-                // Signed out
                 setUser(null);
                 setProfile(null);
                 setLoading(false);
+                setInitializing(false);
             }
         });
 
-        return () => subscription.unsubscribe();
-    }, [fetchProfile]);
+        return () => {
+            isEffectActive = false;
+            subscription.unsubscribe();
+        };
+    }, [fetchProfile, supabase]);
 
     const refetch = useCallback(() => {
         if (user) fetchProfile(user);
     }, [user, fetchProfile]);
 
-    const rawName = getDisplayName(profile, user);
-    const firstName = rawName.split(" ")[0];
+    // Name Resolution Logic (Shared with Server logic for consistency)
+    const rawName =
+        profile?.full_name?.trim() ||
+        (user?.user_metadata?.full_name as string | undefined)?.trim() ||
+        user?.email?.split("@")[0] ||
+        "";
+
+    const firstName = rawName.split(" ")[0] || "";
 
     const value: UserProfileContextValue = {
         user,
@@ -213,12 +165,10 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     );
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
-/**
- * Use inside any component within the dashboard layout.
- * Returns the shared user profile loaded ONCE at the layout level.
- */
 export function useUserProfile(): UserProfileContextValue {
-    return useContext(UserProfileContext);
+    const context = useContext(UserProfileContext);
+    if (!context) {
+        throw new Error("useUserProfile must be used within a UserProfileProvider");
+    }
+    return context;
 }
