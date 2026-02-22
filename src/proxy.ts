@@ -1,13 +1,16 @@
 import { type NextRequest } from 'next/server'
-import { updateSession } from '@/lib/supabase/middleware'
+import { updateSession } from '@/lib/supabase/proxy'
 
 /**
- * Next.js Middleware Entry Point.
- * 
- * This MUST be named `middleware` to be recognised by Next.js.
- * Delegates all session management to the Supabase SSR helper.
+ * Next.js 16 Proxy Entry Point.
+ *
+ * Must export `async function proxy()` — this is the Next.js 16 convention.
+ * (In Next.js ≤15 this was called `middleware` in `middleware.ts`.)
+ *
+ * Delegates all session management to the Supabase SSR helper in
+ * lib/supabase/proxy.ts, which uses getClaims() for fast JWT validation.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     return await updateSession(request)
 }
 

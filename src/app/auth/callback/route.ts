@@ -2,14 +2,48 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-/**
- * Auth Callback Route Handler (PKCE OAuth flow).
- *
- * This handler receives the `code` from Supabase after a successful OAuth
- * redirect and exchanges it for a user session. Session cookies are written
- * to the response here so the browser stores them before the redirect to
- * /dashboard fires.
- */
+// ---------------------------------------------------------------------------
+// WHY THIS FILE WORKS THIS WAY
+// ---------------------------------------------------------------------------
+// @supabase/ssr's createServerClient writes session cookies via an
+// `onAuthStateChange` listener that is **async**. In a Next.js Route Handler,
+// the function returns before that listener fires, so setAll() is never called
+// and no session cookies are written to the response.
+//
+// Solution: We use createServerClient only to perform exchangeCodeForSession
+// (because it handles the PKCE verifier lookup from the cookie jar). Then we
+// take the session from the return value and write the SSR-compatible cookies
+// to the response manually — bypassing the async event system entirely.
+// ---------------------------------------------------------------------------
+
+/** Project ref from NEXT_PUBLIC_SUPABASE_URL, e.g. "scjjifscnnshkvqxnkzp" */
+function getProjectRef(): string {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+    return url.split('//')[1]?.split('.')[0] ?? ''
+}
+
+/** base64url-encodes a UTF-8 string (no padding). */
+function toBase64url(s: string): string {
+    return Buffer.from(s, 'utf8').toString('base64url')
+}
+
+/** Mirrors @supabase/ssr's createChunks — splits at 3180 URL-encoded bytes. */
+const MAX_CHUNK = 3180
+function createChunks(key: string, value: string): { name: string; value: string }[] {
+    const enc = encodeURIComponent(value)
+    if (enc.length <= MAX_CHUNK) return [{ name: key, value }]
+    const chunks: string[] = []
+    let rem = enc
+    while (rem.length > 0) {
+        let head = rem.slice(0, MAX_CHUNK)
+        const last = head.lastIndexOf('%')
+        if (last > MAX_CHUNK - 3) head = head.slice(0, last)
+        chunks.push(decodeURIComponent(head))
+        rem = rem.slice(head.length)
+    }
+    return chunks.map((v, i) => ({ name: `${key}.${i}`, value: v }))
+}
+
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
@@ -21,59 +55,60 @@ export async function GET(request: Request) {
 
     const cookieStore = await cookies()
 
-    // Collect all cookies set during the exchange so we can write them onto
-    // the redirect response returned to the browser.
-    const cookiesToSet: Array<{ name: string; value: string; options: Record<string, unknown> }> = []
-
+    // Create the SSR client. We don't need setAll to work here — we just need
+    // getAll so that exchangeCodeForSession can find the PKCE verifier cookie.
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll(incoming) {
-                    // Buffer them — do NOT try to call cookieStore.set() here because
-                    // Route Handlers treat the cookie store as read-only.
-                    incoming.forEach(({ name, value, options }) => {
-                        cookiesToSet.push({ name, value, options: options ?? {} })
-                    })
+                getAll: () => cookieStore.getAll(),
+                setAll: () => {
+                    // Intentionally left empty — we write cookies manually below.
+                    // The async onAuthStateChange path that normally calls this
+                    // fires AFTER the Route Handler returns, so it's useless here.
                 },
             },
         }
     )
 
-    // Perform the PKCE code → session exchange.
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error || !data.session) {
-        console.error('[Auth Callback] Code exchange failed:', error?.message)
+        console.error('[Auth Callback] Exchange failed:', error?.message)
         return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
     }
 
     console.log('[Auth Callback] Exchange success for:', data.user?.email)
 
-    // Build the redirect response AFTER a successful exchange.
-    const redirectUrl = new URL(next, origin)
-    const response = NextResponse.redirect(redirectUrl)
+    // Encode the session in the format @supabase/ssr expects:
+    // base64-<base64url(JSON.stringify(session))>
+    const projectRef = getProjectRef()
+    const cookieKey = `sb-${projectRef}-auth-token`
+    const verifierKey = `sb-${projectRef}-auth-token-code-verifier`
 
-    // Write every session cookie onto the response so the browser stores them
-    // before the redirect to /dashboard lands.
+    const sessionValue = 'base64-' + toBase64url(JSON.stringify(data.session))
+    const sessionChunks = createChunks(cookieKey, sessionValue)
+
     const isLocal = origin.startsWith('http://')
-    cookiesToSet.forEach(({ name, value, options }) => {
-        response.cookies.set(name, value, {
-            ...options,
-            // Never mark cookies as Secure in local dev (http://) — the browser
-            // will silently drop Secure cookies on non-https origins.
-            secure: isLocal ? false : (options.secure as boolean | undefined),
-            // Strip domain so cookies are scoped to the current host only.
-            // This prevents conflicts when running multiple Supabase projects locally.
-            domain: isLocal ? undefined : (options.domain as string | undefined),
-            sameSite: 'lax',
-            path: '/',
-        })
+    const sessionOpts = {
+        path: '/',
+        sameSite: 'lax' as const,
+        httpOnly: false,
+        secure: !isLocal,
+        maxAge: 400 * 24 * 60 * 60, // 400 days — matches @supabase/ssr DEFAULT_COOKIE_OPTIONS
+    }
+
+    const response = NextResponse.redirect(new URL(next, origin))
+
+    // Write session cookie chunks onto the response so the browser stores them.
+    sessionChunks.forEach(({ name, value }) => {
+        response.cookies.set(name, value, sessionOpts)
     })
 
+    // Expire the PKCE verifier cookie — it's single-use.
+    response.cookies.set(verifierKey, '', { path: '/', maxAge: 0, sameSite: 'lax', secure: !isLocal })
+
+    console.log('[Auth Callback] Session cookies written:', sessionChunks.map(c => c.name).join(', '))
     return response
 }

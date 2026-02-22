@@ -2,16 +2,15 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Supabase SSR session refresh for Next.js Middleware.
- * 
- * Follows the exact Supabase-recommended pattern:
- * https://supabase.com/docs/guides/auth/server-side/nextjs
- * 
- * Key rules:
- * 1. Use createServerClient with the request/response cookie adapters.
- * 2. ALWAYS call getUser() — never getSession() — to validate the token server-side.
- * 3. Pass any cookie mutations onto both the request (for downstream Server Components)
- *    and the response (for the browser).
+ * Supabase SSR session helper for Next.js 16 Proxy.
+ *
+ * Follows the official Supabase + Next.js 16 recommended pattern.
+ * Uses getClaims() — NOT getUser() — because:
+ *   - getClaims() validates the JWT locally (fast, no network call)
+ *   - getUser() makes a network round-trip to Supabase on every request
+ *   - getClaims() correctly handles session refresh needed by the Proxy
+ *
+ * @see https://supabase.com/docs/guides/auth/server-side/nextjs
  */
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -27,16 +26,18 @@ export async function updateSession(request: NextRequest) {
                     return request.cookies.getAll()
                 },
                 setAll(cookiesToSet) {
-                    // Write cookies onto the forwarded request headers so that
-                    // Server Components downstream see the refreshed session.
+                    // Step 1: Write refreshed tokens into the forwarded request headers
+                    // so Server Components downstream see the updated session.
                     cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     )
-                    // Re-create the response now that request cookies are updated.
+                    // Step 2: Re-create the response with the mutated request so
+                    // cookies are forwarded correctly.
                     supabaseResponse = NextResponse.next({
                         request,
                     })
-                    // Write cookies onto the response so the browser stores them.
+                    // Step 3: Write refreshed tokens into the response so the
+                    // browser stores the updated session cookies.
                     cookiesToSet.forEach(({ name, value, options }) =>
                         supabaseResponse.cookies.set(name, value, options)
                     )
@@ -45,21 +46,24 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // IMPORTANT: Do not run any logic between createServerClient and getUser().
-    // A simple mistake could make it very hard to debug issues with users being
-    // randomly logged out.
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // IMPORTANT: Do not add any logic between createServerClient and getClaims().
+    // getClaims() validates the JWT signature against Supabase's public keys and
+    // triggers a token refresh if expired. If it's called after other logic, the
+    // cookie updates from the refresh may not propagate correctly.
+    const { data: claimsData } = await supabase.auth.getClaims()
+
+    // A user is authenticated if there are valid claims present.
+    const isAuthenticated = !!claimsData?.claims
 
     const pathname = request.nextUrl.pathname
 
     // Protect /dashboard — redirect unauthenticated users to /login
-    if (!user && pathname.startsWith('/dashboard')) {
+    if (!isAuthenticated && pathname.startsWith('/dashboard')) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         const redirectResponse = NextResponse.redirect(url)
-        // Carry over any cookies (e.g. refreshed tokens) the Supabase client set.
+        // Forward any refreshed session cookies onto the redirect so they
+        // are not lost when the browser follows the redirect.
         supabaseResponse.cookies.getAll().forEach((cookie) => {
             redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
         })
@@ -71,7 +75,7 @@ export async function updateSession(request: NextRequest) {
         pathname.startsWith('/login') ||
         pathname.startsWith('/register')
 
-    if (user && isAuthPage) {
+    if (isAuthenticated && isAuthPage) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
         const redirectResponse = NextResponse.redirect(url)
@@ -81,7 +85,7 @@ export async function updateSession(request: NextRequest) {
         return redirectResponse
     }
 
-    // IMPORTANT: return supabaseResponse (not a new NextResponse) so that the
-    // refreshed session cookies are forwarded to the browser.
+    // IMPORTANT: return supabaseResponse (not a new NextResponse.next()) so
+    // that the refreshed session cookies are propagated to the browser.
     return supabaseResponse
 }

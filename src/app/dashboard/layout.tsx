@@ -21,15 +21,19 @@ export default async function DashboardLayout({
     const supabase = await createClient();
 
     // 2. Fetch User & Profile concurrently (efficiency)
+    // getUser() is correct here — it's a Server Component, not the proxy.
+    // getClaims() is used in the proxy for fast JWT validation without a network hop.
+    // getUser() gives us the full User object with correct TypeScript types.
     const [
         { data: { user }, error: authError },
         { data: profile }
     ] = await Promise.all([
         supabase.auth.getUser(),
-        supabase.from("profiles").select("*").single() // Suffixing .single() since RLS limits to one
+        supabase.from("profiles").select("*").single() // RLS limits to one row
     ]);
 
-    // Safety Redirect: In case middleware was bypassed or session expired mid-request
+    // Safety Redirect: In case the proxy was bypassed or session expired mid-request.
+    // The proxy already guards this route, but a server-side check is good defence-in-depth.
     if (!user || authError) {
         redirect("/login");
     }
