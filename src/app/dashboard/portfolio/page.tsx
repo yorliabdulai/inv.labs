@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
-import { formatCurrency } from "@/lib/mutual-funds-data";
 import {
     TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus,
     Wallet, ShieldCheck, ArrowUpRight, BarChart3, PieChart,
@@ -418,7 +417,7 @@ export default function PortfolioPage() {
                                     <button
                                         key={p}
                                         onClick={() => setSelectedPeriod(p)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${selectedPeriod === p
+                                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${selectedPeriod === p
                                             ? "bg-indigo-600 text-white shadow"
                                             : "text-gray-500 hover:text-indigo-600 hover:bg-white"
                                             }`}
@@ -494,7 +493,7 @@ export default function PortfolioPage() {
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-wide">Allocation</h3>
                         </div>
                         {sectorData.length > 0 ? (
-                            <div className="h-[180px]">
+                            <div className="h-[200px]">
                                 <AllocationChart data={sectorData} />
                             </div>
                         ) : (
@@ -502,7 +501,8 @@ export default function PortfolioPage() {
                                 No holdings yet
                             </div>
                         )}
-                        <div className="space-y-2 mt-3">
+                        {sectorData.length > 0 && <div className="border-t border-gray-100 my-3" />}
+                        <div className="space-y-2.5">
                             {sectorData.slice(0, 5).map(s => {
                                 const total = sectorData.reduce((a, b) => a + b.value, 0);
                                 return (
@@ -658,7 +658,7 @@ export default function PortfolioPage() {
                                 <button
                                     key={key}
                                     onClick={() => setHoldingsTab(key)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${holdingsTab === key ? "bg-indigo-600 text-white shadow" : "text-gray-500 hover:text-indigo-600 hover:bg-white"}`}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${holdingsTab === key ? "bg-indigo-600 text-white shadow" : "text-gray-500 hover:text-indigo-600 hover:bg-white"}`}
                                 >{label}</button>
                             ))}
                         </div>

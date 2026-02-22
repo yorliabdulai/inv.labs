@@ -203,7 +203,7 @@ export default function MutualFundsPage() {
                                 <button
                                     key={risk}
                                     onClick={() => setFilterRisk(risk)}
-                                    className={`px-3 py-2 rounded-lg transition-all min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 ${filterRisk === risk
+                                    className={`px-3 py-2 rounded-xl transition-all min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 ${filterRisk === risk
                                         ? "bg-purple-600 text-white"
                                         : "text-gray-400 hover:text-gray-600"
                                         }`}

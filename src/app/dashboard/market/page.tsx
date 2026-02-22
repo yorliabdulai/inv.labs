@@ -1,337 +1,373 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { type Stock, GSE_API_BASE } from "@/lib/market-data";
+import { useEffect, useState, useMemo } from "react";
+import { type Stock, GSE_API_BASE, KNOWN_METADATA } from "@/lib/market-data";
 import { getMarketData } from "@/app/actions/market";
-import { StockRow } from "@/components/market/StockRow";
+import { StockRow, type StockHolding } from "@/components/market/StockRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { Search, SlidersHorizontal, ArrowUpRight, TrendingDown, RefreshCw, BarChart3, PieChart, Activity, Filter, Grid3X3, List, Star, Bookmark, TrendingUp, Clock, DollarSign } from "lucide-react";
+import {
+    Search, RefreshCw, Grid3X3, List, TrendingUp, TrendingDown,
+    Activity, ArrowUpRight, ArrowDownRight, Zap
+} from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
+import { supabase } from "@/lib/supabase/client";
 
-export default function MarketPage() {
-    const { displayName, displayInitial } = useUserProfile();
+// ─── Types ────────────────────────────────────────────────────────────────────
+type SortKey = "symbol" | "price" | "change" | "volume";
+type SortDir = "asc" | "desc";
+type ViewMode = "grid" | "list";
+
+interface RawTransaction {
+    symbol: string;
+    type: "BUY" | "SELL";
+    quantity: number;
+    price_per_share: number;
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function buildHoldingsMap(txns: RawTransaction[], priceMap: Record<string, number>): Record<string, StockHolding> {
+    const map: Record<string, { qty: number; cost: number }> = {};
+    for (const t of txns) {
+        if (!map[t.symbol]) map[t.symbol] = { qty: 0, cost: 0 };
+        if (t.type === "BUY") {
+            map[t.symbol].qty += t.quantity;
+            map[t.symbol].cost += t.quantity * t.price_per_share;
+        } else {
+            map[t.symbol].qty -= t.quantity;
+            map[t.symbol].cost -= t.quantity * t.price_per_share;
+        }
+    }
+    const result: Record<string, StockHolding> = {};
+    for (const [sym, agg] of Object.entries(map)) {
+        if (agg.qty <= 0) continue;
+        const currentPrice = priceMap[sym] ?? 0;
+        const avgCost = agg.qty > 0 ? agg.cost / agg.qty : 0;
+        const currentValue = agg.qty * currentPrice;
+        const pnl = currentValue - agg.cost;
+        const pnlPct = agg.cost > 0 ? (pnl / agg.cost) * 100 : 0;
+        result[sym] = { qty: agg.qty, avgCost, currentValue, pnl, pnlPct };
+    }
+    return result;
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
+export default function StocksPage() {
+    const { profile } = useUserProfile();
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState("All");
+    const [sectorFilter, setSectorFilter] = useState("All");
+    const [sortKey, setSortKey] = useState<SortKey>("symbol");
+    const [sortDir, setSortDir] = useState<SortDir>("asc");
+    const [viewMode, setViewMode] = useState<ViewMode>("grid");
+    const [holdings, setHoldings] = useState<Record<string, StockHolding>>({});
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-    const fetchStocksData = async (showLoading = false) => {
-        if (showLoading) setLoading(true);
+    // Fetch live stock data
+    const fetchStocks = async (showLoader = false) => {
+        if (showLoader) setLoading(true);
         try {
-            // Priority 1: Direct Client Fetch (Bypasses server blocking)
-            const response = await fetch(`${GSE_API_BASE}/live`, {
-                cache: 'no-store',
-                mode: 'cors'
-            });
-
+            const response = await fetch(`${GSE_API_BASE}/live`, { cache: "no-store", mode: "cors" });
             if (response.ok) {
-                const rawData = await response.json();
-                // Map raw data using the same mapping logic as the library for consistency
-                const mappedData: Stock[] = rawData.map((quote: any) => {
-                    const knownMeta: Record<string, { name: string; sector: string }> = {
-                        "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
-                        "GCB": { name: "GCB Bank", sector: "Finance" },
-                        "EGH": { name: "Ecobank Ghana", sector: "Finance" },
-                        "CAL": { name: "CAL Bank", sector: "Finance" },
-                        "GOIL": { name: "Ghana Oil Company", sector: "Energy" }
-                    };
-                    const meta = knownMeta[quote.name] || { name: quote.name, sector: "Other" };
-                    const previousPrice = quote.price - quote.change;
-                    const changePercent = previousPrice !== 0 ? (quote.change / previousPrice) * 100 : 0;
+                const raw = await response.json();
+                const mapped: Stock[] = raw.map((q: any) => {
+                    const meta = KNOWN_METADATA[q.name] ?? { name: q.name, sector: "Other" };
+                    const prev = q.price - q.change;
                     return {
-                        symbol: quote.name,
+                        symbol: q.name,
                         name: meta.name,
                         sector: meta.sector,
-                        price: quote.price,
-                        change: quote.change,
-                        changePercent: changePercent,
-                        volume: quote.volume
+                        price: q.price,
+                        change: q.change,
+                        changePercent: prev !== 0 ? (q.change / prev) * 100 : 0,
+                        volume: q.volume,
                     };
                 });
-                setStocks(mappedData);
-                return;
+                setStocks(mapped);
+                setLastUpdated(new Date());
+                return mapped;
             }
-
-            // Priority 2: Server Action Fallback
-            const data = await getMarketData();
-            if (data && data.length > 0) {
-                setStocks(data);
-            }
-        } catch (err) {
-            console.error("Failed to load market data", err);
-            // Fallback to server action if direct fetch fails (e.g. extension blocking)
-            const data = await getMarketData();
-            if (data && data.length > 0) setStocks(data);
+            const fallback = await getMarketData();
+            setStocks(fallback ?? []);
+            setLastUpdated(new Date());
+            return fallback ?? [];
+        } catch {
+            const fallback = await getMarketData();
+            if (fallback?.length) setStocks(fallback);
+            setLastUpdated(new Date());
+            return fallback ?? [];
         } finally {
             setLoading(false);
         }
     };
 
-    const handleRefresh = async (manual = false) => {
-        await fetchStocksData(manual);
+    // Fetch user holdings from Supabase
+    const fetchHoldings = async (priceMap: Record<string, number>) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: txns } = await supabase
+            .from("transactions")
+            .select("symbol, type, quantity, price_per_share")
+            .eq("user_id", user.id);
+        if (txns && txns.length > 0) {
+            setHoldings(buildHoldingsMap(txns as RawTransaction[], priceMap));
+        }
     };
 
     useEffect(() => {
-        fetchStocksData(true);
-        const interval = setInterval(() => fetchStocksData(false), 60000);
+        (async () => {
+            const fetched = await fetchStocks(true);
+            const priceMap: Record<string, number> = {};
+            fetched.forEach((s) => { priceMap[s.symbol] = s.price; });
+            await fetchHoldings(priceMap);
+        })();
+
+        const interval = setInterval(() => fetchStocks(false), 60000);
         return () => clearInterval(interval);
     }, []);
 
-    const [currentTime, setCurrentTime] = useState("");
+    // ─── Derived data ─────────────────────────────────────────────────────────
+    const sectors = useMemo(() => {
+        const s = new Set(stocks.map((s) => s.sector));
+        return ["All", ...Array.from(s).sort()];
+    }, [stocks]);
 
-    useEffect(() => {
-        // Initialize clock on client only to prevent hydration mismatch
-        setCurrentTime(new Date().toLocaleTimeString('en-US', { hour12: false }));
-        const timer = setInterval(() => {
-            setCurrentTime(new Date().toLocaleTimeString('en-US', { hour12: false }));
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
+    const sorted = useMemo(() => {
+        const filtered = stocks.filter((s) => {
+            const matchSearch = s.symbol.toLowerCase().includes(search.toLowerCase()) ||
+                s.name.toLowerCase().includes(search.toLowerCase());
+            const matchSector = sectorFilter === "All" || s.sector === sectorFilter;
+            return matchSearch && matchSector;
+        });
+        return [...filtered].sort((a, b) => {
+            let av = 0, bv = 0;
+            if (sortKey === "symbol") return sortDir === "asc"
+                ? a.symbol.localeCompare(b.symbol)
+                : b.symbol.localeCompare(a.symbol);
+            if (sortKey === "price") { av = a.price; bv = b.price; }
+            if (sortKey === "change") { av = a.changePercent; bv = b.changePercent; }
+            if (sortKey === "volume") { av = a.volume; bv = b.volume; }
+            return sortDir === "asc" ? av - bv : bv - av;
+        });
+    }, [stocks, search, sectorFilter, sortKey, sortDir]);
 
-    const filteredStocks = stocks.filter(stock => {
-        const matchesSearch = stock.symbol.toLowerCase().includes(search.toLowerCase()) ||
-            stock.name.toLowerCase().includes(search.toLowerCase());
-        const matchesFilter = filter === "All" || stock.sector === filter;
-        return matchesSearch && matchesFilter;
-    });
+    const gainers = useMemo(() => [...stocks].filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent), [stocks]);
+    const losers = useMemo(() => [...stocks].filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent), [stocks]);
+    const topVolume = useMemo(() => [...stocks].sort((a, b) => b.volume - a.volume)[0], [stocks]);
+    const ownedCount = Object.keys(holdings).length;
 
-    const sectors = ["All", ...Array.from(new Set(stocks.map(s => s.sector)))];
-    const marketTrend = stocks.length > 0 ? stocks.reduce((acc, s) => acc + s.changePercent, 0) / stocks.length : 0;
-    const isMarketUp = marketTrend >= 0;
+    function toggleSort(key: SortKey) {
+        if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+        else { setSortKey(key); setSortDir("desc"); }
+    }
 
     return (
-        <div className="pb-20 space-y-4 md:space-y-8">
+        <div className="space-y-5 pb-24 md:pb-12">
             <DashboardHeader />
 
-            {/* Market Intelligence Dashboard - Mobile Optimized */}
-            <div className="glass-card p-4 md:p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-6 mb-4 md:mb-8">
-                    <div className="flex items-center gap-3 md:gap-4">
-                        <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-100 flex-shrink-0">
-                            <BarChart3 size={20} className="text-white" />
-                        </div>
-                        <div className="min-w-0">
-                            <h1 className="text-xl md:text-3xl font-black text-[#1A1C4E] tracking-tight">Market Explorer</h1>
-                            <p className="text-indigo-600 font-medium text-sm md:text-base">Real-time GSE data and trading opportunities</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2 md:gap-3">
-                        <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 min-h-[44px]">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                            <span className="text-xs md:text-sm font-bold">Market Open</span>
-                        </div>
-                        <div className="text-right flex items-center gap-4">
-                            <button
-                                onClick={() => handleRefresh(true)}
-                                disabled={loading}
-                                className={`p-2 rounded-lg bg-white/50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all ${loading ? 'animate-spin' : ''}`}
-                                title="Sync Quote"
-                            >
-                                <RefreshCw size={18} />
-                            </button>
-                            <div>
-                                <div className="text-sm md:text-lg font-black text-gray-800">{currentTime || "--:--:--"}</div>
-                                <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">GSE Time</div>
-                            </div>
-                        </div>
-                    </div>
+            {/* ── Page Header ─────────────────────────────────────────────── */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Stocks</h2>
+                    <p className="text-sm text-gray-500 font-medium mt-0.5">
+                        Ghana Stock Exchange — live prices
+                        {lastUpdated && (
+                            <span className="ml-2 text-xs text-gray-400">Updated {lastUpdated.toLocaleTimeString()}</span>
+                        )}
+                    </p>
                 </div>
-
-                {/* Market Metrics Grid - Mobile Optimized */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                    <div className="bg-white/60 rounded-xl p-3 md:p-6 border border-white/50">
-                        <div className="flex items-center gap-2 mb-2 md:mb-3">
-                            <Activity size={14} className="text-indigo-600" />
-                            <span className="text-[10px] md:text-xs font-black text-indigo-600 uppercase tracking-wider">Sentiment</span>
+                <div className="flex items-center gap-2">
+                    {ownedCount > 0 && (
+                        <div className="flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100">
+                            <Activity size={13} className="text-indigo-600" />
+                            <span className="text-xs font-black text-indigo-700">You own {ownedCount} stock{ownedCount !== 1 ? "s" : ""}</span>
                         </div>
-                        <div className={`text-xl md:text-3xl font-black mb-1 md:mb-2 ${isMarketUp ? "text-emerald-600" : "text-red-600"}`}>
-                            {isMarketUp ? <TrendingUp size={18} className="inline mr-1" /> : <TrendingDown size={18} className="inline mr-1" />}
-                            {Math.abs(marketTrend).toFixed(2)}%
-                        </div>
-                        <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">GSE Composite</div>
-                    </div>
-
-                    <div className="bg-white/60 rounded-xl p-3 md:p-6 border border-white/50">
-                        <div className="flex items-center gap-2 mb-2 md:mb-3">
-                            <DollarSign size={14} className="text-emerald-600" />
-                            <span className="text-[10px] md:text-xs font-black text-emerald-600 uppercase tracking-wider">24h Volume</span>
-                        </div>
-                        <div className="text-xl md:text-3xl font-black mb-1 md:mb-2">
-                            2.4M
-                        </div>
-                        <div className="text-[10px] md:text-xs font-bold text-emerald-600 uppercase tracking-wider">+12.4% vs Avg</div>
-                    </div>
-
-                    <div className="bg-white/60 rounded-xl p-3 md:p-6 border border-white/50">
-                        <div className="flex items-center gap-2 mb-2 md:mb-3">
-                            <PieChart size={14} className="text-purple-600" />
-                            <span className="text-[10px] md:text-xs font-black text-purple-600 uppercase tracking-wider">Securities</span>
-                        </div>
-                        <div className="text-xl md:text-3xl font-black mb-1 md:mb-2">
-                            {stocks.length}
-                        </div>
-                        <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Listed Companies</div>
-                    </div>
-
-                    <div className="bg-white/60 rounded-xl p-3 md:p-6 border border-white/50">
-                        <div className="flex items-center gap-2 mb-2 md:mb-3">
-                            <Clock size={14} className="text-amber-600" />
-                            <span className="text-[10px] md:text-xs font-black text-amber-600 uppercase tracking-wider">Market Cap</span>
-                        </div>
-                        <div className="text-xl md:text-3xl font-black mb-1 md:mb-2">
-                            GH₵1.2T
-                        </div>
-                        <div className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Total Value</div>
-                    </div>
+                    )}
+                    <button
+                        onClick={() => fetchStocks(false)}
+                        className="p-2 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors touch-manipulation"
+                        title="Refresh"
+                    >
+                        <RefreshCw size={15} className="text-gray-600" />
+                    </button>
                 </div>
             </div>
 
-            {/* Advanced Search & Filters - Mobile Optimized */}
-            <div className="glass-card p-4 md:p-6 bg-gradient-to-r from-white to-slate-50 border-slate-200">
-                <div className="flex flex-col gap-4 md:gap-6">
-                    {/* Search Bar - Full Width on Mobile */}
-                    <div className="relative w-full group">
-                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors z-10" />
-                        <input
-                            type="text"
-                            placeholder="Search ticker, company, or sector..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-400 transition-all text-base md:text-sm font-medium placeholder:text-gray-400 touch-manipulation"
-                        />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                        {/* Sector Filters - Horizontal Scroll on Mobile */}
-                        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 flex-1 no-scrollbar touch-manipulation">
-                            {sectors.map(sector => (
-                                <button
-                                    key={sector}
-                                    onClick={() => setFilter(sector)}
-                                    className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap border min-h-[44px] touch-manipulation active:scale-95 ${filter === sector
-                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-100"
-                                        : "bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
-                                        }`}
-                                >
-                                    {sector}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* View Toggle & Advanced Filters */}
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                            <div className="flex items-center gap-1 bg-white rounded-xl p-1 border border-gray-200">
-                                <button className="p-2 rounded-lg bg-indigo-600 text-white transition-all min-h-[44px] min-w-[44px] touch-manipulation active:scale-95">
-                                    <Grid3X3 size={16} />
-                                </button>
-                                <button className="p-2 rounded-lg text-gray-400 hover:text-gray-600 transition-all min-h-[44px] min-w-[44px] touch-manipulation active:scale-95">
-                                    <List size={16} />
-                                </button>
+            {/* ── Market Pulse Strip ──────────────────────────────────────── */}
+            {!loading && stocks.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Top Gainer */}
+                    {gainers[0] && (
+                        <div className="bg-white rounded-2xl p-4 border border-emerald-100 flex items-center gap-3 shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                                <ArrowUpRight size={18} className="text-emerald-600" />
                             </div>
-                            <button className="flex items-center gap-2 px-4 py-3 bg-white text-gray-600 rounded-xl border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all text-sm font-medium min-h-[44px] touch-manipulation active:scale-95">
-                                <SlidersHorizontal size={16} />
-                                <span className="hidden sm:inline">Filters</span>
-                            </button>
+                            <div className="min-w-0">
+                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">Top Gainer</div>
+                                <div className="font-black text-gray-900">{gainers[0].symbol}</div>
+                                <div className="text-xs font-black text-emerald-600">+{gainers[0].changePercent.toFixed(2)}%</div>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Active Filters Display */}
-                    {(search || filter !== "All") && (
-                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
-                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Active Filters:</span>
-                            {search && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">
-                                    Search: "{search}" <button className="ml-1 hover:text-indigo-900">×</button>
-                                </span>
-                            )}
-                            {filter !== "All" && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
-                                    Sector: {filter} <button className="ml-1 hover:text-emerald-900">×</button>
-                                </span>
-                            )}
+                    )}
+                    {/* Top Loser */}
+                    {losers[0] && (
+                        <div className="bg-white rounded-2xl p-4 border border-red-100 flex items-center gap-3 shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                                <ArrowDownRight size={18} className="text-red-500" />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="text-[10px] font-bold text-red-500 uppercase tracking-wide">Top Loser</div>
+                                <div className="font-black text-gray-900">{losers[0].symbol}</div>
+                                <div className="text-xs font-black text-red-600">{losers[0].changePercent.toFixed(2)}%</div>
+                            </div>
+                        </div>
+                    )}
+                    {/* Most Traded */}
+                    {topVolume && (
+                        <div className="bg-white rounded-2xl p-4 border border-amber-100 flex items-center gap-3 shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                                <Zap size={18} className="text-amber-600" />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="text-[10px] font-bold text-amber-600 uppercase tracking-wide">Most Traded</div>
+                                <div className="font-black text-gray-900">{topVolume.symbol}</div>
+                                <div className="text-xs font-black text-amber-700">{(topVolume.volume / 1000).toFixed(1)}K vol</div>
+                            </div>
                         </div>
                     )}
                 </div>
+            )}
 
-                {/* Market Data Display */}
-                {loading ? (
-                    <div className="glass-card p-16 text-center border-none shadow-none">
-                        <div className="max-w-md mx-auto">
-                            <div className="relative w-20 h-20 mx-auto mb-6">
-                                <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
-                                <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
-                            </div>
-                            <h3 className="text-xl font-black text-gray-800 mb-2">Syncing Terminal...</h3>
-                            <p className="text-gray-500 font-medium">Fetching the latest quotes from GSE</p>
-                        </div>
-                    </div>
-                ) : filteredStocks.length === 0 ? (
-                    <div className="glass-card p-16 text-center bg-gray-50/50 border-dashed border-2 border-gray-200">
-                        <div className="max-w-md mx-auto">
-                            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-100">
-                                <Search size={32} className="text-gray-300" />
-                            </div>
-                            <h3 className="text-xl font-black text-gray-800 mb-2">No Matching Assets</h3>
-                            <p className="text-gray-500 mb-8 font-medium">We couldn't find any stocks matching your current filters. Try resetting or adjusting your search.</p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <button
-                                    onClick={() => { setSearch(""); setFilter("All"); }}
-                                    className="w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
-                                >
-                                    Reset All Filters
-                                </button>
-                                <button
-                                    onClick={() => handleRefresh(true)}
-                                    className="w-full sm:w-auto px-8 py-4 bg-white text-gray-600 font-black rounded-xl border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all"
-                                >
-                                    Force Re-sync
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="space-y-3">
-                        {/* Results Summary */}
-                        <div className="flex items-center justify-between text-sm font-medium text-gray-600">
-                            <span>Showing {filteredStocks.length} of {stocks.length} securities</span>
-                            <div className="flex items-center gap-4">
-                                <span className="flex items-center gap-1">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                    Real-time data
-                                </span>
-                            </div>
-                        </div>
+            {/* ── Search & Controls ───────────────────────────────────────── */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm space-y-3">
+                {/* Search bar */}
+                <div className="relative">
+                    <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="Search stocks, companies..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 text-sm font-medium bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 outline-none transition-all placeholder:text-gray-400"
+                    />
+                </div>
 
-                        {/* Stock Grid - Single Column on Mobile */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-                            {filteredStocks.map(stock => (
-                                <StockRow key={stock.symbol} stock={stock} />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                {/* Sector filter chips */}
+                <div className="flex gap-2 flex-wrap">
+                    {sectors.map((sec) => (
+                        <button
+                            key={sec}
+                            onClick={() => setSectorFilter(sec)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${sectorFilter === sec
+                                    ? "bg-indigo-600 text-white shadow-sm"
+                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                }`}
+                        >
+                            {sec}
+                        </button>
+                    ))}
+                </div>
 
-                {/* Market Insights Footer - Mobile Optimized */}
-                <div className="glass-card p-4 md:p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white mt-6">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
-                        <div className="flex-1">
-                            <h3 className="text-base md:text-lg font-black mb-1">Market Insights</h3>
-                            <p className="text-indigo-100 text-xs md:text-sm">Advanced analytics and trading signals</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2 md:gap-3">
-                            <button className="px-4 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all text-sm backdrop-blur-sm min-h-[44px] touch-manipulation active:scale-95">
-                                Top Movers
+                {/* Sort & view controls */}
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Sort:</span>
+                        {(["symbol", "price", "change", "volume"] as SortKey[]).map((key) => (
+                            <button
+                                key={key}
+                                onClick={() => toggleSort(key)}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${sortKey === key
+                                        ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                        : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-transparent"
+                                    }`}
+                            >
+                                {key.charAt(0).toUpperCase() + key.slice(1)}
+                                {sortKey === key && (
+                                    <span className="text-[9px]">{sortDir === "asc" ? "↑" : "↓"}</span>
+                                )}
                             </button>
-                            <button className="px-4 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all text-sm backdrop-blur-sm min-h-[44px] touch-manipulation active:scale-95">
-                                Watchlist
-                            </button>
-                            <button className="px-4 py-3 bg-white text-indigo-600 font-bold rounded-xl hover:bg-gray-50 transition-all text-sm min-h-[44px] touch-manipulation active:scale-95">
-                                Analytics
-                            </button>
-                        </div>
+                        ))}
+                    </div>
+                    {/* View toggle */}
+                    <div className="flex gap-1 bg-gray-100 p-0.5 rounded-xl">
+                        <button
+                            onClick={() => setViewMode("grid")}
+                            className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-white shadow text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                        >
+                            <Grid3X3 size={14} />
+                        </button>
+                        <button
+                            onClick={() => setViewMode("list")}
+                            className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-white shadow text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                        >
+                            <List size={14} />
+                        </button>
                     </div>
                 </div>
             </div>
+
+            {/* ── Results count ───────────────────────────────────────────── */}
+            {!loading && (
+                <div className="text-xs font-bold text-gray-400 uppercase tracking-wide px-1">
+                    {sorted.length} stock{sorted.length !== 1 ? "s" : ""} {sectorFilter !== "All" ? `in ${sectorFilter}` : ""}
+                    {search && ` matching "${search}"`}
+                </div>
+            )}
+
+            {/* ── Stock List ──────────────────────────────────────────────── */}
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 animate-pulse">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-11 h-11 rounded-xl bg-gray-100" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 bg-gray-100 rounded w-3/4" />
+                                    <div className="h-3 bg-gray-100 rounded w-1/2" />
+                                </div>
+                            </div>
+                            <div className="h-6 bg-gray-100 rounded w-1/2 mb-2" />
+                            <div className="h-10 bg-gray-50 rounded-xl mb-3" />
+                            <div className="h-9 bg-gray-100 rounded-xl" />
+                        </div>
+                    ))}
+                </div>
+            ) : sorted.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center shadow-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
+                        <Search size={24} className="text-gray-300" />
+                    </div>
+                    <h3 className="text-lg font-black text-gray-700 mb-2">No stocks found</h3>
+                    <p className="text-sm text-gray-400">Try adjusting your filters or search term.</p>
+                </div>
+            ) : viewMode === "grid" ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {sorted.map((stock) => (
+                        <StockRow
+                            key={stock.symbol}
+                            stock={stock}
+                            holding={holdings[stock.symbol]}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    {/* List header */}
+                    <div className="grid grid-cols-[auto_1fr_80px_90px_80px] gap-3 px-4 py-2.5 border-b border-gray-100 bg-gray-50">
+                        {["", "Company", "Sparkline", "Price / Chg", "Action"].map((h, i) => (
+                            <div key={i} className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{h}</div>
+                        ))}
+                    </div>
+                    {sorted.map((stock) => (
+                        <StockRow
+                            key={stock.symbol}
+                            stock={stock}
+                            holding={holdings[stock.symbol]}
+                            compact
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

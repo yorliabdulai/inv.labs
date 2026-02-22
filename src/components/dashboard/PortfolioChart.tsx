@@ -85,13 +85,13 @@ export function PortfolioChart({ data = [], period = '1M', startingValue = 10000
                 <div className="flex gap-1 bg-gray-100/80 p-1 rounded-xl">
                     <button
                         onClick={() => setChartType('area')}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${chartType === 'area' ? 'bg-white shadow text-indigo-700' : 'text-gray-500 hover:text-indigo-600'}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${chartType === 'area' ? 'bg-white shadow text-indigo-700' : 'text-gray-500 hover:text-indigo-600'}`}
                     >
                         <TrendingUp size={12} /> Area
                     </button>
                     <button
                         onClick={() => setChartType('bar')}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${chartType === 'bar' ? 'bg-white shadow text-indigo-700' : 'text-gray-500 hover:text-indigo-600'}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${chartType === 'bar' ? 'bg-white shadow text-indigo-700' : 'text-gray-500 hover:text-indigo-600'}`}
                     >
                         <BarChart3 size={12} /> Bar
                     </button>

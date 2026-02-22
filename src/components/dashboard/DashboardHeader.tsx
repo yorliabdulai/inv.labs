@@ -18,7 +18,7 @@ export function DashboardHeader() {
     const { displayName, displayInitial, firstName, loading } = useUserProfile();
     const [currentTime, setCurrentTime] = useState("");
     const [dateStr, setDateStr] = useState("");
-    const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Welcome back", icon: Sun });
+    const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
     useEffect(() => {
         const now = new Date();
@@ -45,6 +45,13 @@ export function DashboardHeader() {
     }, []);
 
     const GreetIcon = greeting.icon;
+
+    // Resolve the display name — context has a "Trader" fallback already,
+    // but we add one more guard here so the UI never shows a blank greeting.
+    const name = firstName || displayName || "Trader";
+    const initial = displayInitial || name.charAt(0).toUpperCase() || "T";
+    // Show skeleton only while actively loading AND we genuinely have no name yet
+    const showSkeleton = loading && name === "Trader";
 
     return (
         <header className="relative z-10 mb-8 w-full">
@@ -73,7 +80,7 @@ export function DashboardHeader() {
                                 GSE-Live
                             </span>
                         </div>
-                        <div className="bg-text-primary text-white px-3 py-1 rounded-lg font-mono text-xs font-black shadow-lg shadow-text-primary/20">
+                        <div className="bg-text-primary text-white px-3 py-1 rounded-xl font-mono text-xs font-black shadow-lg shadow-text-primary/20">
                             {currentTime}
                         </div>
                     </div>
@@ -88,10 +95,10 @@ export function DashboardHeader() {
                     </h1>
                     <div className="text-sm text-text-secondary font-medium flex items-center gap-1.5 min-h-[20px]">
                         <GreetIcon size={14} className="text-amber-500 flex-shrink-0" />
-                        {loading ? (
+                        {showSkeleton ? (
                             <span className="inline-block w-32 h-4 bg-gray-100 animate-pulse rounded" />
                         ) : (
-                            <p>{greeting.text}, {firstName}. Here&apos;s your market overview.</p>
+                            <span>{greeting.text}, {name}. Here&apos;s your market overview.</span>
                         )}
                     </div>
                 </div>
@@ -115,7 +122,7 @@ export function DashboardHeader() {
                         </button>
 
                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-brand to-brand-accent text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand/30 hover:shadow-xl transition-all cursor-pointer touch-manipulation active:scale-95 ring-2 ring-transparent hover:ring-brand/20">
-                            {loading ? "·" : displayInitial}
+                            {initial}
                         </div>
                     </div>
                 </div>

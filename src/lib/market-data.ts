@@ -12,7 +12,7 @@ export const GSE_API_BASE = "https://dev.kwayisi.org/apis/gse";
 
 // Static metadata map for common GSE stocks to enhance the API data
 // The API /live endpoint only gives Ticker, Price, Change, Volume
-const KNOWN_METADATA: Record<string, { name: string; sector: string }> = {
+export const KNOWN_METADATA: Record<string, { name: string; sector: string }> = {
     "MTNGH": { name: "MTN Ghana", sector: "Telecom" },
     "GCB": { name: "GCB Bank", sector: "Finance" },
     "EGH": { name: "Ecobank Ghana", sector: "Finance" },

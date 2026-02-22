@@ -17,7 +17,7 @@ export function Sidebar() {
 
     const navItems = [
         { href: "/dashboard", label: "Dashboard", icon: Home },
-        { href: "/dashboard/market", label: "Markets", icon: TrendingUp },
+        { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
         { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase },
         { href: "/dashboard/leaderboard", label: "Rankings", icon: Award },
