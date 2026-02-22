@@ -60,10 +60,9 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (updateError) throw new Error("Balance update failed");
 
-        // 4. Revalidate
-        revalidatePath("/dashboard");
-        revalidatePath("/dashboard/portfolio");
-        revalidatePath("/dashboard/market");
+        // 4. Revalidate cache for affected views
+        revalidatePath("/dashboard", "page");
+        revalidatePath("/dashboard/portfolio", "page");
 
         return { success: true, message: `Successfully ${type.toLowerCase()}ed ${quantity} shares of ${symbol}` };
 
