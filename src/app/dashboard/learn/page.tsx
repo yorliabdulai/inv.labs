@@ -93,8 +93,8 @@ export default function LearnPage() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-300 text-[10px] font-bold uppercase tracking-widest">
                             <Sparkles size={12} /> Institutional Academy
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">
-                            Elevate Your <span className="text-indigo-400">Market Intelligence.</span>
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-normal leading-[1.2]">
+                            Elevate Your <span className="text-indigo-300">Market Intelligence.</span>
                         </h1>
                         <p className="text-slate-400 text-lg font-medium leading-relaxed">
                             Professional accreditation paths designed to transition investors from fundamental awareness to institutional-grade execution.
@@ -138,12 +138,12 @@ export default function LearnPage() {
                         <div key={i} className="group bg-white border border-slate-200 rounded-[2rem] p-8 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col h-full">
                             <div className="flex items-start justify-between mb-8">
                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${path.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                                        path.color === 'purple' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
+                                    path.color === 'purple' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
                                     }`}>
                                     <path.icon size={24} />
                                 </div>
                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${path.level === 'Foundational' ? 'bg-indigo-50 text-indigo-600' :
-                                        path.level === 'Professional' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
+                                    path.level === 'Professional' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
                                     }`}>
                                     {path.level}
                                 </span>
@@ -165,7 +165,7 @@ export default function LearnPage() {
                                     <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                         <div
                                             className={`h-full transition-all duration-1000 ${path.color === 'indigo' ? 'bg-indigo-600' :
-                                                    path.color === 'purple' ? 'bg-purple-600' : 'bg-emerald-600'
+                                                path.color === 'purple' ? 'bg-purple-600' : 'bg-emerald-600'
                                                 }`}
                                             style={{ width: `${path.progress}%` }}
                                         />
@@ -182,8 +182,8 @@ export default function LearnPage() {
                                 </div>
 
                                 <button className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${path.progress === 100
-                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                        : "bg-slate-900 text-white hover:bg-indigo-600 shadow-lg shadow-slate-200"
+                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    : "bg-slate-900 text-white hover:bg-indigo-600 shadow-lg shadow-slate-200"
                                     }`}>
                                     {path.progress === 100 ? "Certification Earned" : "Resume Path"}
                                 </button>

@@ -77,6 +77,10 @@ function buildTimeline(
         label: firstDate.toLocaleDateString("en-GH", { month: "short", day: "numeric" }),
         value: startBalance,
         date: sorted[0].created_at,
+        open: startBalance,
+        high: startBalance,
+        low: startBalance,
+        close: startBalance
     });
 
     sorted.forEach((tx, i) => {
@@ -98,9 +102,27 @@ function buildTimeline(
             stocksValue += q * (priceMap.get(sym) ?? 0);
         });
 
+        const currentValue = Math.max(0, cash + stocksValue);
         const date = new Date(tx.created_at);
         const label = date.toLocaleDateString("en-GH", { month: "short", day: "numeric" });
-        points.push({ label, value: Math.max(0, cash + stocksValue), date: tx.created_at });
+
+        // Generate simulated OHLC based on the current value and a bit of noise
+        const lastValue = points.length > 0 ? points[points.length - 1].value : startBalance;
+        const range = Math.max(currentValue, lastValue) * 0.02; // 2% range for simulation
+        const open = lastValue;
+        const close = currentValue;
+        const high = Math.max(open, close) + (Math.random() * range);
+        const low = Math.max(0, Math.min(open, close) - (Math.random() * range));
+
+        points.push({
+            label,
+            value: currentValue,
+            date: tx.created_at,
+            open,
+            high,
+            low,
+            close
+        });
     });
 
     return points;
@@ -137,6 +159,7 @@ export default function PortfolioPage() {
     const [mutualFundsValue, setMutualFundsValue] = useState(0);
     const [cashBalance, setCashBalance] = useState(10000);
     const [selectedPeriod, setSelectedPeriod] = useState<Period>("1M");
+    const [chartType, setChartType] = useState<'area' | 'bar' | 'candle'>('area');
     const [holdingsTab, setHoldingsTab] = useState<"all" | "stocks" | "funds">("all");
 
     const STARTING_BALANCE = 10000;
@@ -334,38 +357,70 @@ export default function PortfolioPage() {
 
                 {/* Performance Chart */}
                 <div className="lg:col-span-8">
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6 h-full">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                                    <BarChart3 size={16} className="text-emerald-600" />
+                    <div className="bg-white rounded-[32px] border border-gray-200 shadow-sm overflow-hidden flex flex-col group h-full">
+                        <div className="p-6 md:p-8 border-b border-gray-50 flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-slate-50/30">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center text-indigo-600 group-hover:scale-110 transition-transform">
+                                    <Activity size={24} />
                                 </div>
-                                <h3 className="text-base font-black text-gray-900">Performance Timeline</h3>
+                                <div>
+                                    <h3 className="text-lg font-black text-[#1A1C4E] tracking-tight">Portfolio Performance</h3>
+                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Proprietary Performance Visualizer</p>
+                                </div>
                             </div>
-                            {/* Period filter */}
-                            <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
-                                {PERIODS.map(p => (
+
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                {/* Chart Type Toggle */}
+                                <div className="flex gap-1 p-1 bg-gray-100 border border-gray-200 rounded-2xl">
                                     <button
-                                        key={p}
-                                        onClick={() => setSelectedPeriod(p)}
-                                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${selectedPeriod === p
-                                            ? "bg-indigo-600 text-white shadow"
-                                            : "text-gray-500 hover:text-indigo-600 hover:bg-white"
-                                            }`}
-                                    >{p}</button>
-                                ))}
+                                        onClick={() => setChartType('area')}
+                                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${chartType === 'area' ? 'bg-[#1A1C4E] text-white' : 'text-slate-500 hover:text-[#1A1C4E]'}`}
+                                    >
+                                        Area
+                                    </button>
+                                    <button
+                                        onClick={() => setChartType('bar')}
+                                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${chartType === 'bar' ? 'bg-[#1A1C4E] text-white' : 'text-slate-500 hover:text-[#1A1C4E]'}`}
+                                    >
+                                        Bar
+                                    </button>
+                                    <button
+                                        onClick={() => setChartType('candle')}
+                                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${chartType === 'candle' ? 'bg-[#1A1C4E] text-white' : 'text-slate-500 hover:text-[#1A1C4E]'}`}
+                                    >
+                                        Candle
+                                    </button>
+                                </div>
+
+                                {/* Period Toggle */}
+                                <div className="flex gap-1 p-1 bg-gray-100 border border-gray-200 rounded-2xl overflow-x-auto max-w-full no-scrollbar">
+                                    {PERIODS.map((p) => (
+                                        <button
+                                            key={p}
+                                            onClick={() => setSelectedPeriod(p)}
+                                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black transition-all flex-shrink-0 ${selectedPeriod === p
+                                                ? 'bg-white text-[#1A1C4E] shadow-sm border border-gray-200'
+                                                : 'text-slate-500 hover:text-[#1A1C4E]'
+                                                }`}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                        <div className="h-[280px] md:h-[320px]">
+
+                        <div className="p-8 flex-1 flex flex-col min-h-[400px]">
                             <PortfolioChart
                                 data={chartData}
                                 period={selectedPeriod}
                                 startingValue={STARTING_BALANCE}
+                                chartType={chartType}
                             />
+                            {chartData.length === 0 && (
+                                <p className="text-center text-sm text-gray-400 mt-auto pb-4">No transactions yet in this period. Make your first trade to see performance.</p>
+                            )}
                         </div>
-                        {chartData.length === 0 && (
-                            <p className="text-center text-sm text-gray-400 mt-4">No transactions yet in this period. Make your first trade to see performance.</p>
-                        )}
                     </div>
                 </div>
 

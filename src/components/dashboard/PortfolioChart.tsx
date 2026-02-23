@@ -3,7 +3,8 @@
 import { useState, useLayoutEffect, useRef } from "react";
 import {
     AreaChart, Area, BarChart, Bar, XAxis, YAxis,
-    Tooltip, ResponsiveContainer, CartesianGrid
+    Tooltip, ResponsiveContainer, CartesianGrid,
+    ComposedChart, Cell
 } from "recharts";
 import gsap from "gsap";
 import { BarChart3, TrendingUp } from "lucide-react";
@@ -12,17 +13,26 @@ export interface PortfolioDataPoint {
     label: string;
     value: number;
     date: string;
+    open?: number;
+    high?: number;
+    low?: number;
+    close?: number;
 }
 
 interface PortfolioChartProps {
     data?: PortfolioDataPoint[];
     period?: string;
     startingValue?: number;
+    chartType: 'area' | 'bar' | 'candle';
 }
 
-export function PortfolioChart({ data = [], period = '1M', startingValue = 10000 }: PortfolioChartProps) {
+export function PortfolioChart({
+    data = [],
+    period = '1M',
+    startingValue = 10000,
+    chartType
+}: PortfolioChartProps) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const [chartType, setChartType] = useState<'area' | 'bar'>('area');
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
@@ -42,134 +52,169 @@ export function PortfolioChart({ data = [], period = '1M', startingValue = 10000
         { label: 'Now', value: startingValue, date: '' },
     ];
 
-    const minVal = Math.min(...chartData.map(d => d.value));
-    const maxVal = Math.max(...chartData.map(d => d.value));
+    const minVal = Math.min(...chartData.map(d => d.value), ...chartData.map(d => d.low ?? d.value));
+    const maxVal = Math.max(...chartData.map(d => d.value), ...chartData.map(d => d.high ?? d.value));
+
     const isPositive = chartData[chartData.length - 1]?.value >= startingValue;
-    const strokeColor = isPositive ? '#10B981' : '#EF4444';
-    const fillId = isPositive ? 'areaGreenFill' : 'areaRedFill';
-    const strokeId = isPositive ? 'strokeGreen' : 'strokeRed';
+    const strokeColor = "#4F46E5"; // Unified Indigo for "Intelligence" theme
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
-            const val = payload[0].value;
+            const item = payload[0].payload as PortfolioDataPoint;
+            const val = item.value;
             const change = val - startingValue;
             const changePct = ((change / startingValue) * 100).toFixed(2);
+
             return (
-                <div style={{
-                    background: 'rgba(255,255,255,0.98)',
-                    borderRadius: 14,
-                    border: '1px solid rgba(79,70,229,0.08)',
-                    boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
-                    padding: '14px 18px',
-                    minWidth: 160
-                }}>
-                    <p style={{ color: '#6B7280', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
+                <div className="bg-[#1A1C4E] border border-white/10 p-4 rounded-2xl shadow-2xl text-white min-w-[180px] backdrop-blur-md">
+                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2 border-b border-white/5 pb-2">
                         {label}
                     </p>
-                    <p style={{ color: '#1A1C4E', fontWeight: 900, fontSize: 15, marginBottom: 2 }}>
-                        GH₵ {val.toLocaleString('en-GH', { minimumFractionDigits: 2 })}
-                    </p>
-                    <p style={{ color: change >= 0 ? '#10B981' : '#EF4444', fontWeight: 800, fontSize: 12 }}>
-                        {change >= 0 ? '+' : ''}{change.toFixed(2)} ({change >= 0 ? '+' : ''}{changePct}%)
-                    </p>
+                    <div className="space-y-1.5">
+                        <div className="flex justify-between items-center gap-4">
+                            <span className="text-[10px] font-black uppercase text-slate-400">Position Value</span>
+                            <span className="text-sm font-black tabular-nums">GH₵ {val.toLocaleString('en-GH', { minimumFractionDigits: 2 })}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-4">
+                            <span className="text-[10px] font-black uppercase text-slate-400">Total Change</span>
+                            <span className={`text-xs font-black tabular-nums ${change >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                {change >= 0 ? '+' : ''}{change.toFixed(2)} ({change >= 0 ? '+' : ''}{changePct}%)
+                            </span>
+                        </div>
+                        {chartType === 'candle' && item.open !== undefined && (
+                            <div className="pt-2 mt-2 border-t border-white/5 space-y-1">
+                                <div className="flex justify-between items-center gap-4">
+                                    <span className="text-[10px] font-black uppercase text-slate-400">Open</span>
+                                    <span className="text-xs font-bold tabular-nums">{item.open.toFixed(0)}</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-4">
+                                    <span className="text-[10px] font-black uppercase text-slate-400">High</span>
+                                    <span className="text-xs font-bold text-emerald-400 tabular-nums">{item.high?.toFixed(0)}</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-4">
+                                    <span className="text-[10px] font-black uppercase text-slate-400">Low</span>
+                                    <span className="text-xs font-bold text-red-400 tabular-nums">{item.low?.toFixed(0)}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             );
         }
         return null;
     };
 
-    return (
-        <div ref={containerRef} className="w-full h-full min-h-[280px] flex flex-col gap-3">
-            {/* Chart type toggle */}
-            <div className="flex justify-end">
-                <div className="flex gap-1.5 bg-gray-100/80 p-1.5 rounded-2xl border border-gray-100 shadow-sm">
-                    <button
-                        onClick={() => setChartType('area')}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black transition-all ${chartType === 'area' ? 'bg-white shadow-md text-indigo-700 ring-2 ring-indigo-600/5' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        <TrendingUp size={12} /> Area
-                    </button>
-                    <button
-                        onClick={() => setChartType('bar')}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black transition-all ${chartType === 'bar' ? 'bg-white shadow-md text-indigo-700 ring-2 ring-indigo-600/5' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        <BarChart3 size={12} /> Bar
-                    </button>
-                </div>
-            </div>
+    const renderChartContent = () => {
+        switch (chartType) {
+            case 'candle':
+                return (
+                    <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis
+                            dataKey="label"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }}
+                            dy={10}
+                        />
+                        <YAxis hide domain={['auto', 'auto']} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }} />
+                        <Bar dataKey="high" fill="transparent">
+                            {chartData.map((entry, index) => {
+                                const isUp = (entry.close ?? entry.value) >= (entry.open ?? entry.value);
+                                return (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={isUp ? "#10b981" : "#ef4444"}
+                                        stroke={isUp ? "#10b981" : "#ef4444"}
+                                        strokeWidth={1}
+                                    />
+                                );
+                            })}
+                        </Bar>
+                        <Bar dataKey="value" barSize={12}>
+                            {chartData.map((entry, index) => {
+                                const isUp = (entry.close ?? entry.value) >= (entry.open ?? entry.value);
+                                return (
+                                    <Cell
+                                        key={`cell-candle-${index}`}
+                                        fill={isUp ? "#10b981" : "#ef4444"}
+                                        radius={2}
+                                    />
+                                );
+                            })}
+                        </Bar>
+                    </ComposedChart>
+                );
+            case 'bar':
+                return (
+                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
+                                <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.2} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F1F5F9" />
+                        <XAxis
+                            dataKey="label"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }}
+                            dy={10}
+                        />
+                        <YAxis hide domain={['auto', 'auto']} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
+                        <Bar
+                            dataKey="value"
+                            fill="url(#barGrad)"
+                            radius={[6, 6, 0, 0]}
+                            barSize={32}
+                            animationDuration={1000}
+                        />
+                    </BarChart>
+                );
+            case 'area':
+            default:
+                return (
+                    <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="areaIndigoFill" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#1A1C4E" stopOpacity={0.1} />
+                                <stop offset="95%" stopColor="#1A1C4E" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis
+                            dataKey="label"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }}
+                            dy={10}
+                        />
+                        <YAxis hide domain={['auto', 'auto']} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area
+                            type="monotone"
+                            dataKey="value"
+                            stroke="#1A1C4E"
+                            strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#areaIndigoFill)"
+                            animationDuration={1500}
+                            dot={false}
+                            activeDot={{ r: 5, fill: "#1A1C4E", strokeWidth: 2, stroke: '#fff' }}
+                        />
+                    </AreaChart>
+                );
+        }
+    };
 
-            <div className="portfolio-chart-container flex-1">
-                <ResponsiveContainer width="100%" height="100%">
-                    {chartType === 'area' ? (
-                        <AreaChart data={chartData} margin={{ top: 6, right: 4, left: 4, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="areaGreenFill" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.25} />
-                                    <stop offset="95%" stopColor="#10B981" stopOpacity={0.01} />
-                                </linearGradient>
-                                <linearGradient id="areaRedFill" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor="#EF4444" stopOpacity={0.01} />
-                                </linearGradient>
-                                <linearGradient id="strokeGreen" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stopColor="#10B981" />
-                                    <stop offset="100%" stopColor="#059669" />
-                                </linearGradient>
-                                <linearGradient id="strokeRed" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stopColor="#EF4444" />
-                                    <stop offset="100%" stopColor="#DC2626" />
-                                </linearGradient>
-                            </defs>
-                            <XAxis
-                                dataKey="label"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: '#9CA3AF', fontSize: 10, fontWeight: 600 }}
-                                dy={8}
-                            />
-                            <YAxis hide domain={[minVal * 0.995, maxVal * 1.005]} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Area
-                                type="monotone"
-                                dataKey="value"
-                                stroke={`url(#${strokeId})`}
-                                strokeWidth={2.5}
-                                fillOpacity={1}
-                                fill={`url(#${fillId})`}
-                                animationDuration={1200}
-                                animationEasing="ease-out"
-                                dot={false}
-                                activeDot={{ r: 5, fill: strokeColor, strokeWidth: 2, stroke: '#fff' }}
-                            />
-                        </AreaChart>
-                    ) : (
-                        <BarChart data={chartData} margin={{ top: 6, right: 4, left: 4, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor={isPositive ? '#10B981' : '#EF4444'} stopOpacity={0.9} />
-                                    <stop offset="100%" stopColor={isPositive ? '#059669' : '#DC2626'} stopOpacity={0.6} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F3F4F6" />
-                            <XAxis
-                                dataKey="label"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: '#9CA3AF', fontSize: 10, fontWeight: 600 }}
-                                dy={8}
-                            />
-                            <YAxis hide domain={[minVal * 0.99, maxVal * 1.01]} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Bar
-                                dataKey="value"
-                                fill="url(#barGrad)"
-                                radius={[4, 4, 0, 0]}
-                                animationDuration={1000}
-                            />
-                        </BarChart>
-                    )}
-                </ResponsiveContainer>
-            </div>
+    return (
+        <div ref={containerRef} className="w-full h-full min-h-[320px] portfolio-chart-container relative">
+            <ResponsiveContainer width="100%" height="100%">
+                {renderChartContent()}
+            </ResponsiveContainer>
         </div>
     );
 }
