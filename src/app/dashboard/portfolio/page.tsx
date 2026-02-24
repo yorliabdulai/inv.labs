@@ -374,7 +374,7 @@ export default function PortfolioPage() {
 
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                                 {/* Chart Type Toggle */}
-                                <div className="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-[1px]">
+                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[1px] max-w-full">
                                     {(['area', 'bar', 'candle'] as const).map((type) => (
                                         <button
                                             key={type}
@@ -387,7 +387,7 @@ export default function PortfolioPage() {
                                 </div>
 
                                 {/* Period Toggle */}
-                                <div className="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-[1px] overflow-x-auto max-w-full no-scrollbar">
+                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[1px] max-w-full no-scrollbar">
                                     {PERIODS.map((p) => (
                                         <button
                                             key={p}

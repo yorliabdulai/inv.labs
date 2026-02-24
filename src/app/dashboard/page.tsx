@@ -143,9 +143,9 @@ export default function DashboardPage() {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                                 {/* Chart Type Toggle */}
-                                <div className="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px]">
+                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px] max-w-full">
                                     <button
                                         onClick={() => setChartType('area')}
                                         className={`px-3 py-1.5 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${chartType === 'area' ? 'bg-[#C05E42] text-[#F9F9F9]' : 'text-white/40 hover:text-[#F9F9F9]'}`}
@@ -167,7 +167,7 @@ export default function DashboardPage() {
                                 </div>
 
                                 {/* Period Toggle */}
-                                <div className="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px]">
+                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px] max-w-full">
                                     {['1D', '1W', '1M', '3M', '1Y'].map((range) => (
                                         <button
                                             key={range}
