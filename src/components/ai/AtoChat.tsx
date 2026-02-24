@@ -135,42 +135,48 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
             />
 
             {/* Chat panel */}
-            <div className="fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 md:w-[400px] h-[85vh] md:h-[600px] bg-white rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col animate-slide-up">
+            <div className="fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 md:w-[450px] h-[85vh] md:h-[650px] bg-[#F9F9F9] rounded-t-3xl md:rounded-[2px] shadow-3xl flex flex-col animate-slide-up border border-black/5">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-3xl">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                            <span className="text-white font-black text-lg">A</span>
+                <div className="flex items-center justify-between p-6 border-b border-black/5 bg-[#121417] rounded-t-3xl md:rounded-[2px]">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[2px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
+                            <span className="text-[#F9F9F9] font-black text-xl font-instrument-serif">A</span>
                         </div>
                         <div>
-                            <h3 className="text-sm font-black text-gray-900">Ato</h3>
-                            <p className="text-xs text-gray-500">Your Investment Guide 🇬🇭</p>
+                            <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em]">Ato</h3>
+                            <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Investment Intelligence 🇬🇭</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {onMinimize && (
                             <button
                                 onClick={onMinimize}
-                                className="p-2 hover:bg-white/50 rounded-lg transition-colors"
+                                className="p-2 hover:bg-white/10 rounded-[2px] transition-colors"
                                 aria-label="Minimize"
                             >
-                                <Minimize2 size={18} className="text-gray-600" />
+                                <Minimize2 size={18} className="text-white/60" />
                             </button>
                         )}
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-white/50 rounded-lg transition-colors"
+                            className="p-2 hover:bg-white/10 rounded-[2px] transition-colors"
                             aria-label="Close"
                         >
-                            <X size={18} className="text-gray-600" />
+                            <X size={18} className="text-white/60" />
                         </button>
                     </div>
                 </div>
 
                 {/* Messages area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-6 space-y-2 bg-[#F9F9F9]">
                     {messages.length === 0 ? (
-                        <AtoSuggestions onSelect={handleSuggestionSelect} />
+                        <div className="h-full flex flex-col items-center justify-center space-y-8">
+                            <div className="text-center space-y-2">
+                                <h4 className="text-xl font-instrument-serif text-[#121417]">How can I help you today?</h4>
+                                <p className="text-xs text-black/40 font-medium max-w-[240px]">Navigate the Ghana Stock Exchange with personalized insights.</p>
+                            </div>
+                            <AtoSuggestions onSelect={handleSuggestionSelect} />
+                        </div>
                     ) : (
                         <>
                             {messages.map((message, index) => (
@@ -182,17 +188,17 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                                 />
                             ))}
                             {isLoading && (
-                                <div className="flex gap-3 mb-4">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                                        <Loader2 size={16} className="text-white animate-spin" />
+                                <div className="flex gap-3 mb-6 animate-fade-in">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-[2px] bg-[#C05E42] flex items-center justify-center">
+                                        <Loader2 size={14} className="text-[#F9F9F9] animate-spin" />
                                     </div>
-                                    <div className="flex items-center gap-2 px-4 py-3 bg-gray-100 rounded-2xl rounded-tl-none">
+                                    <div className="flex items-center gap-3 px-4 py-3 bg-white border border-black/5 rounded-[2px] shadow-sm">
                                         <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                                            <div className="w-1 h-1 bg-[#C05E42] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                                            <div className="w-1 h-1 bg-[#C05E42] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                                            <div className="w-1 h-1 bg-[#C05E42] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
                                         </div>
-                                        <span className="text-xs text-gray-500 font-medium">Ato is thinking...</span>
+                                        <span className="text-[10px] text-[#C05E42] font-black uppercase tracking-widest">Ato is analyzing...</span>
                                     </div>
                                 </div>
                             )}
@@ -203,34 +209,34 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
 
                 {/* Error message */}
                 {error && (
-                    <div className="px-4 py-2 bg-red-50 border-t border-red-100">
-                        <div className="flex items-start gap-2">
-                            <AlertCircle size={16} className="text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-xs text-red-800">{error}</p>
+                    <div className="px-6 py-3 bg-[#EF4444]/5 border-t border-[#EF4444]/10">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle size={16} className="text-[#EF4444] flex-shrink-0 mt-0.5" />
+                            <p className="text-[10px] font-bold text-[#EF4444] uppercase tracking-wider">{error}</p>
                         </div>
                     </div>
                 )}
 
-                {/* Disclaimer footer */}
-                <div className="px-4 py-2 bg-amber-50 border-t border-amber-100">
-                    <p className="text-xs text-amber-800 text-center">
-                        ⚠️ Educational info only, not financial advice •{" "}
-                        <span className="font-bold">
-                            {usage.remaining}/{usage.limit} messages left today
+                {/* Usage/Disclaimer footer */}
+                <div className="px-6 py-2 bg-black/[0.02] border-t border-black/5">
+                    <p className="text-[9px] text-black/30 font-bold uppercase tracking-widest text-center">
+                        Institutional Grade Intelligence •{" "}
+                        <span className="text-[#C05E42]">
+                            {usage.remaining}/{usage.limit} Queries Left
                         </span>
                     </p>
                 </div>
 
                 {/* Input area */}
-                <div className="p-4 border-t border-gray-100 bg-white rounded-b-3xl">
-                    <div className="flex gap-2">
+                <div className="p-6 border-t border-black/5 bg-white rounded-b-3xl md:rounded-[2px]">
+                    <div className="flex gap-3">
                         <textarea
                             ref={inputRef}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            placeholder="Ask Ato anything about investing..."
-                            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
+                            placeholder="Message Ato..."
+                            className="flex-1 px-4 py-3 border border-black/10 rounded-[2px] resize-none focus:outline-none focus:border-[#C05E42] text-sm font-instrument-sans placeholder:text-black/20"
                             rows={1}
                             disabled={isLoading || !!error}
                             maxLength={500}
@@ -238,21 +244,16 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                         <button
                             onClick={() => handleSendMessage()}
                             disabled={!input.trim() || isLoading || !!error}
-                            className="px-4 py-3 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-xl hover:from-amber-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[52px]"
+                            className="px-5 py-3 bg-[#121417] text-[#F9F9F9] rounded-[2px] hover:bg-[#C05E42] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px] shadow-lg shadow-black/10"
                             aria-label="Send message"
                         >
                             {isLoading ? (
-                                <Loader2 size={20} className="animate-spin" />
+                                <Loader2 size={18} className="animate-spin" />
                             ) : (
-                                <Send size={20} />
+                                <Send size={18} />
                             )}
                         </button>
                     </div>
-                    {input.length > 0 && (
-                        <p className="text-xs text-gray-400 mt-1 text-right">
-                            {input.length}/500
-                        </p>
-                    )}
                 </div>
             </div>
         </>

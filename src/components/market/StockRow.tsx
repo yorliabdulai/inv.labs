@@ -46,34 +46,34 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
         return (
             <>
                 <div
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer group border-b border-gray-50 last:border-b-0"
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/10 last:border-b-0 font-instrument-sans"
                     onClick={() => setIsModalOpen(true)}
                 >
-                    {/* Symbol */}
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs flex-shrink-0 ${isPositive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+                    {/* Symbol Icon */}
+                    <div className={`w-10 h-10 rounded-[2px] flex items-center justify-center font-black text-[10px] flex-shrink-0 tracking-widest border border-white/10 ${isPositive ? "bg-[#10B981]/10 text-[#10B981]" : "bg-red-500/10 text-red-500"}`}>
                         {stock.symbol.substring(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                            <span className="font-black text-gray-900 text-sm">{stock.symbol}</span>
-                            {isOwned && <CheckCircle2 size={12} className="text-indigo-500 flex-shrink-0" />}
+                        <div className="flex items-center gap-2">
+                            <span className="font-black text-[#F9F9F9] text-xs uppercase tracking-widest">{stock.symbol}</span>
+                            {isOwned && <CheckCircle2 size={12} className="text-[#C05E42] flex-shrink-0" />}
                         </div>
-                        <div className="text-xs text-gray-500 truncate">{stock.name}</div>
+                        <div className="text-[10px] text-white/40 uppercase tracking-widest truncate mt-0.5">{stock.name}</div>
                     </div>
-                    <div className="w-16 h-8 flex-shrink-0">
+                    <div className="w-20 h-8 flex-shrink-0 opacity-50">
                         <Sparkline data={history} color={isPositive ? "#10B981" : "#EF4444"} />
                     </div>
-                    <div className="text-right flex-shrink-0 w-24">
-                        <div className="font-black text-gray-900 text-sm">GH₵{stock.price.toFixed(2)}</div>
-                        <div className={`text-xs font-black ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
+                    <div className="text-right flex-shrink-0 w-28">
+                        <div className="font-black text-[#F9F9F9] text-sm tabular-nums tracking-tighter">GH₵{stock.price.toFixed(2)}</div>
+                        <div className={`text-[10px] font-black uppercase tracking-widest mt-0.5 ${isPositive ? "text-[#10B981]" : "text-red-500"}`}>
                             {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
                         </div>
                     </div>
                     <button
-                        className="ml-2 px-3 py-1.5 bg-indigo-600 text-white font-black rounded-lg hover:bg-indigo-700 transition-colors text-xs flex-shrink-0 min-h-[32px]"
+                        className="ml-4 px-4 py-2 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] hover:bg-[#C05E42]/90 transition-all text-[10px] uppercase tracking-widest flex-shrink-0 min-h-[36px] shadow-lg shadow-[#C05E42]/10"
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                     >
-                        Trade
+                        TRANS_EXEC
                     </button>
                 </div>
                 <TradeModal
@@ -90,93 +90,93 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
     return (
         <>
             <div
-                className={`bg-white rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-lg hover:shadow-indigo-50 transition-all duration-300 cursor-pointer group border hover:border-indigo-200 touch-manipulation relative ${isOwned ? "border-indigo-100 ring-1 ring-indigo-100/50" : "border-gray-100"
+                className={`bg-white/5 rounded-[2px] p-6 shadow-2xl transition-all duration-300 cursor-pointer group border flex flex-col h-full font-instrument-sans ${isOwned ? "border-[#C05E42]/40" : "border-white/10 hover:border-white/20"
                     }`}
                 onClick={() => setIsModalOpen(true)}
             >
-                {/* Ownership badge */}
+                {/* Ownership Label */}
                 {isOwned && (
-                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-                        <CheckCircle2 size={10} className="text-indigo-600" />
-                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wide">Owned</span>
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-[#C05E42]/10 px-2 py-0.5 rounded-[1px] border border-[#C05E42]/20">
+                        <CheckCircle2 size={10} className="text-[#C05E42]" />
+                        <span className="text-[8px] font-black text-[#C05E42] uppercase tracking-[0.2em]">Asset Owned</span>
                     </div>
                 )}
 
                 {/* Header */}
-                <div className="flex items-start gap-3 mb-3">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm border-2 flex-shrink-0 ${isPositive ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-red-50 border-red-100 text-red-700"
+                <div className="flex items-start gap-4 mb-6">
+                    <div className={`w-12 h-12 rounded-[2px] flex items-center justify-center font-black text-xs border flex-shrink-0 tracking-[0.1em] ${isPositive ? "bg-[#10B981]/5 border-[#10B981]/20 text-[#10B981]" : "bg-red-500/5 border-red-500/20 text-red-500"
                         }`}>
                         {stock.symbol.substring(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                            <h3 className="text-base font-black text-gray-900 group-hover:text-indigo-600 transition-colors">{stock.symbol}</h3>
-                            {isPositive ? <TrendingUp size={13} className="text-emerald-500" /> : <TrendingDown size={13} className="text-red-500" />}
+                        <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] group-hover:text-[#C05E42] transition-colors">{stock.symbol}</h3>
+                            {isPositive ? <TrendingUp size={14} className="text-[#10B981]" /> : <TrendingDown size={14} className="text-red-500" />}
                         </div>
-                        <p className="text-xs text-gray-500 truncate">{stock.name}</p>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{stock.sector}</span>
+                        <p className="text-[10px] text-white/40 uppercase tracking-widest truncate leading-tight">{stock.name}</p>
+                        <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1 block">{stock.sector}</span>
                     </div>
                 </div>
 
-                {/* Price & Change */}
-                <div className="flex items-end justify-between mb-3">
+                {/* Price & Primary Meta */}
+                <div className="flex items-end justify-between mb-6">
                     <div>
-                        <div className="text-xl font-black text-gray-900 font-mono">
+                        <div className="text-2xl font-black text-[#F9F9F9] tabular-nums tracking-tighter">
                             GH₵{stock.price.toFixed(2)}
                         </div>
-                        <div className={`text-xs font-black flex items-center gap-1 mt-0.5 ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
+                        <div className={`text-[10px] font-black flex items-center gap-1.5 mt-1 uppercase tracking-widest ${isPositive ? "text-[#10B981]" : "text-red-500"}`}>
                             {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
-                            <span className="text-[10px] font-medium text-gray-400">today</span>
+                            <span className="text-[8px] text-white/20">/ session</span>
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="text-[10px] font-bold text-gray-400 uppercase">Vol</div>
-                        <div className="text-xs font-black text-gray-700">{(stock.volume / 1000).toFixed(1)}K</div>
+                        <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest mb-1">Vol 24H</div>
+                        <div className="text-xs font-black text-[#F9F9F9] uppercase tracking-widest">{(stock.volume / 1000).toFixed(1)}K</div>
                     </div>
                 </div>
 
-                {/* Sparkline */}
-                <div className="h-10 w-full mb-3">
+                {/* Sparkline Visualization */}
+                <div className="h-12 w-full mb-6 opacity-80 group-hover:opacity-100 transition-opacity">
                     <Sparkline data={history} color={isPositive ? "#10B981" : "#EF4444"} />
                 </div>
 
-                {/* Holdings P&L strip — shown only when user owns this stock */}
+                {/* Position Summary Strip */}
                 {isOwned && holding && (
-                    <div className="bg-indigo-50 rounded-xl p-3 mb-3 border border-indigo-100">
-                        <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wide">Your position</span>
-                            <span className={`text-xs font-black ${holding.pnl >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    <div className="bg-[#C05E42]/5 rounded-[1px] p-4 mb-6 border border-[#C05E42]/10 space-y-3">
+                        <div className="flex items-center justify-between">
+                            <span className="text-[9px] font-black text-[#C05E42]/60 uppercase tracking-widest">Performance</span>
+                            <span className={`text-[11px] font-black tabular-nums ${holding.pnl >= 0 ? "text-[#10B981]" : "text-red-500"}`}>
                                 {holding.pnl >= 0 ? "+" : ""}GH₵{Math.abs(holding.pnl).toFixed(2)} ({holding.pnlPct >= 0 ? "+" : ""}{holding.pnlPct.toFixed(2)}%)
                             </span>
                         </div>
-                        <div className="flex items-center justify-between text-[10px] text-indigo-700 font-bold">
-                            <span>{holding.qty} shares</span>
-                            <span>Avg GH₵{holding.avgCost.toFixed(2)}</span>
-                            <span>GH₵{holding.currentValue.toFixed(2)} now</span>
+                        <div className="flex items-center justify-between text-[9px] text-white/40 font-bold uppercase tracking-widest">
+                            <span>{holding.qty} Units</span>
+                            <span>@ {holding.avgCost.toFixed(2)}</span>
+                            <span>Val: {holding.currentValue.toFixed(2)}</span>
                         </div>
-                        {/* P&L progress bar */}
-                        <div className="mt-2 h-1 bg-indigo-100 rounded-full overflow-hidden">
+                        {/* P&L Vector */}
+                        <div className="h-1 bg-white/5 rounded-[1px] overflow-hidden">
                             <div
-                                className={`h-full rounded-full transition-all ${holding.pnl >= 0 ? "bg-emerald-500" : "bg-red-400"}`}
+                                className={`h-full rounded-[1px] transition-all duration-1000 ${holding.pnl >= 0 ? "bg-[#10B981]" : "bg-red-500"}`}
                                 style={{ width: `${Math.min(100, Math.abs(holding.pnlPct) * 5)}%` }}
                             />
                         </div>
                     </div>
                 )}
 
-                {/* Actions */}
-                <div className="flex gap-2">
+                {/* Direct Action Interface */}
+                <div className="flex gap-2 mt-auto">
                     <button
-                        className="flex-1 py-2.5 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-colors text-xs shadow-lg shadow-indigo-100 min-h-[40px] touch-manipulation"
+                        className="flex-1 py-3 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] transition-all text-[11px] uppercase tracking-[0.2em] shadow-lg shadow-[#C05E42]/10 hover:shadow-[#C05E42]/20 hover:scale-[1.02] active:scale-[0.98] min-h-[44px]"
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                     >
-                        Trade
+                        TRADE_INDEX
                     </button>
                     <button
-                        className="px-4 py-2.5 bg-gray-50 text-gray-600 font-bold rounded-xl hover:bg-gray-100 transition-colors text-xs min-h-[40px] touch-manipulation border border-gray-100"
+                        className="px-5 py-3 bg-white/5 text-white/40 font-bold rounded-[2px] hover:bg-white/10 hover:text-[#F9F9F9] transition-all text-xs min-h-[44px] border border-white/10"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <Bookmark size={14} />
+                        <Bookmark size={15} />
                     </button>
                 </div>
             </div>

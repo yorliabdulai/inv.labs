@@ -165,76 +165,76 @@ export default function StocksPage() {
     }
 
     return (
-        <div className="space-y-5 pb-24 md:pb-12">
+        <div className="space-y-8 pb-24 md:pb-12 font-instrument-sans">
             <DashboardHeader />
 
             {/* ── Page Header ─────────────────────────────────────────────── */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 px-4 md:px-0">
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Stocks</h2>
-                    <p className="text-sm text-gray-500 font-medium mt-0.5">
-                        Ghana Stock Exchange — live prices
+                    <h2 className="text-3xl md:text-5xl font-black text-[#F9F9F9] tracking-tighter uppercase font-instrument-serif">Global Equities</h2>
+                    <p className="text-[11px] text-white/40 font-black uppercase tracking-[0.2em] mt-2">
+                        GSE_REPLICA — LATENCY_OPTIMIZED
                         {lastUpdated && (
-                            <span className="ml-2 text-xs text-gray-400">Updated {lastUpdated.toLocaleTimeString()}</span>
+                            <span className="ml-3 text-white/20">SYNC_TIME: {lastUpdated.toLocaleTimeString()}</span>
                         )}
                     </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     {ownedCount > 0 && (
-                        <div className="flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100">
-                            <Activity size={13} className="text-indigo-600" />
-                            <span className="text-xs font-black text-indigo-700">You own {ownedCount} stock{ownedCount !== 1 ? "s" : ""}</span>
+                        <div className="flex items-center gap-2 bg-[#C05E42]/10 px-4 py-2 rounded-[2px] border border-[#C05E42]/20">
+                            <Activity size={14} className="text-[#C05E42]" />
+                            <span className="text-[10px] font-black text-[#C05E42] uppercase tracking-widest">EXPOSURE: {ownedCount} ASSETS</span>
                         </div>
                     )}
                     <button
                         onClick={() => fetchStocks(false)}
-                        className="p-2 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors touch-manipulation"
-                        title="Refresh"
+                        className="p-3 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 transition-colors touch-manipulation group"
+                        title="Force Refresh Sync"
                     >
-                        <RefreshCw size={15} className="text-gray-600" />
+                        <RefreshCw size={16} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
                     </button>
                 </div>
             </div>
 
             {/* ── Market Pulse Strip ──────────────────────────────────────── */}
             {!loading && stocks.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 md:px-0">
                     {/* Top Gainer */}
                     {gainers[0] && (
-                        <div className="bg-white rounded-2xl p-4 border border-emerald-100 flex items-center gap-3 shadow-sm">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                                <ArrowUpRight size={18} className="text-emerald-600" />
+                        <div className="bg-[#10B981]/5 rounded-[2px] p-5 border border-[#10B981]/20 flex items-center gap-4 shadow-2xl">
+                            <div className="w-12 h-12 rounded-[2px] bg-[#10B981]/10 flex items-center justify-center flex-shrink-0 animate-pulse">
+                                <ArrowUpRight size={20} className="text-[#10B981]" />
                             </div>
                             <div className="min-w-0">
-                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">Top Gainer</div>
-                                <div className="font-black text-gray-900">{gainers[0].symbol}</div>
-                                <div className="text-xs font-black text-emerald-600">+{gainers[0].changePercent.toFixed(2)}%</div>
+                                <div className="text-[9px] font-black text-[#10B981] uppercase tracking-[0.2em]">Momentum_Lead</div>
+                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{gainers[0].symbol}</div>
+                                <div className="text-[11px] font-black text-[#10B981] tabular-nums">+{gainers[0].changePercent.toFixed(2)}%</div>
                             </div>
                         </div>
                     )}
                     {/* Top Loser */}
                     {losers[0] && (
-                        <div className="bg-white rounded-2xl p-4 border border-red-100 flex items-center gap-3 shadow-sm">
-                            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                                <ArrowDownRight size={18} className="text-red-500" />
+                        <div className="bg-red-500/5 rounded-[2px] p-5 border border-red-500/20 flex items-center gap-4 shadow-2xl">
+                            <div className="w-12 h-12 rounded-[2px] bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                                <ArrowDownRight size={20} className="text-red-500" />
                             </div>
                             <div className="min-w-0">
-                                <div className="text-[10px] font-bold text-red-500 uppercase tracking-wide">Top Loser</div>
-                                <div className="font-black text-gray-900">{losers[0].symbol}</div>
-                                <div className="text-xs font-black text-red-600">{losers[0].changePercent.toFixed(2)}%</div>
+                                <div className="text-[9px] font-black text-red-500 uppercase tracking-[0.2em]">Volatility_Risk</div>
+                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{losers[0].symbol}</div>
+                                <div className="text-[11px] font-black text-red-500 tabular-nums">{losers[0].changePercent.toFixed(2)}%</div>
                             </div>
                         </div>
                     )}
                     {/* Most Traded */}
                     {topVolume && (
-                        <div className="bg-white rounded-2xl p-4 border border-amber-100 flex items-center gap-3 shadow-sm">
-                            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-                                <Zap size={18} className="text-amber-600" />
+                        <div className="bg-[#C05E42]/5 rounded-[2px] p-5 border border-[#C05E42]/20 flex items-center gap-4 shadow-2xl">
+                            <div className="w-12 h-12 rounded-[2px] bg-[#C05E42]/10 flex items-center justify-center flex-shrink-0">
+                                <Zap size={20} className="text-[#C05E42]" />
                             </div>
                             <div className="min-w-0">
-                                <div className="text-[10px] font-bold text-amber-600 uppercase tracking-wide">Most Traded</div>
-                                <div className="font-black text-gray-900">{topVolume.symbol}</div>
-                                <div className="text-xs font-black text-amber-700">{(topVolume.volume / 1000).toFixed(1)}K vol</div>
+                                <div className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.2em]">Liquidity_Peak</div>
+                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{topVolume.symbol}</div>
+                                <div className="text-[11px] font-black text-[#C05E42] uppercase tracking-widest">{(topVolume.volume / 1000).toFixed(1)}K Units</div>
                             </div>
                         </div>
                     )}
@@ -242,29 +242,29 @@ export default function StocksPage() {
             )}
 
             {/* ── Search & Controls ───────────────────────────────────────── */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm space-y-3">
+            <div className="bg-white/5 rounded-[2px] border border-white/10 p-6 shadow-2xl space-y-6 mx-4 md:mx-0">
                 {/* Search bar */}
                 <div className="relative">
-                    <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
                     <input
                         type="text"
-                        placeholder="Search stocks, companies..."
+                        placeholder="IDENTIFY MARKET SYMBOLS..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 text-sm font-medium bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 outline-none transition-all placeholder:text-gray-400"
+                        className="w-full pl-12 pr-4 py-4 text-[11px] font-black bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none transition-all placeholder:text-white/20 text-[#F9F9F9] uppercase tracking-widest"
                     />
                 </div>
 
                 {/* Sector filter chips */}
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap pb-2 border-b border-white/5">
                     {sectors.map((sec) => (
                         <button
                             key={sec}
                             onClick={() => setSectorFilter(sec)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${sectorFilter === sec
-                                ? "bg-indigo-600 text-white shadow-sm"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                }`}
+                            className={`px-4 py-2 rounded-[1px] text-[10px] font-black transition-all uppercase tracking-widest border ${sectorFilter === sec
+                                ? "bg-[#C05E42] text-[#F9F9F9] border-[#C05E42] shadow-xl shadow-[#C05E42]/20"
+                                : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-[#F9F9F9]"
+                                } font-instrument-sans`}
                         >
                             {sec}
                         </button>
@@ -272,38 +272,38 @@ export default function StocksPage() {
                 </div>
 
                 {/* Sort & view controls */}
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Sort:</span>
+                <div className="flex items-center justify-between gap-6 flex-wrap">
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Sort_By:</span>
                         {(["symbol", "price", "change", "volume"] as SortKey[]).map((key) => (
                             <button
                                 key={key}
                                 onClick={() => toggleSort(key)}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${sortKey === key
-                                    ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
-                                    : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-transparent"
+                                className={`flex items-center gap-2 px-3 py-2 rounded-[1px] text-[10px] font-black transition-all uppercase tracking-widest ${sortKey === key
+                                    ? "bg-[#C05E42]/10 text-[#C05E42] border border-[#C05E42]/30"
+                                    : "bg-white/5 text-white/30 hover:text-white/60 border border-white/10"
                                     }`}
                             >
-                                {key.charAt(0).toUpperCase() + key.slice(1)}
+                                {key}
                                 {sortKey === key && (
-                                    <span className="text-[9px]">{sortDir === "asc" ? "↑" : "↓"}</span>
+                                    <span className="text-[10px] tabular-nums font-black opacity-60">{sortDir === "asc" ? "↑" : "↓"}</span>
                                 )}
                             </button>
                         ))}
                     </div>
                     {/* View toggle */}
-                    <div className="flex gap-1 bg-gray-100 p-0.5 rounded-xl">
+                    <div className="flex gap-1.5 bg-white/5 p-1 rounded-[1px] border border-white/10">
                         <button
                             onClick={() => setViewMode("grid")}
-                            className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-white shadow text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                            className={`p-2 rounded-[1px] transition-all ${viewMode === "grid" ? "bg-[#C05E42]/20 text-[#C05E42] border border-[#C05E42]/30" : "text-white/20 hover:text-[#F9F9F9]"}`}
                         >
-                            <Grid3X3 size={14} />
+                            <Grid3X3 size={15} />
                         </button>
                         <button
                             onClick={() => setViewMode("list")}
-                            className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-white shadow text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                            className={`p-2 rounded-[1px] transition-all ${viewMode === "list" ? "bg-[#C05E42]/20 text-[#C05E42] border border-[#C05E42]/30" : "text-white/20 hover:text-[#F9F9F9]"}`}
                         >
-                            <List size={14} />
+                            <List size={15} />
                         </button>
                     </div>
                 </div>
@@ -311,40 +311,40 @@ export default function StocksPage() {
 
             {/* ── Results count ───────────────────────────────────────────── */}
             {!loading && (
-                <div className="text-xs font-bold text-gray-400 uppercase tracking-wide px-1">
-                    {sorted.length} stock{sorted.length !== 1 ? "s" : ""} {sectorFilter !== "All" ? `in ${sectorFilter}` : ""}
-                    {search && ` matching "${search}"`}
+                <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] px-4 md:px-1">
+                    INDEX_QUERY_MATCH: {sorted.length} ASSETS {sectorFilter !== "All" ? `IN ${sectorFilter.toUpperCase()}` : ""}
+                    {search && ` / TERM: "${search.toUpperCase()}"`}
                 </div>
             )}
 
             {/* ── Stock List ──────────────────────────────────────────────── */}
             {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 md:px-0">
                     {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 animate-pulse">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-11 h-11 rounded-xl bg-gray-100" />
-                                <div className="flex-1 space-y-2">
-                                    <div className="h-4 bg-gray-100 rounded w-3/4" />
-                                    <div className="h-3 bg-gray-100 rounded w-1/2" />
+                        <div key={i} className="bg-white/5 rounded-[2px] p-6 border border-white/10 animate-pulse h-[280px]">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-12 h-12 rounded-[2px] bg-white/10" />
+                                <div className="flex-1 space-y-3">
+                                    <div className="h-4 bg-white/10 rounded-[1px] w-3/4" />
+                                    <div className="h-3 bg-white/10 rounded-[1px] w-1/2" />
                                 </div>
                             </div>
-                            <div className="h-6 bg-gray-100 rounded w-1/2 mb-2" />
-                            <div className="h-10 bg-gray-50 rounded-xl mb-3" />
-                            <div className="h-9 bg-gray-100 rounded-xl" />
+                            <div className="h-8 bg-white/10 rounded-[1px] w-1/2 mb-6" />
+                            <div className="h-12 bg-white/10 rounded-[1px] mb-6" />
+                            <div className="h-10 bg-[#C05E42]/10 rounded-[1px]" />
                         </div>
                     ))}
                 </div>
             ) : sorted.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center shadow-sm">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-                        <Search size={24} className="text-gray-300" />
+                <div className="bg-white/5 rounded-[2px] border border-white/10 py-24 text-center shadow-2xl mx-4 md:mx-0">
+                    <div className="w-20 h-20 rounded-[2px] bg-white/5 flex items-center justify-center mx-auto mb-6">
+                        <Search size={32} className="text-white/10" />
                     </div>
-                    <h3 className="text-lg font-black text-gray-700 mb-2">No stocks found</h3>
-                    <p className="text-sm text-gray-400">Try adjusting your filters or search term.</p>
+                    <h3 className="text-xl font-black text-[#F9F9F9] mb-2 uppercase tracking-[0.2em] font-instrument-serif">Null Response</h3>
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Adjust query parameters for asset discovery.</p>
                 </div>
             ) : viewMode === "grid" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 md:px-0">
                     {sorted.map((stock) => (
                         <StockRow
                             key={stock.symbol}
@@ -354,11 +354,11 @@ export default function StocksPage() {
                     ))}
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-white/5 rounded-[2px] border border-white/10 shadow-2xl overflow-hidden mx-4 md:mx-0">
                     {/* List header */}
-                    <div className="grid grid-cols-[auto_1fr_80px_90px_80px] gap-3 px-4 py-2.5 border-b border-gray-100 bg-gray-50">
-                        {["", "Company", "Sparkline", "Price / Chg", "Action"].map((h, i) => (
-                            <div key={i} className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{h}</div>
+                    <div className="grid grid-cols-[auto_1fr_120px_120px_120px] gap-6 px-8 py-4 border-b border-white/10 bg-white/5">
+                        {["ID", "Asset_Identifier", "Performance_Vector", "Val_Per_Unit", "Exec_Control"].map((h, i) => (
+                            <div key={i} className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">{h}</div>
                         ))}
                     </div>
                     {sorted.map((stock) => (

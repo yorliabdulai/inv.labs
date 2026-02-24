@@ -82,42 +82,42 @@ export function Sidebar() {
             )}
 
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-border bg-background-surface z-50">
+            <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-[#121417] z-50">
                 {/* Logo */}
-                <div className="h-header flex items-center px-6 border-b border-gray-50/50">
+                <div className="h-header flex items-center px-6 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
-                            <TrendingUp className="text-white" size={18} />
+                        <div className="w-8 h-8 rounded-[2px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
+                            <TrendingUp className="text-[#F9F9F9]" size={18} />
                         </div>
-                        <span className="text-xl font-black text-text-primary tracking-tight">
-                            GSE<span className="text-brand">.</span>LABS
+                        <span className="text-xl font-black text-[#F9F9F9] tracking-tighter font-instrument-serif">
+                            INVEST<span className="text-[#C05E42]">.</span>LABS
                         </span>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 py-8 space-y-8 overflow-y-auto">
+                <nav className="flex-1 px-4 py-10 space-y-10 overflow-y-auto">
                     <div>
-                        <h3 className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.15em] px-3 mb-3">Main Navigation</h3>
-                        <div className="space-y-1">
+                        <h3 className="text-[9px] font-black text-[#C05E42]/80 uppercase tracking-[0.3em] px-3 mb-4">Terminal Navigation</h3>
+                        <div className="space-y-1.5">
                             {navItems.map(({ href, label, icon: Icon }) => {
                                 const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
                                 return (
                                     <Link
                                         key={href}
                                         href={href}
-                                        className={`group flex items-center justify-between px-3 py-3 rounded-xl text-sm font-bold transition-all duration-200 min-h-[44px] ${active
-                                            ? "bg-brand/5 text-brand shadow-sm shadow-brand/5"
-                                            : "text-text-secondary hover:bg-gray-50 hover:text-text-primary"
+                                        className={`group flex items-center justify-between px-3 py-3 rounded-[1px] text-[11px] font-bold uppercase tracking-widest transition-all duration-200 min-h-[44px] ${active
+                                            ? "bg-white/5 text-[#F9F9F9] border border-white/5"
+                                            : "text-white/40 hover:bg-white/5 hover:text-[#F9F9F9]"
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`transition-colors duration-200 ${active ? "text-brand" : "text-text-tertiary group-hover:text-text-secondary"}`}>
-                                                <Icon size={19} strokeWidth={active ? 2.5 : 2} />
+                                            <div className={`transition-colors duration-200 ${active ? "text-[#C05E42]" : "text-white/20 group-hover:text-white/40"}`}>
+                                                <Icon size={18} strokeWidth={active ? 3 : 2} />
                                             </div>
                                             <span>{label}</span>
                                         </div>
-                                        {active && <div className="w-1 h-4 bg-brand rounded-full" />}
+                                        {active && <div className="w-1 h-3 bg-[#C05E42] rounded-full" />}
                                     </Link>
                                 );
                             })}
@@ -125,32 +125,42 @@ export function Sidebar() {
                     </div>
 
                     <div>
-                        <h3 className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.15em] px-3 mb-3">Settings & Tools</h3>
-                        <div className="space-y-1">
-                            <Link href="/dashboard/profile" className="group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold text-text-secondary hover:bg-gray-50 hover:text-text-primary transition-all min-h-[44px]">
-                                <User size={19} className="text-text-tertiary group-hover:text-text-secondary" />
+                        <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Configuration</h3>
+                        <div className="space-y-1.5">
+                            <Link href="/dashboard/profile" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest">
+                                <User size={18} className="text-white/20 group-hover:text-white/40" />
                                 <span>Profile</span>
                             </Link>
-                            <Link href="/dashboard/settings" className="group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold text-text-secondary hover:bg-gray-50 hover:text-text-primary transition-all min-h-[44px]">
-                                <Settings size={19} className="text-text-tertiary group-hover:text-text-secondary" />
-                                <span>Preferences</span>
+                            <Link href="/dashboard/settings" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest">
+                                <Settings size={18} className="text-white/20 group-hover:text-white/40" />
+                                <span>Settings</span>
                             </Link>
                         </div>
                     </div>
                 </nav>
 
                 {/* Desktop Footer */}
-                <div className="p-4 mt-auto">
-                    <Link href="/dashboard/profile" className="block mb-2">
-                        <div className="glass-card bg-gray-50/50 border-none p-0">
-                            <div className="p-3 rounded-xl hover:bg-white transition-colors cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm">
-                                <UserCard compact />
+                <div className="p-4 mt-auto border-t border-white/5 bg-black/20">
+                    <Link href="/dashboard/profile" className="block mb-4">
+                        <div className="bg-white/5 border border-white/10 p-3 rounded-[1px] hover:bg-white/10 transition-colors cursor-pointer group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-xs ring-1 ring-white/10 flex-shrink-0">
+                                    {loading ? "·" : displayInitial}
+                                </div>
+                                <div className="flex-1 overflow-hidden min-w-0">
+                                    <div className="text-[11px] font-black text-[#F9F9F9] truncate uppercase tracking-tight">
+                                        {loading ? "..." : displayName}
+                                    </div>
+                                    <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest">
+                                        Investor
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-3 text-xs font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[44px]"
+                        className="flex items-center gap-2 w-full px-3 py-3 text-[10px] uppercase tracking-widest font-black text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[44px]"
                     >
                         <LogOut size={16} /> Sign Out
                     </button>
@@ -159,33 +169,33 @@ export function Sidebar() {
 
             {/* Mobile Sidebar Drawer */}
             <aside
-                className={`md:hidden fixed top-0 left-0 h-full w-[85vw] max-w-[320px] bg-background-surface z-50 shadow-2xl transform transition-transform duration-300 ease-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`md:hidden fixed top-0 left-0 h-full w-[85vw] max-w-[320px] bg-[#121417] z-50 shadow-3xl transform transition-transform duration-300 ease-out border-r border-white/10 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 {/* Mobile Header */}
-                <div className="h-header flex items-center justify-between px-6 border-b border-border bg-gradient-to-r from-gray-50 to-white">
+                <div className="h-header flex items-center justify-between px-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
-                            <TrendingUp className="text-white" size={18} />
+                        <div className="w-8 h-8 rounded-[1px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
+                            <TrendingUp className="text-[#F9F9F9]" size={18} />
                         </div>
-                        <span className="text-xl font-black text-text-primary tracking-tight">
-                            GSE<span className="text-brand">.</span>LABS
+                        <span className="text-xl font-black text-[#F9F9F9] tracking-tighter font-instrument-serif">
+                            INVEST<span className="text-[#C05E42]">.</span>LABS
                         </span>
                     </div>
                     <button
                         onClick={() => setIsMobileOpen(false)}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation active:scale-95"
+                        className="w-10 h-10 rounded-[1px] flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation active:scale-95"
                         aria-label="Close menu"
                     >
-                        <X size={20} className="text-text-secondary" />
+                        <X size={20} className="text-white/60" />
                     </button>
                 </div>
 
                 {/* Mobile Navigation */}
-                <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto h-[calc(100vh-144px)]">
+                <nav className="flex-1 px-4 py-8 space-y-10 overflow-y-auto h-[calc(100vh-144px)]">
                     <div>
-                        <h3 className="text-xs font-bold text-text-tertiary uppercase tracking-wider px-3 mb-3">Main Navigation</h3>
-                        <div className="space-y-2">
+                        <h3 className="text-[9px] font-black text-[#C05E42]/80 uppercase tracking-[0.3em] px-3 mb-4">Navigation</h3>
+                        <div className="space-y-1.5">
                             {navItems.map(({ href, label, icon: Icon }) => {
                                 const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
                                 return (
@@ -193,18 +203,18 @@ export function Sidebar() {
                                         key={href}
                                         href={href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        className={`group flex items-center justify-between px-4 py-4 rounded-xl text-base font-bold transition-all duration-200 min-h-[52px] ${active
-                                            ? "bg-brand/5 text-brand shadow-sm shadow-brand/5"
-                                            : "text-text-secondary hover:bg-gray-50"
+                                        className={`group flex items-center justify-between px-4 py-4 rounded-[1px] text-sm font-bold uppercase tracking-widest transition-all duration-200 min-h-[52px] ${active
+                                            ? "bg-white/5 text-[#F9F9F9] border border-white/5 shadow-sm shadow-black/20"
+                                            : "text-white/40 hover:bg-white/5"
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className={`transition-colors duration-200 ${active ? "text-brand" : "text-text-tertiary"}`}>
-                                                <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+                                            <div className={`transition-colors duration-200 ${active ? "text-[#C05E42]" : "text-white/20"}`}>
+                                                <Icon size={22} strokeWidth={active ? 3 : 2} />
                                             </div>
                                             <span>{label}</span>
                                         </div>
-                                        {active && <div className="w-1.5 h-6 bg-brand rounded-full" />}
+                                        {active && <div className="w-1.5 h-6 bg-[#C05E42] rounded-full" />}
                                     </Link>
                                 );
                             })}
@@ -212,30 +222,42 @@ export function Sidebar() {
                     </div>
 
                     <div>
-                        <h3 className="text-xs font-bold text-text-tertiary uppercase tracking-wider px-3 mb-3">Settings & Tools</h3>
-                        <div className="space-y-2">
-                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]">
-                                <User size={22} className="text-text-tertiary" />
+                        <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Settings</h3>
+                        <div className="space-y-1.5">
+                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5">
+                                <User size={22} className="text-white/20" />
                                 <span>Profile</span>
                             </Link>
-                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-xl text-base font-bold text-text-secondary hover:bg-gray-50 transition-all min-h-[52px]">
-                                <Settings size={22} className="text-text-tertiary" />
-                                <span>Preferences</span>
+                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5">
+                                <Settings size={22} className="text-white/20" />
+                                <span>Settings</span>
                             </Link>
                         </div>
                     </div>
                 </nav>
 
                 {/* Mobile Footer */}
-                <div className="p-4 border-t border-border bg-gray-50/50">
-                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-3">
-                        <div className="p-4 rounded-xl bg-white border border-border">
-                            <UserCard />
+                <div className="p-4 border-t border-white/10 bg-black/40">
+                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-4">
+                        <div className="p-4 rounded-[1px] bg-white/5 border border-white/10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-base shadow-lg shadow-[#C05E42]/20">
+                                    {loading ? "·" : displayInitial}
+                                </div>
+                                <div className="flex-1 overflow-hidden min-w-0">
+                                    <div className="text-sm font-black text-[#F9F9F9] truncate uppercase tracking-tight">
+                                        {loading ? "..." : displayName}
+                                    </div>
+                                    <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                                        Investor
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-sm font-bold text-status-error hover:bg-red-50 rounded-xl transition-colors min-h-[52px]"
+                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-xs font-black uppercase tracking-widest text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[52px]"
                     >
                         <LogOut size={18} /> Sign Out
                     </button>

@@ -20,52 +20,52 @@
 
   --header-height: 80px;
 
-  /* --- GHANA BUILDS WEALTH TOKENS --- */
-  --ink-950: 30 20% 4%;
-  --ink-900: 30 16% 8%;
-  --ink-800: 30 14% 12%;
-  --paper: 38 30% 93%;
-  --paper-dark: 35 22% 87%;
+  /* --- GHANA BUILDS WEALTH TOKENS (REFINED) --- */
+  --ink-950: 220 12% 5%;
+  --ink-900: 220 12% 8%;
+  --ink-800: 220 10% 12%;
+  --paper: 0 0% 98%;
+  --paper-dark: 0 0% 94%;
 
-  --terracotta: 20 63% 47%;
-  --terracotta-light: 18 70% 58%;
+  --terracotta: 14 49% 51%;
+  --terracotta-light: 14 55% 60%;
   --gold-data: 42 88% 55%;
   --emerald-gain: 160 76% 40%;
   --loss-red: 354 88% 44%;
 
-  --ink: 28 18% 9%;
-  --ink-muted: 28 12% 37%;
-  --paper-text: 35 25% 91%;
+  --ink: 220 12% 8%;
+  --ink-muted: 220 8% 45%;
+  --paper-text: 0 0% 98%;
 
-  --rule: 20 63% 47%;
+  --rule: 14 49% 51%;
 
-  --background: 30 20% 4%;
-  --foreground: 35 25% 91%;
+  --background: 220 12% 8%;
+  --foreground: 0 0% 98%;
 
-  --card: 30 14% 12%;
-  --card-foreground: 35 25% 91%;
+  --card: 220 10% 12%;
+  --card-foreground: 0 0% 98%;
 
-  --popover: 30 14% 12%;
-  --popover-foreground: 35 25% 91%;
+  --popover: 220 10% 12%;
+  --popover-foreground: 0 0% 98%;
 
-  --primary: 20 63% 47%;
-  --primary-foreground: 38 30% 93%;
+  --primary: 14 49% 51%;
+  --primary-foreground: 0 0% 98%;
 
-  --secondary: 30 16% 8%;
-  --secondary-foreground: 35 25% 91%;
+  --secondary: 220 12% 5%;
+  --secondary-foreground: 0 0% 98%;
 
-  --muted: 30 14% 12%;
-  --muted-foreground: 28 12% 37%;
+  --muted: 220 10% 12%;
+  --muted-foreground: 220 8% 45%;
 
-  --accent: 20 63% 47%;
-  --accent-foreground: 38 30% 93%;
+  --accent: 14 49% 51%;
+  --accent-foreground: 0 0% 98%;
 
   --destructive: 354 88% 44%;
-  --destructive-foreground: 35 25% 91%;
+  --destructive-foreground: 0 0% 98%;
 
-  --border: 28 12% 18%;
-  --input: 28 12% 18%;
-  --ring: 20 63% 47%;
+  --border: 220 12% 16%;
+  --input: 220 12% 16%;
+  --ring: 14 49% 51%;
 
   --radius: 0.125rem;
 }

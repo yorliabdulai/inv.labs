@@ -106,24 +106,24 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
                     <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
-                                <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.2} />
+                                <stop offset="5%" stopColor="#C05E42" stopOpacity={0.8} />
+                                <stop offset="95%" stopColor="#C05E42" stopOpacity={0.2} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }}
+                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(249, 249, 249, 0.05)', radius: 2 }} />
                         <Bar
                             dataKey="value"
                             fill="url(#barGradient)"
-                            radius={[6, 6, 0, 0]}
+                            radius={[2, 2, 0, 0]}
                             barSize={32}
                         />
                     </BarChart>
@@ -131,24 +131,24 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
             case 'candle':
                 return (
                     <ComposedChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }}
+                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(249, 249, 249, 0.1)', strokeWidth: 1 }} />
                         <Bar dataKey="high" fill="transparent">
                             {data.map((entry, index) => {
                                 const isUp = entry.close >= entry.open;
                                 return (
                                     <Cell
                                         key={`cell-${index}`}
-                                        fill={isUp ? "#10b981" : "#ef4444"}
-                                        stroke={isUp ? "#10b981" : "#ef4444"}
+                                        fill={isUp ? "#10B981" : "#EF4444"}
+                                        stroke={isUp ? "#10B981" : "#EF4444"}
                                         strokeWidth={1}
                                     />
                                 );
@@ -161,8 +161,8 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
                                 return (
                                     <Cell
                                         key={`cell-candle-${index}`}
-                                        fill={isUp ? "#10b981" : "#ef4444"}
-                                        radius={2}
+                                        fill={isUp ? "#10B981" : "#EF4444"}
+                                        radius={1}
                                     />
                                 );
                             })}
@@ -175,16 +175,16 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
                     <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#1A1C4E" stopOpacity={0.1} />
-                                <stop offset="95%" stopColor="#1A1C4E" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#C05E42" stopOpacity={0.15} />
+                                <stop offset="95%" stopColor="#C05E42" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }}
+                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
@@ -192,8 +192,8 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
                         <Area
                             type="monotone"
                             dataKey="value"
-                            stroke="#1A1C4E"
-                            strokeWidth={3}
+                            stroke="#C05E42"
+                            strokeWidth={2}
                             fillOpacity={1}
                             fill="url(#colorValue)"
                             animationDuration={1500}

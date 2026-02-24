@@ -102,77 +102,86 @@ export function RedeemMutualFundModal({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm pt-10 md:pt-0">
-            <div className="min-h-full flex items-center justify-center p-4">
-                <div className="glass-card bg-white max-w-lg w-full overflow-hidden shadow-2xl rounded-[24px] md:rounded-[32px] relative">
-                    {/* Header */}
-                    <div className="sticky top-0 bg-gradient-to-r from-red-50 to-orange-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between z-10">
-                        <div>
-                            <h2 className="text-xl font-black text-gray-900">Redeem Units</h2>
-                            <p className="text-sm font-medium text-gray-600">{fund.fund_name}</p>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-white/50 transition-colors"
-                        >
-                            <X size={20} />
-                        </button>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md pt-0 md:pt-0 flex items-start md:items-center justify-center">
+            <div className="min-h-full md:min-h-0 w-full max-w-xl bg-[#121417] shadow-2xl md:rounded-[2px] overflow-hidden relative flex flex-col h-full md:h-auto md:max-h-[90vh] border-white/10 border font-instrument-sans">
+                {/* Header */}
+                <div className="sticky top-0 z-20 bg-[#121417] border-b border-white/10 px-6 py-4 flex items-center justify-between font-instrument-serif">
+                    <div>
+                        <h2 className="text-xl font-black text-[#F9F9F9] tracking-tighter uppercase">Liquidate Portfolio Units</h2>
+                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1 font-instrument-sans">{fund.fund_name}</p>
                     </div>
+                    <button
+                        onClick={onClose}
+                        className="w-10 h-10 rounded-[2px] flex items-center justify-center hover:bg-white/5 transition-colors group"
+                    >
+                        <X size={20} className="text-white/40 group-hover:text-[#F9F9F9]" />
+                    </button>
+                </div>
 
-                    {success ? (
-                        <div className="p-8 text-center bg-white">
-                            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle size={32} className="text-emerald-600" />
-                            </div>
-                            <h3 className="text-lg font-black text-gray-900 mb-2">Redemption Successful!</h3>
-                            <p className="text-gray-600">Funds have been credited to your cash balance.</p>
+                {/* Sticky Holding Bar - Context for Redemption */}
+                <div className="sticky top-[73px] z-10 bg-[#C05E42]/5 border-b border-[#C05E42]/20 px-6 py-3 flex items-center justify-between backdrop-blur-md">
+                    <div className="flex items-center gap-2">
+                        <TrendingDown size={14} className="text-[#C05E42]" />
+                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Portfolio Exposure</span>
+                    </div>
+                    <div className="text-sm font-black text-[#F9F9F9] tabular-nums">
+                        {formatCurrency(holding.current_value || 0)}
+                    </div>
+                </div>
+
+                {success ? (
+                    <div className="p-12 text-center bg-[#121417] flex-1 flex flex-col items-center justify-center">
+                        <div className="w-16 h-16 rounded-[2px] bg-[#C05E42]/10 border border-[#C05E42]/20 flex items-center justify-center mb-6 animate-bounce">
+                            <CheckCircle size={32} className="text-[#C05E42]" />
                         </div>
-                    ) : (
-                        <div className="p-6 space-y-6 bg-white pb-10">
+                        <h3 className="text-xl font-black text-[#F9F9F9] mb-2 font-instrument-serif uppercase tracking-tight">Liquidation Complete</h3>
+                        <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest leading-relaxed">
+                            Funds have been credited to your virtual capital account.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="flex-1 overflow-y-auto">
+                        <div className="p-6 md:p-8 space-y-8">
                             {/* Current Holdings */}
-                            <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-100 space-y-2">
-                                <div className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Your Holdings</div>
-                                <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-white/5 rounded-[2px] p-5 border border-white/10 space-y-4">
+                                <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">Asset Position</div>
+                                <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <div className="text-sm font-bold text-indigo-700">Units Held</div>
-                                        <div className="text-xl font-black text-indigo-900">{holding.units_held.toFixed(4)}</div>
+                                        <div className="text-[8px] font-bold text-white/30 uppercase tracking-widest mb-1">Accumulated Units</div>
+                                        <div className="text-2xl font-black text-[#F9F9F9] tabular-nums tracking-tighter">{holding.units_held.toFixed(4)}</div>
                                     </div>
                                     <div>
-                                        <div className="text-sm font-bold text-indigo-700">Current Value</div>
-                                        <div className="text-xl font-black text-indigo-900">{formatCurrency(holding.current_value || 0)}</div>
+                                        <div className="text-[8px] font-bold text-white/30 uppercase tracking-widest mb-1">Entrance NAV</div>
+                                        <div className="text-2xl font-black text-[#F9F9F9] tabular-nums tracking-tighter">{formatCurrency(holding.average_nav)}</div>
                                     </div>
-                                </div>
-                                <div className="pt-2 border-t border-indigo-200 flex items-center justify-between">
-                                    <span className="text-xs font-bold text-indigo-700">Avg NAV</span>
-                                    <span className="text-sm font-black text-indigo-900">{formatCurrency(holding.average_nav)}</span>
                                 </div>
                             </div>
 
                             {/* Minimum Holding Period Warning */}
                             {!holdingPeriodMet && fund.minimum_holding_period > 0 && (
-                                <div className="flex items-start gap-2 p-4 bg-amber-50 rounded-xl border border-amber-200">
-                                    <AlertTriangle size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                                <div className="flex items-start gap-3 p-5 bg-[#C05E42]/10 rounded-[2px] border border-[#C05E42]/20">
+                                    <AlertTriangle size={18} className="text-[#C05E42] flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <div className="text-sm font-bold text-amber-700">Minimum Holding Period Not Met</div>
-                                        <div className="text-xs text-amber-600 mt-1">
-                                            {fund.minimum_holding_period - daysSincePurchase} days remaining. Early redemption may incur additional fees.
+                                        <div className="text-[10px] font-black text-[#C05E42] uppercase tracking-widest">Premature Exit Advisory</div>
+                                        <div className="text-[9px] text-white/40 mt-1 uppercase tracking-wider font-bold">
+                                            {fund.minimum_holding_period - daysSincePurchase} sessions remaining. Early liquidation incurs exit premiums.
                                         </div>
                                     </div>
                                 </div>
                             )}
 
                             {/* Redemption Method Selector */}
-                            <div>
-                                <label className="text-sm font-bold text-gray-700 mb-2 block">Redemption Method</label>
-                                <div className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-xl">
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] ml-1">Liquidation Logic</label>
+                                <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-[2px] border border-white/10">
                                     <button
                                         onClick={() => {
                                             setRedemptionMethod("units");
                                             setInputValue("");
                                         }}
-                                        className={`py-3 rounded-lg text-sm font-black transition-all ${redemptionMethod === "units"
-                                            ? "bg-white text-red-600 shadow-sm"
-                                            : "text-gray-600 hover:text-gray-900"
+                                        className={`py-3 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${redemptionMethod === "units"
+                                            ? "bg-white/10 text-[#F9F9F9]"
+                                            : "text-white/30 hover:text-white/60"
                                             }`}
                                     >
                                         By Units
@@ -182,27 +191,27 @@ export function RedeemMutualFundModal({
                                             setRedemptionMethod("amount");
                                             setInputValue("");
                                         }}
-                                        className={`py-3 rounded-lg text-sm font-black transition-all ${redemptionMethod === "amount"
-                                            ? "bg-white text-red-600 shadow-sm"
-                                            : "text-gray-600 hover:text-gray-900"
+                                        className={`py-3 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${redemptionMethod === "amount"
+                                            ? "bg-white/10 text-[#F9F9F9]"
+                                            : "text-white/30 hover:text-white/60"
                                             }`}
                                     >
-                                        By Amount
+                                        By Capital
                                     </button>
                                 </div>
                             </div>
 
                             {/* Input Field */}
-                            <div>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="text-sm font-bold text-gray-700">
-                                        {redemptionMethod === "units" ? "Units to Redeem" : "Redemption Amount (GH₵)"}
+                                    <label className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] ml-1">
+                                        {redemptionMethod === "units" ? "Units to Liquidate" : "Liquidation Value (GH₵)"}
                                     </label>
                                     <button
                                         onClick={handleMaxClick}
-                                        className="px-3 py-1 bg-red-100 text-red-700 text-xs font-black rounded-lg hover:bg-red-200 transition-colors"
+                                        className="px-3 py-1.5 bg-[#C05E42]/10 text-[#C05E42] text-[9px] font-black rounded-[1px] hover:bg-[#C05E42] hover:text-[#F9F9F9] transition-all uppercase tracking-widest border border-[#C05E42]/20"
                                     >
-                                        MAX
+                                        MAX POSITION
                                     </button>
                                 </div>
                                 <input
@@ -210,72 +219,68 @@ export function RedeemMutualFundModal({
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder={redemptionMethod === "units" ? "Enter units" : "Enter amount"}
-                                    className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-400 text-lg font-bold"
+                                    className="w-full px-6 py-5 bg-white/5 border border-white/10 rounded-[2px] focus:outline-none focus:bg-white/10 focus:border-[#C05E42]/50 text-2xl font-black text-[#F9F9F9] tabular-nums transition-all"
                                 />
                             </div>
 
                             {/* Preview Calculation */}
                             {preview && (
-                                <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                                <div className="bg-white/5 rounded-[2px] p-6 space-y-4 border border-white/10 animate-in fade-in slide-in-from-top-2 duration-300">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm font-bold text-gray-600">Units to Redeem</span>
-                                        <span className="text-sm font-black text-gray-900">{preview.units.toFixed(4)}</span>
+                                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Liquidated Units</span>
+                                        <span className="text-sm font-black text-[#F9F9F9] tabular-nums">{preview.units.toFixed(4)}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm font-bold text-gray-600">NAV per Unit</span>
-                                        <span className="text-sm font-black text-gray-900">{formatCurrency(fund.current_nav)}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-bold text-gray-600">Gross Value</span>
-                                        <span className="text-sm font-black text-gray-900">{formatCurrency(preview.grossValue)}</span>
+                                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Valuation Per Unit</span>
+                                        <span className="text-sm font-black text-[#F9F9F9] tabular-nums">{formatCurrency(fund.current_nav)}</span>
                                     </div>
                                     {fund.exit_fee > 0 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold text-gray-600">Exit Fee ({formatPercent(fund.exit_fee, false)})</span>
-                                            <span className="text-sm font-black text-red-600">-{formatCurrency(preview.exitFee)}</span>
+                                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Exit Premium ({formatPercent(fund.exit_fee, false)})</span>
+                                            <span className="text-sm font-black text-[#C05E42] tabular-nums">-{formatCurrency(preview.exitFee)}</span>
                                         </div>
                                     )}
-                                    <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
-                                        <span className="text-base font-black text-gray-900">Net Proceeds</span>
-                                        <span className="text-xl font-black text-emerald-600">{formatCurrency(preview.netProceeds)}</span>
+                                    <div className="pt-6 border-t border-white/10 flex items-center justify-between">
+                                        <span className="text-[11px] font-black text-[#C05E42] uppercase tracking-[0.2em]">Net Capital Gain</span>
+                                        <span className="text-3xl font-black text-[#F9F9F9] tabular-nums tracking-tighter">{formatCurrency(preview.netProceeds)}</span>
                                     </div>
                                 </div>
                             )}
 
                             {/* Error Message */}
                             {error && (
-                                <div className="flex items-center gap-2 p-4 bg-red-50 rounded-xl border border-red-200">
-                                    <AlertCircle size={18} className="text-red-600 flex-shrink-0" />
-                                    <span className="text-sm font-bold text-red-700">{error}</span>
+                                <div className="flex items-center gap-3 p-5 bg-red-500/10 rounded-[2px] border border-red-500/20 animate-in slide-in-from-bottom-2 duration-300">
+                                    <AlertCircle size={18} className="text-red-500 flex-shrink-0" />
+                                    <span className="text-[10px] font-black text-red-500 uppercase tracking-widest leading-tight">{error}</span>
                                 </div>
                             )}
 
                             {/* Action Buttons */}
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-3 pt-6 pb-12">
                                 <button
                                     onClick={onClose}
-                                    className="flex-1 px-6 py-4 bg-gray-100 text-gray-700 font-black rounded-xl hover:bg-gray-200 transition-all"
+                                    className="flex-1 px-6 py-5 bg-white/5 text-white/40 font-black rounded-[2px] hover:bg-white/10 hover:text-[#F9F9F9] transition-all text-xs uppercase tracking-widest order-2 sm:order-1"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleConfirm}
                                     disabled={!preview || loading || (preview && preview.units > holding.units_held)}
-                                    className="flex-1 px-6 py-4 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="flex-1 px-6 py-5 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] shadow-xl shadow-[#C05E42]/10 hover:shadow-[#C05E42]/20 transition-all disabled:opacity-20 disabled:grayscale flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em] order-1 sm:order-2"
                                 >
                                     {loading ? (
                                         <>
                                             <Loader size={18} className="animate-spin" />
-                                            Processing...
+                                            Authorizing...
                                         </>
                                     ) : (
-                                        "Confirm Redemption"
+                                        "Confirm Liquidation"
                                     )}
                                 </button>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

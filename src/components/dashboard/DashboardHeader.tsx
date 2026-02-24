@@ -54,75 +54,83 @@ export function DashboardHeader() {
     const showSkeleton = loading && name === "Trader";
 
     return (
-        <header className="relative z-10 mb-8 w-full">
-            {/* Mobile-First Status Bar */}
-            <div className="bg-background-surface/80 backdrop-blur-sm border-b border-border/50 rounded-b-[24px] mx-4 mb-6 shadow-sm md:mx-0 md:rounded-2xl md:border md:mb-8 transition-all duration-300">
+        <header className="relative z-10 mb-8 w-full font-instrument-sans">
+            {/* Minimalist Status Bar */}
+            <div className="bg-[#121417] border-white/10 border rounded-[2px] mx-4 mb-6 shadow-2xl md:mx-0 md:mb-8 transition-all duration-300">
                 <div className="flex items-center justify-between p-3 md:p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
-                            <Activity size={16} className="text-white" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-[2px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
+                            <Activity size={16} className="text-[#F9F9F9]" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-success opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-status-success"></span>
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C05E42] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#C05E42]"></span>
                                 </span>
-                                <span className="text-xs font-black text-brand uppercase tracking-wider">Live Feed</span>
+                                <span className="text-[10px] font-black text-[#F9F9F9] uppercase tracking-[0.2em]">Kwayisi Terminal</span>
                             </div>
-                            <div className="text-[10px] md:text-xs text-text-secondary font-black uppercase tracking-wide">{dateStr}</div>
+                            <div className="text-[9px] text-white/30 font-black uppercase tracking-widest mt-1">{dateStr}</div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="hidden sm:flex items-center gap-2 text-xs text-text-primary font-black uppercase tracking-tight">
-                            <span className="flex items-center gap-1">
-                                <Globe size={12} className="text-brand" />
-                                GSE-Live
+                    <div className="flex items-center gap-6">
+                        <div className="hidden sm:flex items-center gap-2 text-[10px] text-[#F9F9F9] font-black uppercase tracking-widest">
+                            <span className="flex items-center gap-1.5 opacity-40">
+                                <Globe size={12} className="text-[#C05E42]" />
+                                GSE_SESSION_ACTIVE
                             </span>
                         </div>
-                        <div className="bg-text-primary text-white px-3 py-1 rounded-xl font-mono text-xs font-black shadow-lg shadow-text-primary/20">
+                        <div className="bg-white/5 text-[#F9F9F9] px-4 py-1.5 rounded-[1px] font-mono text-xs font-black border border-white/10 tabular-nums">
                             {currentTime}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Main Title Area */}
+            {/* Main Title & Ato Badge Area */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4 md:px-0">
                 <div className="flex-1">
-                    <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tighter mb-2">
-                        Control Center
-                    </h1>
-                    <div className="text-sm text-text-primary font-black flex items-center gap-1.5 min-h-[20px] uppercase tracking-wide">
-                        <GreetIcon size={14} className="text-amber-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 mb-2">
+                        <h1 className="text-2xl md:text-4xl font-black text-[#F9F9F9] tracking-tighter font-instrument-serif uppercase">
+                            Executive Console
+                        </h1>
+                        <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-[#C05E42]/10 border border-[#C05E42]/20 rounded-[2px] animate-in fade-in zoom-in duration-500">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#C05E42]" />
+                            <span className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.2em]">Ato Investment Guide Active</span>
+                        </div>
+                    </div>
+                    <div className="text-[11px] text-[#F9F9F9] font-black flex items-center gap-2 min-h-[20px] uppercase tracking-[0.15em] opacity-60">
+                        <GreetIcon size={14} className="text-[#C05E42] flex-shrink-0" />
                         {showSkeleton ? (
-                            <span className="inline-block w-32 h-4 bg-gray-100 animate-pulse rounded" />
+                            <span className="inline-block w-32 h-3 bg-white/5 animate-pulse rounded-[1px]" />
                         ) : (
-                            <span>{greeting.text}, {name}.</span>
+                            <span>{greeting.text}, {name}. Transaction readiness verified.</span>
                         )}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                     {/* Search Field */}
                     <div className="relative hidden lg:flex group">
-                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary group-focus-within:text-brand transition-colors" />
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C05E42] transition-colors" />
                         <input
                             type="text"
-                            placeholder="Search markets, stocks..."
-                            className="bg-background-surface border border-border rounded-2xl pl-12 pr-4 py-3 text-sm font-black w-72 focus:ring-2 focus:ring-brand/10 focus:border-brand-accent transition-all outline-none shadow-premium placeholder:text-text-tertiary/70"
+                            placeholder="Query Market Indices..."
+                            className="bg-white/5 border border-white/10 rounded-[2px] pl-12 pr-4 py-4 text-[11px] font-black w-64 focus:bg-white/10 focus:border-[#C05E42]/50 transition-all outline-none text-[#F9F9F9] uppercase tracking-widest placeholder:text-white/20"
                         />
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-2">
-                        <button className="relative p-3 bg-background-surface rounded-2xl border border-border hover:bg-brand/5 hover:border-brand/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-95 shadow-sm">
-                            <Bell size={18} className="text-text-secondary group-hover:text-brand transition-colors" />
-                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-status-error rounded-full border-2 border-white animate-pulse"></span>
+                    <div className="flex items-center gap-3">
+                        <button className="relative p-3.5 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 hover:border-[#C05E42]/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-[0.98]">
+                            <Bell size={18} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
+                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#C05E42] rounded-full shadow-lg shadow-[#C05E42]/40"></span>
                         </button>
 
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-brand/30 hover:shadow-xl transition-all cursor-pointer touch-manipulation active:scale-95 ring-2 ring-transparent hover:ring-brand/20">
-                            {initial}
+                        <div className="flex items-center gap-3 pl-3 border-l border-white/10">
+                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-[2px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-black text-xs shadow-xl shadow-[#C05E42]/10 hover:scale-[1.02] transition-all cursor-pointer touch-manipulation active:scale-[0.98] border border-white/10 uppercase tracking-widest">
+                                {initial}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -30,14 +30,14 @@ export function AllocationChart({ data = [] }: AllocationChartProps) {
                     </Pie>
                     <Tooltip
                         contentStyle={{
-                            backgroundColor: 'rgba(255,255,255,0.98)',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(0,0,0,0.05)',
-                            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-                            padding: '8px 12px',
+                            backgroundColor: '#121417',
+                            borderRadius: '1px',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.5)',
+                            padding: '12px 16px',
                         }}
-                        itemStyle={{ color: '#1A1C4E', fontWeight: '900', fontSize: '11px' }}
-                        formatter={(value: any) => [`GH₵ ${(value ?? 0).toLocaleString()}`, 'Value']}
+                        itemStyle={{ color: '#F9F9F9', fontWeight: '900', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                        formatter={(value: any) => [`GH₵ ${(value ?? 0).toLocaleString()}`, 'Ledger Value']}
                     />
                 </PieChart>
             </ResponsiveContainer>

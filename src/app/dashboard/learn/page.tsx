@@ -81,111 +81,109 @@ export default function LearnPage() {
     ];
 
     return (
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-20 space-y-12 animate-in fade-in duration-700">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans">
             <DashboardHeader />
 
-            {/* Academy Accreditation Hero */}
-            <div className="rounded-[2rem] p-8 md:p-12 bg-slate-950 text-white relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -mr-48 -mt-48" />
+            {/* ── Academy Accreditation Hero ── */}
+            <div className="relative rounded-[2px] p-8 md:p-16 bg-[#121417] text-[#F9F9F9] border border-white/10 shadow-3xl overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C05E42]/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-[#C05E42]/10" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -ml-40 -mb-40" />
 
                 <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
-                    <div className="max-w-2xl space-y-6">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-300 text-[10px] font-bold uppercase tracking-widest">
-                            <Sparkles size={12} /> Institutional Academy
+                    <div className="max-w-2xl space-y-8">
+                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-white/5 border border-white/10 rounded-[2px] text-[9px] font-black uppercase tracking-[0.3em] text-[#C05E42]">
+                            <Sparkles size={12} /> Institutional_Academy
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-normal leading-[1.2]">
-                            Elevate Your <span className="text-indigo-300">Market Intelligence.</span>
+                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase font-instrument-serif leading-tight">
+                            Elevate Your <span className="text-[#C05E42]">Market Intelligence.</span>
                         </h1>
-                        <p className="text-slate-400 text-lg font-medium leading-relaxed">
+                        <p className="text-white/40 text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
                             Professional accreditation paths designed to transition investors from fundamental awareness to institutional-grade execution.
                         </p>
                     </div>
 
                     {/* Proficiency Stats */}
-                    <div className="flex items-center gap-10 bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10">
-                        <div className="space-y-2">
-                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Accreditation</p>
-                            <p className="text-3xl font-bold tracking-tight">Level 08</p>
-                            <p className="text-xs font-semibold text-slate-400">Senior Analyst</p>
-                            <div className="w-32 h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
-                                <div className="h-full bg-indigo-500 rounded-full" style={{ width: '85%' }} />
+                    <div className="flex items-center gap-12 bg-white/[0.03] backdrop-blur-xl p-10 rounded-[2px] border border-white/10 shadow-2xl">
+                        <div className="space-y-3">
+                            <p className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.3em]">Accreditation</p>
+                            <p className="text-4xl font-black font-instrument-serif tracking-tighter">Level 08</p>
+                            <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Senior Analyst</p>
+                            <div className="w-40 h-1 bg-white/5 rounded-[1px] mt-6 overflow-hidden">
+                                <div className="h-full bg-[#C05E42] rounded-[1px]" style={{ width: '85%' }} />
                             </div>
                         </div>
-                        <div className="w-px h-16 bg-white/10" />
-                        <div className="space-y-2 text-right">
-                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Knowledge XP</p>
-                            <p className="text-3xl font-bold tracking-tight tabular-nums">2,450</p>
-                            <p className="text-xs font-bold text-emerald-400">+150 Today</p>
+                        <div className="w-px h-20 bg-white/5" />
+                        <div className="space-y-3 text-right">
+                            <p className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.3em]">Knowledge XP</p>
+                            <p className="text-4xl font-black font-instrument-serif tracking-tighter tabular-nums">2,450</p>
+                            <p className="text-[10px] font-black text-[#10B981]">INC_150_TODAY</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Certification Paths */}
-            <section className="space-y-8">
+            {/* ── Certification Paths ── */}
+            <section className="space-y-10">
                 <div className="flex items-end justify-between px-2">
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Accreditation Paths</h2>
-                        <p className="text-sm font-medium text-slate-500">Structured curriculums for progressive mastery.</p>
+                    <div className="space-y-2">
+                        <h2 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.3em] flex items-center gap-3">
+                            <GraduationCap size={18} className="text-[#C05E42]" />
+                            Accreditation_Paths
+                        </h2>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Structured curriculums for progressive mastery.</p>
                     </div>
-                    <button className="text-xs font-bold text-indigo-600 flex items-center gap-2 hover:gap-3 transition-all">
-                        View Course Catalog <ArrowRight size={14} />
+                    <button className="text-[10px] font-black text-[#C05E42] uppercase tracking-[0.4em] flex items-center gap-2 hover:gap-3 transition-all">
+                        View_Course_Catalog <ArrowRight size={14} />
                     </button>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {learningPaths.map((path, i) => (
-                        <div key={i} className="group bg-white border border-slate-200 rounded-[2rem] p-8 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col h-full">
-                            <div className="flex items-start justify-between mb-8">
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${path.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                                    path.color === 'purple' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
-                                    }`}>
-                                    <path.icon size={24} />
+                        <div key={i} className="group bg-white/5 border border-white/10 rounded-[2px] p-8 hover:bg-white/[0.07] hover:border-[#C05E42]/30 transition-all duration-500 flex flex-col h-full shadow-2xl">
+                            <div className="flex items-start justify-between mb-10">
+                                <div className={`w-14 h-14 rounded-[2px] flex items-center justify-center border border-white/10 transition-colors bg-white/5 text-[#C05E42] group-hover:bg-[#C05E42] group-hover:text-[#F9F9F9]`}>
+                                    <path.icon size={28} />
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${path.level === 'Foundational' ? 'bg-indigo-50 text-indigo-600' :
-                                    path.level === 'Professional' ? 'bg-purple-50 text-purple-600' : 'bg-emerald-50 text-emerald-600'
-                                    }`}>
+                                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-[1px] text-[8px] font-black uppercase tracking-[0.2em] text-white/40">
                                     {path.level}
                                 </span>
                             </div>
 
-                            <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
+                            <h3 className="text-xl font-black text-[#F9F9F9] mb-4 uppercase tracking-tighter font-instrument-sans group-hover:text-[#C05E42] transition-colors leading-tight">
                                 {path.title}
                             </h3>
-                            <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 flex-grow">
+                            <p className="text-white/30 text-[11px] font-black uppercase tracking-widest leading-loose mb-10 flex-grow">
                                 {path.description}
                             </p>
 
-                            <div className="space-y-6 pt-6 border-t border-slate-100">
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            <div className="space-y-8 pt-8 border-t border-white/5">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.3em] text-white/20">
                                         <span>Proficiency</span>
-                                        <span className="text-slate-900">{path.progress}%</span>
+                                        <span className="text-[#F9F9F9]">{path.progress}%</span>
                                     </div>
-                                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="w-full h-1 bg-white/5 rounded-[1px] overflow-hidden">
                                         <div
-                                            className={`h-full transition-all duration-1000 ${path.color === 'indigo' ? 'bg-indigo-600' :
-                                                path.color === 'purple' ? 'bg-purple-600' : 'bg-emerald-600'
-                                                }`}
+                                            className="h-full bg-[#C05E42] transition-all duration-1000"
                                             style={{ width: `${path.progress}%` }}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase">
+                                <div className="flex items-center justify-between text-[9px] font-black text-white/20 uppercase tracking-widest">
                                     <div className="flex items-center gap-2">
-                                        <BookOpen size={14} /> {path.completedLessons}/{path.totalLessons} Modules
+                                        <BookOpen size={14} className="text-[#C05E42]" /> {path.completedLessons}/{path.totalLessons} MOD
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Clock size={14} /> {path.estimatedTime}
+                                        <Clock size={14} className="text-white/40" /> {path.estimatedTime}
                                     </div>
                                 </div>
 
-                                <button className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${path.progress === 100
-                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                    : "bg-slate-900 text-white hover:bg-indigo-600 shadow-lg shadow-slate-200"
+                                <button className={`w-full py-5 rounded-[2px] font-black text-[10px] uppercase tracking-[0.3em] transition-all ${path.progress === 100
+                                    ? "bg-white/5 text-white/10 cursor-not-allowed border border-white/10"
+                                    : "bg-[#C05E42] text-[#F9F9F9] hover:bg-[#D16D4F] shadow-xl shadow-[#C05E42]/10 active:scale-95"
                                     }`}>
-                                    {path.progress === 100 ? "Certification Earned" : "Resume Path"}
+                                    {path.progress === 100 ? "Certification_Earned" : "Resume_Path"}
                                 </button>
                             </div>
                         </div>
@@ -193,13 +191,16 @@ export default function LearnPage() {
                 </div>
             </section>
 
-            {/* Research & Intelligence Modules */}
-            <section className="space-y-8">
-                <div className="flex items-center justify-between px-2">
-                    <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Intelligence Modules</h2>
-                    <div className="flex gap-2 p-1 bg-slate-100 rounded-lg">
-                        {['Latest', 'Most Read'].map((f) => (
-                            <button key={f} className="px-4 py-1.5 text-[11px] font-bold rounded-md transition-all hover:text-indigo-600">
+            {/* ── Research & Intelligence Modules ── */}
+            <section className="space-y-10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-2">
+                    <h2 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.3em] flex items-center gap-3">
+                        <BrainCircuit size={18} className="text-[#C05E42]" />
+                        Intelligence_Modules
+                    </h2>
+                    <div className="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-[1px]">
+                        {['LATEST', 'MOST_READ'].map((f) => (
+                            <button key={f} className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest rounded-[1px] transition-all ${f === 'LATEST' ? 'bg-[#C05E42] text-[#F9F9F9]' : 'text-white/30 hover:text-white/60'}`}>
                                 {f}
                             </button>
                         ))}
@@ -208,32 +209,32 @@ export default function LearnPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredModules.map((mod, i) => (
-                        <div key={i} className="group bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-indigo-200 transition-all flex flex-col">
-                            <div className="p-8 space-y-4 flex-grow">
+                        <div key={i} className="group bg-white/5 border border-white/10 rounded-[2px] overflow-hidden hover:border-[#C05E42]/30 transition-all flex flex-col shadow-2xl">
+                            <div className="p-8 space-y-6 flex-grow">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded">
+                                    <span className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.3em] bg-[#C05E42]/10 px-3 py-1 rounded-[1px] border border-[#C05E42]/20">
                                         {mod.category}
                                     </span>
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase">{mod.type}</span>
+                                    <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em]">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors">
+                                <h3 className="text-lg font-black text-[#F9F9F9] leading-tight group-hover:text-[#C05E42] transition-colors uppercase font-instrument-sans tracking-tight">
                                     {mod.title}
                                 </h3>
-                                <p className="text-slate-500 text-xs font-medium leading-relaxed">
+                                <p className="text-white/30 text-[10px] font-black uppercase tracking-widest leading-loose">
                                     {mod.description}
                                 </p>
                             </div>
 
-                            <div className="px-8 pb-8 pt-6 border-t border-slate-50 space-y-6">
-                                <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                            <div className="px-8 pb-8 pt-6 border-t border-white/5 space-y-6 bg-white/[0.01]">
+                                <div className="flex items-center justify-between text-[9px] font-black text-white/20 uppercase tracking-widest">
                                     <div className="flex items-center gap-4">
-                                        <span className="flex items-center gap-1.5"><Clock size={12} /> {mod.readTime}</span>
-                                        <span className="flex items-center gap-1.5"><Users size={12} /> {mod.students}</span>
+                                        <span className="flex items-center gap-1.5"><Clock size={12} className="text-[#C05E42]" /> {mod.readTime}</span>
+                                        <span className="flex items-center gap-1.5"><Users size={12} className="text-white/40" /> {mod.students}</span>
                                     </div>
-                                    <span className="text-indigo-500">{mod.difficulty}</span>
+                                    <span className="text-[#C05E42]">{mod.difficulty}</span>
                                 </div>
-                                <button className="w-full py-3.5 bg-slate-50 text-slate-900 font-bold rounded-xl text-[10px] uppercase tracking-widest border border-slate-100 group-hover:bg-slate-950 group-hover:text-white transition-all">
-                                    Access Briefing
+                                <button className="w-full py-4 bg-white/5 text-[#F9F9F9] font-black border border-white/10 rounded-[2px] text-[9px] uppercase tracking-[0.4em] transition-all group-hover:bg-[#C05E42] group-hover:border-[#C05E42] group-hover:shadow-xl group-hover:shadow-[#C05E42]/10">
+                                    Access_Briefing
                                 </button>
                             </div>
                         </div>
@@ -241,19 +242,24 @@ export default function LearnPage() {
                 </div>
             </section>
 
-            {/* Assessment Banner */}
-            <div className="rounded-[2.5rem] p-10 md:p-16 bg-indigo-600 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-10 opacity-10">
-                    <GraduationCap size={200} />
+            {/* ── Assessment Banner ── */}
+            <div className="relative rounded-[2px] p-12 md:p-24 bg-[#121417] text-[#F9F9F9] border border-white/10 shadow-3xl overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C05E42]/10 rounded-full blur-[150px] -mr-64 -mt-64 group-hover:bg-[#C05E42]/15 transition-all" />
+                <div className="absolute -bottom-24 -left-24 p-12 opacity-[0.03] rotate-12 group-hover:rotate-0 transition-all duration-1000">
+                    <GraduationCap size={400} />
                 </div>
-                <div className="relative z-10 max-w-2xl space-y-6 text-center md:text-left">
-                    <p className="text-indigo-200 text-[11px] font-bold uppercase tracking-[0.3em]">Daily Assessment</p>
-                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Validate Today's Market Signals.</h2>
-                    <p className="text-indigo-100 text-lg font-medium opacity-80">
+
+                <div className="relative z-10 flex flex-col items-center text-center space-y-10 max-w-4xl mx-auto">
+                    <div className="flex flex-col items-center space-y-4">
+                        <div className="w-16 h-1 bg-[#C05E42]" />
+                        <p className="text-[#C05E42] text-[10px] font-black uppercase tracking-[0.5em]">Daily_Assessment</p>
+                    </div>
+                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter uppercase font-instrument-serif leading-none">Validate Today's Market Signals.</h2>
+                    <p className="text-white/40 text-sm md:text-lg font-medium leading-relaxed uppercase tracking-[0.2em] max-w-2xl">
                         Test your comprehension of the latest GSE price discovery phases and earn analyst accreditation credits.
                     </p>
-                    <button className="mt-4 px-10 py-4 bg-white text-indigo-600 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-xl">
-                        Start Assessment
+                    <button className="px-12 py-6 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] text-xs uppercase tracking-[0.4em] hover:bg-[#D16D4F] transition-all shadow-2xl shadow-[#C05E42]/20 active:scale-95 group">
+                        Start_Assessment
                     </button>
                 </div>
             </div>
