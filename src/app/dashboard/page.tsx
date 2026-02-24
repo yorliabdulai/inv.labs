@@ -92,13 +92,13 @@ export default function DashboardPage() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <button className="group flex items-center justify-center gap-3 rounded-[2px] bg-[#C05E42] px-8 py-4 text-xs font-black text-[#F9F9F9] uppercase tracking-widest transition-all hover:bg-[#D16D4F] active:scale-95 shadow-xl shadow-[#C05E42]/20">
-                            <TrendingUp size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-4 w-full lg:w-auto mt-8 lg:mt-0">
+                        <button className="group flex flex-1 sm:flex-auto lg:flex-initial items-center justify-center gap-3 rounded-[2px] bg-[#C05E42] px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-black text-[#F9F9F9] uppercase tracking-widest transition-all hover:bg-[#D16D4F] active:scale-95 shadow-xl shadow-[#C05E42]/20 whitespace-nowrap">
+                            <TrendingUp size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 shrink-0" />
                             Execute Trades
                         </button>
-                        <button className="flex items-center justify-center gap-3 rounded-[2px] bg-white/5 border border-white/10 px-8 py-4 text-xs font-black text-[#F9F9F9] uppercase tracking-widest backdrop-blur-xl transition-all hover:bg-white/10 active:scale-95">
-                            <Layers size={16} />
+                        <button className="flex flex-1 sm:flex-auto lg:flex-initial items-center justify-center gap-3 rounded-[2px] bg-white/5 border border-white/10 px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-black text-[#F9F9F9] uppercase tracking-widest backdrop-blur-xl transition-all hover:bg-white/10 active:scale-95 whitespace-nowrap">
+                            <Layers size={16} className="shrink-0" />
                             Asset Allocation
                         </button>
                     </div>
