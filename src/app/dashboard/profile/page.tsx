@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import {
     LogOut, User, Award, Shield, Settings, CreditCard,
     ChevronRight, Mail, Calendar, TrendingUp, Edit2,
-    Bell, Lock, Globe, CheckBadgeIcon,
+    Bell, Lock, Globe, BadgeCheck,
     Fingerprint, Activity, Zap
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";

@@ -6,11 +6,10 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                background: {
-                    DEFAULT: "var(--bg-page)",
-                    surface: "var(--bg-surface)",
-                    elevated: "var(--bg-surface-elevated)",
-                },
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                card: "hsl(var(--card))",
+                "card-foreground": "hsl(var(--card-foreground))",
                 text: {
                     primary: "var(--text-primary)",
                     secondary: "var(--text-secondary)",
@@ -29,10 +28,34 @@ module.exports = {
                 border: {
                     DEFAULT: "var(--border-default)",
                     active: "var(--border-active)",
-                }
+                },
+                // GHANA BUILDS WEALTH TOKENS
+                ink: {
+                    950: "hsl(var(--ink-950))",
+                    900: "hsl(var(--ink-900))",
+                    800: "hsl(var(--ink-800))",
+                    DEFAULT: "hsl(var(--ink))",
+                    muted: "hsl(var(--ink-muted))",
+                },
+                paper: {
+                    DEFAULT: "hsl(var(--paper))",
+                    dark: "hsl(var(--paper-dark))",
+                    text: "hsl(var(--paper-text))",
+                },
+                terracotta: {
+                    DEFAULT: "hsl(var(--terracotta))",
+                    light: "hsl(var(--terracotta-light))",
+                },
+                "gold-data": "hsl(var(--gold-data))",
+                "emerald-gain": "hsl(var(--emerald-gain))",
+                "loss-red": "hsl(var(--loss-red))",
+                rule: "hsl(var(--rule) / 0.3)",
             },
             fontFamily: {
-                sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                sans: ['var(--font-instrument-sans)', 'sans-serif'],
+                serif: ['var(--font-instrument-serif)', 'serif'],
+                mono: ['var(--font-dm-mono)', 'monospace'],
+                "plus-jakarta": ['"Plus Jakarta Sans"', 'sans-serif'],
             },
             borderRadius: {
                 'xs': 'var(--radius-xs)',
@@ -40,6 +63,7 @@ module.exports = {
                 'lg': 'var(--radius-lg)',
                 'xl': '24px',
                 '2xl': '32px',
+                'editorial': 'var(--radius)',
             },
             boxShadow: {
                 'sm': 'var(--shadow-sm)',
@@ -52,5 +76,5 @@ module.exports = {
             }
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 }

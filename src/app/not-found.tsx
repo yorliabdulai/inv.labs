@@ -44,7 +44,7 @@ export default function NotFound() {
                     <div className="bg-[#0F172A] p-2 rounded-lg">
                         <TrendingUp className="text-white" size={20} />
                     </div>
-                    <span className="text-xl font-black tracking-tighter uppercase">GSE.Labs</span>
+                    <span className="text-xl font-black tracking-tighter uppercase">INV.LABS</span>
                 </div>
 
                 <div className="hidden md:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-gray-500">
@@ -105,7 +105,7 @@ export default function NotFound() {
                 <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full text-center px-6">
                     <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-200 pt-8 opacity-40">
                         <div className="text-[9px] font-bold uppercase tracking-[0.3em]">Institutional Grade Simulation</div>
-                        <div className="text-[9px] font-bold uppercase tracking-[0.3em]">© 2026 GSE.LABS Infrastructure</div>
+                        <div className="text-[9px] font-bold uppercase tracking-[0.3em]">© 2026 INV.LABS Infrastructure</div>
                         <div className="text-[9px] font-bold uppercase tracking-[0.3em]">System.04 // Status: Re-route</div>
                     </div>
                 </div>

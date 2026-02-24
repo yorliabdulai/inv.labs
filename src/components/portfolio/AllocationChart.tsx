@@ -37,7 +37,7 @@ export function AllocationChart({ data = [] }: AllocationChartProps) {
                             padding: '8px 12px',
                         }}
                         itemStyle={{ color: '#1A1C4E', fontWeight: '900', fontSize: '11px' }}
-                        formatter={(value: number | undefined) => [`GH₵ ${(value ?? 0).toLocaleString()}`, 'Value']}
+                        formatter={(value: any) => [`GH₵ ${(value ?? 0).toLocaleString()}`, 'Value']}
                     />
                 </PieChart>
             </ResponsiveContainer>
