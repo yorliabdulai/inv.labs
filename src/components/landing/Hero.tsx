@@ -7,8 +7,46 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getStocks, Stock } from "@/lib/market-data";
+
+const defaultStocks = [
+  { name: "MTN Ghana", price: "1.82", change: "+2.3%", up: true },
+  { name: "GCB Bank", price: "5.10", change: "-0.8%", up: false },
+  { name: "Ecobank", price: "9.44", change: "+1.1%", up: true },
+  { name: "CAL Bank", price: "0.85", change: "+0.6%", up: true },
+  { name: "Tullow Oil", price: "18.50", change: "+3.4%", up: true },
+  { name: "Fan Milk", price: "3.20", change: "-1.2%", up: false },
+  { name: "Enterprise", price: "1.95", change: "-0.5%", up: false },
+  { name: "AGA", price: "35.00", change: "0.0%", up: null },
+];
 
 const Hero = () => {
+  const [marketData, setMarketData] = useState<typeof defaultStocks>(defaultStocks);
+
+  useEffect(() => {
+    async function fetchMarketData() {
+      try {
+        const stocks: Stock[] = await getStocks();
+        if (stocks && stocks.length > 0) {
+          const formatted = stocks.slice(0, 8).map(s => {
+            const up = s.change > 0 ? true : s.change < 0 ? false : null;
+            const sign = s.changePercent > 0 ? "+" : "";
+            return {
+              name: s.name,
+              price: s.price.toFixed(2),
+              change: `${sign}${s.changePercent.toFixed(1)}%`,
+              up
+            };
+          });
+          setMarketData(formatted);
+        }
+      } catch (err) {
+        console.error("Failed to load GSE stocks for Hero", err);
+      }
+    }
+    fetchMarketData();
+  }, []);
   return (
     <section className="relative min-h-screen flex items-end pb-16 md:pb-24 pt-20 overflow-hidden bg-ink-950">
       <div className="w-full px-6 md:px-12 lg:px-20">
@@ -76,20 +114,22 @@ const Hero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.2, duration: 0.4 }}
-              className="mt-10 flex flex-col sm:flex-row gap-4"
+              className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4"
             >
               <Link href="/register">
                 <button className="btn-editorial-fill">
                   Start with GH₵10,000 Virtual Capital
                 </button>
               </Link>
-              <div className="flex items-center gap-4">
+              <Link href="/login">
                 <button className="btn-editorial">
+                  Sign In
+                </button>
+              </Link>
+              <div className="flex items-center gap-4">
+                <button className="btn-editorial bg-transparent border-transparent hover:bg-ink-900 text-paper-text/60 hover:text-paper-text transition-colors">
                   Watch 60s Demo
                 </button>
-                <Link href="/login" className="text-paper-text/60 hover:text-terracotta transition-colors font-mono text-xs uppercase tracking-widest ml-2">
-                  Sign In
-                </Link>
               </div>
             </motion.div>
           </div>
@@ -102,20 +142,11 @@ const Hero = () => {
             className="lg:col-span-2 mt-12 lg:mt-0 border-l border-rule lg:pl-6"
           >
             {/* Vertical ticker snippet */}
-            <div className="space-y-0">
-              {[
-                { name: "MTN Ghana", price: "1.82", change: "+2.3%", up: true },
-                { name: "GCB Bank", price: "5.10", change: "-0.8%", up: false },
-                { name: "Ecobank", price: "9.44", change: "+1.1%", up: true },
-                { name: "CAL Bank", price: "0.85", change: "+0.6%", up: true },
-                { name: "Tullow Oil", price: "18.50", change: "+3.4%", up: true },
-                { name: "Fan Milk", price: "3.20", change: "-1.2%", up: false },
-                { name: "Enterprise", price: "1.95", change: "-0.5%", up: false },
-                { name: "AGA", price: "35.00", change: "0.0%", up: null },
-              ].map((s, i) => (
+            <div className="space-y-0 min-h-[300px]">
+              {marketData.map((s, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5 border-b border-border/10 font-mono text-sm">
-                  <span className="text-paper-text/60">{s.name}</span>
-                  <div className="flex items-center gap-3">
+                  <span className="text-paper-text/60 truncate max-w-[130px]" title={s.name}>{s.name}</span>
+                  <div className="flex items-center gap-3 shrink-0">
                     <span className="text-paper-text/80 tabular-nums">GH₵{s.price}</span>
                     <span className={`tabular-nums ${s.up === true ? "text-emerald-gain" :
                       s.up === false ? "text-loss-red" :
