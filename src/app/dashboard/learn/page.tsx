@@ -1,49 +1,74 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
     BookOpen, Clock, PlayCircle, Shield,
     ArrowRight, Sparkles, BookCheck, BrainCircuit, Globe,
     ChevronRight, Users, GraduationCap, BarChart3, Star
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { getCourses, getUserEnrollments, enrollInCourse, Course, Enrollment } from "@/app/actions/gamification";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LearnPage() {
-    const learningPaths = [
-        {
-            title: "GSE Fundamentals",
-            description: "Master the architecture of the Ghana Stock Exchange, from listing protocols to session mechanics.",
-            progress: 100,
-            totalLessons: 12,
-            completedLessons: 12,
-            level: "Foundational",
-            color: "indigo",
-            icon: Globe,
-            estimatedTime: "4h 30m"
-        },
-        {
-            title: "Portfolio Architecture",
-            description: "Learn to construct diversified portfolios using modern asset allocation theories tailored for the GSE.",
-            progress: 45,
-            totalLessons: 15,
-            completedLessons: 7,
-            level: "Professional",
-            color: "purple",
-            icon: BrainCircuit,
-            estimatedTime: "6h 15m"
-        },
-        {
-            title: "Risk & Volatility Logic",
-            description: "Advanced strategies for downside protection, beta management, and structured risk mitigation.",
-            progress: 20,
-            totalLessons: 8,
-            completedLessons: 2,
-            level: "Advanced",
-            color: "emerald",
-            icon: Shield,
-            estimatedTime: "3h 45m"
-        }
-    ];
+    const router = useRouter();
+    const { toast } = useToast();
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const [coursesData, enrollmentsData] = await Promise.all([
+                    getCourses(),
+                    getUserEnrollments()
+                ]);
+                setCourses(coursesData);
+                setEnrollments(enrollmentsData);
+            } catch (err) {
+                console.error("Failed to load gamification data", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadData();
+    }, []);
+
+    const handleEnroll = async (courseId: string) => {
+        const { error, success } = await enrollInCourse(courseId);
+        if (error) {
+            toast({
+                title: "Enrollment Failed",
+                description: "You could not be enrolled in this course right now.",
+                variant: "destructive"
+            });
+        } else if (success) {
+            toast({
+                title: "Enrolled Successfully",
+                description: "You have started a new certification path!",
+            });
+            router.push(`/dashboard/learn/${courseId}`);
+        }
+    };
+
+    // Calculate overall accreditation level logic roughly
+    const totalXp = enrollments.reduce((sum, e) => {
+        if (e.status === 'completed' && e.course) {
+            return sum + e.course.xp_reward;
+        }
+        return sum; // Partial formula logic missing, stubbing
+    }, 0);
+    // Map icon strings to components based on static fallback logic
+    const getIconComponent = (iconName: string) => {
+        switch (iconName) {
+            case 'Globe': return Globe;
+            case 'BrainCircuit': return BrainCircuit;
+            case 'Shield': return Shield;
+            default: return BookOpen;
+        }
+    };
     const featuredModules = [
         {
             title: "GSE Market Microstructure",
@@ -106,16 +131,16 @@ export default function LearnPage() {
                     <div className="flex items-center gap-12 bg-white/[0.03] backdrop-blur-xl p-10 rounded-[2px] border border-white/10 shadow-2xl">
                         <div className="space-y-3">
                             <p className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.3em]">Accreditation</p>
-                            <p className="text-4xl font-black font-instrument-serif tracking-tighter">Level 08</p>
-                            <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Senior Analyst</p>
+                            <p className="text-4xl font-black font-instrument-serif tracking-tighter">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
+                            <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
                             <div className="w-40 h-1 bg-white/5 rounded-[1px] mt-6 overflow-hidden">
-                                <div className="h-full bg-[#C05E42] rounded-[1px]" style={{ width: '85%' }} />
+                                <div className="h-full bg-[#C05E42] rounded-[1px]" style={{ width: `${(totalXp % 1000) / 10}%` }} />
                             </div>
                         </div>
                         <div className="w-px h-20 bg-white/5" />
                         <div className="space-y-3 text-right">
                             <p className="text-[9px] font-black text-[#C05E42] uppercase tracking-[0.3em]">Knowledge XP</p>
-                            <p className="text-4xl font-black font-instrument-serif tracking-tighter tabular-nums">2,450</p>
+                            <p className="text-4xl font-black font-instrument-serif tracking-tighter tabular-nums">{totalXp.toLocaleString()}</p>
                             <p className="text-[10px] font-black text-[#10B981]">INC_150_TODAY</p>
                         </div>
                     </div>
@@ -138,56 +163,71 @@ export default function LearnPage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {learningPaths.map((path, i) => (
-                        <div key={i} className="group bg-white/5 border border-white/10 rounded-[2px] p-8 hover:bg-white/[0.07] hover:border-[#C05E42]/30 transition-all duration-500 flex flex-col h-full shadow-2xl">
-                            <div className="flex items-start justify-between mb-10">
-                                <div className={`w-14 h-14 rounded-[2px] flex items-center justify-center border border-white/10 transition-colors bg-white/5 text-[#C05E42] group-hover:bg-[#C05E42] group-hover:text-[#F9F9F9]`}>
-                                    <path.icon size={28} />
-                                </div>
-                                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-[1px] text-[8px] font-black uppercase tracking-[0.2em] text-white/40">
-                                    {path.level}
-                                </span>
-                            </div>
-
-                            <h3 className="text-xl font-black text-[#F9F9F9] mb-4 uppercase tracking-tighter font-instrument-sans group-hover:text-[#C05E42] transition-colors leading-tight">
-                                {path.title}
-                            </h3>
-                            <p className="text-white/30 text-[11px] font-black uppercase tracking-widest leading-loose mb-10 flex-grow">
-                                {path.description}
-                            </p>
-
-                            <div className="space-y-8 pt-8 border-t border-white/5">
-                                <div className="space-y-3">
-                                    <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.3em] text-white/20">
-                                        <span>Proficiency</span>
-                                        <span className="text-[#F9F9F9]">{path.progress}%</span>
-                                    </div>
-                                    <div className="w-full h-1 bg-white/5 rounded-[1px] overflow-hidden">
-                                        <div
-                                            className="h-full bg-[#C05E42] transition-all duration-1000"
-                                            style={{ width: `${path.progress}%` }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between text-[9px] font-black text-white/20 uppercase tracking-widest">
-                                    <div className="flex items-center gap-2">
-                                        <BookOpen size={14} className="text-[#C05E42]" /> {path.completedLessons}/{path.totalLessons} MOD
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock size={14} className="text-white/40" /> {path.estimatedTime}
-                                    </div>
-                                </div>
-
-                                <button className={`w-full py-5 rounded-[2px] font-black text-[10px] uppercase tracking-[0.3em] transition-all ${path.progress === 100
-                                    ? "bg-white/5 text-white/10 cursor-not-allowed border border-white/10"
-                                    : "bg-[#C05E42] text-[#F9F9F9] hover:bg-[#D16D4F] shadow-xl shadow-[#C05E42]/10 active:scale-95"
-                                    }`}>
-                                    {path.progress === 100 ? "Certification_Earned" : "Resume_Path"}
-                                </button>
-                            </div>
+                    {loading ? (
+                        <div className="col-span-3 py-12 text-center text-white/40 animate-pulse text-xs tracking-widest uppercase">
+                            Loading Curriculums...
                         </div>
-                    ))}
+                    ) : courses.map((course, i) => {
+                        const enrollment = enrollments.find(e => e.course_id === course.id);
+                        const progress = enrollment ? enrollment.progress : 0;
+                        const isCompleted = enrollment?.status === 'completed';
+                        const isEnrolled = !!enrollment;
+                        const IconComponent = getIconComponent(course.icon);
+
+                        return (
+                            <div key={i} className="group bg-white/5 border border-white/10 rounded-[2px] p-8 hover:bg-white/[0.07] hover:border-[#C05E42]/30 transition-all duration-500 flex flex-col h-full shadow-2xl">
+                                <div className="flex items-start justify-between mb-10">
+                                    <div className={`w-14 h-14 rounded-[2px] flex items-center justify-center border border-white/10 transition-colors bg-white/5 text-[#C05E42] group-hover:bg-[#C05E42] group-hover:text-[#F9F9F9]`}>
+                                        <IconComponent size={28} />
+                                    </div>
+                                    <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-[1px] text-[8px] font-black uppercase tracking-[0.2em] text-white/40">
+                                        {course.level}
+                                    </span>
+                                </div>
+
+                                <h3 className="text-xl font-black text-[#F9F9F9] mb-4 uppercase tracking-tighter font-instrument-sans group-hover:text-[#C05E42] transition-colors leading-tight">
+                                    {course.title}
+                                </h3>
+                                <p className="text-white/30 text-[11px] font-black uppercase tracking-widest leading-loose mb-10 flex-grow">
+                                    {course.description}
+                                </p>
+
+                                <div className="space-y-8 pt-8 border-t border-white/5">
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.3em] text-white/20">
+                                            <span>Proficiency</span>
+                                            <span className="text-[#F9F9F9]">{progress}%</span>
+                                        </div>
+                                        <div className="w-full h-1 bg-white/5 rounded-[1px] overflow-hidden">
+                                            <div
+                                                className="h-full bg-[#C05E42] transition-all duration-1000"
+                                                style={{ width: `${progress}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between text-[9px] font-black text-white/20 uppercase tracking-widest">
+                                        <div className="flex items-center gap-2">
+                                            <BookOpen size={14} className="text-[#C05E42]" /> {enrollment?.completed_lessons || 0}/{course.total_lessons} MOD
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Clock size={14} className="text-white/40" /> {course.estimated_time || "1h 30m"}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={() => isEnrolled ? router.push(`/dashboard/learn/${course.id}`) : handleEnroll(course.id)}
+                                        disabled={isCompleted}
+                                        className={`w-full py-5 rounded-[2px] font-black text-[10px] uppercase tracking-[0.3em] transition-all ${isCompleted
+                                            ? "bg-white/5 text-white/10 cursor-not-allowed border border-white/10"
+                                            : "bg-[#C05E42] text-[#F9F9F9] hover:bg-[#D16D4F] shadow-xl shadow-[#C05E42]/10 active:scale-95"
+                                            }`}>
+                                        {isCompleted ? "Certification_Earned" : isEnrolled ? "Resume_Path" : "Start_Course"}
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </section>
 

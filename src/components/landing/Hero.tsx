@@ -78,7 +78,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-              className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.5rem] font-normal text-paper-text leading-[0.9] tracking-tight"
+              className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.5rem] font-bold text-paper-text leading-[0.9] tracking-tight"
             >
               <span className="block overflow-hidden">
                 Practice the

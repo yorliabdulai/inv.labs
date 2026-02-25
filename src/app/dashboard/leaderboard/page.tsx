@@ -4,14 +4,17 @@ import { useState, useEffect, useMemo } from "react";
 import {
     Award, Trophy, Medal, ArrowUp, Crown, TrendingUp, TrendingDown,
     Minus, Filter, BarChart3, Activity, Zap, Shield, Search,
-    ArrowUpRight, ArrowDownRight, Info, RefreshCcw
+    ArrowUpRight, ArrowDownRight, Info, RefreshCcw, Users
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { getMarketRankings, type RankedAsset, type RankingCategory } from "@/app/actions/leaderboard";
+import { getTopUsers } from "@/app/actions/gamification";
 
 export default function LeaderboardPage() {
+    const [viewMode, setViewMode] = useState<"market" | "users">("market");
     const [category, setCategory] = useState<RankingCategory>("gainers");
     const [rankings, setRankings] = useState<RankedAsset[]>([]);
+    const [userRankings, setUserRankings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -21,8 +24,13 @@ export default function LeaderboardPage() {
         else setLoading(true);
 
         try {
-            const data = await getMarketRankings(category);
-            setRankings(data);
+            if (viewMode === "market") {
+                const data = await getMarketRankings(category);
+                setRankings(data);
+            } else {
+                const data = await getTopUsers();
+                setUserRankings(data);
+            }
         } catch (err) {
             console.error("Failed to load rankings", err);
         } finally {
@@ -33,14 +41,19 @@ export default function LeaderboardPage() {
 
     useEffect(() => {
         loadRankings();
-    }, [category]);
+    }, [category, viewMode]);
 
     const filteredRankings = useMemo(() => {
+        if (viewMode === "users") {
+            return userRankings.filter(u =>
+                (u.full_name || "").toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
         return rankings.filter(r =>
             r.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
             r.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
-    }, [rankings, searchQuery]);
+    }, [rankings, userRankings, searchQuery, viewMode]);
 
     const categories: { key: RankingCategory; label: string; icon: any; description: string }[] = [
         { key: 'gainers', label: 'Top Gainers', icon: TrendingUp, description: 'Highest price appreciation.' },
@@ -60,11 +73,11 @@ export default function LeaderboardPage() {
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-white/5 rounded-[2px] border border-white/10 text-[9px] font-black uppercase tracking-[0.3em] text-[#C05E42]">
-                            <Activity size={12} /> Live_Market_Intelligence
+                            <Activity size={12} /> Global_Terminal_Rankings
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase font-instrument-serif text-[#F9F9F9]">Market Leaderboards</h1>
+                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase font-instrument-serif text-[#F9F9F9]">Platform Leaderboards</h1>
                         <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em] max-w-lg leading-loose">
-                            Advanced algorithmic rankings using weighted scoring for GSE assets based on price velocity, stability, and liquidity depth.
+                            Assess top performing assets in the market and benchmark your performance and accreditation XP against top traders in the network.
                         </p>
                     </div>
 
@@ -79,32 +92,49 @@ export default function LeaderboardPage() {
                 </div>
             </div>
 
-            {/* ── Strategy Selectors ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {categories.map((cat) => (
-                    <button
-                        key={cat.key}
-                        onClick={() => setCategory(cat.key)}
-                        className={`p-6 rounded-[2px] border transition-all text-left group relative flex flex-col h-full ${category === cat.key
-                            ? "bg-white/5 border-[#C05E42]/40 shadow-2xl"
-                            : "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/5"
-                            }`}
-                    >
-                        <div className={`w-12 h-12 rounded-[2px] flex items-center justify-center mb-6 transition-transform group-hover:scale-110 border ${category === cat.key
-                            ? "bg-[#C05E42] text-[#F9F9F9] border-[#C05E42]"
-                            : "bg-white/5 text-white/20 border-white/10 group-hover:text-[#F9F9F9]"
-                            }`}>
-                            <cat.icon size={20} />
-                        </div>
-                        <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] mb-2 ${category === cat.key ? "text-[#C05E42]" : "text-white/40 group-hover:text-white/60"}`}>
-                            {cat.label}
-                        </h3>
-                        <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.2em] leading-relaxed line-clamp-2">
-                            {cat.description}
-                        </p>
-                    </button>
-                ))}
+            {/* ── View Toggle & Strategy Selectors ── */}
+            <div className="flex border-b border-white/10 mb-8">
+                <button
+                    onClick={() => setViewMode("market")}
+                    className={`px-6 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 ${viewMode === "market" ? "text-[#C05E42] border-[#C05E42]" : "text-white/40 border-transparent hover:text-white/80"}`}
+                >
+                    Market_Assets
+                </button>
+                <button
+                    onClick={() => setViewMode("users")}
+                    className={`px-6 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 flex items-center gap-2 ${viewMode === "users" ? "text-[#C05E42] border-[#C05E42]" : "text-white/40 border-transparent hover:text-white/80"}`}
+                >
+                    <Users size={14} /> Top_Traders
+                </button>
             </div>
+
+            {viewMode === "market" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat.key}
+                            onClick={() => setCategory(cat.key)}
+                            className={`p-6 rounded-[2px] border transition-all text-left group relative flex flex-col h-full ${category === cat.key
+                                ? "bg-white/5 border-[#C05E42]/40 shadow-2xl"
+                                : "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/5"
+                                }`}
+                        >
+                            <div className={`w-12 h-12 rounded-[2px] flex items-center justify-center mb-6 transition-transform group-hover:scale-110 border ${category === cat.key
+                                ? "bg-[#C05E42] text-[#F9F9F9] border-[#C05E42]"
+                                : "bg-white/5 text-white/20 border-white/10 group-hover:text-[#F9F9F9]"
+                                }`}>
+                                <cat.icon size={20} />
+                            </div>
+                            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] mb-2 ${category === cat.key ? "text-[#C05E42]" : "text-white/40 group-hover:text-white/60"}`}>
+                                {cat.label}
+                            </h3>
+                            <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.2em] leading-relaxed line-clamp-2">
+                                {cat.description}
+                            </p>
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {/* ── Table Area ── */}
             <div className="space-y-6">
@@ -134,17 +164,26 @@ export default function LeaderboardPage() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="bg-white/[0.02] border-b border-white/5 text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">
-                                        <th className="px-8 py-5">Rank</th>
-                                        <th className="px-8 py-5">Asset_Node</th>
-                                        <th className="px-6 py-5 text-right">Live_NAV</th>
-                                        <th className="px-6 py-5 text-right">Performance</th>
-                                        <th className="px-6 py-5 text-right">Intensity_Score</th>
-                                        <th className="px-8 py-5 text-right">Momentum_Vector</th>
-                                    </tr>
+                                    {viewMode === "market" ? (
+                                        <tr className="bg-white/[0.02] border-b border-white/5 text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">
+                                            <th className="px-8 py-5">Rank</th>
+                                            <th className="px-8 py-5">Asset_Node</th>
+                                            <th className="px-6 py-5 text-right">Live_NAV</th>
+                                            <th className="px-6 py-5 text-right">Performance</th>
+                                            <th className="px-6 py-5 text-right">Intensity_Score</th>
+                                            <th className="px-8 py-5 text-right">Momentum_Vector</th>
+                                        </tr>
+                                    ) : (
+                                        <tr className="bg-white/[0.02] border-b border-white/5 text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">
+                                            <th className="px-8 py-5 text-center w-24">Global_Rank</th>
+                                            <th className="px-8 py-5">Trader_Profile</th>
+                                            <th className="px-6 py-5 text-right">Accreditation_Level</th>
+                                            <th className="px-8 py-5 text-right">Knowledge_XP</th>
+                                        </tr>
+                                    )}
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {filteredRankings.map((asset) => {
+                                    {viewMode === "market" ? filteredRankings.map((asset) => {
                                         const scoreValue = category === 'stability' ? asset.stabilityScore :
                                             category === 'momentum' ? asset.momentumScore :
                                                 category === 'volume' ? (asset.volume / 1000) : asset.changePercent;
@@ -207,6 +246,44 @@ export default function LeaderboardPage() {
                                                         }`}>
                                                         {asset.trend === 'up' ? <TrendingUp size={12} /> : asset.trend === 'down' ? <TrendingDown size={12} /> : <Minus size={12} />}
                                                         {asset.trend}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }) : filteredRankings.map((user, idx) => {
+                                        const rank = idx + 1;
+                                        return (
+                                            <tr key={user.id} className="group hover:bg-white/[0.03] transition-colors">
+                                                <td className="px-8 py-6 text-center">
+                                                    <span className={`text-xl font-black tabular-nums tracking-tighter ${rank <= 3 ? "text-[#C05E42]" : "text-white/20"}`}>
+                                                        {rank < 10 ? `0${rank}` : rank}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-5">
+                                                        <div className="w-12 h-12 rounded-[2px] bg-white/5 flex items-center justify-center font-black text-white/20 text-xs border border-white/10 group-hover:bg-[#C05E42] group-hover:border-[#C05E42]/40 group-hover:text-[#F9F9F9] transition-all uppercase tracking-widest leading-none shadow-xl shadow-[#C05E42]/0 group-hover:shadow-[#C05E42]/10">
+                                                            {user.full_name ? user.full_name.charAt(0) : "T"}
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-sm font-black text-[#F9F9F9] leading-tight flex items-center gap-2">
+                                                                {user.full_name || "Anonymous Trader"}
+                                                                {rank === 1 && <Crown size={14} className="text-[#C05E42]" />}
+                                                            </div>
+                                                            <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mt-1">ID: {user.id.substring(0, 8)}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-6 text-right">
+                                                    <div className="text-sm font-black text-[#F9F9F9] tabular-nums tracking-tighter">
+                                                        Level {user.accreditation_level || 1}
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6 text-right">
+                                                    <div className="flex items-center justify-end gap-3">
+                                                        <div className="text-base font-black text-[#10B981] tabular-nums tracking-tighter">
+                                                            {(user.knowledge_xp || 0).toLocaleString()} XP
+                                                        </div>
+                                                        <Zap size={14} className="text-[#10B981] opacity-60" />
                                                     </div>
                                                 </td>
                                             </tr>

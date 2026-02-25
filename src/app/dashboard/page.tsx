@@ -22,6 +22,7 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { AllocationChart } from "@/components/portfolio/AllocationChart";
+import { CreateChallengeModal } from "@/components/dashboard/gamification/CreateChallengeModal";
 import { getDashboardData, type DashboardData } from "@/app/actions/dashboard";
 import { formatCurrency } from "@/lib/mutual-funds-data";
 
@@ -30,6 +31,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [activeRange, setActiveRange] = useState('1M');
     const [chartType, setChartType] = useState<'area' | 'bar' | 'candle'>('area');
+    const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
 
     useEffect(() => {
         async function fetchInitialData() {
@@ -228,6 +230,26 @@ export default function DashboardPage() {
 
                 {/* Insights Sidebar */}
                 <div className="lg:col-span-4 space-y-8">
+                    {/* Challenge Prompt */}
+                    <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl p-6 group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#C05E42]/5 rounded-full blur-[40px] -mr-16 -mt-16 transition-all group-hover:bg-[#C05E42]/10" />
+                        <div className="flex items-start justify-between mb-4 relative z-10">
+                            <div>
+                                <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] flex items-center gap-3">
+                                    <Target size={18} className="text-[#C05E42]" />
+                                    Cohorts
+                                </h3>
+                                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Gamified Trading</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setIsChallengeModalOpen(true)}
+                            className="w-full mt-2 py-4 bg-white/5 hover:bg-white/10 text-[#F9F9F9] border border-white/10 rounded-[2px] text-[10px] font-black uppercase tracking-[0.2em] transition-all"
+                        >
+                            Initialize Challenge
+                        </button>
+                    </div>
+
                     {/* Recent Activity Feed */}
                     <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl p-6 flex flex-col h-[400px]">
                         <div className="flex items-center justify-between mb-8">
@@ -235,7 +257,7 @@ export default function DashboardPage() {
                                 <Activity size={18} className="text-[#C05E42]" />
                                 Feed
                             </h3>
-                            <div className="p-2 bg-white/5 rounded-[2px] text-white/40 border border-white/5">
+                            <div className="p-2 bg-white/5 rounded-[2px] text-white/40 border border-white/5 hover:bg-white/10 hover:text-[#F9F9F9] cursor-pointer transition-colors">
                                 <Search size={14} />
                             </div>
                         </div>
@@ -320,6 +342,11 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
+            <CreateChallengeModal
+                isOpen={isChallengeModalOpen}
+                onClose={() => setIsChallengeModalOpen(false)}
+                onSuccess={() => setIsChallengeModalOpen(false)}
+            />
         </div>
     );
 }
