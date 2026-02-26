@@ -5,18 +5,14 @@ import Link from "next/link";
 import {
     TrendingUp,
     TrendingDown,
-    Shield,
-    BarChart3,
     Layers,
     Activity,
-    Briefcase,
     Zap,
     PieChart,
     Eye,
     Target,
     ChevronRight,
-    Search,
-    CandlestickChart as CandlestickIcon
+    Search
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";
@@ -188,7 +184,7 @@ export default function DashboardPage() {
 
                         {/* Chart Container */}
                         <div className="flex-1 w-full relative bg-transparent p-6 min-h-[450px]">
-                            <PortfolioUniversalChart period={activeRange} chartType={chartType} />
+                            <PortfolioUniversalChart period={activeRange} chartType={chartType} totalEquity={data?.totalEquity ?? 10000} />
                         </div>
                     </div>
 
