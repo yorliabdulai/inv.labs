@@ -73,7 +73,6 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
             if (!user) throw new Error("Authentication required");
 
             const result = await executeStockTrade({
-                userId: user.id,
                 symbol: stock.symbol,
                 type,
                 quantity,

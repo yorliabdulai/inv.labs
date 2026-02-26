@@ -4,7 +4,6 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 interface TradeParams {
-    userId: string;
     symbol: string;
     type: "BUY" | "SELL";
     quantity: number;
@@ -14,10 +13,19 @@ interface TradeParams {
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { userId, symbol, type, quantity, price, totalCost, fees } = params;
+    const { symbol, type, quantity, price, totalCost, fees } = params;
 
     try {
         const supabase = await createServerClient();
+
+        // Security: Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            throw new Error("Authentication required");
+        }
+
+        const userId = user.id;
 
         // 1. Record the transaction
         const { error: txError } = await supabase.from('transactions').insert({
