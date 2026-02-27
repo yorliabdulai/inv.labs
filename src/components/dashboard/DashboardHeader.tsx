@@ -3,6 +3,12 @@
 import { Activity, Globe, Bell, Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/lib/useUserProfile";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -21,25 +27,26 @@ export function DashboardHeader() {
     const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
     useEffect(() => {
-        const now = new Date();
-        setDateStr(now.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }));
-        setGreeting(getGreeting(now.getHours()));
-
         const updateTime = () => {
-            const n = new Date();
-            setCurrentTime(n.toLocaleTimeString('en-US', {
+            const now = new Date();
+            setDateStr(now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+            setGreeting(getGreeting(now.getHours()));
+            setCurrentTime(now.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
             }));
         };
-        updateTime();
+
+        // Initial update in next frame to avoid synchronous set-state warning
+        requestAnimationFrame(updateTime);
+
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
     }, []);
@@ -116,16 +123,29 @@ export function DashboardHeader() {
                         <input
                             type="text"
                             placeholder="Query Market Indices..."
+                            aria-label="Search market indices"
                             className="bg-white/5 border border-white/10 rounded-[2px] pl-12 pr-4 py-4 text-[11px] font-black w-64 focus:bg-white/10 focus:border-[#C05E42]/50 transition-all outline-none text-[#F9F9F9] uppercase tracking-widest placeholder:text-white/20"
                         />
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
-                        <button className="relative p-3.5 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 hover:border-[#C05E42]/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-[0.98]">
-                            <Bell size={18} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
-                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#C05E42] rounded-full shadow-lg shadow-[#C05E42]/40"></span>
-                        </button>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        aria-label="Notifications"
+                                        className="relative p-3.5 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 hover:border-[#C05E42]/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:outline-none"
+                                    >
+                                        <Bell size={18} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
+                                        <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#C05E42] rounded-full shadow-lg shadow-[#C05E42]/40"></span>
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Notifications</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
                         <div className="flex items-center gap-3 pl-3 border-l border-white/10">
                             <div className="w-10 h-10 md:w-12 md:h-12 rounded-[2px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-black text-xs shadow-xl shadow-[#C05E42]/10 hover:scale-[1.02] transition-all cursor-pointer touch-manipulation active:scale-[0.98] border border-white/10 uppercase tracking-widest">
