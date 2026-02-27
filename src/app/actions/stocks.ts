@@ -2,26 +2,38 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { getStock } from "@/lib/market-data";
 
-interface TradeParams {
-    userId: string;
-    symbol: string;
-    type: "BUY" | "SELL";
-    quantity: number;
-    price: number;
-    totalCost: number;
-    fees: number;
-}
-
-export async function executeStockTrade(params: TradeParams) {
-    const { userId, symbol, type, quantity, price, totalCost, fees } = params;
-
+export async function executeStockTrade(symbol: string, type: "BUY" | "SELL", quantity: number) {
     try {
         const supabase = await createServerClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            throw new Error("Authentication required");
+        }
+
+        // Fetch real-time price server-side
+        const stock = await getStock(symbol);
+        if (!stock) {
+            throw new Error(`Stock ${symbol} not found`);
+        }
+
+        const price = stock.price;
+        const subtotal = price * quantity;
+
+        // Calculate fees server-side (replicating client logic)
+        const brokerFee = subtotal * 0.015;
+        const secLevy = subtotal * 0.004;
+        const gseLevy = subtotal * 0.0014;
+        const vat = brokerFee * 0.15;
+        const fees = brokerFee + secLevy + gseLevy + vat;
+
+        const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
         // 1. Record the transaction
         const { error: txError } = await supabase.from('transactions').insert({
-            user_id: userId,
+            user_id: user.id,
             symbol,
             type,
             quantity,
@@ -39,7 +51,7 @@ export async function executeStockTrade(params: TradeParams) {
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('cash_balance')
-            .eq('id', userId)
+            .eq('id', user.id)
             .single();
 
         if (profileError) throw new Error("Could not retrieve user balance");
@@ -56,7 +68,7 @@ export async function executeStockTrade(params: TradeParams) {
         const { error: updateError } = await supabase
             .from('profiles')
             .update({ cash_balance: Math.max(0, newBalance) })
-            .eq('id', userId);
+            .eq('id', user.id);
 
         if (updateError) throw new Error("Balance update failed");
 
