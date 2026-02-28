@@ -14,22 +14,11 @@ function getGreeting(hour: number): { text: string; icon: React.ElementType } {
  * DashboardHeader now pulls directly from UserProfileContext.
  * This ensures EVERY page shows the user's name correctly without needing props.
  */
-export function DashboardHeader() {
-    const { displayName, displayInitial, firstName, loading } = useUserProfile();
+// Extracted to an isolated component to prevent DashboardHeader from re-rendering every 1000ms
+function Clock() {
     const [currentTime, setCurrentTime] = useState("");
-    const [dateStr, setDateStr] = useState("");
-    const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
     useEffect(() => {
-        const now = new Date();
-        setDateStr(now.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }));
-        setGreeting(getGreeting(now.getHours()));
-
         const updateTime = () => {
             const n = new Date();
             setCurrentTime(n.toLocaleTimeString('en-US', {
@@ -42,6 +31,25 @@ export function DashboardHeader() {
         updateTime();
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
+    }, []);
+
+    return <>{currentTime}</>;
+}
+
+export function DashboardHeader() {
+    const { displayName, displayInitial, firstName, loading } = useUserProfile();
+    const [dateStr, setDateStr] = useState("");
+    const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
+
+    useEffect(() => {
+        const now = new Date();
+        setDateStr(now.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }));
+        setGreeting(getGreeting(now.getHours()));
     }, []);
 
     const GreetIcon = greeting.icon;
@@ -81,7 +89,7 @@ export function DashboardHeader() {
                             </span>
                         </div>
                         <div className="bg-white/5 text-[#F9F9F9] px-4 py-1.5 rounded-[1px] font-mono text-xs font-black border border-white/10 tabular-nums">
-                            {currentTime}
+                            <Clock />
                         </div>
                     </div>
                 </div>
