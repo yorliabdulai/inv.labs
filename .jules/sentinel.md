@@ -1,0 +1,4 @@
+## 2025-02-28 - [CRITICAL] Parameter Tampering and IDOR in Server Actions
+**Vulnerability:** The `executeStockTrade` server action was trusting the client to provide critical data such as `userId`, `price`, `totalCost`, and `fees`. This allowed for Insecure Direct Object Reference (IDOR), where a user could potentially supply another user's ID, and Parameter Tampering, where the client could modify transaction amounts to their advantage.
+**Learning:** Server Actions must NEVER trust client-provided IDs for authorization or pricing calculations. Relying on client values to set transaction costs introduces severe financial calculation manipulation vulnerabilities.
+**Prevention:** Always authenticate the caller securely within the server action (e.g., using `supabase.auth.getUser()`) and perform all critical calculations, specifically price fetching and fee calculations, purely server-side.
