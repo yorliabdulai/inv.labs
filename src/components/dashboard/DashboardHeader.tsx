@@ -122,15 +122,21 @@ export function DashboardHeader() {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
-                        <button className="relative p-3.5 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 hover:border-[#C05E42]/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-[0.98]">
+                        <button
+                            className="relative p-3.5 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 hover:border-[#C05E42]/30 transition-all group min-h-[44px] min-w-[44px] touch-manipulation active:scale-[0.98]"
+                            aria-label="View notifications"
+                        >
                             <Bell size={18} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
                             <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#C05E42] rounded-full shadow-lg shadow-[#C05E42]/40"></span>
                         </button>
 
                         <div className="flex items-center gap-3 pl-3 border-l border-white/10">
-                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-[2px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-black text-xs shadow-xl shadow-[#C05E42]/10 hover:scale-[1.02] transition-all cursor-pointer touch-manipulation active:scale-[0.98] border border-white/10 uppercase tracking-widest">
+                            <button
+                                className="w-10 h-10 md:w-12 md:h-12 rounded-[2px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-black text-xs shadow-xl shadow-[#C05E42]/10 hover:scale-[1.02] transition-all cursor-pointer touch-manipulation active:scale-[0.98] border border-white/10 uppercase tracking-widest"
+                                aria-label="User profile"
+                            >
                                 {initial}
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
