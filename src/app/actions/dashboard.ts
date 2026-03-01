@@ -227,14 +227,12 @@ export async function getDashboardData(): Promise<DashboardData | null> {
     }
 }
 
-export async function getPortfolioHistory(period: string = '1M'): Promise<{ time: string; value: number; open: number; high: number; low: number; close: number }[]> {
+export async function getPortfolioHistory(period: string = '1M', currentTotal: number = STARTING_BALANCE): Promise<{ time: string; value: number; open: number; high: number; low: number; close: number }[]> {
     try {
         const supabase = await createServerClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return [];
 
-        const dashboard = await getDashboardData();
-        const currentTotal = dashboard?.totalEquity ?? STARTING_BALANCE;
         const now = new Date();
         const dataPoints: any[] = [];
 
