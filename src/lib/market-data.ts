@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 export interface Stock {
     symbol: string;
     name: string; // Full company name (fallback to symbol if not available)
@@ -38,10 +40,13 @@ interface Quote {
     volume: number;
 }
 
-export async function getStocks(): Promise<Stock[]> {
+// Memoize fetching during a single React render pass to avoid duplicate work.
+const getStocksData = async (): Promise<Stock[]> => {
     try {
         const res = await fetch(`${GSE_API_BASE}/live`, {
-            cache: 'no-store',
+            // Cache at Next.js edge for 60 seconds to prevent hammering the upstream API
+            // while providing reasonably fresh data
+            next: { revalidate: 60 },
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
@@ -75,9 +80,12 @@ export async function getStocks(): Promise<Stock[]> {
         // Fallback to empty or handled in UI
         return [];
     }
-}
+};
 
-export async function getStock(symbol: string): Promise<Stock | undefined> {
+const getStockData = async (symbol: string): Promise<Stock | undefined> => {
     const stocks = await getStocks();
     return stocks.find((s) => s.symbol === symbol);
-}
+};
+
+export const getStocks = cache(getStocksData);
+export const getStock = cache(getStockData);
