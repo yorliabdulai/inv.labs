@@ -1,3 +1,3 @@
-## 2024-05-24 - Dashboard Header Accessibility
-**Learning:** Tooltip content often duplicates button aria-labels or text, causing "strict mode" violations in Playwright if not scoped correctly. When multiple elements contain the same text (e.g., a button's label and the tooltip itself), use `get_by_role('tooltip')` or scoped locators to distinguish them.
-**Action:** When adding tooltips to labeled buttons, test verification scripts should specifically target the tooltip role to avoid ambiguity.
+## 2026-02-28 - Dashboard Header Accessibility Improvement
+**Learning:** Found that some interactive UI elements designed as icon-only actions or user avatars were missing semantic HTML (e.g., using `div` instead of `button`) and lacked `aria-label`s for screen readers. While Tailwind handles the visual styling, native HTML semantics are critical for keyboard and assistive tech accessibility.
+**Action:** Always prefer semantic HTML tags like `<button>` for interactive elements over styled `<div>`s, and ensure all icon-only buttons have descriptive `aria-label`s.
