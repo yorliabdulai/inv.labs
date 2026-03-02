@@ -51,7 +51,7 @@ export async function executeStockTrade(params: TradeParams) {
             // We might want to throw here if we want strictly consistent records
         }
 
-        // 2. Fetch current balance
+        // 5. Fetch current balance
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('cash_balance')
@@ -60,7 +60,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (profileError) throw new Error("Could not retrieve user balance");
 
-        // 3. Update balance
+        // 6. Update balance
         const newBalance = type === "BUY"
             ? profile.cash_balance - totalCost
             : profile.cash_balance + totalCost;
@@ -76,7 +76,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (updateError) throw new Error("Balance update failed");
 
-        // 4. Revalidate cache for affected views
+        // 7. Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
