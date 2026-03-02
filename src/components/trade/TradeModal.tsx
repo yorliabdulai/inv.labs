@@ -75,10 +75,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
             const result = await executeStockTrade({
                 symbol: stock.symbol,
                 type,
-                quantity,
-                price,
-                totalCost,
-                fees: totalFees
+                quantity
             });
 
             if (!result.success) throw new Error(result.message);
