@@ -128,6 +128,7 @@ export function NotificationToast({
                             <button
                                 onClick={handleClose}
                                 className="p-1 hover:bg-black/10 rounded transition-colors ml-2 flex-shrink-0"
+                                aria-label="Close notification"
                             >
                                 <X size={14} className="text-gray-400" />
                             </button>

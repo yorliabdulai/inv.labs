@@ -113,6 +113,7 @@ export function RedeemMutualFundModal({
                     <button
                         onClick={onClose}
                         className="w-10 h-10 rounded-[2px] flex items-center justify-center hover:bg-white/5 transition-colors group"
+                        aria-label="Close"
                     >
                         <X size={20} className="text-white/40 group-hover:text-[#F9F9F9]" />
                     </button>
