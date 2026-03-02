@@ -127,6 +127,7 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        aria-label="Close"
                     >
                         <X size={20} className="text-gray-400" />
                     </button>
@@ -225,6 +226,7 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
                                                 onClick={() => dismissAlert(alert.id)}
                                                 className="p-1 hover:bg-gray-100 rounded transition-colors"
                                                 title="Dismiss"
+                                                aria-label={`Dismiss alert for ${alert.symbol}`}
                                             >
                                                 <X size={14} className="text-gray-400" />
                                             </button>
