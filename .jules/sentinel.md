@@ -1,4 +1,9 @@
-## 2025-02-28 - [CRITICAL] Parameter Tampering and IDOR in Server Actions
-**Vulnerability:** The `executeStockTrade` server action was trusting the client to provide critical data such as `userId`, `price`, `totalCost`, and `fees`. This allowed for Insecure Direct Object Reference (IDOR), where a user could potentially supply another user's ID, and Parameter Tampering, where the client could modify transaction amounts to their advantage.
-**Learning:** Server Actions must NEVER trust client-provided IDs for authorization or pricing calculations. Relying on client values to set transaction costs introduces severe financial calculation manipulation vulnerabilities.
-**Prevention:** Always authenticate the caller securely within the server action (e.g., using `supabase.auth.getUser()`) and perform all critical calculations, specifically price fetching and fee calculations, purely server-side.
+## 2024-05-24 - Server Action IDOR and Parameter Tampering
+**Vulnerability:** The `executeStockTrade` server action blindly trusted client-provided `userId`, `price`, `totalCost`, and `fees` parameters. This enabled Insecure Direct Object Reference (IDOR), allowing users to execute trades on behalf of others, and parameter tampering, allowing users to manipulate stock prices and avoid trading fees.
+**Learning:** Next.js Server Actions act as open API endpoints. Accepting sensitive IDs or calculation results from the client without server-side re-verification creates critical security bypasses.
+**Prevention:** Always authenticate the caller securely via `supabase.auth.getUser()` inside the server action. Recalculate all financial amounts, fees, and real-time prices server-side instead of relying on client-side calculations.
+
+## 2026-03-02 - Mutual Funds Actions IDOR
+**Vulnerability:** Similar to the stock trading vulnerability, multiple mutual fund Server Actions (`buyMutualFundUnits`, `redeemMutualFundUnits`, `getUserMutualFundHoldings`, `getUserMutualFundTransactions`) accepted a client-provided `userId` parameter and executed queries or mutations on behalf of that user. This is an Insecure Direct Object Reference (IDOR) vulnerability that allowed any user to view or modify another user's mutual fund data.
+**Learning:** The IDOR vulnerability pattern observed in stock trading extends to mutual fund actions. All Server Actions acting on behalf of a user need robust server-side authentication.
+**Prevention:** Consistently use `supabase.auth.getUser()` within all user-specific Server Actions to verify identity, completely ignoring any `userId` passed from the client.

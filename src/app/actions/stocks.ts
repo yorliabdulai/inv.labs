@@ -8,9 +8,6 @@ interface TradeParams {
     symbol: string;
     type: "BUY" | "SELL";
     quantity: number;
-    // Client-provided price/fees are removed to prevent parameter tampering.
-    // Order type (MARKET/LIMIT) could be added here later if LIMIT orders need support.
-    // For now, executing at current MARKET price on server.
 }
 
 export async function executeStockTrade(params: TradeParams) {
@@ -19,24 +16,17 @@ export async function executeStockTrade(params: TradeParams) {
     try {
         const supabase = await createServerClient();
 
-        // 1. Authenticate user server-side (prevent IDOR)
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Authentication required");
         const userId = user.id;
 
-        // 2. Input validation
-        if (!quantity || quantity < 1 || !Number.isInteger(quantity)) {
-            throw new Error("Invalid quantity");
-        }
-
-        // 3. Fetch current market price server-side (prevent Parameter Tampering)
         const stock = await getStock(symbol);
-        if (!stock) throw new Error("Stock not found");
+        if (!stock) throw new Error("Invalid stock symbol");
 
         const price = stock.price;
         const subtotal = price * quantity;
 
-        // Calculate fees server-side
+        // Ghana Stock Exchange Fees
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
         const gseLevy = subtotal * 0.0014;
@@ -45,7 +35,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        // 4. Record the transaction
+        // 1. Record the transaction
         const { error: txError } = await supabase.from('transactions').insert({
             user_id: userId,
             symbol,
