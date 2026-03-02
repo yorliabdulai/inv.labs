@@ -155,10 +155,14 @@ export async function getAllMutualFundsLatestNAV(): Promise<MutualFundNAVHistory
  * Get user's mutual fund holdings
  */
 export async function getUserMutualFundHoldings(
-    userId: string
+    _userId?: string
 ): Promise<UserMutualFundHolding[]> {
     try {
         const supabase = await createServerClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return [];
+        const userId = user.id;
+
         const { data, error } = await supabase
             .from("user_mutual_fund_holdings")
             .select(`
@@ -208,10 +212,14 @@ import { revalidatePath } from "next/cache";
  * Get user's mutual fund transactions
  */
 export async function getUserMutualFundTransactions(
-    userId: string
+    _userId?: string
 ): Promise<MutualFundTransaction[]> {
     try {
         const supabase = await createServerClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return [];
+        const userId = user.id;
+
         const { data, error } = await supabase
             .from("mutual_fund_transactions")
             .select(`
@@ -243,12 +251,15 @@ export async function getUserMutualFundTransactions(
  * Buy mutual fund units
  */
 export async function buyMutualFundUnits(
-    userId: string,
+    _userId: string,
     fundId: string,
     investmentAmount: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
     try {
         const supabase = await createServerClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return { success: false, message: "Authentication required" };
+        const userId = user.id;
 
         // Get fund details
         const fund = await getMutualFund(fundId);
@@ -370,12 +381,15 @@ export async function buyMutualFundUnits(
  * Redeem mutual fund units
  */
 export async function redeemMutualFundUnits(
-    userId: string,
+    _userId: string,
     fundId: string,
     unitsToRedeem: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
     try {
         const supabase = await createServerClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return { success: false, message: "Authentication required" };
+        const userId = user.id;
 
         // Get fund details
         const fund = await getMutualFund(fundId);

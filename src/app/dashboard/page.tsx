@@ -184,7 +184,7 @@ export default function DashboardPage() {
 
                         {/* Chart Container */}
                         <div className="flex-1 w-full relative bg-transparent p-6 min-h-[450px]">
-                            <PortfolioUniversalChart period={activeRange} chartType={chartType} totalEquity={data?.totalEquity ?? 10000} />
+                            <PortfolioUniversalChart period={activeRange} chartType={chartType} currentTotal={data?.totalEquity ?? 10000} />
                         </div>
                     </div>
 

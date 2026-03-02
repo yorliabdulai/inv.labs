@@ -20,17 +20,28 @@ import { generatePortfolioHistory, ChartData } from "@/lib/portfolio-utils";
 interface PortfolioUniversalChartProps {
     period: string;
     chartType: 'area' | 'bar' | 'candle';
-    totalEquity: number;
+    currentTotal: number;
 }
 
-export function PortfolioUniversalChart({ period, chartType, totalEquity }: PortfolioUniversalChartProps) {
-    const data = useMemo(() => generatePortfolioHistory(totalEquity, period), [totalEquity, period]);
+export function PortfolioUniversalChart({ period, chartType, currentTotal }: PortfolioUniversalChartProps) {
+    const [data, setData] = useState<ChartData[]>([]);
+    const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
-    }, []);
+        async function fetchData() {
+            setLoading(true);
+            try {
+                const history = await getPortfolioHistory(period, currentTotal);
+                setData(history);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, [period, currentTotal]);
 
     if (!mounted) return <div className="h-[400px] w-full" />;
 
