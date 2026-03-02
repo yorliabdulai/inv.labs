@@ -5,18 +5,14 @@ import Link from "next/link";
 import {
     TrendingUp,
     TrendingDown,
-    Shield,
-    BarChart3,
     Layers,
     Activity,
-    Briefcase,
     Zap,
     PieChart,
     Eye,
     Target,
     ChevronRight,
-    Search,
-    CandlestickChart as CandlestickIcon
+    Search
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";

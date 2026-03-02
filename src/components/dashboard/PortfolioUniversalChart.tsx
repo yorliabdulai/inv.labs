@@ -14,17 +14,8 @@ import {
     ComposedChart,
     Cell
 } from "recharts";
-import { getPortfolioHistory } from "@/app/actions/dashboard";
 import { formatCurrency } from "@/lib/mutual-funds-data";
-
-interface ChartData {
-    time: string;
-    value: number;
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-}
+import { generatePortfolioHistory, ChartData } from "@/lib/portfolio-utils";
 
 interface PortfolioUniversalChartProps {
     period: string;
@@ -38,6 +29,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
         async function fetchData() {
             setLoading(true);
@@ -53,7 +45,8 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
 
     if (!mounted) return <div className="h-[400px] w-full" />;
 
-    const CustomTooltip = ({ active, payload }: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
         if (active && payload && payload.length) {
             const item = payload[0].payload as ChartData;
             return (
@@ -88,17 +81,6 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
         }
         return null;
     };
-
-    if (loading) {
-        return (
-            <div className="w-full h-full flex items-center justify-center bg-slate-50/50 rounded-3xl animate-pulse">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aggregating Ledger...</span>
-                </div>
-            </div>
-        );
-    }
 
     const renderChart = () => {
         switch (chartType) {
