@@ -29,9 +29,10 @@ interface ChartData {
 interface PortfolioUniversalChartProps {
     period: string;
     chartType: 'area' | 'bar' | 'candle';
+    currentTotal: number;
 }
 
-export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversalChartProps) {
+export function PortfolioUniversalChart({ period, chartType, currentTotal }: PortfolioUniversalChartProps) {
     const [data, setData] = useState<ChartData[]>([]);
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
@@ -41,14 +42,14 @@ export function PortfolioUniversalChart({ period, chartType }: PortfolioUniversa
         async function fetchData() {
             setLoading(true);
             try {
-                const history = await getPortfolioHistory(period);
+                const history = await getPortfolioHistory(period, currentTotal);
                 setData(history);
             } finally {
                 setLoading(false);
             }
         }
         fetchData();
-    }, [period]);
+    }, [period, currentTotal]);
 
     if (!mounted) return <div className="h-[400px] w-full" />;
 
