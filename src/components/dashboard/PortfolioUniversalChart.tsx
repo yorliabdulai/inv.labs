@@ -34,7 +34,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
         async function fetchData() {
             setLoading(true);
             try {
-                const history = await getPortfolioHistory(period, currentTotal);
+                const history = generatePortfolioHistory(currentTotal, period);
                 setData(history);
             } finally {
                 setLoading(false);

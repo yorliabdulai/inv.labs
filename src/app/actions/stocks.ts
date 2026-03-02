@@ -30,26 +30,7 @@ export async function executeStockTrade(params: TradeParams) {
         const price = stock.price;
         const subtotal = price * quantity;
 
-        // Calculate fees server-side (replicating client logic)
-        const brokerFee = subtotal * 0.015;
-        const secLevy = subtotal * 0.004;
-        const gseLevy = subtotal * 0.0014;
-        const vat = brokerFee * 0.15;
-        const fees = brokerFee + secLevy + gseLevy + vat;
-
-        const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
-
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error("Authentication required");
-        const userId = user.id;
-
-        const stock = await getStock(symbol);
-        if (!stock) throw new Error("Invalid stock symbol");
-
-        const price = stock.price;
-        const subtotal = price * quantity;
-
-        // Ghana Stock Exchange Fees
+        // Calculate Ghana Stock Exchange fees server-side
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
         const gseLevy = subtotal * 0.0014;
@@ -71,10 +52,9 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (txError) {
             console.warn("Transaction record error:", txError.message);
-            // We might want to throw here if we want strictly consistent records
         }
 
-        // 5. Fetch current balance
+        // 2. Fetch current balance
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('cash_balance')
@@ -83,7 +63,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (profileError) throw new Error("Could not retrieve user balance");
 
-        // 6. Update balance
+        // 3. Update balance
         const newBalance = type === "BUY"
             ? profile.cash_balance - totalCost
             : profile.cash_balance + totalCost;
@@ -99,7 +79,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         if (updateError) throw new Error("Balance update failed");
 
-        // 7. Revalidate cache for affected views
+        // 4. Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
