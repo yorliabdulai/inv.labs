@@ -27,13 +27,6 @@ function Clock() {
     useEffect(() => {
         const updateTime = () => {
             const now = new Date();
-            setDateStr(now.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }));
-            setGreeting(getGreeting(now.getHours()));
             setCurrentTime(now.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
