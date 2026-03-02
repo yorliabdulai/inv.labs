@@ -3,6 +3,12 @@
 import { Activity, Globe, Bell, Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/lib/useUserProfile";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -20,15 +26,25 @@ function Clock() {
 
     useEffect(() => {
         const updateTime = () => {
-            const n = new Date();
-            setCurrentTime(n.toLocaleTimeString('en-US', {
+            const now = new Date();
+            setDateStr(now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+            setGreeting(getGreeting(now.getHours()));
+            setCurrentTime(now.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
             }));
         };
-        updateTime();
+
+        // Initial update in next frame to avoid synchronous set-state warning
+        requestAnimationFrame(updateTime);
+
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
     }, []);
@@ -124,6 +140,7 @@ export function DashboardHeader() {
                         <input
                             type="text"
                             placeholder="Query Market Indices..."
+                            aria-label="Search market indices"
                             className="bg-white/5 border border-white/10 rounded-[2px] pl-12 pr-4 py-4 text-[11px] font-black w-64 focus:bg-white/10 focus:border-[#C05E42]/50 transition-all outline-none text-[#F9F9F9] uppercase tracking-widest placeholder:text-white/20"
                         />
                     </div>
