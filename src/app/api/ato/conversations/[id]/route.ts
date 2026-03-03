@@ -47,7 +47,7 @@ export async function DELETE(
     } catch (error: any) {
         console.error("Error in delete conversation:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: "An unexpected error occurred while deleting the conversation." },
             { status: 500 }
         );
     }

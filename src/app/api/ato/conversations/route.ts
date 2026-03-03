@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
         console.error("Error in conversations endpoint:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: "An unexpected error occurred while fetching conversations." },
             { status: 500 }
         );
     }
