@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
         console.error("Error generating insight:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: "An unexpected error occurred while generating insights." },
             { status: 500 }
         );
     }

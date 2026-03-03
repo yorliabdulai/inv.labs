@@ -133,16 +133,16 @@ export async function POST(request: NextRequest) {
             },
         });
     } catch (error: any) {
+        // Log the full error server-side
         console.error("[ATO API ERROR]:", error);
 
-        // Check for specific error types
-        const errorMessage = error.message || "Internal server error";
+        // Check for specific HTTP status codes if provided, otherwise default to 500
         const status = error.status || 500;
 
+        // Return a generic, safe error message to the client
         return NextResponse.json(
             {
-                error: errorMessage,
-                details: error.stack || undefined
+                error: status === 500 ? "An unexpected error occurred while processing your request." : error.message,
             },
             { status }
         );
