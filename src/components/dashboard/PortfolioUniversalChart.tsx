@@ -24,24 +24,18 @@ interface PortfolioUniversalChartProps {
 }
 
 export function PortfolioUniversalChart({ period, chartType, currentTotal }: PortfolioUniversalChartProps) {
-    const [data, setData] = useState<ChartData[]>([]);
-    const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMounted(true);
-        async function fetchData() {
-            setLoading(true);
-            try {
-                const history = generatePortfolioHistory(currentTotal, period);
-                setData(history);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
+    // ⚡ BOLT OPTIMIZATION: Replaced multiple useEffect/useState re-renders
+    // with useMemo for synchronous data generation. Eliminates ~3 render
+    // passes when the period changes.
+    const data = useMemo(() => {
+        return generatePortfolioHistory(currentTotal, period);
     }, [period, currentTotal]);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     if (!mounted) return <div className="h-[400px] w-full" />;
 
