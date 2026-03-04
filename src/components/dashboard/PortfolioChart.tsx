@@ -47,16 +47,13 @@ export function PortfolioChart({
     }, [data, chartType]);
 
     // If no data, show a flat starting line
+    // OPTIMIZATION (Bolt): Redundant O(n) array iterations for calculating unused variables
+    // (minVal, maxVal, isPositive, strokeColor) were removed to prevent blocking the main thread
+    // and reduce unnecessary component render overhead.
     const chartData = data.length > 0 ? data : [
         { label: 'Start', value: startingValue, date: '' },
         { label: 'Now', value: startingValue, date: '' },
     ];
-
-    const minVal = Math.min(...chartData.map(d => d.value), ...chartData.map(d => d.low ?? d.value));
-    const maxVal = Math.max(...chartData.map(d => d.value), ...chartData.map(d => d.high ?? d.value));
-
-    const isPositive = chartData[chartData.length - 1]?.value >= startingValue;
-    const strokeColor = "#4F46E5"; // Unified Indigo for "Intelligence" theme
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
