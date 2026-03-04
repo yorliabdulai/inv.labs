@@ -348,6 +348,7 @@ export default function PortfolioPage() {
                             onClick={() => fetchData(true)}
                             disabled={refreshing}
                             className="px-6 py-4 bg-white/5 text-white/40 border border-white/10 font-black rounded-[2px] hover:bg-white/10 hover:text-[#F9F9F9] transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30"
+                            aria-label="Refresh Portfolio"
                         >
                             <RefreshCcw size={16} className={refreshing ? "animate-spin" : ""} />
                         </button>

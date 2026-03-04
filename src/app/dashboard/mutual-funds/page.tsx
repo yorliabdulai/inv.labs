@@ -245,6 +245,7 @@ export default function MutualFundsPage() {
                     <button
                         onClick={() => fetchData(false)}
                         className="px-6 py-5 bg-white/5 border border-white/10 rounded-[2px] hover:bg-white/10 transition-all group"
+                        aria-label="Refresh Mutual Funds"
                     >
                         <RefreshCw size={20} className="text-white/20 group-hover:text-[#C05E42] group-hover:rotate-180 transition-all duration-700" />
                     </button>

@@ -190,6 +190,7 @@ export default function StocksPage() {
                         onClick={() => fetchStocks(false)}
                         className="p-3 bg-white/5 rounded-[2px] border border-white/10 hover:bg-white/10 transition-colors touch-manipulation group"
                         title="Force Refresh Sync"
+                        aria-label="Refresh Market Data"
                     >
                         <RefreshCw size={16} className="text-white/40 group-hover:text-[#F9F9F9] transition-colors" />
                     </button>
@@ -296,12 +297,14 @@ export default function StocksPage() {
                         <button
                             onClick={() => setViewMode("grid")}
                             className={`p-2 rounded-[1px] transition-all ${viewMode === "grid" ? "bg-[#C05E42]/20 text-[#C05E42] border border-[#C05E42]/30" : "text-white/20 hover:text-[#F9F9F9]"}`}
+                            aria-label="Grid View"
                         >
                             <Grid3X3 size={15} />
                         </button>
                         <button
                             onClick={() => setViewMode("list")}
                             className={`p-2 rounded-[1px] transition-all ${viewMode === "list" ? "bg-[#C05E42]/20 text-[#C05E42] border border-[#C05E42]/30" : "text-white/20 hover:text-[#F9F9F9]"}`}
+                            aria-label="List View"
                         >
                             <List size={15} />
                         </button>
