@@ -76,7 +76,7 @@ export default function Error({
                         <span className="text-[#C05E42]">{error.digest || 'SIG_UNKNOWN_BLOCK'}</span>
                     </div>
                     <div className="space-y-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <p>{`> FATAL: ${error.message}`}</p>
+                        <p>{`> FATAL: System exception encountered.`}</p>
                         <p className="flex items-center gap-2">
                             <span className="text-[#C05E42] animate-pulse">_</span>
                             Executing emergency recovery protocols...
