@@ -59,7 +59,10 @@ export async function enrollInCourse(courseId: string) {
         .from('enrollments')
         .insert({ user_id: user.id, course_id: courseId });
 
-    if (error) return { error: error.message };
+    if (error) {
+        console.error("Enrollment error:", error);
+        return { error: "Failed to enroll in course. Please try again later." };
+    }
     return { success: true };
 }
 
@@ -147,7 +150,10 @@ export async function advanceCourseProgress(courseId: string) {
         }
     }
 
-    if (updateErr) return { error: updateErr.message };
+    if (updateErr) {
+        console.error("Course progress update error:", updateErr);
+        return { error: "Failed to update course progress. Please try again later." };
+    }
 
     return { success: true, isCompleted, xp_reward: isCompleted ? course.xp_reward : 0 };
 }

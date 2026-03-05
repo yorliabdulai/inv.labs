@@ -17,3 +17,8 @@
 **Vulnerability:** The global error boundary component (`src/app/error.tsx`) was rendering the raw `error.message` value directly to the client UI (`<p>{`> FATAL: ${error.message}`}</p>`). This causes the underlying server error strings to be exposed directly in the browser.
 **Learning:** Even if error details are sanitized at the API layer, exposing the raw error object properties in global Next.js error boundaries (`error.tsx`) defeats the purpose, as Next.js might pass detailed errors from Server Components to this boundary in development or if errors bubble up unexpectedly in production.
 **Prevention:** In client-side error boundaries, always render generic user-friendly strings (e.g., "System exception encountered") instead of raw `error.message` or `error.stack` to avoid unintentional information leakage. Use `error.digest` as a secure reference code for debugging logs.
+
+## 2024-05-18 - Prevented Server Action Error Leakage
+**Vulnerability:** Supabase Server Actions (`src/app/actions/gamification.ts`) were exposing raw `error.message` from the database directly to the client. This leaked internal PostgreSQL error strings on failures.
+**Learning:** Exposing unhandled database or server-side error messages in Server Actions leaks sensitive schema or implementation details. It can be easily overlooked since actions appear like simple function calls, but they act as network endpoints.
+**Prevention:** In Server Actions, catch and log raw database errors on the server side (using `console.error`) and return generic, safe error strings to the client (e.g., "Failed to update course progress").
