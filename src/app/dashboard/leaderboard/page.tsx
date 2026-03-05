@@ -9,6 +9,7 @@ import {
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { getMarketRankings, type RankedAsset, type RankingCategory } from "@/app/actions/leaderboard";
 import { getTopUsers } from "@/app/actions/gamification";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function LeaderboardPage() {
     const [viewMode, setViewMode] = useState<"market" | "users">("market");
@@ -18,6 +19,9 @@ export default function LeaderboardPage() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Bolt Performance: Debounce search input to avoid expensive list filtering operations
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
     async function loadRankings(isRefresh = false) {
         if (isRefresh) setRefreshing(true);
@@ -46,14 +50,14 @@ export default function LeaderboardPage() {
     const filteredRankings = useMemo(() => {
         if (viewMode === "users") {
             return userRankings.filter(u =>
-                (u.full_name || "").toLowerCase().includes(searchQuery.toLowerCase())
+                (u.full_name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase())
             );
         }
         return rankings.filter(r =>
-            r.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            r.name.toLowerCase().includes(searchQuery.toLowerCase())
+            r.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            r.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
         );
-    }, [rankings, userRankings, searchQuery, viewMode]);
+    }, [rankings, userRankings, debouncedSearchQuery, viewMode]);
 
     const categories: { key: RankingCategory; label: string; icon: any; description: string }[] = [
         { key: 'gainers', label: 'Top Gainers', icon: TrendingUp, description: 'Highest price appreciation.' },

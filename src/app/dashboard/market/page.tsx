@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
+import { useDebounce } from "@/hooks/use-debounce";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type SortKey = "symbol" | "price" | "change" | "volume";
@@ -62,6 +63,9 @@ export default function StocksPage() {
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [holdings, setHoldings] = useState<Record<string, StockHolding>>({});
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+    // Bolt Performance: Debounce search input to prevent expensive filtering/sorting on every keystroke
+    const debouncedSearch = useDebounce(search, 300);
 
     // Fetch live stock data
     const fetchStocks = async (showLoader = false) => {
@@ -137,8 +141,8 @@ export default function StocksPage() {
 
     const sorted = useMemo(() => {
         const filtered = stocks.filter((s) => {
-            const matchSearch = s.symbol.toLowerCase().includes(search.toLowerCase()) ||
-                s.name.toLowerCase().includes(search.toLowerCase());
+            const matchSearch = s.symbol.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                s.name.toLowerCase().includes(debouncedSearch.toLowerCase());
             const matchSector = sectorFilter === "All" || s.sector === sectorFilter;
             return matchSearch && matchSector;
         });
@@ -152,7 +156,7 @@ export default function StocksPage() {
             if (sortKey === "volume") { av = a.volume; bv = b.volume; }
             return sortDir === "asc" ? av - bv : bv - av;
         });
-    }, [stocks, search, sectorFilter, sortKey, sortDir]);
+    }, [stocks, debouncedSearch, sectorFilter, sortKey, sortDir]);
 
     const gainers = useMemo(() => [...stocks].filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent), [stocks]);
     const losers = useMemo(() => [...stocks].filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent), [stocks]);
