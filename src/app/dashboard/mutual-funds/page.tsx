@@ -23,6 +23,7 @@ import {
     Filter, Zap, ShieldCheck, Wallet, ArrowUpRight
 } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function MutualFundsPage() {
     const router = useRouter();
@@ -36,6 +37,9 @@ export default function MutualFundsPage() {
     const [filterType, setFilterType] = useState("All");
     const [filterRisk, setFilterRisk] = useState(0);
     const [cashBalance, setCashBalance] = useState(0);
+
+    // Bolt Performance: Debounce search input to prevent expensive filtering on every keystroke
+    const debouncedSearch = useDebounce(search, 300);
 
     const fetchData = async (showLoader = false, userId?: string) => {
         if (showLoader) setLoading(true);
@@ -95,13 +99,13 @@ export default function MutualFundsPage() {
     const filteredFunds = useMemo(() => {
         return funds.filter((fund) => {
             const matchesSearch =
-                fund.fund_name.toLowerCase().includes(search.toLowerCase()) ||
-                fund.fund_manager.toLowerCase().includes(search.toLowerCase());
+                fund.fund_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                fund.fund_manager.toLowerCase().includes(debouncedSearch.toLowerCase());
             const matchesType = filterType === "All" || fund.fund_type === filterType;
             const matchesRisk = filterRisk === 0 || fund.risk_rating === filterRisk;
             return matchesSearch && matchesType && matchesRisk;
         });
-    }, [funds, search, filterType, filterRisk]);
+    }, [funds, debouncedSearch, filterType, filterRisk]);
 
     const trendingFunds = useMemo(() => {
         return [...funds]
