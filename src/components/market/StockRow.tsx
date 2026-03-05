@@ -175,6 +175,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                     <button
                         className="px-5 py-3 bg-white/5 text-white/40 font-bold rounded-[2px] hover:bg-white/10 hover:text-[#F9F9F9] transition-all text-xs min-h-[44px] border border-white/10"
                         onClick={(e) => e.stopPropagation()}
+                        aria-label="Add to watchlist"
                     >
                         <Bookmark size={15} />
                     </button>
