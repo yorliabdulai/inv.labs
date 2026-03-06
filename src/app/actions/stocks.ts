@@ -87,6 +87,22 @@ export async function executeStockTrade(params: TradeParams) {
 
     } catch (error: any) {
         console.error("Stock trade error:", error);
-        return { success: false, message: error.message || "Trade execution failed" };
+
+        // Return a generic error to the client unless it's a known validation error we intentionally threw
+        const safeErrors = [
+            "Authentication required",
+            "Insufficient funds for this trade",
+            "Could not retrieve user balance",
+            "Balance update failed"
+        ];
+
+        const isSafeError = error instanceof Error && safeErrors.includes(error.message);
+        const isStockNotFoundError = error instanceof Error && error.message.startsWith("Stock") && error.message.endsWith("not found");
+
+        const errorMessage = (isSafeError || isStockNotFoundError)
+            ? error.message
+            : "Trade execution failed. Please try again later.";
+
+        return { success: false, message: errorMessage };
     }
 }
