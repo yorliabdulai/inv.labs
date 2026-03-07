@@ -5,3 +5,6 @@
 ## 2025-03-04 - Missing ARIA Labels on Icon-Only Actions
 **Learning:** Found a recurring pattern across major dashboard views (Market, Mutual Funds, Portfolio) where icon-only action buttons (like refresh, grid view, list view toggles) lack `aria-label` attributes. Screen reader users would just hear "button" without context.
 **Action:** When adding new icon-only controls or reviewing existing interactive elements, always ensure `aria-label` is included to describe the action, not just the icon (e.g., "Refresh Market Data", "Grid View").
+## 2026-03-07 - Add ARIA Labels to Icon-Only Buttons
+**Learning:** Icon-only buttons without `aria-label` attributes are inaccessible to screen readers. This pattern was observed in `WatchlistPanel` and `AlertsPanel`.
+**Action:** Always ensure icon-only interactive elements (like buttons and links) have descriptive `aria-label` attributes that convey their purpose or action to assistive technologies.
