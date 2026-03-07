@@ -22,3 +22,8 @@
 **Vulnerability:** Supabase Server Actions (`src/app/actions/gamification.ts`) were exposing raw `error.message` from the database directly to the client. This leaked internal PostgreSQL error strings on failures.
 **Learning:** Exposing unhandled database or server-side error messages in Server Actions leaks sensitive schema or implementation details. It can be easily overlooked since actions appear like simple function calls, but they act as network endpoints.
 **Prevention:** In Server Actions, catch and log raw database errors on the server side (using `console.error`) and return generic, safe error strings to the client (e.g., "Failed to update course progress").
+
+## 2024-05-24 - Server Action Error Disclosure
+**Vulnerability:** Directly returning backend `error.message` inside the catch block of Server Actions (e.g., `stocks.ts`) to the client UI.
+**Learning:** In Next.js App Router, whatever is returned from a Server Action is exposed to the client. Throwing raw database or external API errors can leak internal infrastructure details or query syntax.
+**Prevention:** Catch errors gracefully in Server Actions, log the raw error securely on the server using `console.error`, and return a static, generic, user-friendly message (e.g., 'Trade execution failed. Please try again.') to the client.

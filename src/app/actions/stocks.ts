@@ -87,6 +87,6 @@ export async function executeStockTrade(params: TradeParams) {
 
     } catch (error: any) {
         console.error("Stock trade error:", error);
-        return { success: false, message: error.message || "Trade execution failed" };
+        return { success: false, message: "Trade execution failed. Please try again." };
     }
 }
