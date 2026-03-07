@@ -148,6 +148,7 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
                     <button
                         onClick={() => setShowCreateForm(true)}
                         className="px-3 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        aria-label="Create new watchlist"
                     >
                         <Plus size={16} />
                     </button>
@@ -295,7 +296,10 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
                         <Eye size={16} />
                         Market Scanner
                     </button>
-                    <button className="px-4 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors">
+                    <button
+                        className="px-4 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                        aria-label="Alerts"
+                    >
                         <Bell size={16} />
                     </button>
                 </div>

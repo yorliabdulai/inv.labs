@@ -121,7 +121,10 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <button
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        aria-label="Alert settings"
+                    >
                         <Settings size={18} className="text-gray-400" />
                     </button>
                     <button
