@@ -241,6 +241,7 @@ export default function MutualFundsPage() {
                         <input
                             type="text"
                             placeholder="FILTER_BY_NODE_NAME_OR_ID..."
+                            aria-label="FILTER BY NODE NAME OR ID"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full pl-16 pr-6 py-5 bg-white/5 border border-white/10 rounded-[2px] text-[#F9F9F9] focus:ring-1 focus:ring-[#C05E42]/30 focus:border-[#C05E42]/40 outline-none transition-all text-xs font-black uppercase tracking-widest placeholder:text-white/10"

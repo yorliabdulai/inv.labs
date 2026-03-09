@@ -148,6 +148,7 @@ export default function LeaderboardPage() {
                         <input
                             type="text"
                             placeholder="IDENTIFY SYMBOLS OR NODES..."
+                            aria-label="IDENTIFY SYMBOLS OR NODES"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-[2px] text-[11px] font-black uppercase tracking-widest focus:bg-white/10 focus:border-[#C05E42]/50 outline-none transition-all placeholder:text-white/20 text-[#F9F9F9]"

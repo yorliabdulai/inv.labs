@@ -254,6 +254,7 @@ export default function StocksPage() {
                     <input
                         type="text"
                         placeholder="IDENTIFY MARKET SYMBOLS..."
+                        aria-label="IDENTIFY MARKET SYMBOLS"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="w-full pl-12 pr-4 py-4 text-[11px] font-black bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none transition-all placeholder:text-white/20 text-[#F9F9F9] uppercase tracking-widest"
