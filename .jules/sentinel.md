@@ -27,3 +27,8 @@
 **Vulnerability:** Directly returning backend `error.message` inside the catch block of Server Actions (e.g., `stocks.ts`) to the client UI.
 **Learning:** In Next.js App Router, whatever is returned from a Server Action is exposed to the client. Throwing raw database or external API errors can leak internal infrastructure details or query syntax.
 **Prevention:** Catch errors gracefully in Server Actions, log the raw error securely on the server using `console.error`, and return a static, generic, user-friendly message (e.g., 'Trade execution failed. Please try again.') to the client.
+
+## 2024-03-08 - Fix Negative Quantity Vulnerabilities in Trading Actions
+**Vulnerability:** Trading and mutual fund actions allowed negative quantities/amounts (e.g., `quantity <= 0`), which could bypass cost calculations and improperly manipulate user cash balances or asset holdings.
+**Learning:** Even if client-side validation exists, server actions (`src/app/actions/*`) must explicitly validate numeric inputs for logical correctness and sanity bounds.
+**Prevention:** Always enforce strict bounds (like `> 0`) on financial transactions (trade quantities, investments, redeem units) server-side before processing any database or balance logic.

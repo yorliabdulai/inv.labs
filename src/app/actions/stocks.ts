@@ -13,6 +13,11 @@ interface TradeParams {
 export async function executeStockTrade(params: TradeParams) {
     const { symbol, type, quantity } = params;
 
+    // Security: Validate quantity to prevent negative or zero trades
+    if (!quantity || quantity <= 0) {
+        return { success: false, message: "Invalid quantity. Must be greater than 0." };
+    }
+
     try {
         const supabase = await createServerClient();
         const { data: { user } } = await supabase.auth.getUser();

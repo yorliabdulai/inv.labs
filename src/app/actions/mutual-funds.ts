@@ -255,6 +255,11 @@ export async function buyMutualFundUnits(
     fundId: string,
     investmentAmount: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
+    // Security: Validate investment amount to prevent negative or zero values
+    if (!investmentAmount || investmentAmount <= 0) {
+        return { success: false, message: "Invalid investment amount. Must be greater than 0." };
+    }
+
     try {
         const supabase = await createServerClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -385,6 +390,11 @@ export async function redeemMutualFundUnits(
     fundId: string,
     unitsToRedeem: number
 ): Promise<{ success: boolean; message: string; transactionId?: string }> {
+    // Security: Validate units to prevent redeeming negative or zero values
+    if (!unitsToRedeem || unitsToRedeem <= 0) {
+        return { success: false, message: "Invalid units to redeem. Must be greater than 0." };
+    }
+
     try {
         const supabase = await createServerClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -522,6 +532,11 @@ export async function previewBuyTransaction(
     };
     error?: string;
 }> {
+    // Security: Validate investment amount
+    if (!investmentAmount || investmentAmount <= 0) {
+        return { success: false, error: "Invalid investment amount. Must be greater than 0." };
+    }
+
     try {
         const fund = await getMutualFund(fundId);
         if (!fund) {
@@ -564,6 +579,11 @@ export async function previewRedeemTransaction(
     };
     error?: string;
 }> {
+    // Security: Validate units to redeem
+    if (!unitsToRedeem || unitsToRedeem <= 0) {
+        return { success: false, error: "Invalid units. Must be greater than 0." };
+    }
+
     try {
         const fund = await getMutualFund(fundId);
         if (!fund) {
