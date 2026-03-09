@@ -8,3 +8,7 @@
 ## 2026-03-07 - Add ARIA Labels to Icon-Only Buttons
 **Learning:** Icon-only buttons without `aria-label` attributes are inaccessible to screen readers. This pattern was observed in `WatchlistPanel` and `AlertsPanel`.
 **Action:** Always ensure icon-only interactive elements (like buttons and links) have descriptive `aria-label` attributes that convey their purpose or action to assistive technologies.
+
+## 2026-03-08 - Enhance Keyboard Navigation Focus States
+**Learning:** While the custom design system handles pointer states (hover/active) well, keyboard focus states (focus-visible) were missing from core navigation components (Sidebar, DashboardHeader), making the app difficult to use via keyboard. Explicitly setting focus-visible:ring-2 focus-visible:ring-offset-2 alongside focus-visible:outline-none ensures strong visibility against the dark theme without interfering with mouse clicks.
+**Action:** Always add explicit focus-visible utility classes to custom interactive elements (button, Link) that use touch-manipulation or custom background transitions, ensuring the ring and ring-offset colors contrast well with the background.

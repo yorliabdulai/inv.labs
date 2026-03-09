@@ -66,7 +66,7 @@ export function Sidebar() {
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileOpen(true)}
-                className="md:hidden fixed top-3 left-4 z-50 w-10 h-10 bg-background-surface rounded-xl shadow-premium border border-border flex items-center justify-center hover:bg-background-elevated transition-all touch-manipulation active:scale-95"
+                className="md:hidden fixed top-3 left-4 z-50 w-10 h-10 bg-background-surface rounded-xl shadow-premium border border-border flex items-center justify-center hover:bg-background-elevated transition-all touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                 aria-label="Open menu"
             >
                 <Menu size={20} className="text-text-secondary" />
@@ -106,7 +106,7 @@ export function Sidebar() {
                                     <Link
                                         key={href}
                                         href={href}
-                                        className={`group flex items-center justify-between px-3 py-3 rounded-[1px] text-[11px] font-bold uppercase tracking-widest transition-all duration-200 min-h-[44px] ${active
+                                        className={`group flex items-center justify-between px-3 py-3 rounded-[1px] text-[11px] font-bold uppercase tracking-widest transition-all duration-200 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${active
                                             ? "bg-white/5 text-[#F9F9F9] border border-white/5"
                                             : "text-white/40 hover:bg-white/5 hover:text-[#F9F9F9]"
                                             }`}
@@ -127,11 +127,11 @@ export function Sidebar() {
                     <div>
                         <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Configuration</h3>
                         <div className="space-y-1.5">
-                            <Link href="/dashboard/profile" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest">
+                            <Link href="/dashboard/profile" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                                 <User size={18} className="text-white/20 group-hover:text-white/40" />
                                 <span>Profile</span>
                             </Link>
-                            <Link href="/dashboard/settings" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest">
+                            <Link href="/dashboard/settings" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                                 <Settings size={18} className="text-white/20 group-hover:text-white/40" />
                                 <span>Settings</span>
                             </Link>
@@ -141,7 +141,7 @@ export function Sidebar() {
 
                 {/* Desktop Footer */}
                 <div className="p-4 mt-auto border-t border-white/5 bg-black/20">
-                    <Link href="/dashboard/profile" className="block mb-4">
+                    <Link href="/dashboard/profile" className="block mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                         <div className="bg-white/5 border border-white/10 p-3 rounded-[1px] hover:bg-white/10 transition-colors cursor-pointer group">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-xs ring-1 ring-white/10 flex-shrink-0">
@@ -160,7 +160,7 @@ export function Sidebar() {
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-3 text-[10px] uppercase tracking-widest font-black text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[44px]"
+                        className="flex items-center gap-2 w-full px-3 py-3 text-[10px] uppercase tracking-widest font-black text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                     >
                         <LogOut size={16} /> Sign Out
                     </button>
@@ -184,7 +184,7 @@ export function Sidebar() {
                     </div>
                     <button
                         onClick={() => setIsMobileOpen(false)}
-                        className="w-10 h-10 rounded-[1px] flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation active:scale-95"
+                        className="w-10 h-10 rounded-[1px] flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                         aria-label="Close menu"
                     >
                         <X size={20} className="text-white/60" />
@@ -203,7 +203,7 @@ export function Sidebar() {
                                         key={href}
                                         href={href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        className={`group flex items-center justify-between px-4 py-4 rounded-[1px] text-sm font-bold uppercase tracking-widest transition-all duration-200 min-h-[52px] ${active
+                                        className={`group flex items-center justify-between px-4 py-4 rounded-[1px] text-sm font-bold uppercase tracking-widest transition-all duration-200 min-h-[52px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${active
                                             ? "bg-white/5 text-[#F9F9F9] border border-white/5 shadow-sm shadow-black/20"
                                             : "text-white/40 hover:bg-white/5"
                                             }`}
@@ -224,11 +224,11 @@ export function Sidebar() {
                     <div>
                         <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Settings</h3>
                         <div className="space-y-1.5">
-                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5">
+                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                                 <User size={22} className="text-white/20" />
                                 <span>Profile</span>
                             </Link>
-                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5">
+                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                                 <Settings size={22} className="text-white/20" />
                                 <span>Settings</span>
                             </Link>
@@ -238,7 +238,7 @@ export function Sidebar() {
 
                 {/* Mobile Footer */}
                 <div className="p-4 border-t border-white/10 bg-black/40">
-                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-4">
+                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                         <div className="p-4 rounded-[1px] bg-white/5 border border-white/10">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-base shadow-lg shadow-[#C05E42]/20">
@@ -257,7 +257,7 @@ export function Sidebar() {
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-xs font-black uppercase tracking-widest text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[52px]"
+                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-xs font-black uppercase tracking-widest text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[52px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                     >
                         <LogOut size={18} /> Sign Out
                     </button>
