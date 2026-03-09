@@ -240,10 +240,15 @@ export default function PortfolioPage() {
     const winRate = holdings.length > 0 ? Math.round((holdings.filter(h => h.gain > 0).length / holdings.length) * 100) : 0;
 
     // Key metrics (real)
-    const bestPosition = holdings.length > 0 ? holdings.reduce((b, h) => h.gainPercent > b.gainPercent ? h : b, holdings[0]) : null;
-    const worstPosition = holdings.length > 0 ? holdings.reduce((w, h) => h.gainPercent < w.gainPercent ? h : w, holdings[0]) : null;
-    const totalInvested = holdings.reduce((s, h) => s + h.totalCost, 0) + mutualFundHoldings.reduce((s: number, h: any) => s + (h.total_invested ?? 0), 0);
-    const avgPositionSize = holdings.length > 0 ? totalValue / holdings.length : 0;
+    // ⚡ BOLT OPTIMIZATION: Memoize O(n) array reduction computations to prevent running
+    // them synchronously on every re-render (e.g. tab switches, hover states).
+    const { bestPosition, worstPosition, totalInvested, avgPositionSize } = useMemo(() => {
+        const best = holdings.length > 0 ? holdings.reduce((b, h) => h.gainPercent > b.gainPercent ? h : b, holdings[0]) : null;
+        const worst = holdings.length > 0 ? holdings.reduce((w, h) => h.gainPercent < w.gainPercent ? h : w, holdings[0]) : null;
+        const invested = holdings.reduce((s, h) => s + h.totalCost, 0) + mutualFundHoldings.reduce((s: number, h: any) => s + (h.total_invested ?? 0), 0);
+        const avgSize = holdings.length > 0 ? totalValue / holdings.length : 0;
+        return { bestPosition: best, worstPosition: worst, totalInvested: invested, avgPositionSize: avgSize };
+    }, [holdings, mutualFundHoldings, totalValue]);
 
     // Sector performance (real)
     const sectorPerformance = useMemo(() => {
@@ -486,9 +491,10 @@ export default function PortfolioPage() {
                         )}
                         {sectorData.length > 0 && <div className="border-t border-white/5 my-6" />}
                         <div className="space-y-3">
-                            {sectorData.slice(0, 5).map(s => {
-                                const total = sectorData.reduce((a, b) => a + b.value, 0);
-                                return (
+                            {(() => {
+                                // ⚡ BOLT OPTIMIZATION: Calculate total once outside the loop instead of O(n) inside every map iteration
+                                const totalSectorValue = sectorData.reduce((a, b) => a + b.value, 0);
+                                return sectorData.slice(0, 5).map(s => (
                                     <div key={s.name} className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className="w-2 h-2 rounded-full" style={{ background: s.color }} />
@@ -497,12 +503,12 @@ export default function PortfolioPage() {
                                         <div className="flex items-center gap-4">
                                             <span className="text-[9px] font-bold text-white/20 tabular-nums">GH₵{s.value.toFixed(0)}</span>
                                             <span className="text-[10px] font-black text-[#F9F9F9] w-12 text-right tabular-nums tracking-tighter">
-                                                {total > 0 ? ((s.value / total) * 100).toFixed(1) : 0}%
+                                                {totalSectorValue > 0 ? ((s.value / totalSectorValue) * 100).toFixed(1) : 0}%
                                             </span>
                                         </div>
                                     </div>
-                                );
-                            })}
+                                ));
+                            })()}
                         </div>
                     </div>
                 </div>
@@ -581,9 +587,10 @@ export default function PortfolioPage() {
                     </div>
                     {sectorPerformance.length > 0 ? (
                         <div className="space-y-6">
-                            {sectorPerformance.map(s => {
+                            {(() => {
+                                // ⚡ BOLT OPTIMIZATION: Calculate maxAbs once instead of O(n) re-calculation inside every map iteration
                                 const maxAbs = Math.max(...sectorPerformance.map(x => Math.abs(x.gainPct)), 1);
-                                return (
+                                return sectorPerformance.map(s => (
                                     <div key={s.name} className="group">
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center gap-3">
@@ -613,8 +620,8 @@ export default function PortfolioPage() {
                                             Net_Delta: {s.gain >= 0 ? "+" : ""}GH₵{s.gain.toFixed(2)}
                                         </div>
                                     </div>
-                                );
-                            })}
+                                ));
+                            })()}
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-48 text-white/10">
