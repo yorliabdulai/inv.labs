@@ -44,6 +44,27 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
+        // Check if user has enough shares to sell
+        if (type === "SELL") {
+            const { data: txs, error: txsError } = await supabase
+                .from('transactions')
+                .select('type, quantity')
+                .eq('user_id', user.id)
+                .eq('symbol', symbol);
+
+            if (txsError) throw new Error("Failed to verify holdings");
+
+            let currentShares = 0;
+            for (const tx of txs || []) {
+                if (tx.type === "BUY") currentShares += tx.quantity;
+                else if (tx.type === "SELL") currentShares -= tx.quantity;
+            }
+
+            if (currentShares < quantity) {
+                return { success: false, message: "Insufficient shares for this trade." };
+            }
+        }
+
         // 1. Record the transaction
         const { error: txError } = await supabase.from('transactions').insert({
             user_id: user.id,
