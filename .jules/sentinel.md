@@ -32,3 +32,8 @@
 **Vulnerability:** Trading and mutual fund actions allowed negative quantities/amounts (e.g., `quantity <= 0`), which could bypass cost calculations and improperly manipulate user cash balances or asset holdings.
 **Learning:** Even if client-side validation exists, server actions (`src/app/actions/*`) must explicitly validate numeric inputs for logical correctness and sanity bounds.
 **Prevention:** Always enforce strict bounds (like `> 0`) on financial transactions (trade quantities, investments, redeem units) server-side before processing any database or balance logic.
+
+## 2026-03-09 - [CRITICAL] Authorization Bypass in Stock Selling
+**Vulnerability:** The `executeStockTrade` server action did not verify if a user owned sufficient shares of a stock before allowing a `SELL` order, allowing users to sell infinite shares and gain artificial cash balances.
+**Learning:** Financial transactions require strict server-side state validation of ownership (e.g., verifying holdings) prior to execution, as client-side checks can be bypassed and parameters tampered with.
+**Prevention:** Always aggregate and verify historical transaction quantities server-side to enforce ownership before processing a sell or transfer order.
