@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     BookOpen, Clock, PlayCircle, Shield,
     ArrowRight, Sparkles, BookCheck, BrainCircuit, Globe,
@@ -54,12 +54,17 @@ export default function LearnPage() {
     };
 
     // Calculate overall accreditation level logic roughly
-    const totalXp = enrollments.reduce((sum, e) => {
-        if (e.status === 'completed' && e.course) {
-            return sum + e.course.xp_reward;
-        }
-        return sum; // Partial formula logic missing, stubbing
-    }, 0);
+    // ⚡ BOLT OPTIMIZATION: Memoize O(n) array reduction computation to prevent running
+    // it synchronously on every re-render (e.g. when toast notifications trigger state changes).
+    const totalXp = useMemo(() => {
+        return enrollments.reduce((sum, e) => {
+            if (e.status === 'completed' && e.course) {
+                return sum + e.course.xp_reward;
+            }
+            return sum; // Partial formula logic missing, stubbing
+        }, 0);
+    }, [enrollments]);
+
     // Map icon strings to components based on static fallback logic
     const getIconComponent = (iconName: string) => {
         switch (iconName) {
