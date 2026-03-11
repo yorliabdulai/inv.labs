@@ -21,6 +21,22 @@ interface StockRowProps {
     compact?: boolean; // list view mode
 }
 
+// ⚡ BOLT OPTIMIZATION: Extracted seed generation and history computation
+// out of the component body. This prevents re-calculating the O(n) seed reduction
+// on every re-render and allows memoizing the sparkline generator across rows.
+const generateSparkline = (symbol: string, price: number, isPositive: boolean) => {
+    const seed = symbol.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+    const pseudo = (n: number) => {
+        const x = Math.sin(n + seed) * 10000;
+        return x - Math.floor(x);
+    };
+    const pts = Array.from({ length: 16 }, (_, i) =>
+        price + (pseudo(i) - 0.5) * (price * 0.04)
+    );
+    pts[pts.length - 1] = isPositive ? price * 1.005 : price * 0.995;
+    return pts;
+};
+
 export function StockRow({ stock, holding, compact = false }: StockRowProps) {
     const isPositive = stock.change >= 0;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,16 +46,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
 
     // Deterministic sparkline seeded from symbol (no flicker on re-renders)
     const history = useMemo(() => {
-        const seed = stock.symbol.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-        const pseudo = (n: number) => {
-            const x = Math.sin(n + seed) * 10000;
-            return x - Math.floor(x);
-        };
-        const pts = Array.from({ length: 16 }, (_, i) =>
-            stock.price + (pseudo(i) - 0.5) * (stock.price * 0.04)
-        );
-        pts[pts.length - 1] = isPositive ? stock.price * 1.005 : stock.price * 0.995;
-        return pts;
+        return generateSparkline(stock.symbol, stock.price, isPositive);
     }, [stock.symbol, stock.price, isPositive]);
 
     if (compact) {
