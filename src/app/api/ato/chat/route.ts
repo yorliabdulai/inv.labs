@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
         // Return a generic, safe error message to the client
         return NextResponse.json(
             {
-                error: status === 500 ? "An unexpected error occurred while processing your request." : error.message,
+                error: status >= 500 ? "An unexpected error occurred while processing your request." : error.message,
             },
             { status }
         );
