@@ -37,3 +37,8 @@
 **Vulnerability:** The `executeStockTrade` server action did not verify if a user owned sufficient shares of a stock before allowing a `SELL` order, allowing users to sell infinite shares and gain artificial cash balances.
 **Learning:** Financial transactions require strict server-side state validation of ownership (e.g., verifying holdings) prior to execution, as client-side checks can be bypassed and parameters tampered with.
 **Prevention:** Always aggregate and verify historical transaction quantities server-side to enforce ownership before processing a sell or transfer order.
+
+## 2024-05-18 - [Prevent Internal Error Leakage in AI Route]
+**Vulnerability:** The ATO chat API route (`src/app/api/ato/chat/route.ts`) was only masking `error.message` for strict `status === 500` HTTP codes, leaving other 5xx range errors (like 502 Bad Gateway, 503 Service Unavailable) vulnerable to returning raw backend error strings directly to the client.
+**Learning:** Hardcoded single status checks (like `=== 500`) are often insufficient for overarching server-error handling boundaries, as infrastructure layers or downstream services (like Supabase or Anthropic) can throw various 5xx status codes that carry sensitive stack details.
+**Prevention:** Use range-based checks (`status >= 500`) to blanket-catch all server-side exceptions and enforce generic error messages uniformly, ensuring no internal telemetry is ever exposed.
