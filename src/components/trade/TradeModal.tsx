@@ -134,7 +134,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                             <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">{stock.name}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-3 hover:bg-white/5 rounded-[2px] transition-all group" aria-label="Close">
+                    <button onClick={onClose} className="p-3 hover:bg-white/5 rounded-[2px] transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]" aria-label="Close">
                         <X size={20} className="text-white/40 group-hover:text-[#F9F9F9]" />
                     </button>
                 </div>
@@ -162,13 +162,13 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                         <div className="flex bg-white/5 p-1 rounded-[2px] border border-white/10">
                                             <button
                                                 onClick={() => setType("BUY")}
-                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all ${type === "BUY" ? "bg-[#C05E42] text-[#F9F9F9] shadow-lg shadow-[#C05E42]/20" : "text-white/40 hover:text-[#F9F9F9]"}`}
+                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${type === "BUY" ? "bg-[#C05E42] text-[#F9F9F9] shadow-lg shadow-[#C05E42]/20" : "text-white/40 hover:text-[#F9F9F9]"}`}
                                             >
                                                 Acquire
                                             </button>
                                             <button
                                                 onClick={() => setType("SELL")}
-                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all ${type === "SELL" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
+                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${type === "SELL" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
                                             >
                                                 Liquidate
                                             </button>
@@ -179,13 +179,13 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                         <div className="flex bg-white/5 p-1 rounded-[2px] border border-white/10">
                                             <button
                                                 onClick={() => setOrderType("MARKET")}
-                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all ${orderType === "MARKET" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
+                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${orderType === "MARKET" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
                                             >
                                                 Market
                                             </button>
                                             <button
                                                 onClick={() => setOrderType("LIMIT")}
-                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all ${orderType === "LIMIT" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
+                                                className={`flex-1 py-3 rounded-[1px] font-black text-[10px] uppercase tracking-widest transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${orderType === "LIMIT" ? "bg-white/10 text-[#F9F9F9]" : "text-white/40 hover:text-[#F9F9F9]"}`}
                                             >
                                                 Limit
                                             </button>
@@ -203,7 +203,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                                 min="1"
                                                 value={quantity}
                                                 onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-                                                className="w-full px-6 py-6 bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none text-3xl font-black text-[#F9F9F9] tabular-nums transition-all"
+                                                className="w-full px-6 py-6 bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none text-3xl font-black text-[#F9F9F9] tabular-nums transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                                                 placeholder="0"
                                             />
                                             <div className="flex flex-wrap gap-2 mt-4">
@@ -211,7 +211,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                                     <button
                                                         key={p}
                                                         onClick={() => setQuantity(p)}
-                                                        className="px-4 py-2 bg-white/5 hover:bg-[#C05E42] border border-white/10 text-[9px] font-black text-white/40 hover:text-[#F9F9F9] rounded-[1px] transition-all uppercase tracking-widest"
+                                                        className="px-4 py-2 bg-white/5 hover:bg-[#C05E42] border border-white/10 text-[9px] font-black text-white/40 hover:text-[#F9F9F9] rounded-[1px] transition-all uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                                                     >
                                                         +{p}
                                                     </button>
@@ -228,7 +228,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                                 step="0.01"
                                                 value={limitPrice}
                                                 onChange={(e) => setLimitPrice(e.target.value)}
-                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none text-2xl font-black text-[#F9F9F9] tabular-nums transition-all"
+                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-[2px] focus:bg-white/10 focus:border-[#C05E42]/50 outline-none text-2xl font-black text-[#F9F9F9] tabular-nums transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                                             />
                                         </div>
                                     )}
@@ -308,7 +308,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                 <button
                                     onClick={handleTrade}
                                     disabled={isSubmitting || quantity < 1 || (type === "BUY" && totalCost > userBalance)}
-                                    className="w-full py-6 bg-[#C05E42] text-[#F9F9F9] rounded-[2px] font-black text-xs uppercase tracking-[0.3em] transition-all shadow-xl shadow-[#C05E42]/10 hover:shadow-[#C05E42]/20 active:scale-[0.98] disabled:opacity-20 disabled:grayscale"
+                                    className="w-full py-6 bg-[#C05E42] text-[#F9F9F9] rounded-[2px] font-black text-xs uppercase tracking-[0.3em] transition-all shadow-xl shadow-[#C05E42]/10 hover:shadow-[#C05E42]/20 active:scale-[0.98] disabled:opacity-20 disabled:grayscale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                                 >
                                     {isSubmitting ? (
                                         <div className="flex items-center justify-center gap-3">
@@ -325,7 +325,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
 
                                 <button
                                     onClick={onClose}
-                                    className="w-full py-4 text-[9px] font-black text-white/20 hover:text-[#F9F9F9] uppercase tracking-[0.3em] transition-all mt-2"
+                                    className="w-full py-4 text-[9px] font-black text-white/20 hover:text-[#F9F9F9] uppercase tracking-[0.3em] transition-all mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                                     disabled={isSubmitting}
                                 >
                                     Abort Transaction
