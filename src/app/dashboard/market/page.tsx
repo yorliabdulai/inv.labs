@@ -158,9 +158,21 @@ export default function StocksPage() {
         });
     }, [stocks, debouncedSearch, sectorFilter, sortKey, sortDir]);
 
-    const gainers = useMemo(() => [...stocks].filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent), [stocks]);
-    const losers = useMemo(() => [...stocks].filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent), [stocks]);
-    const topVolume = useMemo(() => [...stocks].sort((a, b) => b.volume - a.volume)[0], [stocks]);
+    // Bolt Performance: O(N) single-pass computation for market pulse strip instead of multiple O(N log N) sorts
+    const { topGainer, topLoser, topVolume } = useMemo(() => {
+        let maxGain: Stock | null = null;
+        let maxLoss: Stock | null = null;
+        let maxVol: Stock | null = null;
+
+        for (const s of stocks) {
+            if (s.change > 0 && (!maxGain || s.changePercent > maxGain.changePercent)) maxGain = s;
+            if (s.change < 0 && (!maxLoss || s.changePercent < maxLoss.changePercent)) maxLoss = s;
+            if (!maxVol || s.volume > maxVol.volume) maxVol = s;
+        }
+
+        return { topGainer: maxGain, topLoser: maxLoss, topVolume: maxVol };
+    }, [stocks]);
+
     const ownedCount = Object.keys(holdings).length;
 
     function toggleSort(key: SortKey) {
@@ -205,28 +217,28 @@ export default function StocksPage() {
             {!loading && stocks.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 md:px-0">
                     {/* Top Gainer */}
-                    {gainers[0] && (
+                    {topGainer && (
                         <div className="bg-[#10B981]/5 rounded-[2px] p-5 border border-[#10B981]/20 flex items-center gap-4 shadow-2xl">
                             <div className="w-12 h-12 rounded-[2px] bg-[#10B981]/10 flex items-center justify-center flex-shrink-0 animate-pulse">
                                 <ArrowUpRight size={20} className="text-[#10B981]" />
                             </div>
                             <div className="min-w-0">
                                 <div className="text-[9px] font-black text-[#10B981] uppercase tracking-[0.2em]">Momentum_Lead</div>
-                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{gainers[0].symbol}</div>
-                                <div className="text-[11px] font-black text-[#10B981] tabular-nums">+{gainers[0].changePercent.toFixed(2)}%</div>
+                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{topGainer.symbol}</div>
+                                <div className="text-[11px] font-black text-[#10B981] tabular-nums">+{topGainer.changePercent.toFixed(2)}%</div>
                             </div>
                         </div>
                     )}
                     {/* Top Loser */}
-                    {losers[0] && (
+                    {topLoser && (
                         <div className="bg-red-500/5 rounded-[2px] p-5 border border-red-500/20 flex items-center gap-4 shadow-2xl">
                             <div className="w-12 h-12 rounded-[2px] bg-red-500/10 flex items-center justify-center flex-shrink-0">
                                 <ArrowDownRight size={20} className="text-red-500" />
                             </div>
                             <div className="min-w-0">
                                 <div className="text-[9px] font-black text-red-500 uppercase tracking-[0.2em]">Volatility_Risk</div>
-                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{losers[0].symbol}</div>
-                                <div className="text-[11px] font-black text-red-500 tabular-nums">{losers[0].changePercent.toFixed(2)}%</div>
+                                <div className="font-black text-[#F9F9F9] text-lg uppercase tracking-widest leading-tight">{topLoser.symbol}</div>
+                                <div className="text-[11px] font-black text-red-500 tabular-nums">{topLoser.changePercent.toFixed(2)}%</div>
                             </div>
                         </div>
                     )}
