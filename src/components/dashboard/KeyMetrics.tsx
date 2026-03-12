@@ -1,8 +1,12 @@
 "use client";
 
+import React from "react";
 import { TrendingUp, TrendingDown, DollarSign, PieChart } from "lucide-react";
 
-export function KeyMetrics({ balance, dayChange, totalReturn }: { balance: number, dayChange: number, totalReturn: number }) {
+// ⚡ BOLT OPTIMIZATION: Wrapped KeyMetrics in React.memo since it receives
+// primitive props (numbers). This prevents unnecessary cascading re-renders
+// when parent dashboard components update unrelated state.
+export const KeyMetrics = React.memo(function KeyMetrics({ balance, dayChange, totalReturn }: { balance: number, dayChange: number, totalReturn: number }) {
     return (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
             {/* Total Balance */}
@@ -44,4 +48,4 @@ export function KeyMetrics({ balance, dayChange, totalReturn }: { balance: numbe
             </div>
         </div>
     );
-}
+});

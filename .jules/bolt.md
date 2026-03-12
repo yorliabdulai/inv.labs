@@ -13,3 +13,11 @@
 ## 2024-05-20 - Memoizing Expensive Computations inside Render
 **Learning:** O(n) array reduction computations placed directly in the React render body block the main thread and execute on every state change, even unrelated ones (like tab switches or hovers). In `PortfolioPage.tsx`, computing `totalInvested`, `bestPosition`, `worstPosition`, `avgPositionSize`, `totalSectorValue`, and `maxAbs` directly inside the render loop triggered expensive recalculations on every interaction.
 **Action:** Always wrap expensive synchronous O(n) aggregations (like `.reduce` or `.map`) inside `useMemo` hooks to memoize them. Alternatively, if the computation is required inside `.map`, extract static portions outside the loop or restructure to compute once.
+
+## 2025-03-05 - O(n) String Reductions Inside React Component Render Cycle
+**Learning:** Found an `O(n)` string reduction (`stock.symbol.split("").reduce(...)`) used to generate a random seed for sparklines directly inside `StockRow`'s `useMemo` dependency array calculation. While `useMemo` attempts to limit re-renders, the function itself is completely isolated logic. If `StockRow` is rendered hundreds of times per page (which it is), the inline function declaration and closure adds unnecessary overhead.
+**Action:** Extract stateless algorithmic functions (like seed generators) OUTSIDE of the React component body to avoid redeclaring the function on every render and to allow V8 to better optimize it.
+
+## 2025-03-05 - React.memo for Primitive Presentation Components
+**Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
+**Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
