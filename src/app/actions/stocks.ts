@@ -26,12 +26,13 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
-        // Fetch real-time price server-side
+        // 1. Fetch real-time price server-side
         const stock = await getStock(symbol);
         if (!stock) {
             throw new Error(`Stock ${symbol} not found`);
         }
 
+        // 2. Get live price & Calculate Costs
         const price = stock.price;
         const subtotal = price * quantity;
 
@@ -44,66 +45,29 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        // Check if user has enough shares to sell
-        if (type === "SELL") {
-            const { data: txs, error: txsError } = await supabase
-                .from('transactions')
-                .select('type, quantity')
-                .eq('user_id', user.id)
-                .eq('symbol', symbol);
-
-            if (txsError) throw new Error("Failed to verify holdings");
-
-            let currentShares = 0;
-            for (const tx of txs || []) {
-                if (tx.type === "BUY") currentShares += tx.quantity;
-                else if (tx.type === "SELL") currentShares -= tx.quantity;
-            }
-
-            if (currentShares < quantity) {
-                return { success: false, message: "Insufficient shares for this trade." };
-            }
-        }
-
-        // 1. Record the transaction
-        const { error: txError } = await supabase.from('transactions').insert({
-            user_id: user.id,
-            symbol,
-            type,
-            quantity,
-            price_per_share: price,
-            total_amount: totalCost,
-            fees,
+        // Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU)
+        // This handles upserting stock, validating balance/holdings, creating transaction,
+        // updating balance, and updating holdings in a single DB transaction block.
+        const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
+            p_user_id: user.id,
+            p_symbol: stock.symbol,
+            p_stock_name: stock.name,
+            p_stock_sector: stock.sector,
+            p_current_price: stock.price,
+            p_change_percent: stock.changePercent,
+            p_type: type,
+            p_quantity: quantity,
+            p_total_cost: totalCost,
+            p_fees: fees
         });
 
-        if (txError) {
-            console.warn("Transaction record error:", txError.message);
+        if (rpcError) {
+            // Handle expected business logic errors cleanly
+            if (rpcError.message.includes('Insufficient funds') || rpcError.message.includes('Insufficient shares')) {
+                return { success: false, message: rpcError.message };
+            }
+            throw new Error(`Database transaction failed: ${rpcError.message}`);
         }
-
-        // 2. Fetch current balance
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('cash_balance')
-            .eq('id', user.id)
-            .single();
-
-        if (profileError) throw new Error("Could not retrieve user balance");
-
-        // 3. Update balance
-        const newBalance = type === "BUY"
-            ? profile.cash_balance - totalCost
-            : profile.cash_balance + totalCost;
-
-        if (newBalance < 0 && type === "BUY") {
-            throw new Error("Insufficient funds for this trade");
-        }
-
-        const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ cash_balance: Math.max(0, newBalance) })
-            .eq('id', user.id);
-
-        if (updateError) throw new Error("Balance update failed");
 
         // 4. Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
@@ -111,7 +75,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         return { success: true, message: `Successfully ${type.toLowerCase()}ed ${quantity} shares of ${symbol}` };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Stock trade error:", error);
         return { success: false, message: "Trade execution failed. Please try again." };
     }
