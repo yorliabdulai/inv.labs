@@ -41,8 +41,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${dmMono.variable}`}>
+    <html lang="en" className="light">
+      <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${dmMono.variable} font-sans antialiased bg-background text-foreground`}>
         <SmoothScroller />
         {children}
       </body>
