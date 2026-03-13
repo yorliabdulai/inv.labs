@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
-import { getStocks, Stock } from "@/lib/market-data";
 import { getUserMutualFundHoldings } from "@/app/actions/mutual-funds";
 
 export interface PortfolioData {
@@ -53,87 +52,77 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
 
+        // Fetch: DB holdings (source of truth), live stocks prices, MF holdings, profile
         const [
-            stocksResult,
-            stockTxResult,
+            holdingsResult,
+            stocksDbResult,
             mfHoldingsResult,
             mfTxResult,
             profileResult
         ] = await Promise.allSettled([
-            getStocks(),
-            supabase.from("transactions").select("*").eq("user_id", user.id),
+            // holdings table — always accurate, written atomically by execute_stock_trade
+            supabase
+                .from("holdings")
+                .select("symbol, quantity, average_cost")
+                .eq("user_id", user.id)
+                .gt("quantity", 0),
+            // stocks table — has latest price, sector, name from last trade upsert
+            supabase
+                .from("stocks")
+                .select("symbol, name, sector, current_price"),
             getUserMutualFundHoldings(user.id),
-            supabase.from("mutual_fund_transactions").select("*").eq("user_id", user.id),
+            supabase.from("mutual_fund_transactions").select("net_amount, transaction_type").eq("user_id", user.id),
             supabase.from("profiles").select("cash_balance").eq("id", user.id).single()
         ]);
 
-        const stocks = stocksResult.status === 'fulfilled' ? stocksResult.value : [];
-        const stockTransactions = stockTxResult.status === 'fulfilled' ? stockTxResult.value.data || [] : [];
+        const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
+        const dbStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value.data ?? [] : [];
         const mfHoldings = mfHoldingsResult.status === 'fulfilled' ? mfHoldingsResult.value : [];
-        const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data || [] : [];
+        const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data ?? [] : [];
         const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
 
-        const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
-        const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector ?? "Other"]));
+        // Build lookup maps from the stocks table (already in DB from last trade)
+        const stockPriceMap = new Map(dbStocks.map(s => [s.symbol, s.current_price]));
+        const stockSectorMap = new Map(dbStocks.map(s => [s.symbol, s.sector ?? "Other"]));
+        const stockNameMap = new Map(dbStocks.map(s => [s.symbol, s.name ?? s.symbol]));
 
-        // 1. Aggregate Stock Holdings
-        let cash = STARTING_BALANCE;
-        const holdingMap = new Map<string, { quantity: number; totalCost: number }>();
-
-        // Stock Transactions
-        stockTransactions.forEach(tx => {
-            const cur = holdingMap.get(tx.symbol) ?? { quantity: 0, totalCost: 0 };
-            if (tx.type === "BUY") {
-                cur.quantity += tx.quantity;
-                cur.totalCost += tx.total_amount;
-                cash -= tx.total_amount;
-            } else {
-                const avg = cur.quantity > 0 ? cur.totalCost / cur.quantity : 0;
-                cur.totalCost = Math.max(0, cur.totalCost - avg * tx.quantity);
-                cur.quantity = Math.max(0, cur.quantity - tx.quantity);
-                cash += tx.total_amount;
-            }
-            holdingMap.set(tx.symbol, cur);
-        });
-
-        // Mutual Fund Transactions affect cash
-        mfTransactions.forEach((tx: any) => {
-            if (tx.transaction_type === "buy") cash -= tx.net_amount;
-            else cash += tx.net_amount;
-        });
-
+        // Build holdings from the DB holdings table — no API needed
         const holdings: Holding[] = [];
         let stockMarketValue = 0;
-        holdingMap.forEach((d, sym) => {
-            if (d.quantity > 0) {
-                const price = priceMap.get(sym) ?? 0;
-                const mv = d.quantity * price;
-                const gain = mv - d.totalCost;
-                holdings.push({
-                    symbol: sym,
-                    quantity: d.quantity,
-                    averageCost: d.totalCost / d.quantity,
-                    totalCost: d.totalCost,
-                    currentPrice: price,
-                    marketValue: mv,
-                    gain,
-                    gainPercent: (gain / d.totalCost) * 100,
-                    sector: sectorMap.get(sym) ?? "Other",
-                });
-                stockMarketValue += mv;
-            }
-        });
+
+        for (const row of dbHoldings) {
+            // Use last-known price from stocks table; fall back to average cost if not found
+            const currentPrice = stockPriceMap.get(row.symbol) ?? row.average_cost;
+            const quantity = row.quantity;
+            const totalCost = row.average_cost * quantity;
+            const marketValue = currentPrice * quantity;
+            const gain = marketValue - totalCost;
+
+            holdings.push({
+                symbol: row.symbol,
+                quantity,
+                averageCost: row.average_cost,
+                totalCost,
+                currentPrice,
+                marketValue,
+                gain,
+                gainPercent: totalCost > 0 ? (gain / totalCost) * 100 : 0,
+                sector: stockSectorMap.get(row.symbol) ?? "Other",
+            });
+            stockMarketValue += marketValue;
+        }
 
         const mutualFundsValue = mfHoldings.reduce((s, h) => s + (h.current_value ?? 0), 0);
-        const totalValue = stockMarketValue;
-        const totalInvested = holdings.reduce((s, h) => s + h.totalCost, 0) + mfHoldings.reduce((s, h) => s + (h.total_invested ?? 0), 0);
+        const cashBalance = profile?.cash_balance ?? STARTING_BALANCE;
+        const totalPortfolioValue = stockMarketValue + mutualFundsValue + cashBalance;
+
+        const totalInvested = holdings.reduce((s, h) => s + h.totalCost, 0)
+            + mfHoldings.reduce((s, h) => s + (h.total_invested ?? 0), 0);
 
         // Metrics
         const winners = holdings.filter(h => h.gain > 0).length;
         const winRate = holdings.length > 0 ? Math.round((winners / holdings.length) * 100) : 0;
         const sortedByGain = [...holdings].sort((a, b) => b.gainPercent - a.gainPercent);
-        const bestPosition = sortedByGain[0] || null;
-        const worstPosition = sortedByGain[sortedByGain.length - 1] || null;
 
         // Sector Performance
         const sectorDataMap = new Map<string, { gain: number; cost: number; mv: number }>();
@@ -145,34 +134,32 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             sectorDataMap.set(h.sector, cur);
         });
 
-        const totalPortfolioValue = stockMarketValue + mutualFundsValue + cash;
         const sectorPerformance = Array.from(sectorDataMap.entries()).map(([name, d]) => ({
             name,
             gain: d.gain,
-            gainPct: (d.gain / d.cost) * 100,
-            allocation: Math.round((d.mv / totalPortfolioValue) * 100),
+            gainPct: d.cost > 0 ? (d.gain / d.cost) * 100 : 0,
+            allocation: totalPortfolioValue > 0 ? Math.round((d.mv / totalPortfolioValue) * 100) : 0,
             color: SECTOR_COLORS[name] || SECTOR_COLORS["Other"]
         }));
 
-        const numAssetClasses = [stockMarketValue > 0, mutualFundsValue > 0, cash > 0].filter(Boolean).length;
-        const numSectors = sectorPerformance.length;
+        const numAssetClasses = [stockMarketValue > 0, mutualFundsValue > 0, cashBalance > 0].filter(Boolean).length;
 
         return {
             holdings,
             mutualFundHoldings: mfHoldings,
-            cashBalance: profile?.cash_balance ?? cash, // Use profile if sync available, else computed
+            cashBalance,
             totalValue: stockMarketValue,
             mutualFundsValue,
             totalInvested,
             metrics: {
                 winRate,
-                bestPosition,
-                worstPosition,
+                bestPosition: sortedByGain[0] || null,
+                worstPosition: sortedByGain[sortedByGain.length - 1] || null,
                 avgPositionSize: holdings.length > 0 ? stockMarketValue / holdings.length : 0,
                 numAssetClasses,
-                numSectors
+                numSectors: sectorPerformance.length,
             },
-            sectorPerformance
+            sectorPerformance,
         };
     } catch (error) {
         console.error("Portfolio action error:", error);

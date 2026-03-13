@@ -114,7 +114,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="space-y-1">
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Active Assets</p>
-                        <p className="text-xl font-medium text-[#F9F9F9] font-instrument-sans">0 Positions</p>
+                        <p className="text-xl font-medium text-[#F9F9F9] font-instrument-sans">{data?.activePositions ?? 0} Position{(data?.activePositions ?? 0) !== 1 ? 's' : ''}</p>
                     </div>
                     <div className="space-y-1">
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Terminal State</p>

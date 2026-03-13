@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
-import { getStocks, type Stock } from "@/lib/market-data";
 import { getUserMutualFundHoldings } from "@/app/actions/mutual-funds";
 
 export interface DashboardData {
@@ -26,6 +25,7 @@ export interface DashboardData {
         change: number;
         changePercent: number;
     }[];
+    activePositions: number;
 }
 
 export interface TransactionRecord {
@@ -54,72 +54,83 @@ export async function getDashboardData(): Promise<DashboardData | null> {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
 
-        // Fetch all raw data with individual error handling to prevent total failure
+        // Source of truth: read directly from DB tables (no external API needed)
         const [
-            stocksResult,
+            holdingsResult,
+            stocksDbResult,
             stockTxResult,
             mfHoldingsResult,
             mfTxResult,
             profileResult
         ] = await Promise.allSettled([
-            getStocks(),
-            supabase.from("transactions").select("*").eq("user_id", user.id),
+            // holdings table — written atomically by execute_stock_trade RPC
+            supabase
+                .from("holdings")
+                .select("symbol, quantity, average_cost")
+                .eq("user_id", user.id)
+                .gt("quantity", 0),
+            // stocks table — last-known price + metadata, upserted on every trade
+            supabase
+                .from("stocks")
+                .select("symbol, name, sector, current_price, change_percent"),
+            // transactions for recent activity feed
+            supabase
+                .from("transactions")
+                .select("*")
+                .eq("user_id", user.id)
+                .order("created_at", { ascending: false })
+                .limit(20),
             getUserMutualFundHoldings(user.id),
-            supabase.from("mutual_fund_transactions").select("*, mutual_funds(fund_name)").eq("user_id", user.id),
+            supabase
+                .from("mutual_fund_transactions")
+                .select("*, mutual_funds(fund_name)")
+                .eq("user_id", user.id)
+                .order("transaction_date", { ascending: false })
+                .limit(20),
             supabase.from("profiles").select("cash_balance").eq("id", user.id).single()
         ]);
 
-        const stocks = stocksResult.status === 'fulfilled' ? stocksResult.value : [];
-        const stockTransactions = stockTxResult.status === 'fulfilled' ? stockTxResult.value.data || [] : [];
+        const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
+        const dbStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value.data ?? [] : [];
+        const stockTransactions = stockTxResult.status === 'fulfilled' ? stockTxResult.value.data ?? [] : [];
         const mfHoldings = mfHoldingsResult.status === 'fulfilled' ? mfHoldingsResult.value : [];
-        const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data || [] : [];
+        const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data ?? [] : [];
         const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
 
-        const priceMap = new Map(stocks.map(s => [s.symbol, s.price]));
-        const changeMap = new Map(stocks.map(s => [s.symbol, s.change]));
-        const changePctMap = new Map(stocks.map(s => [s.symbol, s.changePercent]));
-        const sectorMap = new Map(stocks.map(s => [s.symbol, s.sector ?? "Other"]));
-        const nameMap = new Map(stocks.map(s => [s.symbol, s.name]));
+        // Build lookup maps from the stocks table
+        const stockPriceMap = new Map(dbStocks.map(s => [s.symbol, s.current_price]));
+        const stockSectorMap = new Map(dbStocks.map(s => [s.symbol, s.sector ?? "Other"]));
+        const stockNameMap = new Map(dbStocks.map(s => [s.symbol, s.name ?? s.symbol]));
+        const stockChangePctMap = new Map(dbStocks.map(s => [s.symbol, s.change_percent ?? 0]));
 
-        // 2. Aggregate Stock Holdings
-        const stockHoldingMap = new Map<string, { quantity: number; totalCost: number }>();
-        stockTransactions.forEach(tx => {
-            const cur = stockHoldingMap.get(tx.symbol) ?? { quantity: 0, totalCost: 0 };
-            if (tx.type === "BUY") {
-                cur.quantity += tx.quantity;
-                cur.totalCost += tx.total_amount;
-            } else {
-                const avg = cur.quantity > 0 ? cur.totalCost / cur.quantity : 0;
-                cur.totalCost = Math.max(0, cur.totalCost - avg * tx.quantity);
-                cur.quantity = Math.max(0, cur.quantity - tx.quantity);
-            }
-            stockHoldingMap.set(tx.symbol, cur);
-        });
-
+        // Compute stock holdings from DB — accurate, no external API
         let stockMarketValue = 0;
         let stockDailyChange = 0;
         const processedHoldings: DashboardData['holdings'] = [];
 
-        stockHoldingMap.forEach((d, sym) => {
-            if (d.quantity > 0) {
-                const price = priceMap.get(sym) ?? 0;
-                const change = changeMap.get(sym) ?? 0;
-                const mv = d.quantity * price;
-                stockMarketValue += mv;
-                stockDailyChange += d.quantity * change;
+        for (const row of dbHoldings) {
+            const currentPrice = stockPriceMap.get(row.symbol) ?? row.average_cost;
+            const changePct = stockChangePctMap.get(row.symbol) ?? 0;
+            const mv = row.quantity * currentPrice;
+            stockMarketValue += mv;
 
-                processedHoldings.push({
-                    symbol: sym,
-                    name: nameMap.get(sym) ?? sym,
-                    type: 'STOCK',
-                    value: mv,
-                    change: change,
-                    changePercent: changePctMap.get(sym) ?? 0
-                });
-            }
-        });
+            // Approximate daily change from stored change_percent
+            const prevPrice = changePct !== 0
+                ? currentPrice / (1 + changePct / 100)
+                : currentPrice;
+            stockDailyChange += row.quantity * (currentPrice - prevPrice);
 
-        // 3. Aggregate Mutual Funds
+            processedHoldings.push({
+                symbol: row.symbol,
+                name: stockNameMap.get(row.symbol) ?? row.symbol,
+                type: 'STOCK',
+                value: mv,
+                change: currentPrice - prevPrice,
+                changePercent: changePct,
+            });
+        }
+
+        // Mutual fund holdings
         const mutualFundsValue = mfHoldings.reduce((s, h) => s + (h.current_value ?? 0), 0);
         mfHoldings.forEach(h => {
             processedHoldings.push({
@@ -128,44 +139,43 @@ export async function getDashboardData(): Promise<DashboardData | null> {
                 type: 'FUND',
                 value: h.current_value ?? 0,
                 change: 0,
-                changePercent: 0
+                changePercent: 0,
             });
         });
+
+        // Sort by value descending for the "Core Holdings" widget
+        processedHoldings.sort((a, b) => b.value - a.value);
 
         const cashBalance = profile?.cash_balance ?? STARTING_BALANCE;
         const totalEquity = stockMarketValue + mutualFundsValue + cashBalance;
         const totalGain = totalEquity - STARTING_BALANCE;
         const totalGainPercent = (totalGain / STARTING_BALANCE) * 100;
 
-        // 4. Allocation by Sector/Class
+        // Allocation by sector / asset class
         const allocationMap = new Map<string, number>();
-        stockHoldingMap.forEach((d, sym) => {
-            if (d.quantity > 0) {
-                const sector = sectorMap.get(sym) ?? "Other";
-                const mv = d.quantity * (priceMap.get(sym) ?? 0);
-                allocationMap.set(sector, (allocationMap.get(sector) ?? 0) + mv);
-            }
-        });
+        for (const row of dbHoldings) {
+            const sector = stockSectorMap.get(row.symbol) ?? "Other";
+            const mv = row.quantity * (stockPriceMap.get(row.symbol) ?? row.average_cost);
+            allocationMap.set(sector, (allocationMap.get(sector) ?? 0) + mv);
+        }
         if (mutualFundsValue > 0) allocationMap.set("Mutual Funds", mutualFundsValue);
         if (cashBalance > 0) allocationMap.set("Cash", cashBalance);
 
-        const allocation = Array.from(allocationMap.entries()).map(([name, value]) => ({
-            name,
-            value,
-            color: SECTOR_COLORS[name] ?? SECTOR_COLORS["Other"]
-        })).sort((a, b) => b.value - a.value);
+        const allocation = Array.from(allocationMap.entries())
+            .map(([name, value]) => ({ name, value, color: SECTOR_COLORS[name] ?? SECTOR_COLORS["Other"] }))
+            .sort((a, b) => b.value - a.value);
 
-        // 5. Recent Activity Merge
+        // Recent activity (merge stock + MF transactions)
         const stockActivity: TransactionRecord[] = stockTransactions.map(tx => ({
             id: tx.id,
-            type: tx.type,
+            type: tx.type as 'BUY' | 'SELL',
             symbol: tx.symbol,
-            name: nameMap.get(tx.symbol) ?? tx.symbol,
+            name: stockNameMap.get(tx.symbol) ?? tx.symbol,
             amount: tx.total_amount,
             units: tx.quantity,
             price: tx.price_per_share,
             date: tx.created_at,
-            status: 'Completed'
+            status: 'Completed',
         }));
 
         const mfActivity: TransactionRecord[] = mfTransactions.map(tx => {
@@ -180,7 +190,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
                 units: tx.units || 0,
                 price: tx.nav_at_transaction || 0,
                 date: tx.transaction_date || new Date().toISOString(),
-                status: tx.status || 'Completed'
+                status: tx.status || 'Completed',
             };
         });
 
@@ -188,15 +198,17 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .slice(0, 10);
 
-        // 6. Simple Risk Score
+        // Risk Score
         const totalInvested = stockMarketValue + mutualFundsValue;
         let riskScore = 0;
         let riskLabel = "Low";
         let riskColor = "text-emerald-500";
-
         if (totalInvested > 0) {
             const stockWeight = stockMarketValue / totalEquity;
-            const concentrationWeight = Math.max(...allocation.filter(a => a.name !== "Cash").map(a => a.value / totalEquity), 0);
+            const concentrationWeight = Math.max(
+                ...allocation.filter(a => a.name !== "Cash").map(a => a.value / totalEquity),
+                0
+            );
             riskScore = Math.round((stockWeight * 60) + (concentrationWeight * 40));
             if (riskScore > 75) { riskLabel = "Very High"; riskColor = "text-red-500"; }
             else if (riskScore > 50) { riskLabel = "Aggressive"; riskColor = "text-orange-500"; }
@@ -212,13 +224,16 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             totalGain,
             totalGainPercent,
             dailyChange: stockDailyChange,
-            dailyChangePercent: stockMarketValue > 0 ? (stockDailyChange / (stockMarketValue - stockDailyChange)) * 100 : 0,
+            dailyChangePercent: stockMarketValue > 0
+                ? (stockDailyChange / (stockMarketValue - stockDailyChange)) * 100
+                : 0,
             riskScore,
             riskLabel,
             riskColor,
             allocation,
             recentActivity,
-            holdings: processedHoldings
+            holdings: processedHoldings,
+            activePositions: dbHoldings.length + mfHoldings.length,
         };
 
     } catch (error) {
@@ -262,10 +277,7 @@ export async function getPortfolioHistory(period: string = '1M', currentTotal: n
                     ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     : time.toLocaleDateString([], { month: 'short', day: 'numeric' }),
                 value: runningValue,
-                open,
-                high,
-                low,
-                close
+                open, high, low, close
             });
 
             const drift = (currentTotal - STARTING_BALANCE) / points;

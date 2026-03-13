@@ -350,7 +350,7 @@ export default function PortfolioPage() {
                             <Plus size={16} /> Asset_Acquisition
                         </Link>
                         <button
-                            onClick={() => fetchData(true)}
+                            onClick={() => fetchData(true, user?.id)}
                             disabled={refreshing}
                             className="px-6 py-4 bg-white/5 text-white/40 border border-white/10 font-black rounded-[2px] hover:bg-white/10 hover:text-[#F9F9F9] transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30"
                             aria-label="Refresh Portfolio"
