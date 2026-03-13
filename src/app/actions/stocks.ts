@@ -2,7 +2,7 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { getStock } from "@/lib/market-data";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -19,24 +19,33 @@ export async function executeStockTrade(params: TradeParams) {
     }
 
     try {
+        // Step 1: Authenticate user
         const supabase = await createServerClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
+        if (authError) {
+            console.error("[executeStockTrade] Auth error:", authError.message);
+            throw new Error("Authentication failed. Please sign in again.");
+        }
         if (!user) {
             throw new Error("Authentication required");
         }
 
-        // 1. Fetch real-time price server-side
-        const stock = await getStock(symbol);
-        if (!stock) {
-            throw new Error(`Stock ${symbol} not found`);
+        // Step 2: Fetch real-time price server-side (non-cached, throws on failure)
+        let stock;
+        try {
+            stock = await fetchStockBySymbol(symbol);
+        } catch (fetchErr: unknown) {
+            const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+            console.error(`[executeStockTrade] Market data fetch failed for ${symbol}:`, msg);
+            // Surface the descriptive error directly to the user
+            return { success: false, message: msg };
         }
 
-        // 2. Get live price & Calculate Costs
+        // Step 3: Calculate costs server-side (Ghana Stock Exchange fee structure)
         const price = stock.price;
         const subtotal = price * quantity;
 
-        // Calculate Ghana Stock Exchange fees server-side
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
         const gseLevy = subtotal * 0.0014;
@@ -45,9 +54,11 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        // Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU)
-        // This handles upserting stock, validating balance/holdings, creating transaction,
-        // updating balance, and updating holdings in a single DB transaction block.
+        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
+
+        // Step 4: Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU).
+        // The function handles: upserting stock, validating balance/holdings, creating
+        // transaction record, updating balance, and updating holdings — all in one DB transaction.
         const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
             p_user_id: user.id,
             p_symbol: stock.symbol,
@@ -62,21 +73,35 @@ export async function executeStockTrade(params: TradeParams) {
         });
 
         if (rpcError) {
-            // Handle expected business logic errors cleanly
-            if (rpcError.message.includes('Insufficient funds') || rpcError.message.includes('Insufficient shares')) {
+            console.error(`[executeStockTrade] RPC error for ${type} ${symbol}:`, rpcError.message, rpcError.code, rpcError.details);
+
+            // Handle expected business logic errors — show them directly
+            if (
+                rpcError.message.includes('Insufficient funds') ||
+                rpcError.message.includes('Insufficient shares')
+            ) {
                 return { success: false, message: rpcError.message };
             }
+
+            // Handle missing RPC function (not yet deployed to Supabase)
+            if (rpcError.code === 'PGRST202' || rpcError.message.includes('function') || rpcError.message.includes('does not exist')) {
+                console.error('[executeStockTrade] The execute_stock_trade DB function may not be deployed. Run the migration in supabase/migrations/20260301_atomic_stock_trades.sql in the Supabase SQL Editor.');
+                throw new Error(`Database function not found. Please contact support.`);
+            }
+
             throw new Error(`Database transaction failed: ${rpcError.message}`);
         }
 
-        // 4. Revalidate cache for affected views
+        // Step 5: Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
+        console.log(`[executeStockTrade] Success: ${type} ${quantity}x ${symbol} for user ${user.id}`);
         return { success: true, message: `Successfully ${type.toLowerCase()}ed ${quantity} shares of ${symbol}` };
 
     } catch (error: unknown) {
-        console.error("Stock trade error:", error);
-        return { success: false, message: "Trade execution failed. Please try again." };
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[executeStockTrade] Unhandled error:", message, error instanceof Error ? error.stack : '');
+        return { success: false, message: message || "Trade execution failed. Please try again." };
     }
 }
