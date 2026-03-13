@@ -63,16 +63,21 @@ const getStocksData = async (): Promise<Stock[]> => {
         return quotes.map((quote) => {
             const meta = KNOWN_METADATA[quote.name] || { name: quote.name, sector: "Other" };
             const previousPrice = quote.price - quote.change;
-            const changePercent = previousPrice !== 0 ? (quote.change / previousPrice) * 100 : 0;
+            let changePercent = previousPrice !== 0 ? (quote.change / previousPrice) * 100 : 0;
+            if (!isFinite(changePercent)) changePercent = 0;
+
+            // Constrain changePercent to prevent Postgres numeric field overflow
+            if (changePercent > 999.99) changePercent = 999.99;
+            if (changePercent < -999.99) changePercent = -999.99;
 
             return {
                 symbol: quote.name,
                 name: meta.name,
                 sector: meta.sector,
-                price: quote.price,
-                change: quote.change,
-                changePercent: changePercent,
-                volume: quote.volume
+                price: Number(quote.price) || 0,
+                change: Number(quote.change) || 0,
+                changePercent: Number(changePercent) || 0,
+                volume: Number(quote.volume) || 0
             };
         });
     } catch (error) {

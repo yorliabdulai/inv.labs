@@ -13,9 +13,10 @@ interface TradeParams {
 export async function executeStockTrade(params: TradeParams) {
     const { symbol, type, quantity } = params;
 
-    // Security: Validate quantity to prevent negative or zero trades
-    if (!quantity || quantity <= 0) {
-        return { success: false, message: "Invalid quantity. Must be greater than 0." };
+    // Security: Validate quantity to prevent negative, zero, or fractional trades
+    const safeQuantity = Math.floor(quantity);
+    if (!safeQuantity || safeQuantity <= 0) {
+        return { success: false, message: "Invalid quantity. Must be a whole number greater than 0." };
     }
 
     try {
@@ -34,7 +35,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         // 2. Get live price & Calculate Costs
         const price = stock.price;
-        const subtotal = price * quantity;
+        const subtotal = price * safeQuantity;
 
         // Calculate Ghana Stock Exchange fees server-side
         const brokerFee = subtotal * 0.015;
@@ -56,7 +57,7 @@ export async function executeStockTrade(params: TradeParams) {
             p_current_price: stock.price,
             p_change_percent: stock.changePercent,
             p_type: type,
-            p_quantity: quantity,
+            p_quantity: safeQuantity,
             p_total_cost: totalCost,
             p_fees: fees
         });
@@ -73,10 +74,13 @@ export async function executeStockTrade(params: TradeParams) {
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
-        return { success: true, message: `Successfully ${type.toLowerCase()}ed ${quantity} shares of ${symbol}` };
+        return { success: true, message: `Successfully ${type.toLowerCase()}ed ${safeQuantity} shares of ${symbol}` };
 
     } catch (error: unknown) {
-        console.error("Stock trade error:", error);
-        return { success: false, message: "Trade execution failed. Please try again." };
+        console.error("Stock trade error (Detailed logging):", error);
+        return {
+            success: false,
+            message: `Trade execution failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`
+        };
     }
 }

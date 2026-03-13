@@ -112,3 +112,6 @@ BEGIN
   RETURN jsonb_build_object('success', true);
 END;
 $$;
+
+-- Expand change_percent to prevent numeric field overflow on highly volatile stocks
+ALTER TABLE public.stocks ALTER COLUMN change_percent TYPE DECIMAL(10, 2);
