@@ -99,9 +99,10 @@ export const getStock = cache(getStockData);
 export async function fetchStockBySymbol(symbol: string): Promise<Stock> {
     let quotes: Quote[];
     try {
+        // Use cache: 'no-store' — Server Actions do not support next: { revalidate }
+        // which is a page/route-handler-only extension. 'no-store' ensures fresh data.
         const res = await fetch(`${GSE_API_BASE}/live`, {
-            // Short cache — fresh data for trade execution, but avoids hammering the API
-            next: { revalidate: 30 },
+            cache: 'no-store',
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
@@ -110,18 +111,19 @@ export async function fetchStockBySymbol(symbol: string): Promise<Stock> {
 
         if (!res.ok) {
             const errorText = await res.text();
-            console.error(`[fetchStockBySymbol] GSE API error (${res.status}): ${errorText}`);
+            console.error(`[fetchStockBySymbol] GSE API HTTP error (${res.status}): ${errorText}`);
             throw new Error(`GSE market data API returned ${res.status}. The exchange may be temporarily unavailable.`);
         }
 
         quotes = await res.json();
     } catch (err: unknown) {
+        // Always log the raw error first so we can see exactly what was thrown
+        console.error(`[fetchStockBySymbol] Raw fetch error:`, err);
         if (err instanceof Error && err.message.includes('GSE market data API')) {
             throw err; // re-throw our descriptive error as-is
         }
         const message = err instanceof Error ? err.message : String(err);
-        console.error(`[fetchStockBySymbol] Network error fetching GSE data:`, message);
-        throw new Error(`Unable to reach the GSE market data feed. Please try again later.`);
+        throw new Error(`Unable to reach the GSE market data feed: ${message}`);
     }
 
     const quote = quotes.find((q) => q.name === symbol);
