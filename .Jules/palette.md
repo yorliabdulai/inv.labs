@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-03-13 - Enhance Input Fields and Links for Accessibility
+**Learning:** Found that `<input>` fields acting as search or creation inputs (like Watchlist names) relying only on placeholders were missing `aria-label`s, breaking screen reader experience. Similarly, navigation links in the mobile `BottomNav` lacked `focus-visible` classes, making keyboard navigation difficult to track visually.
+**Action:** Always ensure inputs without associated `<label>`s have descriptive `aria-label` attributes. When adding interactive links (like `Link` or `<button>`), always explicitly set `focus-visible` Tailwind classes (e.g., `focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2`) to provide clear visual feedback during keyboard navigation.
