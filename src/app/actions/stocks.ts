@@ -101,6 +101,6 @@ export async function executeStockTrade(params: TradeParams) {
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         console.error("[executeStockTrade] Unhandled error:", message, error instanceof Error ? error.stack : '');
-        return { success: false, message: message || "Trade execution failed. Please try again." };
+        return { success: false, message: "Trade execution failed. Please try again." };
     }
 }
