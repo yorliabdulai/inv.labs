@@ -161,6 +161,7 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
                             <input
                                 type="text"
                                 placeholder="Watchlist name..."
+                                aria-label="Watchlist name"
                                 value={newWatchlistName}
                                 onChange={(e) => setNewWatchlistName(e.target.value)}
                                 className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600/20"
