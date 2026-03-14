@@ -1,27 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Sans, Instrument_Serif, DM_Mono } from "next/font/google";
+import { Syne, Plus_Jakarta_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroller from "@/components/ui/SmoothScroller";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
-});
-
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-instrument-sans",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  variable: "--font-instrument-serif",
-  weight: "400",
 });
 
 const dmMono = DM_Mono({
@@ -44,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${dmMono.variable} font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
+      <body className={`${syne.variable} ${plusJakarta.variable} ${dmMono.variable} font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SmoothScroller />
           {children}

@@ -22,9 +22,9 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden bg-white">
+    <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden bg-background">
       {/* Decorative gradient orb */}
-      <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-50 rounded-full blur-[100px] opacity-60 pointer-events-none" />
+      <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] opacity-60 pointer-events-none" />
 
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-5xl">
         <div className="mb-20">
@@ -36,13 +36,13 @@ const HowItWorks = () => {
             className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[6rem] font-bold text-zinc-950 leading-[0.9] tracking-[-0.04em] text-balance mb-6 break-words"
           >
             Start Investing in <br className="hidden md:block" />
-            <span className="text-blue-600">3 simple steps.</span>
+            <span className="text-primary">3 simple steps.</span>
           </motion.h2>
         </div>
 
         <div className="relative">
           {/* Vertical Connecting Line */}
-          <div className="absolute top-8 bottom-8 left-[27px] md:left-[39px] w-px bg-gradient-to-b from-blue-500 via-blue-200 to-transparent" />
+          <div className="absolute top-8 bottom-8 left-[27px] md:left-[39px] w-px bg-gradient-to-b from-primary via-primary/20 to-transparent" />
 
           <div className="flex flex-col gap-16 md:gap-24 relative z-10">
             {steps.map((step, i) => (
@@ -56,8 +56,8 @@ const HowItWorks = () => {
               >
                 {/* Step Number Badge */}
                 <div className="relative">
-                  <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white border-2 border-zinc-200 shadow-sm flex items-center justify-center shrink-0 z-10 transition-all duration-500 group-hover:border-blue-500 group-hover:bg-blue-50">
-                    <span className="text-xl md:text-3xl font-black text-zinc-300 transition-colors duration-500 group-hover:text-blue-600">
+                  <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white border-2 border-zinc-200 shadow-sm flex items-center justify-center shrink-0 z-10 transition-all duration-500 group-hover:border-primary group-hover:bg-primary/5">
+                    <span className="text-xl md:text-3xl font-black text-zinc-300 transition-colors duration-500 group-hover:text-primary">
                       {i + 1}
                     </span>
                   </div>
@@ -65,7 +65,7 @@ const HowItWorks = () => {
 
                 {/* Step Content */}
                 <div className="pt-2 md:pt-4 max-w-2xl">
-                  <h3 className="text-3xl md:text-4xl font-black text-zinc-950 mb-4 tracking-[-0.03em] transition-colors duration-300 group-hover:text-blue-600 leading-none">
+                  <h3 className="text-3xl md:text-4xl font-black text-zinc-950 mb-4 tracking-[-0.03em] transition-colors duration-300 group-hover:text-primary leading-none">
                     {step.title}
                   </h3>
                   <p className="text-xl text-zinc-500 leading-relaxed font-medium tracking-tight">

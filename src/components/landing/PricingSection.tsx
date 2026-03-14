@@ -14,18 +14,18 @@ const included = [
 
 const PricingSection = () => {
   return (
-    <section id="pricing" className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden text-zinc-950">
+    <section id="pricing" className="relative py-24 md:py-32 bg-secondary/50 overflow-hidden text-zinc-950">
       {/* Decorative Background */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       <div className="px-6 md:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-600 w-fit text-sm font-semibold mb-6 shadow-sm border border-blue-200">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary w-fit text-sm font-semibold mb-6 shadow-sm border border-primary/20">
           <span>Pricing</span>
         </div>
 
         <h2 className="text-4xl md:text-[5rem] lg:text-[6rem] font-bold text-zinc-950 mb-6 leading-[0.9] tracking-[-0.04em] max-w-3xl mx-auto text-balance">
           Start Free. <br />
-          <span className="text-blue-600">Stay Free.</span>
+          <span className="text-primary">Stay Free.</span>
         </h2>
         <p className="text-xl text-zinc-500 leading-relaxed max-w-xl mx-auto mb-16 font-medium">
           No hidden fees. No subscription. Just pure learning for the next generation of Ghanaian investors.
@@ -39,11 +39,11 @@ const PricingSection = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           className="bg-white p-10 md:p-14 max-w-xl w-full rounded-[3rem] shadow-[0_20px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-200 relative text-left group"
         >
-          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-blue-600 to-indigo-600" />
+          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-primary to-indigo-600" />
 
           {/* Badge */}
           <div className="absolute -top-4 right-10 bg-zinc-950 text-white text-[10px] font-black uppercase tracking-widest py-2 px-4 rounded-full shadow-lg flex items-center gap-2">
-            <Sparkles className="w-3 h-3 text-blue-400" />
+            <Sparkles className="w-3 h-3 text-primary-foreground" />
             Join 487 Ghanaians
           </div>
 
@@ -59,7 +59,7 @@ const PricingSection = () => {
             {included.map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-0.5 border border-blue-100">
-                  <Check className="w-4 h-4 text-blue-600" />
+                  <Check className="w-4 h-4 text-primary" />
                 </div>
                 <span className="text-zinc-600 font-semibold text-[15px] tracking-tight">{item}</span>
               </div>
@@ -73,7 +73,7 @@ const PricingSection = () => {
 
           {/* Premium teaser */}
           <div className="pt-10 mt-6 border-t border-zinc-100 text-center">
-            <p className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Coming Soon: Pro Tier</p>
+            <p className="text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-3">Coming Soon: Pro Tier</p>
             <p className="text-zinc-500 text-sm font-medium leading-relaxed">
               Connect a real broker, advanced analysis tools, and 1-on-1 coaching for <span className="text-zinc-950 font-bold">GH₵20 / month</span>.
             </p>

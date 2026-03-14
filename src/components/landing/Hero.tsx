@@ -79,20 +79,12 @@ const Hero = () => {
             initial="hidden" animate="visible" variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } }}
             className="flex flex-col items-center max-w-5xl"
           >
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-zinc-200/50 shadow-sm text-zinc-500 text-[10px] font-black tracking-[0.2em] uppercase mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
-              </span>
-              Ghana Stock Exchange Protocol
-            </motion.div>
-
-            {/* V4 Clamped Typography: Stable Scale */}
-            <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-bold tracking-tight text-zinc-950 leading-[0.9] text-balance mb-10 w-full overflow-hidden break-words">
+            {/* Refined Clamped Typography: Stable Scale */}
+            <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tight text-zinc-950 leading-[0.85] text-balance mb-10 w-full overflow-hidden break-words">
               Learn to Invest<br />
               <span className="relative inline-block pb-4">
-                <span className="absolute inset-x-0 bottom-4 h-[30%] bg-blue-200/50 -rotate-2 -z-10" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-500">Without Losing Money.</span>
+                <span className="absolute inset-x-0 bottom-4 h-[30%] bg-blue-200/40 -rotate-2 -z-10" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-500">Without Losing Money.</span>
               </span>
             </motion.h1>
 

@@ -44,8 +44,8 @@ export default function DashboardPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
                 <span className="relative flex h-8 w-8">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-20"></span>
-                    <span className="relative inline-flex rounded-full h-8 w-8 bg-blue-600/50 border border-blue-500/20"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-20"></span>
+                    <span className="relative inline-flex rounded-full h-8 w-8 bg-primary/50 border border-primary/20"></span>
                 </span>
                 <p className="text-xs font-semibold tracking-wider text-zinc-500 animate-pulse">Establishing secure connection...</p>
             </div>
@@ -102,10 +102,10 @@ export default function DashboardPage() {
                     </div>
                     <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
                         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">System Status</p>
-                        <div className="flex items-center gap-2 text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        <div className="flex items-center gap-2 text-xl md:text-2xl font-bold text-primary">
                             <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600 dark:bg-blue-500" />
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/75 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
                             </span>
                             Live
                         </div>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
                     <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm">
                         <div className="p-5 md:px-6 md:py-4 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4 bg-muted/30">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary">
                                     <Activity size={16} />
                                 </div>
                                 <h3 className="text-base font-semibold text-foreground">Performance Overview</h3>
@@ -134,7 +134,7 @@ export default function DashboardPage() {
                                         key={range}
                                         onClick={() => setActiveRange(range)}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeRange === range
-                                            ? 'bg-blue-600 text-white shadow-md'
+                                            ? 'bg-primary text-white shadow-md'
                                             : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                             }`}
                                     >
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                                 <Layers size={16} className="text-muted-foreground" />
                                 Core Holdings
                             </h3>
-                            <Link href="/dashboard/portfolio" className="text-xs font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-1 group transition-colors">
+                            <Link href="/dashboard/portfolio" className="text-xs font-semibold text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
                                 View Portfolio <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                             {data?.holdings.slice(0, 4).map((holding) => (
                                 <div key={holding.symbol} className="group p-5 bg-card border border-border rounded-2xl hover:border-blue-500/40 transition-all flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-muted text-foreground flex items-center justify-center font-bold text-xs uppercase border border-border group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-400 transition-colors">
+                                        <div className="w-10 h-10 rounded-xl bg-muted text-foreground flex items-center justify-center font-bold text-xs uppercase border border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary/40 transition-colors">
                                             {holding.symbol.substring(0, 2)}
                                         </div>
                                         <div>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                                 <PieChart size={16} className="text-muted-foreground" />
                                 Allocation
                             </h3>
-                            <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                            <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-1 rounded-md">
                                 Computed
                             </span>
                         </div>
@@ -249,7 +249,7 @@ export default function DashboardPage() {
                         className="w-full flex items-center justify-between p-4 bg-blue-500/5 hover:bg-blue-500/10 border border-blue-500/20 hover:border-blue-500/40 rounded-2xl transition-all group"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                                 <Target size={16} />
                             </div>
                             <div className="text-left">
@@ -278,7 +278,7 @@ export default function DashboardPage() {
                     <div className="flex flex-col sm:flex-row gap-4 shrink-0">
                         <Link
                             href="/dashboard/market"
-                            className="px-6 py-3.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-500 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 text-sm"
+                            className="px-6 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 text-sm"
                         >
                             <Activity size={16} />
                             Launch Market Scanner

@@ -3,59 +3,54 @@
 
 :root {
   /* --- BASE TOKENS (LIGHT MODE) --- */
-  --background: 210 20% 98%;
-  /* Soft off-white for page base */
+  --background: 210 40% 98.5%; /* #F8FAFC - Soft off-white base */
   --foreground: 224 71.4% 4.1%;
-  --card: 0 0% 100%;
-  /* Pure white for primary surfaces */
+  
+  --card: 0 0% 100%; /* Pure white for UI panels */
   --card-foreground: 224 71.4% 4.1%;
+  
   --popover: 0 0% 100%;
   --popover-foreground: 224 71.4% 4.1%;
-  --primary: 221.2 83.2% 53.3%;
+  
+  --primary: 227 100% 59%; /* #2B59FF - Distinctive intentional blue */
   --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
+  
+  --secondary: 210 40% 96.1%; /* #F1F5F9 - Subtile neutral surface */
   --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 94%;
-  /* Slightly darker than secondary for separation */
+  
+  --muted: 210 40% 95%; /* Section separation */
   --muted-foreground: 215.4 16.3% 46.9%;
+  
   --accent: 210 40% 96.1%;
   --accent-subtle: 214 32% 91%;
-  /* Brighter accent for light mode surfaces */
   --accent-foreground: 222.2 47.4% 11.2%;
-  --destructive: 0 84.2% 60.2%;
+  
+  --destructive: 0 72% 51%; /* Refined softer red */
   --destructive-foreground: 210 40% 98%;
+  
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
+  --ring: 227 100% 59%;
+  
   --radius: 0.75rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
 
   /* Premium Design System Shadow (Light Mode) */
-  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
 
   /* Dashboard Surfaces (Light) */
   --bg-page: #F8FAFC;
-  /* Slate-50 for subtle depth */
   --bg-surface: #FFFFFF;
   --bg-surface-secondary: #F1F5F9;
-  /* Slate-100 for clear separation */
   --border-default: #E2E8F0;
-  /* Slate-200 for defined borders */
 
   /* Glass Effects (Light) */
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  /* Slightly more opaque for better contrast */
-  --glass-border: rgba(0, 0, 0, 0.05);
-  /* Darker border for visibility on light surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.04);
 
   /* Feature Colors */
   --terracotta: 14 49% 51%;
   --emerald-gain: 160 76% 40%;
-  --loss-red: 354 88% 44%;
+  --loss-red: 0 72% 51%;
 }
 
 .dark {
@@ -136,9 +131,11 @@
   --color-loss-red: hsl(var(--loss-red));
 
   /* Fonts */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
-  --font-serif: var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui;
+  --font-serif: var(--font-syne), serif;
   --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular;
+  --font-syne: var(--font-syne), sans-serif;
+  --font-plus-jakarta: var(--font-plus-jakarta), sans-serif;
 
   /* Radius */
   --radius-xs: 2px;
@@ -164,7 +161,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-geist-sans), sans-serif;
+    font-family: var(--font-plus-jakarta), sans-serif;
     overflow-x: hidden;
     max-width: 100vw;
   }
@@ -175,7 +172,8 @@
   h4,
   h5,
   h6 {
-    @apply font-sans;
+    font-family: var(--font-syne), sans-serif;
+    @apply tracking-tight font-bold;
   }
 
   .font-mono {

@@ -129,7 +129,7 @@ export default function MutualFundsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-8 flex flex-col justify-center space-y-6">
                     <div className="space-y-4">
-                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-none font-instrument-serif uppercase">
+                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-none font-syne uppercase">
                             Mutual Funds
                         </h2>
                         <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed max-w-2xl uppercase tracking-wider">
@@ -209,7 +209,7 @@ export default function MutualFundsPage() {
                                             <ArrowUpRight size={18} className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                                         </div>
                                         <div className="space-y-1">
-                                            <h4 className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors font-instrument-serif uppercase">{fund.fund_name}</h4>
+                                            <h4 className="font-bold text-foreground text-xl tracking-tight group-hover:text-primary transition-colors font-syne uppercase">{fund.fund_name}</h4>
                                             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{fund.fund_manager}</div>
                                         </div>
                                     </div>
@@ -305,7 +305,7 @@ export default function MutualFundsPage() {
                     <div className="w-20 h-20 rounded-2xl bg-muted/30 flex items-center justify-center mx-auto mb-8 border border-border">
                         <Filter size={32} className="text-muted-foreground/30" />
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground tracking-tight mb-4 uppercase font-instrument-serif">No Tactical Match</h3>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight mb-4 uppercase font-syne">No Tactical Match</h3>
                     <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-[0.2em] mb-10 max-w-sm mx-auto">Adjust yield parameters or discover new market vehicles.</p>
                     <button
                         onClick={() => { setSearch(""); setFilterType("All"); setFilterRisk(0); }}

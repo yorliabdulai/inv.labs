@@ -111,7 +111,7 @@ export default function LearnPage() {
     ];
 
     return (
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-sans">
             <DashboardHeader />
 
             {/* ── Academy Accreditation Hero ── */}
@@ -124,7 +124,7 @@ export default function LearnPage() {
                         <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 border border-border rounded-lg text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Sparkles size={12} /> Institutional Academy
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif leading-tight text-foreground">
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-syne leading-tight text-foreground">
                             Elevate Your <span className="text-primary">Market Intelligence.</span>
                         </h1>
                         <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
@@ -136,7 +136,7 @@ export default function LearnPage() {
                     <div className="flex items-center gap-12 bg-muted/20 backdrop-blur-xl p-10 rounded-2xl border border-border shadow-xl">
                         <div className="space-y-3">
                             <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Accreditation</p>
-                            <p className="text-4xl font-bold font-instrument-serif tracking-tight text-foreground">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
+                            <p className="text-4xl font-bold font-syne tracking-tight text-foreground">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
                             <div className="w-40 h-1.5 bg-muted/30 rounded-full mt-6 overflow-hidden">
                                 <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${(totalXp % 1000) / 10}%` }} />
@@ -145,7 +145,7 @@ export default function LearnPage() {
                         <div className="w-px h-20 bg-border/50" />
                         <div className="space-y-3 text-right">
                             <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Knowledge XP</p>
-                            <p className="text-4xl font-bold font-instrument-serif tracking-tight tabular-nums text-foreground">{totalXp.toLocaleString()}</p>
+                            <p className="text-4xl font-bold font-syne tracking-tight tabular-nums text-foreground">{totalXp.toLocaleString()}</p>
                             <p className="text-[11px] font-bold text-emerald-500">+150 TODAY</p>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ export default function LearnPage() {
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-instrument-sans group-hover:text-primary transition-colors leading-tight">
+                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight">
                                     {course.title}
                                 </h3>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
@@ -262,7 +262,7 @@ export default function LearnPage() {
                                     </span>
                                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-instrument-sans tracking-tight">
+                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight">
                                     {mod.title}
                                 </h3>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed">
@@ -299,7 +299,7 @@ export default function LearnPage() {
                         <div className="w-16 h-1 bg-primary rounded-full" />
                         <p className="text-primary text-[10px] font-bold uppercase tracking-widest">Daily Assessment</p>
                     </div>
-                    <h2 className="text-4xl md:text-7xl font-bold tracking-tight uppercase font-instrument-serif leading-none">Validate Today's Market Signals.</h2>
+                    <h2 className="text-4xl md:text-7xl font-bold tracking-tight uppercase font-syne leading-none">Validate Today's Market Signals.</h2>
                     <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed uppercase tracking-widest max-w-2xl">
                         Test your comprehension of the latest GSE price discovery phases and earn analyst accreditation credits.
                     </p>

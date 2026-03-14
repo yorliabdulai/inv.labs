@@ -197,9 +197,9 @@ export default function StocksPage() {
                 </div>
                 <div className="flex items-center gap-3">
                     {ownedCount > 0 && (
-                        <div className="flex items-center gap-2 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">
-                            <Activity size={14} className="text-blue-400" />
-                            <span className="text-xs font-semibold text-blue-400">Total Exposure: {ownedCount} assets</span>
+                        <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">
+                            <Activity size={14} className="text-primary" />
+                            <span className="text-xs font-semibold text-primary">Total Exposure: {ownedCount} assets</span>
                         </div>
                     )}
                     <button
@@ -245,13 +245,13 @@ export default function StocksPage() {
                     {/* Most Traded */}
                     {topVolume && (
                         <div className="bg-card rounded-2xl p-5 border border-border flex items-center gap-4 hover:border-blue-500/30 transition-all group shadow-sm">
-                            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                                <Zap size={20} className="text-blue-500" />
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                <Zap size={20} className="text-primary" />
                             </div>
                             <div className="min-w-0">
                                 <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5">Most Active</div>
                                 <div className="font-bold text-foreground text-lg tracking-tight leading-tight">{topVolume.symbol}</div>
-                                <div className="text-xs font-semibold text-blue-500 tabular-nums">{(topVolume.volume / 1000).toFixed(1)}K Vol</div>
+                                <div className="text-xs font-semibold text-primary tabular-nums">{(topVolume.volume / 1000).toFixed(1)}K Vol</div>
                             </div>
                         </div>
                     )}

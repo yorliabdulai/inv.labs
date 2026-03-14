@@ -28,7 +28,7 @@ interface RawTransaction {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const SECTOR_COLORS: Record<string, string> = {
-    Finance: "#C05E42", Telecom: "#3B82F6", Mining: "#F59E0B",
+    Finance: "#C05E42", Telecom: "#2B59FF", Mining: "#F59E0B",
     Energy: "#EF4444", Consumer: "#EC4899", Agriculture: "#10B981",
     Technology: "#06B6D4", "Mutual Funds": "#8B5CF6", Cash: "#94A3B8", Other: "#475569",
 };
@@ -286,8 +286,8 @@ export default function PortfolioPage() {
 
     // ─── Loading ──────────────────────────────────────────────────────────────
     if (loading) return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-white/20 font-instrument-sans">
-            <RefreshCcw size={40} className="animate-spin mb-6 text-blue-500 opacity-50" />
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-white/20 font-sans">
+            <RefreshCcw size={40} className="animate-spin mb-6 text-primary opacity-50" />
             <p className="text-xs font-semibold uppercase tracking-widest">Aggregating Asset Data...</p>
         </div>
     );
@@ -296,7 +296,7 @@ export default function PortfolioPage() {
 
     // ─── Render ───────────────────────────────────────────────────────────────
     return (
-        <div className="pb-24 space-y-8 md:space-y-12 font-instrument-sans">
+        <div className="pb-24 space-y-8 md:space-y-12 font-sans">
             <DashboardHeader />
 
             {/* ── Header ── */}
@@ -311,7 +311,7 @@ export default function PortfolioPage() {
                                 <Briefcase size={24} className="text-primary" />
                             </div>
                             <div>
-                                <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">Strategic Portfolio</h1>
+                                <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne">Strategic Portfolio</h1>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest mt-2">Asset Concentration & Risk Vectors</p>
                             </div>
                         </div>
@@ -537,7 +537,7 @@ export default function PortfolioPage() {
                             },
                             {
                                 label: "Deployed Capital", value: `GH₵${totalInvested.toFixed(0)}`,
-                                sub: "AGGREGATE EXPOSURE", color: "text-blue-500", bgColor: "bg-blue-600/5 border-blue-500/10"
+                                sub: "AGGREGATE EXPOSURE", color: "text-primary", bgColor: "bg-primary/5 border-primary/10"
                             },
                             {
                                 label: "Peak Momentum",
@@ -754,7 +754,7 @@ export default function PortfolioPage() {
                                                     <div className="text-[10px] font-semibold uppercase tracking-widest">{h.gainPercent >= 0 ? "+" : ""}{h.gainPercent.toFixed(2)}%</div>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border font-instrument-sans">
+                                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border font-sans">
                                                 {[
                                                     ["Units", h.quantity.toLocaleString()],
                                                     ["Avg Cost", `GH₵${h.averageCost.toFixed(2)}`],

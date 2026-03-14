@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 
 const SolutionSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden">
+    <section className="relative py-24 md:py-32 bg-white overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] -mr-48 -mt-48 pointer-events-none" />
 

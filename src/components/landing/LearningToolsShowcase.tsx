@@ -26,9 +26,9 @@ const StockMasteryMockup = () => (
       <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 to-transparent" />
       <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
-          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path
@@ -38,15 +38,15 @@ const StockMasteryMockup = () => (
         <path
           d="M0,80 C10,75 20,85 30,60 C40,35 50,45 60,30 C70,15 80,25 90,10 L100,5"
           fill="none"
-          stroke="#3b82f6"
+          stroke="var(--color-primary)"
           strokeWidth="2"
           strokeLinecap="round"
         />
       </svg>
       {/* Interactive Point Marker */}
       <div className="absolute top-[10%] right-[10%] group">
-        <div className="w-3 h-3 bg-blue-500 rounded-full animate-ping absolute" />
-        <div className="w-3 h-3 bg-blue-500 rounded-full relative z-10" />
+        <div className="w-3 h-3 bg-primary rounded-full animate-ping absolute" />
+        <div className="w-3 h-3 bg-primary rounded-full relative z-10" />
         <div className="absolute bottom-full right-0 mb-2 whitespace-nowrap bg-white text-zinc-950 text-[10px] font-bold py-1 px-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
           GH₵ 1.82
         </div>
@@ -71,7 +71,7 @@ const AIGuidanceMockup = () => (
   <div className="w-full h-full p-6 flex flex-col justify-end gap-4 overflow-hidden">
     <div className="absolute top-6 left-6 right-6 p-4 bg-zinc-900/50 rounded-2xl border border-white/5 backdrop-blur-sm">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
         <div>
@@ -195,7 +195,7 @@ const LearningToolsShowcase = () => {
   }, [scrollYProgress]);
 
   return (
-    <section id="features" ref={containerRef} className="relative bg-white">
+    <section id="features" ref={containerRef} className="relative bg-background">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl">
         
         {/* Intro Header (Non-sticky) */}
@@ -210,7 +210,7 @@ const LearningToolsShowcase = () => {
           </motion.div>
           <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black text-zinc-950 leading-[0.9] tracking-[-0.04em] mb-10">
             Professional tools. <br />
-            <span className="text-blue-600">Human simplicity.</span>
+            <span className="text-primary">Human simplicity.</span>
           </h2>
           <p className="text-xl md:text-2xl text-zinc-500 font-medium max-w-2xl leading-relaxed">
             We've stripped away the complexity of traditional finance tools to give you an interface that feels intuitive, powerful, and built for your growth.
@@ -227,7 +227,7 @@ const LearningToolsShowcase = () => {
                 <div className="space-y-6">
                   <span className={cn(
                     "text-sm font-black uppercase tracking-widest",
-                    section.color === "blue" ? "text-blue-600" : section.color === "indigo" ? "text-indigo-600" : "text-amber-600"
+                    section.color === "blue" ? "text-primary" : section.color === "indigo" ? "text-indigo-600" : "text-amber-600"
                   )}>
                     {section.tag}
                   </span>
@@ -240,7 +240,7 @@ const LearningToolsShowcase = () => {
                   <div className="py-4 space-y-4">
                     {section.features.map(f => (
                       <div key={f} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
                         <span className="text-zinc-700 font-bold">{f}</span>
                       </div>
                     ))}
@@ -254,7 +254,7 @@ const LearningToolsShowcase = () => {
           <div className="w-1/2 h-screen sticky top-0 flex items-center justify-center py-20">
             <div className="relative w-full aspect-[4/3] bg-zinc-950 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden group">
               {/* Glassmorphic Ambient Mesh */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-indigo-600/10 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-indigo-600/10 pointer-events-none" />
               <div className="absolute -top-1/4 -right-1/4 w-[60%] h-[60%] bg-blue-500/10 blur-[100px] rounded-full" />
               <div className="absolute -bottom-1/4 -left-1/4 w-[60%] h-[60%] bg-indigo-500/10 blur-[100px] rounded-full" />
 

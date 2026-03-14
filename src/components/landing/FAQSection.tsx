@@ -43,7 +43,7 @@ const FAQSection = () => {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <section id="faq" className="relative py-24 md:py-32 bg-white overflow-hidden">
+        <section id="faq" className="relative py-24 md:py-32 bg-background overflow-hidden">
             <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-4xl relative z-10">
                 <div className="text-center mb-16 md:mb-20">
                     <motion.h2
@@ -52,7 +52,7 @@ const FAQSection = () => {
                         viewport={{ once: true }}
                         className="text-4xl md:text-5xl lg:text-6xl font-black text-zinc-950 leading-[0.9] tracking-tight mb-6"
                     >
-                        Common <span className="text-blue-600">Questions.</span>
+                        Common <span className="text-primary">Questions.</span>
                     </motion.h2>
                     <p className="text-lg text-zinc-500 font-medium tracking-tight">
                         Everything you need to know about getting started with inv.labs.
@@ -67,18 +67,18 @@ const FAQSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.05 }}
-                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-blue-200 bg-blue-50/30 shadow-sm" : "border-zinc-100 bg-white hover:border-zinc-200"
+                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-primary/20 bg-primary/5 shadow-sm" : "border-zinc-200 bg-white hover:border-zinc-300"
                                 }`}
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                                 className="w-full flex items-center justify-between p-6 md:p-8 text-left"
                             >
-                                <span className={`text-lg md:text-xl font-bold tracking-tight transition-colors ${openIndex === i ? "text-blue-600" : "text-zinc-900"
+                                <span className={`text-lg md:text-xl font-bold tracking-tight transition-colors ${openIndex === i ? "text-primary" : "text-zinc-900"
                                     }`}>
                                     {faq.question}
                                 </span>
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === i ? "bg-blue-600 text-white rotate-180" : "bg-zinc-100 text-zinc-400"
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === i ? "bg-primary text-white rotate-180" : "bg-zinc-100 text-zinc-400"
                                     }`}>
                                     {openIndex === i ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                                 </div>

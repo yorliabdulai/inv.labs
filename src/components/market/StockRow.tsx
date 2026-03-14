@@ -63,7 +63,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                             <span className="font-bold text-foreground text-sm tracking-tight">{stock.symbol}</span>
-                            {isOwned && <div className="w-1.5 h-1.5 rounded-full bg-primary" title="Owned" />}
+                            {isOwned && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(43,89,255,0.4)]" title="Owned" />}
                         </div>
                         <div className="text-xs text-muted-foreground font-medium truncate mt-0.5">{stock.name}</div>
                     </div>

@@ -64,7 +64,7 @@ const MobileAccordionSection = ({ section }: { section: typeof footerLinks[0] })
         <ul className="pb-5 space-y-4">
           {section.links.map((link) => (
             <li key={link.name}>
-              <Link href={link.href} className="text-zinc-500 hover:text-blue-600 transition-colors text-base font-medium block">
+              <Link href={link.href} className="text-zinc-500 hover:text-primary transition-colors text-base font-medium block">
                 {link.name}
               </Link>
             </li>
@@ -85,7 +85,7 @@ const DesktopColumn = ({ section }: { section: typeof footerLinks[0] }) => {
       <ul className="space-y-4">
         {section.links.map((link) => (
           <li key={link.name}>
-            <Link href={link.href} className="text-zinc-500 hover:text-blue-600 transition-colors text-sm font-medium inline-block relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-blue-600 after:transition-all hover:after:w-full">
+            <Link href={link.href} className="text-zinc-500 hover:text-primary transition-colors text-sm font-medium inline-block relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all hover:after:w-full">
               {link.name}
             </Link>
           </li>
@@ -110,7 +110,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-zinc-50 pt-24 pb-12 border-t border-zinc-200 relative isolate">
+    <footer className="bg-zinc-100/50 pt-24 pb-12 border-t border-zinc-200 relative isolate">
       {/* Premium ambient glow */}
       <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] pointer-events-none -z-10" />
 
@@ -120,8 +120,8 @@ const Footer = () => {
           {/* Brand Identity */}
           <div className="max-w-sm">
             <Link href="/" className="inline-block mb-6 group">
-              <span className="text-3xl font-black tracking-tighter text-zinc-900 transition-colors group-hover:text-blue-600">
-                inv.labs<span className="text-blue-600">.</span>
+              <span className="text-3xl font-black tracking-tighter text-zinc-900 transition-colors group-hover:text-primary">
+                inv.labs<span className="text-primary">.</span>
               </span>
             </Link>
             <p className="text-zinc-500 text-base font-medium leading-relaxed">

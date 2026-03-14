@@ -45,7 +45,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
             const item = payload[0].payload as ChartData;
             return (
                 <div className="bg-card border border-border p-4 rounded-2xl shadow-2xl text-foreground min-w-[180px] backdrop-blur-md">
-                    <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2 border-b border-border pb-2">
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 border-b border-border pb-2">
                         {item.time}
                     </p>
                     <div className="space-y-1.5">
@@ -154,8 +154,8 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                     <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#2B59FF" stopOpacity={0.15} />
+                                <stop offset="95%" stopColor="#2B59FF" stopOpacity={0} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
@@ -172,7 +172,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                         <Area
                             type="monotone"
                             dataKey="value"
-                            stroke="#2563eb"
+                            stroke="#2B59FF"
                             strokeWidth={2}
                             fillOpacity={1}
                             fill="url(#colorValue)"

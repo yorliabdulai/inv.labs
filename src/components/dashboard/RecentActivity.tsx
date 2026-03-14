@@ -26,11 +26,11 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
             {transactions.map((tx) => (
                 <div
                     key={tx.id}
-                    className="group flex items-center justify-between p-4 rounded-xl bg-card hover:bg-muted transition-all cursor-pointer border border-border hover:border-blue-500/40 shadow-sm"
+                    className="group flex items-center justify-between p-4 rounded-xl bg-card hover:bg-muted transition-all cursor-pointer border border-border hover:border-primary/40 shadow-sm"
                 >
                     <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 ${tx.type.includes('BUY')
-                            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                            ? "bg-primary/10 text-primary border border-primary/20"
                             : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                             }`}>
                             {tx.type.includes('BUY') ? <ShoppingCart size={18} /> : <Wallet size={18} />}
@@ -40,13 +40,13 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                                 <span className="font-semibold text-foreground text-sm truncate tracking-tight">{tx.name}</span>
                                 <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
                                     ? 'bg-muted text-muted-foreground border-border'
-                                    : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                                    : 'bg-primary/10 text-primary border-primary/20'
                                     }`}>
                                     {tx.type.includes('STOCK') || tx.type === 'BUY' || tx.type === 'SELL' ? 'Stock' : 'Fund'}
                                 </span>
                             </div>
                             <div className="flex items-center gap-1.5 mt-1 text-[10px] font-semibold text-muted-foreground">
-                                <span className={tx.type.includes('BUY') ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'}>
+                                <span className={tx.type.includes('BUY') ? 'text-primary' : 'text-emerald-600 dark:text-emerald-400'}>
                                     {tx.type.replace('_', ' ')}
                                 </span>
                                 <span>•</span>

@@ -20,15 +20,15 @@ const Navbar = () => {
 
     return (
         <header
-            className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md border-b border-zinc-200/50 shadow-sm py-3" : "bg-transparent py-5"
+            className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b border-zinc-200/50 shadow-sm py-3" : "bg-transparent py-5"
                 }`}
         >
             <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl">
                 <div className="flex items-center justify-between">
 
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner transition-transform group-hover:scale-110">
                             iL
                         </div>
                         <span className="font-bold text-lg tracking-tight text-zinc-900">inv.labs</span>
@@ -45,7 +45,7 @@ const Navbar = () => {
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-4">
-                        <Link href="/login" className="text-sm font-bold text-zinc-900 hover:text-blue-600 transition-colors uppercase tracking-widest text-[10px]">Login</Link>
+                        <Link href="/login" className="text-sm font-bold text-zinc-900 hover:text-primary transition-colors uppercase tracking-widest text-[10px]">Login</Link>
                         <Link href="/register" className="bg-zinc-950 hover:bg-zinc-800 text-white font-black px-6 py-3 rounded-full text-[10px] uppercase tracking-widest shadow-lg transition-all hover:-translate-y-0.5">Start Practicing Free</Link>
                     </div>
 

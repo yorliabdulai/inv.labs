@@ -42,7 +42,7 @@ function ThemeToggle() {
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={16} className="text-blue-400" />
+                <Sun size={16} className="text-primary" />
             ) : (
                 <Moon size={16} className="text-zinc-500" />
             )}
@@ -72,14 +72,14 @@ export function DashboardHeader() {
             <div className="bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                            <Activity size={14} className="text-blue-600 dark:text-blue-400" />
+                        <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <Activity size={14} className="text-primary dark:text-primary" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-600 dark:bg-blue-500" />
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary dark:bg-primary" />
                                 </span>
                                 <span className="text-xs font-semibold text-foreground tracking-tight">GSE Market</span>
                             </div>
@@ -88,7 +88,7 @@ export function DashboardHeader() {
                     </div>
                     <div className="flex items-center gap-4">
                         <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <Globe size={11} className="text-blue-500/60" />
+                            <Globe size={11} className="text-primary/60" />
                             Session active
                         </span>
                         <div className="bg-muted border border-border rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground tabular-nums">
@@ -105,7 +105,7 @@ export function DashboardHeader() {
                         Dashboard
                     </h1>
                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <GreetIcon size={13} className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                        <GreetIcon size={13} className="text-primary dark:text-primary flex-shrink-0" />
                         {showSkeleton ? (
                             <span className="inline-block w-40 h-3 bg-muted animate-pulse rounded" />
                         ) : (
@@ -135,12 +135,12 @@ export function DashboardHeader() {
                         aria-label="View notifications"
                     >
                         <Bell size={16} className="text-muted-foreground group-hover:text-foreground transition-colors" />
-                        <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                        <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
                     </button>
 
                     {/* Avatar */}
                     <button
-                        className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs hover:bg-blue-500 transition-all shadow-md shadow-blue-500/20"
+                        className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
                         aria-label="User profile"
                     >
                         {initial}

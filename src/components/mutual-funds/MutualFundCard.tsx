@@ -48,7 +48,7 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
                         </span>
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors truncate tracking-tighter uppercase font-instrument-serif">
+                        <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors truncate tracking-tighter uppercase font-syne">
                             {fund.fund_name}
                         </h3>
                         <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-widest">
