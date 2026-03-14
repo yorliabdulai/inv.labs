@@ -11,7 +11,7 @@ const metrics = [
 
 const TrustSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-zinc-950 text-white overflow-hidden">
+    <section id="trust" className="relative py-24 md:py-32 bg-zinc-950 text-white overflow-hidden">
       {/* Abstract dark gradients */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -28,8 +28,8 @@ const TrustSection = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            <h2 className="text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] font-bold text-white leading-[0.85] tracking-[-0.04em] mb-8 text-balance">
-              Trusted by the next generation of <br className="hidden break-words md:block" />
+            <h2 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] font-bold text-white leading-[0.85] tracking-[-0.04em] mb-8 text-balance break-words">
+              Trusted by the next generation of <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-indigo-300">African investors.</span>
             </h2>
             <p className="text-lg text-zinc-400 font-medium leading-relaxed mb-8">

@@ -115,37 +115,37 @@ export default function LearnPage() {
             <DashboardHeader />
 
             {/* ── Academy Accreditation Hero ── */}
-            <div className="relative rounded-2xl p-8 md:p-16 bg-[#121417] text-white border border-white/[0.06] shadow-3xl overflow-hidden group">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-blue-600/10" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -ml-40 -mb-40" />
+            <div className="relative rounded-2xl p-8 md:p-16 bg-card text-foreground border border-border shadow-premium overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-primary/10" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-muted/20 rounded-full blur-[100px] -ml-40 -mb-40" />
 
                 <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
                     <div className="max-w-2xl space-y-8">
-                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg text-[10px] font-bold uppercase tracking-widest text-blue-500">
+                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 border border-border rounded-lg text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Sparkles size={12} /> Institutional Academy
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif leading-tight">
-                            Elevate Your <span className="text-blue-500">Market Intelligence.</span>
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif leading-tight text-foreground">
+                            Elevate Your <span className="text-primary">Market Intelligence.</span>
                         </h1>
-                        <p className="text-zinc-400 text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
+                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
                             Professional accreditation paths designed to transition investors from fundamental awareness to institutional-grade execution.
                         </p>
                     </div>
 
                     {/* Proficiency Stats */}
-                    <div className="flex items-center gap-12 bg-white/[0.02] backdrop-blur-xl p-10 rounded-2xl border border-white/[0.06] shadow-2xl">
+                    <div className="flex items-center gap-12 bg-muted/20 backdrop-blur-xl p-10 rounded-2xl border border-border shadow-xl">
                         <div className="space-y-3">
-                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Accreditation</p>
-                            <p className="text-4xl font-bold font-instrument-serif tracking-tight">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
-                            <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
-                            <div className="w-40 h-1.5 bg-white/[0.06] rounded-full mt-6 overflow-hidden">
-                                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(totalXp % 1000) / 10}%` }} />
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Accreditation</p>
+                            <p className="text-4xl font-bold font-instrument-serif tracking-tight text-foreground">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
+                            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
+                            <div className="w-40 h-1.5 bg-muted/30 rounded-full mt-6 overflow-hidden">
+                                <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${(totalXp % 1000) / 10}%` }} />
                             </div>
                         </div>
-                        <div className="w-px h-20 bg-white/[0.06]" />
+                        <div className="w-px h-20 bg-border/50" />
                         <div className="space-y-3 text-right">
-                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Knowledge XP</p>
-                            <p className="text-4xl font-bold font-instrument-serif tracking-tight tabular-nums">{totalXp.toLocaleString()}</p>
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Knowledge XP</p>
+                            <p className="text-4xl font-bold font-instrument-serif tracking-tight tabular-nums text-foreground">{totalXp.toLocaleString()}</p>
                             <p className="text-[11px] font-bold text-emerald-500">+150 TODAY</p>
                         </div>
                     </div>
@@ -156,13 +156,13 @@ export default function LearnPage() {
             <section className="space-y-10">
                 <div className="flex items-end justify-between px-2">
                     <div className="space-y-2">
-                        <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                            <GraduationCap size={18} className="text-blue-500" />
+                        <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-3">
+                            <GraduationCap size={18} className="text-primary" />
                             Accreditation Paths
                         </h2>
-                        <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-widest">Structured curriculums for progressive mastery.</p>
+                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">Structured curriculums for progressive mastery.</p>
                     </div>
-                    <button className="text-[10px] font-bold text-blue-500 uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
+                    <button className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
                         View Course Catalog <ArrowRight size={14} />
                     </button>
                 </div>
@@ -180,43 +180,43 @@ export default function LearnPage() {
                         const IconComponent = getIconComponent(course.icon);
 
                         return (
-                            <div key={i} className="group bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 hover:bg-white/[0.04] hover:border-blue-500/30 transition-all duration-500 flex flex-col h-full shadow-2xl backdrop-blur-sm">
+                            <div key={i} className="group bg-card border border-border rounded-2xl p-8 hover:bg-muted/30 hover:border-primary/30 transition-all duration-500 flex flex-col h-full shadow-premium backdrop-blur-sm">
                                 <div className="flex items-start justify-between mb-10">
-                                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-white/[0.06] transition-colors bg-white/[0.03] text-blue-500 group-hover:bg-blue-600 group-hover:text-white shadow-lg shadow-transparent group-hover:shadow-blue-900/20`}>
+                                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-border transition-colors bg-muted/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground shadow-lg shadow-transparent group-hover:shadow-primary/20`}>
                                         <IconComponent size={28} />
                                     </div>
-                                    <span className="px-3 py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg text-[9px] font-bold uppercase tracking-widest text-zinc-400">
+                                    <span className="px-3 py-1.5 bg-muted/30 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                                         {course.level}
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl font-bold text-white mb-4 uppercase tracking-tight font-instrument-sans group-hover:text-blue-500 transition-colors leading-tight">
+                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-instrument-sans group-hover:text-primary transition-colors leading-tight">
                                     {course.title}
                                 </h3>
-                                <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
+                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
                                     {course.description}
                                 </p>
 
-                                <div className="space-y-8 pt-8 border-t border-white/[0.06]">
+                                <div className="space-y-8 pt-8 border-t border-border">
                                     <div className="space-y-3">
-                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                                             <span>Proficiency</span>
-                                            <span className="text-white">{progress}%</span>
+                                            <span className="text-foreground">{progress}%</span>
                                         </div>
-                                        <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                                        <div className="w-full h-1.5 bg-muted/30 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-blue-500 rounded-full transition-all duration-1000"
+                                                className="h-full bg-primary rounded-full transition-all duration-1000"
                                                 style={{ width: `${progress}%` }}
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                    <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                         <div className="flex items-center gap-2">
-                                            <BookOpen size={14} className="text-blue-500" /> {enrollment?.completed_lessons || 0}/{course.total_lessons} MOD
+                                            <BookOpen size={14} className="text-primary" /> {enrollment?.completed_lessons || 0}/{course.total_lessons} MOD
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Clock size={14} className="text-zinc-600" /> {course.estimated_time || "1h 30m"}
+                                            <Clock size={14} className="text-muted-foreground/60" /> {course.estimated_time || "1h 30m"}
                                         </div>
                                     </div>
 
@@ -224,8 +224,8 @@ export default function LearnPage() {
                                         onClick={() => isEnrolled ? router.push(`/dashboard/learn/${course.id}`) : handleEnroll(course.id)}
                                         disabled={isCompleted}
                                         className={`w-full py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${isCompleted
-                                            ? "bg-white/[0.03] text-zinc-600 cursor-not-allowed border border-white/[0.06]"
-                                            : "bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-900/20 active:scale-95"
+                                            ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                                            : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
                                             }`}>
                                         {isCompleted ? "Certification Earned" : isEnrolled ? "Resume Path" : "Start Course"}
                                     </button>
@@ -239,13 +239,13 @@ export default function LearnPage() {
             {/* ── Research & Intelligence Modules ── */}
             <section className="space-y-10">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-2">
-                    <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                        <BrainCircuit size={18} className="text-blue-500" />
+                    <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-3">
+                        <BrainCircuit size={18} className="text-primary" />
                         Intelligence Modules
                     </h2>
-                    <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl">
+                    <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl">
                         {['LATEST', 'MOST READ'].map((f) => (
-                            <button key={f} className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all ${f === 'LATEST' ? 'bg-blue-600 text-white shadow-sm' : 'text-zinc-500 hover:text-white'}`}>
+                            <button key={f} className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all ${f === 'LATEST' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
                                 {f}
                             </button>
                         ))}
@@ -254,31 +254,31 @@ export default function LearnPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredModules.map((mod, i) => (
-                        <div key={i} className="group bg-[#0D0F12] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-blue-500/30 transition-all flex flex-col shadow-2xl backdrop-blur-md">
+                        <div key={i} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col shadow-premium backdrop-blur-md">
                             <div className="p-8 space-y-6 flex-grow">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">
+                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">
                                         {mod.category}
                                     </span>
-                                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">{mod.type}</span>
+                                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-white leading-tight group-hover:text-blue-500 transition-colors uppercase font-instrument-sans tracking-tight">
+                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-instrument-sans tracking-tight">
                                     {mod.title}
                                 </h3>
-                                <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest leading-relaxed">
+                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed">
                                     {mod.description}
                                 </p>
                             </div>
 
-                            <div className="px-8 pb-8 pt-6 border-t border-white/[0.06] space-y-6 bg-white/[0.01]">
-                                <div className="flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <div className="px-8 pb-8 pt-6 border-t border-border space-y-6 bg-muted/5">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                     <div className="flex items-center gap-4">
-                                        <span className="flex items-center gap-1.5"><Clock size={14} className="text-blue-500" /> {mod.readTime}</span>
-                                        <span className="flex items-center gap-1.5"><Users size={14} className="text-zinc-600" /> {mod.students}</span>
+                                        <span className="flex items-center gap-1.5"><Clock size={14} className="text-primary" /> {mod.readTime}</span>
+                                        <span className="flex items-center gap-1.5"><Users size={14} className="text-muted-foreground/60" /> {mod.students}</span>
                                     </div>
-                                    <span className="text-blue-500">{mod.difficulty}</span>
+                                    <span className="text-primary">{mod.difficulty}</span>
                                 </div>
-                                <button className="w-full py-4 bg-white/[0.03] text-white font-bold border border-white/[0.06] rounded-xl text-[10px] uppercase tracking-widest transition-all group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:shadow-xl group-hover:shadow-blue-900/20">
+                                <button className="w-full py-4 bg-muted/30 text-foreground font-bold border border-border rounded-xl text-[10px] uppercase tracking-widest transition-all group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:shadow-xl group-hover:shadow-primary/20">
                                     Access Briefing
                                 </button>
                             </div>
@@ -288,22 +288,22 @@ export default function LearnPage() {
             </section>
 
             {/* ── Assessment Banner ── */}
-            <div className="relative rounded-2xl p-12 md:p-24 bg-[#121417] text-white border border-white/[0.06] shadow-3xl overflow-hidden group">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[150px] -mr-64 -mt-64 group-hover:bg-blue-600/15 transition-all" />
+            <div className="relative rounded-2xl p-12 md:p-24 bg-card text-foreground border border-border shadow-premium overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px] -mr-64 -mt-64 group-hover:bg-primary/15 transition-all" />
                 <div className="absolute -bottom-24 -left-24 p-12 opacity-5 rotate-12 group-hover:rotate-0 transition-all duration-1000">
-                    <GraduationCap size={400} className="text-blue-500" />
+                    <GraduationCap size={400} className="text-primary" />
                 </div>
 
                 <div className="relative z-10 flex flex-col items-center text-center space-y-10 max-w-4xl mx-auto">
                     <div className="flex flex-col items-center space-y-4">
-                        <div className="w-16 h-1 bg-blue-500 rounded-full" />
-                        <p className="text-blue-500 text-[10px] font-bold uppercase tracking-widest">Daily Assessment</p>
+                        <div className="w-16 h-1 bg-primary rounded-full" />
+                        <p className="text-primary text-[10px] font-bold uppercase tracking-widest">Daily Assessment</p>
                     </div>
                     <h2 className="text-4xl md:text-7xl font-bold tracking-tight uppercase font-instrument-serif leading-none">Validate Today's Market Signals.</h2>
-                    <p className="text-zinc-400 text-sm md:text-lg font-medium leading-relaxed uppercase tracking-widest max-w-2xl">
+                    <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed uppercase tracking-widest max-w-2xl">
                         Test your comprehension of the latest GSE price discovery phases and earn analyst accreditation credits.
                     </p>
-                    <button className="px-10 py-5 bg-blue-600 text-white font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-2xl shadow-blue-900/20 active:scale-95 group">
+                    <button className="px-10 py-5 bg-primary text-primary-foreground font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-primary/90 transition-all shadow-2xl shadow-primary/20 active:scale-95 group">
                         Start Assessment
                     </button>
                 </div>

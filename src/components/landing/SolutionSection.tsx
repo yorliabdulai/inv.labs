@@ -14,7 +14,7 @@ const SolutionSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-            className="text-[3.5rem] md:text-[5rem] lg:text-[6.5rem] font-bold text-zinc-950 leading-[0.85] tracking-[-0.04em] text-balance mb-8"
+            className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[6.5rem] font-bold text-zinc-950 leading-[0.85] tracking-[-0.04em] text-balance mb-8 break-words"
           >
             Practice investing without <br />
             <span className="text-zinc-400">risking your capital.</span>
@@ -73,13 +73,13 @@ const SolutionSection = () => {
                 </div>
               </div>
 
-              <div className="px-4 py-5 bg-zinc-900 rounded-xl text-white shadow-inner mb-6 relative overflow-hidden">
+              <div className="px-4 py-5 bg-zinc-900 dark:bg-zinc-800 rounded-xl text-white shadow-inner mb-6 relative overflow-hidden transition-colors duration-300">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2" />
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm text-zinc-400 font-medium">Estimated Cost</span>
-                  <span className="font-bold">GH₵ 9,100.00</span>
+                  <span className="text-sm text-zinc-400 font-medium tracking-tight">Estimated Cost</span>
+                  <span className="font-bold tabular-nums">GH₵ 9,100.00</span>
                 </div>
-                <div className="flex justify-between items-center text-xs text-zinc-500 font-medium border-t border-zinc-800 pt-3">
+                <div className="flex justify-between items-center text-xs text-zinc-500 font-medium border-t border-zinc-800/50 pt-3">
                   <span>Includes SEC/GSE Fees (GH₵ 40.95)</span>
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 </div>

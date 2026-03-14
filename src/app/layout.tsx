@@ -35,16 +35,20 @@ export const metadata: Metadata = {
   description: "Learn to invest in the Ghana Stock Exchange",
 };
 
+import { ThemeProvider } from "next-themes";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${dmMono.variable} font-sans antialiased bg-background text-foreground`}>
-        <SmoothScroller />
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${dmMono.variable} font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <SmoothScroller />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

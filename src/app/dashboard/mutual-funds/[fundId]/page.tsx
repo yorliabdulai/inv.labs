@@ -168,46 +168,46 @@ export default function MutualFundDetailPage() {
             {/* ── Navigation Vector ── */}
             <button
                 onClick={() => router.push("/dashboard/mutual-funds")}
-                className="flex items-center gap-2 text-zinc-400 hover:text-white font-semibold text-xs tracking-wider transition-all group"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-bold text-[10px] uppercase tracking-[0.2em] transition-all group"
             >
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                <span>Back to All Funds</span>
+                <span>Back to Ecosystem</span>
             </button>
 
             {/* ── Main Fund Header ── */}
-            <div className="relative overflow-hidden rounded-2xl bg-white/[0.02] p-6 md:p-10 text-white border border-white/[0.06] shadow-2xl group">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -mr-40 -mt-40 transition-all pointer-events-none" />
+            <div className="relative overflow-hidden rounded-2xl bg-card p-6 md:p-12 text-foreground border border-border shadow-premium group">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -mr-40 -mt-40 transition-all pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col lg:flex-row lg:items-start justify-between gap-10 mb-8">
-                    <div className="flex-1 space-y-8">
-                        <div className="flex items-start gap-6">
-                            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center shadow-lg flex-shrink-0">
-                                <PieChart size={32} className="text-blue-500" />
+                <div className="relative z-10 flex flex-col lg:flex-row lg:items-start justify-between gap-12 mb-10">
+                    <div className="flex-1 space-y-10">
+                        <div className="flex items-start gap-8">
+                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-muted/50 border border-border flex items-center justify-center shadow-premium flex-shrink-0">
+                                <PieChart size={40} className="text-primary" />
                             </div>
-                            <div className="flex-1 min-w-0 space-y-4">
-                                <div className="space-y-1">
-                                    <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight">
+                            <div className="flex-1 min-w-0 space-y-5">
+                                <div className="space-y-2">
+                                    <h1 className="text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-none font-instrument-serif uppercase">
                                         {fund.fund_name}
                                     </h1>
-                                    <p className="text-zinc-400 font-semibold text-xs uppercase tracking-widest flex items-center gap-2">
-                                        Managed By: <span className="text-blue-400">{fund.fund_manager}</span>
+                                    <p className="text-muted-foreground font-bold text-[11px] uppercase tracking-[0.2em] flex items-center gap-2">
+                                        Portfolio Manager: <span className="text-primary">{fund.fund_manager}</span>
                                     </p>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-3">
-                                    <span className="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg text-xs font-semibold tracking-wide border border-blue-500/20">
+                                <div className="flex flex-wrap items-center gap-4">
+                                    <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold tracking-[0.1em] border border-primary/20 uppercase">
                                         {fund.fund_type}
                                     </span>
-                                    <div className="flex items-center gap-3 px-3 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06]">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Risk Level</span>
-                                            <span className="text-xs font-bold text-blue-400 tabular-nums">{fund.risk_rating}/5</span>
+                                    <div className="flex items-center gap-4 px-4 py-1.5 bg-muted/30 rounded-lg border border-border">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em]">Risk Intensity</span>
+                                            <span className="text-[11px] font-bold text-primary tabular-nums tracking-widest">{fund.risk_rating}/5</span>
                                         </div>
-                                        <div className="h-1.5 w-20 bg-white/[0.04] rounded-full overflow-hidden flex gap-0.5">
+                                        <div className="h-1.5 w-24 bg-muted border border-border rounded-full overflow-hidden flex gap-0.5">
                                             {[1, 2, 3, 4, 5].map((level) => (
                                                 <div
                                                     key={level}
                                                     className={`h-full flex-1 transition-all rounded-full ${level <= fund.risk_rating
-                                                        ? "bg-blue-500"
+                                                        ? "bg-primary"
                                                         : "bg-transparent"
                                                         }`}
                                                 />
@@ -219,15 +219,15 @@ export default function MutualFundDetailPage() {
                         </div>
 
                         {/* NAV Display Overlay */}
-                        <div className="inline-flex flex-col space-y-2 p-6 bg-white/[0.03] border border-white/[0.06] rounded-xl backdrop-blur-3xl shadow-lg">
-                            <div className="flex items-baseline gap-4">
-                                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Current NAV:</span>
-                                <span className="text-4xl md:text-5xl font-bold text-white tabular-nums tracking-tight">
+                        <div className="inline-flex flex-col space-y-3 p-8 bg-muted/20 border border-border rounded-2xl backdrop-blur-3xl shadow-premium">
+                            <div className="flex items-baseline gap-6">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Session NAV</span>
+                                <span className="text-5xl md:text-7xl font-bold text-foreground tabular-nums tracking-tighter">
                                     {formatCurrency(fund.current_nav)}
                                 </span>
                             </div>
-                            <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">
-                                Analysis Date // {new Date(fund.updated_at).toLocaleDateString("en-GB", {
+                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] pt-2 border-t border-border/50">
+                                Market Pulse // {new Date(fund.updated_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "short",
                                     year: "numeric",
@@ -237,21 +237,21 @@ export default function MutualFundDetailPage() {
                     </div>
 
                     {/* Trade Control Panel */}
-                    <div className="flex flex-col gap-4 lg:w-72">
+                    <div className="flex flex-col gap-5 lg:w-80">
                         <button
                             onClick={() => setShowBuyModal(true)}
-                            className="w-full py-4 bg-blue-600 text-white font-bold rounded-xl text-sm uppercase tracking-wider hover:bg-blue-500 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 group/btn"
+                            className="w-full py-5 bg-primary text-primary-foreground font-bold rounded-xl text-[11px] uppercase tracking-[0.2em] hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 active:scale-95 flex items-center justify-center gap-3 group/btn"
                         >
-                            <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
-                            Invest in Fund
+                            <ShoppingCart size={20} className="group-hover:scale-110 transition-transform" />
+                            Establish Position
                         </button>
                         {userHolding && userHolding.units_held > 0 && (
                             <button
                                 onClick={() => setShowRedeemModal(true)}
-                                className="w-full py-4 bg-white/[0.03] text-white font-bold rounded-xl text-sm uppercase tracking-wider hover:bg-white/[0.08] transition-all border border-white/[0.06] flex items-center justify-center gap-2 active:scale-95"
+                                className="w-full py-5 bg-muted/30 text-foreground font-bold rounded-xl text-[11px] uppercase tracking-[0.2em] hover:bg-muted/50 transition-all border border-border flex items-center justify-center gap-3 active:scale-95"
                             >
-                                <Wallet size={18} className="text-blue-400" />
-                                Redeem Units
+                                <Wallet size={20} className="text-primary" />
+                                Liquidate Units
                             </button>
                         )}
                     </div>
@@ -259,37 +259,37 @@ export default function MutualFundDetailPage() {
 
                 {/* Performance Analytics Bar */}
                 {userHolding && userHolding.units_held > 0 && (
-                    <div className="bg-emerald-500/5 rounded-xl p-6 md:p-8 border border-emerald-500/20 shadow-lg relative overflow-hidden mt-6">
+                    <div className="bg-emerald-500/5 rounded-2xl p-8 md:p-10 border border-emerald-500/20 shadow-premium relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] -mr-16 -mt-16 pointer-events-none" />
-                        <div className="flex flex-col space-y-6 relative z-10">
+                        <div className="flex flex-col space-y-8 relative z-10">
                             <div className="flex items-center gap-3">
-                                <Zap size={16} className="text-emerald-500" />
-                                <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">
-                                    Your Position
+                                <Zap size={18} className="text-emerald-500" />
+                                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">
+                                    Strategic Position
                                 </span>
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
                                 <div>
-                                    <div className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-widest mb-1.5">Units Held</div>
-                                    <div className="text-xl font-bold text-white tabular-nums">
+                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">Units Held</div>
+                                    <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
                                         {userHolding.units_held.toFixed(4)}
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-widest mb-1.5">Market Value</div>
-                                    <div className="text-xl font-bold text-white tabular-nums">
+                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">Market Value</div>
+                                    <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
                                         {formatCurrency(userHolding.current_value || 0)}
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-widest mb-1.5">Unrealized P/L</div>
-                                    <div className={`text-xl font-bold tabular-nums ${(userHolding.gain || 0) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">Unrealized P/L</div>
+                                    <div className={`text-2xl font-bold tabular-nums tracking-tight ${(userHolding.gain || 0) >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                                         {(userHolding.gain || 0) >= 0 ? "+" : ""}{formatCurrency(userHolding.gain || 0)}
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-widest mb-1.5">Yield</div>
-                                    <div className={`text-xl font-bold tabular-nums ${(userHolding.gain_percent || 0) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">Yield</div>
+                                    <div className={`text-2xl font-bold tabular-nums tracking-tight ${(userHolding.gain_percent || 0) >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                                         {(userHolding.gain_percent || 0) >= 0 ? "+" : ""}{formatPercent(userHolding.gain_percent || 0)}
                                     </div>
                                 </div>
@@ -300,9 +300,9 @@ export default function MutualFundDetailPage() {
             </div>
 
             {/* ── Intelligence Tabs ── */}
-            <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] shadow-2xl overflow-hidden">
-                <div className="border-b border-white/[0.06] px-6 md:px-10">
-                    <div className="flex gap-8 overflow-x-auto no-scrollbar">
+            <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+                <div className="border-b border-border px-6 md:px-10 bg-muted/20">
+                    <div className="flex gap-10 overflow-x-auto no-scrollbar">
                         {[
                             { id: "overview", label: "Overview", icon: Info },
                             { id: "performance", label: "Performance Series", icon: BarChart3 },
@@ -311,9 +311,9 @@ export default function MutualFundDetailPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
-                                className={`flex items-center gap-3 py-5 font-bold text-xs uppercase tracking-widest whitespace-nowrap transition-all border-b-2 ${activeTab === tab.id
-                                    ? "border-blue-500 text-white"
-                                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                                className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-all border-b-2 ${activeTab === tab.id
+                                    ? "border-primary text-foreground"
+                                    : "border-transparent text-muted-foreground hover:text-foreground"
                                     }`}
                             >
                                 <tab.icon size={16} />
@@ -326,26 +326,26 @@ export default function MutualFundDetailPage() {
                 <div className="p-6 md:p-10">
                     {/* Overview Tab */}
                     {activeTab === "overview" && (
-                        <div className="space-y-12 animate-in fade-in duration-500">
+                        <div className="space-y-16 animate-in fade-in duration-500">
                             {/* Fund Objective */}
-                            <div className="max-w-4xl space-y-6">
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest flex items-center gap-3">
-                                    <Target size={18} className="text-blue-400" />
+                            <div className="max-w-4xl space-y-8">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3">
+                                    <Target size={18} className="text-primary" />
                                     Fund Objective
                                 </h3>
-                                <p className="text-zinc-300 text-base md:text-lg font-medium leading-relaxed max-w-3xl">{fund.objective}</p>
+                                <p className="text-foreground text-xl md:text-3xl font-bold leading-tight font-instrument-serif">{fund.objective}</p>
                             </div>
 
                             {/* Key Information Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-white/[0.02] rounded-xl p-6 md:p-8 border border-white/[0.06] group hover:border-blue-500/20 transition-all shadow-sm">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Calendar size={16} className="text-blue-400" />
-                                        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="bg-muted/30 rounded-2xl p-8 md:p-10 border border-border group hover:border-primary/20 transition-all shadow-premium">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <Calendar size={18} className="text-primary" />
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
                                             Launch Date
                                         </span>
                                     </div>
-                                    <div className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">
                                         {new Date(fund.inception_date).toLocaleDateString("en-GB", {
                                             day: "2-digit",
                                             month: "long",
@@ -354,75 +354,75 @@ export default function MutualFundDetailPage() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] rounded-xl p-6 md:p-8 border border-white/[0.06] group hover:border-blue-500/20 transition-all shadow-sm">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <DollarSign size={16} className="text-blue-400" />
-                                        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
-                                            Minimum Investment
+                                <div className="bg-muted/30 rounded-2xl p-8 md:p-10 border border-border group hover:border-primary/20 transition-all shadow-premium">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <DollarSign size={18} className="text-primary" />
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+                                            Initial Capital
                                         </span>
                                     </div>
-                                    <div className="text-xl md:text-2xl font-bold text-white tracking-tight tabular-nums">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums font-instrument-serif uppercase">
                                         {formatCurrency(fund.minimum_investment)}
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] rounded-xl p-6 md:p-8 border border-white/[0.06] group hover:border-blue-500/20 transition-all shadow-sm">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Shield size={16} className="text-blue-400" />
-                                        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
-                                            Risk Profile
+                                <div className="bg-muted/30 rounded-2xl p-8 md:p-10 border border-border group hover:border-primary/20 transition-all shadow-premium">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <Shield size={18} className="text-primary" />
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+                                            Risk Rating
                                         </span>
                                     </div>
-                                    <div className="text-xl md:text-2xl font-bold text-white tracking-tight font-sans">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">
                                         {getRiskRatingLabel(fund.risk_rating)} ({fund.risk_rating}/5)
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] rounded-xl p-6 md:p-8 border border-white/[0.06] group hover:border-blue-500/20 transition-all shadow-sm">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <TrendingUp size={16} className="text-blue-400" />
-                                        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+                                <div className="bg-muted/30 rounded-2xl p-8 md:p-10 border border-border group hover:border-primary/20 transition-all shadow-premium">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <TrendingUp size={18} className="text-primary" />
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
                                             Expense Ratio
                                         </span>
                                     </div>
-                                    <div className="text-xl md:text-2xl font-bold text-white tracking-tight tabular-nums">
-                                        {formatPercent(fund.expense_ratio, false)} <span className="text-sm text-zinc-500 font-medium">annual</span>
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums uppercase font-instrument-serif px-1">
+                                        {formatPercent(fund.expense_ratio, false)} <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest font-sans">Per Annum</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Fees Array */}
-                            <div className="space-y-6">
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest">Fee Structure</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8 shadow-sm">
-                                        <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-2">Entry Fee</div>
-                                        <div className="text-2xl font-bold text-white tabular-nums">
+                            <div className="space-y-10">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Fee Architecture</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div className="bg-muted/20 border border-border rounded-2xl p-8 md:p-10 shadow-premium">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Entry Load</div>
+                                        <div className="text-3xl font-bold text-foreground tabular-nums tracking-tighter">
                                             {formatPercent(fund.entry_fee, false)}
                                         </div>
                                     </div>
-                                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8 shadow-sm">
-                                        <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-2">Exit Fee</div>
-                                        <div className="text-2xl font-bold text-red-400 tabular-nums">
+                                    <div className="bg-muted/20 border border-border rounded-2xl p-8 md:p-10 shadow-premium">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Exit Load</div>
+                                        <div className="text-3xl font-bold text-red-500 tabular-nums tracking-tighter">
                                             {formatPercent(fund.exit_fee, false)}
                                         </div>
                                     </div>
-                                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8 shadow-sm">
-                                        <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-2">Cooling Period</div>
-                                        <div className="text-2xl font-bold text-blue-400 tabular-nums">
-                                            {fund.minimum_holding_period} <span className="text-sm font-medium text-zinc-500 lowercase">days</span>
+                                    <div className="bg-muted/20 border border-border rounded-2xl p-8 md:p-10 shadow-premium">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Holding Lock</div>
+                                        <div className="text-3xl font-bold text-primary tabular-nums tracking-tighter">
+                                            {fund.minimum_holding_period} <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Days</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Asset Allocation visualization */}
-                            <div className="space-y-6">
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest flex items-center gap-3">
-                                    <PieChart size={18} className="text-blue-400" />
-                                    Asset Allocation
+                            <div className="space-y-10">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3">
+                                    <PieChart size={18} className="text-primary" />
+                                    Tactical Allocation
                                 </h3>
-                                <div className="bg-white/[0.02] rounded-2xl p-6 md:p-10 border border-white/[0.06] shadow-lg">
+                                <div className="bg-muted/10 rounded-2xl p-8 md:p-12 border border-border shadow-premium">
                                     <AssetAllocationChart allocation={fund.asset_allocation} />
                                 </div>
                             </div>
@@ -431,33 +431,33 @@ export default function MutualFundDetailPage() {
 
                     {/* Performance Analytics Tab */}
                     {activeTab === "performance" && (
-                        <div className="space-y-12 animate-in fade-in duration-500">
+                        <div className="space-y-16 animate-in fade-in duration-500">
                             {/* High-Contrast NAV Chart */}
-                            <div className="space-y-6">
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest">Historical Performance</h3>
-                                <div className="bg-white/[0.02] rounded-2xl p-6 md:p-8 border border-white/[0.06] shadow-lg">
+                            <div className="space-y-10">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Nav Projection Series</h3>
+                                <div className="bg-muted/10 rounded-2xl p-8 md:p-12 border border-border shadow-premium">
                                     <MutualFundChart navHistory={navHistory} fundName={fund.fund_name} />
                                 </div>
                             </div>
 
                             {/* Returns Array */}
-                            <div className="space-y-6">
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest">Return Metrics</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                            <div className="space-y-10">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Historical Yield Metrics</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
                                     {performance.map((perf) => {
                                         const isPositive = perf.return_percent >= 0;
                                         return (
                                             <div
                                                 key={perf.period}
-                                                className={`rounded-xl p-5 md:p-6 border transition-all hover:scale-[1.02] duration-300 ${isPositive
-                                                    ? "bg-emerald-500/5 border-emerald-500/20 shadow-md shadow-emerald-500/5"
-                                                    : "bg-red-500/5 border-red-500/20 shadow-md shadow-red-500/5"
+                                                className={`rounded-2xl p-6 md:p-8 border transition-all hover:scale-[1.02] duration-300 shadow-premium ${isPositive
+                                                    ? "bg-emerald-500/5 border-emerald-500/10"
+                                                    : "bg-red-500/5 border-red-500/10"
                                                     }`}
                                             >
-                                                <div className={`text-[10px] md:text-xs font-bold mb-2 uppercase tracking-widest ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+                                                <div className={`text-[10px] font-bold mb-4 uppercase tracking-[0.2em] ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
                                                     {getPeriodLabel(perf.period)}
                                                 </div>
-                                                <div className={`text-2xl md:text-3xl font-bold tabular-nums tracking-tight ${isPositive ? "text-white" : "text-red-400"}`}>
+                                                <div className={`text-3xl md:text-4xl font-bold tabular-nums tracking-tighter ${isPositive ? "text-foreground" : "text-red-600"}`}>
                                                     {isPositive ? "+" : ""}{formatPercent(perf.return_percent)}
                                                 </div>
                                             </div>
@@ -470,26 +470,29 @@ export default function MutualFundDetailPage() {
 
                     {/* Node Holdings Tab */}
                     {activeTab === "holdings" && (
-                        <div className="space-y-8 animate-in fade-in duration-500">
+                        <div className="space-y-10 animate-in fade-in duration-500">
                             <div>
-                                <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-6">Top Holdings</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-8">Asset Concentration</h3>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     {fund.top_holdings.map((holding, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between p-5 md:p-6 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:bg-white/[0.04] hover:border-blue-500/30 transition-all group"
+                                            className="flex items-center justify-between p-6 md:p-8 bg-muted/20 rounded-2xl border border-border hover:border-primary/30 transition-all group shadow-premium"
                                         >
-                                            <div className="flex items-center gap-4 md:gap-6">
-                                                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 group-hover:bg-blue-600 transition-colors">
-                                                    <span className="text-xs font-bold text-blue-400 group-hover:text-white">#{index + 1}</span>
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary transition-colors shadow-premium">
+                                                    <span className="text-xs font-bold text-primary group-hover:text-primary-foreground tracking-widest">#{index + 1}</span>
                                                 </div>
-                                                <span className="font-bold text-white tracking-tight text-sm md:text-base">{holding.name}</span>
+                                                <div className="space-y-1">
+                                                    <span className="font-bold text-foreground tracking-tight text-lg uppercase font-instrument-serif">{holding.name}</span>
+                                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Strategic Asset</div>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-xl md:text-2xl font-bold text-blue-400 tabular-nums tracking-tight">
+                                                <div className="text-3xl font-bold text-primary tabular-nums tracking-tighter">
                                                     {holding.weight.toFixed(2)}%
                                                 </div>
-                                                <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mt-0.5">Weight</div>
+                                                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Weight</div>
                                             </div>
                                         </div>
                                     ))}

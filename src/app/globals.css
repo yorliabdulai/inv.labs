@@ -2,72 +2,100 @@
 @plugin "tailwindcss-animate";
 
 :root {
-  /* --- Legacy Dashboard Compatibility Tokens --- */
-  --bg-page: #FDFDFF;
-  --bg-surface: #FFFFFF;
-  --bg-surface-secondary: #F8F9FC;
-  --bg-surface-elevated: #F8F9FC;
-
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-tertiary: #94A3B8;
-
-  --brand-primary: #3730A3;
-  --brand-accent: #4F46E5;
-
-  --border-default: #F1F5F9;
-  --border-hover: #E2E8F0;
-
-  --header-height: 80px;
-
-  /* --- GHANA BUILDS WEALTH TOKENS (REFINED) --- */
-  --ink-950: 220 12% 5%;
-  --ink-900: 220 12% 8%;
-  --ink-800: 220 10% 12%;
-  --paper: 0 0% 98%;
-  --paper-dark: 0 0% 94%;
-
-  --terracotta: 14 49% 51%;
-  --terracotta-light: 14 55% 60%;
-  --gold-data: 42 88% 55%;
-  --emerald-gain: 160 76% 40%;
-  --loss-red: 354 88% 44%;
-
-  --ink: 220 12% 8%;
-  --ink-muted: 220 8% 45%;
-  --paper-text: 0 0% 98%;
-
-  --rule: 14 49% 51%;
-
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-
+  /* --- BASE TOKENS (LIGHT MODE) --- */
+  --background: 210 20% 98%;
+  /* Soft off-white for page base */
+  --foreground: 224 71.4% 4.1%;
   --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-
+  /* Pure white for primary surfaces */
+  --card-foreground: 224 71.4% 4.1%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-
+  --popover-foreground: 224 71.4% 4.1%;
   --primary: 221.2 83.2% 53.3%;
   --primary-foreground: 210 40% 98%;
-
   --secondary: 210 40% 96.1%;
   --secondary-foreground: 222.2 47.4% 11.2%;
-
-  --muted: 210 40% 96.1%;
+  --muted: 210 40% 94%;
+  /* Slightly darker than secondary for separation */
   --muted-foreground: 215.4 16.3% 46.9%;
-
   --accent: 210 40% 96.1%;
+  --accent-subtle: 214 32% 91%;
+  /* Brighter accent for light mode surfaces */
   --accent-foreground: 222.2 47.4% 11.2%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 221.2 83.2% 53.3%;
+  --radius: 0.75rem;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
 
-  --radius: 0.5rem;
+  /* Premium Design System Shadow (Light Mode) */
+  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+  /* Dashboard Surfaces (Light) */
+  --bg-page: #F8FAFC;
+  /* Slate-50 for subtle depth */
+  --bg-surface: #FFFFFF;
+  --bg-surface-secondary: #F1F5F9;
+  /* Slate-100 for clear separation */
+  --border-default: #E2E8F0;
+  /* Slate-200 for defined borders */
+
+  /* Glass Effects (Light) */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  /* Slightly more opaque for better contrast */
+  --glass-border: rgba(0, 0, 0, 0.05);
+  /* Darker border for visibility on light surfaces */
+
+  /* Feature Colors */
+  --terracotta: 14 49% 51%;
+  --emerald-gain: 160 76% 40%;
+  --loss-red: 354 88% 44%;
+}
+
+.dark {
+  --background: 222 47% 4%;
+  --foreground: 210 40% 98%;
+
+  --card: 222 47% 6%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 47% 4%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+
+  /* Dashboard Surfaces (Dark) */
+  --bg-page: #0D0F12;
+  --bg-surface: #121417;
+  --bg-surface-secondary: #1A1D21;
+  --border-default: rgba(255, 255, 255, 0.06);
+
+  /* Glass Effects (Dark) */
+  --glass-bg: rgba(13, 15, 18, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.06);
 }
 
 @theme {
@@ -160,7 +188,10 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_#0000000a];
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    @apply shadow-[0_8px_30px_#0000000a];
   }
 
   .premium-shadow {
@@ -168,7 +199,10 @@
   }
 
   .glass-panel-dark {
-    @apply bg-slate-950/70 backdrop-blur-lg border border-white/10 shadow-[0_8px_30px_#00000033];
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    @apply shadow-[0_8px_30px_#00000033];
   }
 
   /* Text balance for Stripe-level headlines */

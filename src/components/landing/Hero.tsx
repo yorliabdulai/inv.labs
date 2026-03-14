@@ -88,7 +88,7 @@ const Hero = () => {
             </motion.div>
 
             {/* V4 Clamped Typography: Stable Scale */}
-            <motion.h1 variants={fadeUp} className="text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-bold tracking-tight text-zinc-950 leading-[0.9] text-balance mb-10 w-full overflow-hidden">
+            <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-bold tracking-tight text-zinc-950 leading-[0.9] text-balance mb-10 w-full overflow-hidden break-words">
               Trade without<br />
               <span className="relative inline-block pb-4">
                 <span className="absolute inset-x-0 bottom-4 h-[30%] bg-blue-200/50 -rotate-2 -z-10" />
@@ -125,46 +125,46 @@ const Hero = () => {
           <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] bg-blue-500/15 blur-[120px] rounded-[100%] pointer-events-none" />
 
           {/* The Dashboard Frame */}
-          <div className="relative rounded-3xl border border-white/10 bg-[#0D0F12] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] p-4 md:p-6 overflow-hidden ring-1 ring-inset ring-white/5">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none rounded-3xl" />
+          <div className="relative rounded-3xl border border-zinc-200/50 bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] p-4 md:p-6 overflow-hidden ring-1 ring-inset ring-zinc-200/20 backdrop-blur-3xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-transparent pointer-events-none rounded-3xl" />
 
             {/* Fake macOS Chrome */}
             <div className="flex justify-between items-center mb-6 px-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-inner"></div>
-                <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-inner"></div>
-                <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-inner"></div>
+                <div className="w-3 h-3 rounded-full bg-red-400/80 shadow-sm"></div>
+                <div className="w-3 h-3 rounded-full bg-amber-400/80 shadow-sm"></div>
+                <div className="w-3 h-3 rounded-full bg-emerald-400/80 shadow-sm"></div>
               </div>
-              <div className="flex items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-zinc-500">
-                <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> Encrypted Session</span>
-                <span className="hidden sm:inline-block">inv.labs / terminal</span>
+              <div className="flex items-center gap-4 text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
+                <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> Secure Terminal</span>
+                <span className="hidden sm:inline-block font-instrument-sans">inv.labs / system_kernel</span>
               </div>
             </div>
 
             {/* Inside the Mockup: Complex Asymmetric Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr_320px] gap-6 h-[600px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr_300px] gap-6 h-[600px]">
 
-              {/* Left Nav Pane (Hidden on smaller screens, giving it an app feel) */}
+              {/* Left Nav Pane */}
               <div className="hidden lg:flex flex-col gap-4">
-                <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.05] h-full flex flex-col">
+                <div className="bg-zinc-50/50 rounded-2xl p-6 border border-zinc-200/50 h-full flex flex-col shadow-sm">
                   <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center">
+                    <div className="flex items-center gap-3 mb-10">
+                      <div className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center shadow-premium">
                         <span className="text-white font-bold text-sm tracking-tighter">iL</span>
                       </div>
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       {['Dashboard', 'Market Scanner', 'Portfolio', 'Mutual Funds', 'Settings'].map((item, i) => (
-                        <div key={i} className={`px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors cursor-pointer ${i === 0 ? 'bg-white/[0.05] text-white/90 shadow-sm border border-white/[0.05]' : 'text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300'}`}>
-                          {i === 0 ? <Activity className="w-4 h-4 text-blue-400" /> : <PieChart className="w-4 h-4 opacity-50" />}
+                        <div key={i} className={`px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-widest flex items-center gap-3 transition-all cursor-pointer ${i === 0 ? 'bg-white text-zinc-950 shadow-premium border border-zinc-200/50' : 'text-zinc-400 hover:text-zinc-600'}`}>
+                          {i === 0 ? <Activity className="w-4 h-4 text-blue-600" /> : <PieChart className="w-4 h-4 opacity-50" />}
                           {item}
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div className="mt-auto bg-white/[0.02] rounded-xl p-4 border border-white/[0.05]">
-                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">System Status</p>
-                    <p className="text-xs font-bold text-blue-400 flex items-center gap-2">
+                  <div className="mt-auto bg-white rounded-xl p-5 border border-zinc-200/50 shadow-sm">
+                    <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Protocol Health</p>
+                    <p className="text-[10px] font-bold text-blue-600 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Live connection
                     </p>
                   </div>
@@ -175,46 +175,50 @@ const Hero = () => {
               <div className="flex flex-col gap-6 h-full">
 
                 {/* Stats Row */}
-                <div className="grid grid-cols-2 gap-6 h-32">
-                  <div className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest relative z-10">Total Equity</p>
-                    <h3 className="text-3xl font-bold tracking-tight text-white relative z-10 tabular-nums">12,450.00</h3>
+                <div className="grid grid-cols-2 gap-6 h-36">
+                  <div className="bg-white rounded-2xl border border-zinc-200/50 p-8 shadow-premium flex flex-col justify-between group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl -mr-12 -mt-12" />
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest relative z-10">Institutional Equity</p>
+                    <h3 className="text-4xl font-bold tracking-tight text-zinc-950 relative z-10 tabular-nums font-instrument-serif">12,450.00</h3>
                   </div>
-                  <div className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest relative z-10">Daily P&L</p>
-                    <div className="flex items-center gap-3 relative z-10">
-                      <h3 className="text-3xl font-bold tracking-tight text-emerald-400 tabular-nums">+342.50</h3>
-                      <div className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-semibold flex items-center gap-1">
-                        <TrendingUp className="w-3 h-3" /> 2.8%
+                  <div className="bg-white rounded-2xl border border-zinc-200/50 p-8 shadow-premium flex flex-col justify-between overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-12 -mt-12" />
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest relative z-10">Delta Variance</p>
+                    <div className="flex flex-col relative z-10">
+                      <h3 className="text-4xl font-bold tracking-tight text-emerald-600 tabular-nums font-instrument-serif">+342.50</h3>
+                      <div className="inline-flex items-center gap-2 mt-2">
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 uppercase tracking-widest">
+                          +2.8% Yield
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Main Infinite Chart Zone */}
-                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex-1 flex flex-col relative overflow-hidden">
-                  <div className="flex justify-between items-center mb-6">
-                    <div className="flex gap-4">
-                      <span className="text-xs font-semibold text-white bg-white/[0.05] px-2 py-1 rounded-md">1D</span>
-                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">1W</span>
-                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">1M</span>
-                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">YTD</span>
+                {/* Main Curve Analytics */}
+                <div className="bg-white rounded-2xl border border-zinc-200/50 p-8 shadow-premium flex-1 flex flex-col relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-10 relative z-10">
+                    <div className="flex gap-4 p-1 bg-zinc-50 rounded-xl border border-zinc-200/50">
+                      {['1D', '1W', '1M', 'YTD'].map((p, i) => (
+                        <span key={p} className={`text-[9px] font-bold px-3 py-1.5 rounded-lg cursor-pointer transition-all ${i === 0 ? 'bg-white text-zinc-950 shadow-sm border border-zinc-200/50' : 'text-zinc-400 hover:text-zinc-600'}`}>{p}</span>
+                      ))}
                     </div>
+                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Projection Series // GSE.MTN</div>
                   </div>
 
-                  {/* Complex CSS Graph Drawing */}
-                  <div className="absolute inset-x-0 bottom-0 h-[70%]">
+                  {/* Complex SVG Curve */}
+                  <div className="absolute inset-x-0 bottom-0 h-[65%]">
                     {/* Grid Lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between py-6">
+                    <div className="absolute inset-0 flex flex-col justify-between py-10 opacity-30">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="w-full h-px bg-white/[0.03]" />
+                        <div key={i} className="w-full h-px bg-zinc-200" />
                       ))}
                     </div>
                     {/* Graph Path */}
                     <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100">
                       <defs>
                         <linearGradient id="heroChartGradient" x1="0" x2="0" y1="0" y2="1">
-                          <stop offset="0%" stopColor="rgb(37 99 235)" stopOpacity="0.2" />
+                          <stop offset="0%" stopColor="rgb(37 99 235)" stopOpacity="0.1" />
                           <stop offset="100%" stopColor="rgb(37 99 235)" stopOpacity="0" />
                         </linearGradient>
                       </defs>
@@ -224,10 +228,10 @@ const Hero = () => {
                       />
                       <path
                         d="M0,80 C10,70 20,85 30,60 C40,35 50,55 60,30 C70,5 80,45 90,20 C95,10 100,10 100,10"
-                        fill="none" stroke="currentColor" strokeWidth="2.5"
-                        className="text-blue-500 drop-shadow-[0_8px_12px_rgba(37,99,235,0.4)]"
+                        fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round"
+                        className="drop-shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
                       />
-                      <circle cx="100" cy="10" r="4" className="fill-blue-400 animate-pulse drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                      <circle cx="100" cy="10" r="4" className="fill-blue-600 drop-shadow-[0_0_12px_rgba(37,99,235,0.6)]" />
                     </svg>
                   </div>
                 </div>
@@ -237,46 +241,48 @@ const Hero = () => {
               <div className="hidden md:flex flex-col gap-6 h-full">
 
                 {/* Simulated Order Ticket */}
-                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-6 text-white h-[60%] flex flex-col relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-                  <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Rapid Execution</p>
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-white h-[65%] flex flex-col relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-8 border-b border-zinc-800 pb-5">Rapid Execution</p>
 
-                  <div className="bg-white/[0.03] rounded-xl p-3 border border-white/[0.05] mb-4 flex justify-between items-center cursor-pointer hover:bg-white/[0.05] transition-colors">
-                    <span className="text-xs font-semibold text-zinc-400">Ticker</span>
-                    <span className="text-sm font-bold tracking-tight text-white flex items-center gap-2">MTNGH <span className="bg-zinc-800 border border-zinc-700 text-zinc-300 text-[10px] px-1.5 py-0.5 rounded-md">1.82</span></span>
+                  <div className="bg-white/5 rounded-xl p-4 border border-white/5 mb-6 flex justify-between items-center group cursor-pointer hover:bg-white/10 transition-all">
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase">Ticker</span>
+                    <span className="text-sm font-bold tracking-tight text-white flex items-center gap-2">
+                      MTNGH <span className="bg-zinc-800 px-2 py-0.5 rounded text-[10px] font-bold">1.82</span>
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 mb-auto">
-                    <button className="bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold tracking-wider hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(37,99,235,0.2)]">Buy</button>
-                    <button className="bg-white/[0.05] text-white py-2.5 rounded-xl border border-white/[0.1] text-xs font-bold tracking-wider hover:bg-white/[0.1] transition-colors">Sell</button>
+                  <div className="grid grid-cols-2 gap-4 mb-auto">
+                    <button className="bg-blue-600 text-white py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-blue-500 transition-all shadow-xl shadow-blue-500/20 active:scale-95">Buy</button>
+                    <button className="bg-white/5 text-white py-4 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95">Sell</button>
                   </div>
 
-                  <div className="pt-4 border-t border-white/[0.06] flex justify-between items-end">
+                  <div className="pt-6 border-t border-zinc-800 flex justify-between items-end">
                     <div>
-                      <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Est. Cost</p>
-                      <p className="text-sm font-bold text-white tabular-nums">GH₵ 18,200.00</p>
+                      <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Est. Ledger Cost</p>
+                      <p className="text-lg font-bold text-white tabular-nums font-instrument-serif tracking-tight">GH₵ 18,200.00</p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center cursor-pointer hover:bg-white/[0.1] transition-colors">
-                      <ArrowRight className="w-4 h-4 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                      <ArrowRight className="w-5 h-5 text-white" />
                     </div>
                   </div>
                 </div>
 
-                {/* Top Movers Snippet */}
-                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-5 h-[40%] flex flex-col">
-                  <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-4">Volume Leaders</p>
-                  <div className="space-y-4 overflow-hidden">
+                {/* GSE Movers */}
+                <div className="bg-white rounded-2xl border border-zinc-200/50 p-6 h-[35%] flex flex-col shadow-premium">
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-6">Volume Leaders</p>
+                  <div className="space-y-5 overflow-hidden">
                     {marketData.map((s, i) => (
                       <div key={i} className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-md bg-white/[0.05] flex items-center justify-center font-bold text-[8px] text-zinc-400 border border-white/[0.1]">
+                          <div className="w-8 h-8 rounded-lg bg-zinc-50 flex items-center justify-center font-bold text-[9px] text-zinc-950 border border-zinc-200/50 shadow-sm">
                             {s.name.substring(0, 2)}
                           </div>
-                          <span className="font-semibold text-zinc-200 text-xs tracking-tight">{s.name}</span>
+                          <span className="text-[11px] font-bold text-zinc-950 uppercase tracking-tight">{s.name}</span>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-zinc-200 font-semibold text-xs tabular-nums">{s.price}</span>
-                          <span className={`text-[10px] font-semibold ${s.up === true ? "text-emerald-400" : s.up === false ? "text-red-400" : "text-zinc-500"}`}>{s.change}</span>
+                          <span className="text-zinc-950 font-bold text-xs tabular-nums">{s.price}</span>
+                          <span className={`text-[9px] font-bold ${s.up === true ? "text-emerald-600" : s.up === false ? "text-red-600" : "text-zinc-400"}`}>{s.change}</span>
                         </div>
                       </div>
                     ))}

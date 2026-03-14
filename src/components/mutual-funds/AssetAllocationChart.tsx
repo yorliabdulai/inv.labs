@@ -26,9 +26,9 @@ export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) 
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
-                    <p className="text-xs font-bold text-gray-600">{payload[0].name}</p>
-                    <p className="text-sm font-black" style={{ color: payload[0].payload.color }}>
+                <div className="bg-card border border-border rounded-xl p-4 shadow-premium backdrop-blur-md">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{payload[0].name}</p>
+                    <p className="text-xl font-bold tabular-nums" style={{ color: payload[0].payload.color }}>
                         {payload[0].value}%
                     </p>
                 </div>
@@ -38,17 +38,18 @@ export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) 
     };
 
     return (
-        <div className="h-48">
+        <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
                         data={data}
                         cx="50%"
                         cy="50%"
-                        innerRadius={40}
-                        outerRadius={70}
-                        paddingAngle={2}
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={4}
                         dataKey="value"
+                        stroke="none"
                     >
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -57,11 +58,11 @@ export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) 
                     <Tooltip content={<CustomTooltip />} />
                     <Legend
                         verticalAlign="bottom"
-                        height={36}
+                        height={48}
                         iconType="circle"
                         formatter={(value, entry: any) => (
-                            <span className="text-xs font-bold text-gray-700">
-                                {value} ({entry.payload.value}%)
+                            <span className="text-[10px] font-bold text-foreground uppercase tracking-widest px-2">
+                                {value} <span className="text-muted-foreground ml-1">({entry.payload.value}%)</span>
                             </span>
                         )}
                     />

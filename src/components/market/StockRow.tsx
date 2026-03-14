@@ -53,31 +53,31 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
         return (
             <>
                 <div
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.04] transition-colors cursor-pointer group border-b border-white/[0.06] last:border-b-0"
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0"
                     onClick={() => setIsModalOpen(true)}
                 >
                     {/* Symbol Icon */}
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 tracking-widest border ${isPositive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 tracking-widest border ${isPositive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
                         {stock.symbol.substring(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                            <span className="font-bold text-white text-sm tracking-tight">{stock.symbol}</span>
-                            {isOwned && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Owned" />}
+                            <span className="font-bold text-foreground text-sm tracking-tight">{stock.symbol}</span>
+                            {isOwned && <div className="w-1.5 h-1.5 rounded-full bg-primary" title="Owned" />}
                         </div>
-                        <div className="text-xs text-zinc-500 font-medium truncate mt-0.5">{stock.name}</div>
+                        <div className="text-xs text-muted-foreground font-medium truncate mt-0.5">{stock.name}</div>
                     </div>
                     <div className="w-20 h-8 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
                         <Sparkline data={history} color={isPositive ? "#34d399" : "#f87171"} />
                     </div>
                     <div className="text-right flex-shrink-0 w-28">
-                        <div className="font-bold text-white text-sm tabular-nums tracking-tight">GH₵{stock.price.toFixed(2)}</div>
-                        <div className={`text-xs font-semibold mt-0.5 ${isPositive ? "text-emerald-400" : "text-red-400"}`}>
+                        <div className="font-bold text-foreground text-sm tabular-nums tracking-tight">GH₵{stock.price.toFixed(2)}</div>
+                        <div className={`text-xs font-semibold mt-0.5 ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
                             {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
                         </div>
                     </div>
                     <button
-                        className="ml-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 active:scale-95 transition-all text-xs flex-shrink-0 min-h-[36px] shadow-sm shadow-blue-500/20"
+                        className="ml-4 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 active:scale-95 transition-all text-xs flex-shrink-0 min-h-[36px] shadow-sm shadow-primary/20"
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                     >
                         Trade
@@ -97,48 +97,48 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
     return (
         <>
             <div
-                className={`bg-white/[0.02] rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-white/[0.04] ${isOwned ? "border-blue-500/30" : "border-white/[0.05] hover:border-white/[0.1]"
+                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
                     }`}
                 onClick={() => setIsModalOpen(true)}
             >
                 {/* Ownership Label */}
                 {isOwned && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20">
-                        <CheckCircle2 size={12} className="text-blue-400" />
-                        <span className="text-[10px] font-semibold text-blue-400 tracking-wide">Owned</span>
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
+                        <CheckCircle2 size={12} className="text-primary" />
+                        <span className="text-[10px] font-semibold text-primary tracking-wide">Owned</span>
                     </div>
                 )}
 
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-6">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm border flex-shrink-0 tracking-wider ${isPositive ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400" : "bg-red-500/5 border-red-500/20 text-red-500"
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm border flex-shrink-0 tracking-wider ${isPositive ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-500" : "bg-red-500/5 border-red-500/20 text-red-500"
                         }`}>
                         {stock.symbol.substring(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-base font-bold text-white tracking-tight">{stock.symbol}</h3>
-                            {isPositive ? <TrendingUp size={14} className="text-emerald-400" /> : <TrendingDown size={14} className="text-red-500" />}
+                            <h3 className="text-base font-bold text-foreground tracking-tight">{stock.symbol}</h3>
+                            {isPositive ? <TrendingUp size={14} className="text-emerald-500" /> : <TrendingDown size={14} className="text-red-500" />}
                         </div>
-                        <p className="text-xs text-zinc-500 font-medium truncate leading-tight">{stock.name}</p>
-                        <span className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mt-1 block">{stock.sector}</span>
+                        <p className="text-xs text-muted-foreground font-medium truncate leading-tight">{stock.name}</p>
+                        <span className="text-[10px] font-semibold text-muted-foreground/80 uppercase tracking-widest mt-1 block">{stock.sector}</span>
                     </div>
                 </div>
 
                 {/* Price & Primary Meta */}
                 <div className="flex items-end justify-between mb-6">
                     <div>
-                        <div className="text-2xl font-bold text-white tabular-nums tracking-tight">
+                        <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
                             GH₵{stock.price.toFixed(2)}
                         </div>
-                        <div className={`text-[11px] font-semibold flex items-center gap-1.5 mt-1 ${isPositive ? "text-emerald-400" : "text-red-400"}`}>
+                        <div className={`text-[11px] font-semibold flex items-center gap-1.5 mt-1 ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
                             {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
-                            <span className="text-[10px] text-zinc-600 font-medium">today</span>
+                            <span className="text-[10px] text-muted-foreground font-medium">today</span>
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Volume</div>
-                        <div className="text-sm font-bold text-white tracking-tight">{(stock.volume / 1000).toFixed(1)}K</div>
+                        <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1">Volume</div>
+                        <div className="text-sm font-bold text-foreground tracking-tight">{(stock.volume / 1000).toFixed(1)}K</div>
                     </div>
                 </div>
 
@@ -149,17 +149,17 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
 
                 {/* Position Summary Strip */}
                 {isOwned && holding && (
-                    <div className="bg-blue-500/5 rounded-xl p-4 mb-6 border border-blue-500/10 space-y-3">
+                    <div className="bg-primary/5 rounded-xl p-4 mb-6 border border-primary/10 space-y-3">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-widest">Position</span>
-                            <span className={`text-[11px] font-bold tabular-nums ${holding.pnl >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                            <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-widest">Position</span>
+                            <span className={`text-[11px] font-bold tabular-nums ${holding.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                                 {holding.pnl >= 0 ? "+" : ""}GH₵{Math.abs(holding.pnl).toFixed(2)} ({holding.pnlPct >= 0 ? "+" : ""}{holding.pnlPct.toFixed(2)}%)
                             </span>
                         </div>
-                        <div className="flex items-center justify-between text-[10px] text-zinc-400 font-medium">
+                        <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium">
                             <span>{holding.qty} Units</span>
-                            <span>Avg <span className="text-zinc-300 font-semibold">{holding.avgCost.toFixed(2)}</span></span>
-                            <span>Val <span className="text-zinc-300 font-semibold">{holding.currentValue.toFixed(2)}</span></span>
+                            <span>Avg <span className="text-foreground font-semibold">{holding.avgCost.toFixed(2)}</span></span>
+                            <span>Val <span className="text-foreground font-semibold">{holding.currentValue.toFixed(2)}</span></span>
                         </div>
                         {/* P&L Vector */}
                         <div className="h-1 bg-white/[0.05] rounded-full overflow-hidden">
@@ -174,13 +174,13 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                 {/* Direct Action Interface */}
                 <div className="flex gap-2 mt-auto">
                     <button
-                        className="flex-1 py-3 bg-blue-600 text-white font-semibold rounded-xl transition-all text-xs border border-transparent hover:bg-blue-500 active:scale-[0.98] min-h-[44px] shadow-sm shadow-blue-500/20"
+                        className="flex-1 py-3 bg-primary text-white font-semibold rounded-xl transition-all text-xs border border-transparent hover:bg-primary/90 active:scale-[0.98] min-h-[44px] shadow-sm shadow-primary/20"
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                     >
                         Trade Asset
                     </button>
                     <button
-                        className="px-5 py-3 bg-white/[0.03] text-zinc-400 rounded-xl hover:bg-white/[0.06] hover:text-white transition-all min-h-[44px] border border-white/[0.05]"
+                        className="px-5 py-3 bg-muted/30 text-muted-foreground rounded-xl hover:bg-muted/50 hover:text-foreground transition-all min-h-[44px] border border-border/60"
                         onClick={(e) => e.stopPropagation()}
                         aria-label="Add to watchlist"
                     >

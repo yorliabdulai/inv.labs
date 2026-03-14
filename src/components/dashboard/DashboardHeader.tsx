@@ -25,6 +25,31 @@ function Clock() {
     return <>{currentTime}</>;
 }
 
+import { useTheme } from "next-themes";
+
+function ThemeToggle() {
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return <div className="w-9 h-9" />;
+
+    return (
+        <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="w-9 h-9 bg-card border border-border rounded-xl flex items-center justify-center hover:bg-muted transition-all active:scale-95 shadow-sm"
+            aria-label="Toggle theme"
+        >
+            {theme === "dark" ? (
+                <Sun size={16} className="text-blue-400" />
+            ) : (
+                <Moon size={16} className="text-zinc-500" />
+            )}
+        </button>
+    );
+}
+
 export function DashboardHeader() {
     const { displayName, displayInitial, firstName, loading } = useUserProfile();
     const [dateStr, setDateStr] = useState("");
@@ -44,29 +69,29 @@ export function DashboardHeader() {
     return (
         <header className="relative z-10 mb-8 w-full">
             {/* Status strip */}
-            <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl mx-4 mb-6 md:mx-0 md:mb-8">
+            <div className="bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-blue-600/20 border border-blue-500/20 flex items-center justify-center">
-                            <Activity size={14} className="text-blue-400" />
+                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <Activity size={14} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-600 dark:bg-blue-500" />
                                 </span>
-                                <span className="text-xs font-semibold text-zinc-300">GSE Market</span>
+                                <span className="text-xs font-semibold text-foreground tracking-tight">GSE Market</span>
                             </div>
-                            <div className="text-[10px] text-zinc-600 mt-0.5">{dateStr}</div>
+                            <div className="text-[10px] text-muted-foreground mt-0.5">{dateStr}</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-zinc-600">
+                        <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-muted-foreground">
                             <Globe size={11} className="text-blue-500/60" />
                             Session active
                         </span>
-                        <div className="bg-white/[0.04] border border-white/[0.07] rounded-lg px-3 py-1.5 font-mono text-xs text-zinc-400 tabular-nums">
+                        <div className="bg-muted border border-border rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground tabular-nums">
                             <Clock />
                         </div>
                     </div>
@@ -76,13 +101,13 @@ export function DashboardHeader() {
             {/* Title row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 md:px-0">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-1">
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-1">
                         Dashboard
                     </h1>
-                    <div className="flex items-center gap-1.5 text-sm text-zinc-500">
-                        <GreetIcon size={13} className="text-blue-500/70 flex-shrink-0" />
+                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <GreetIcon size={13} className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
                         {showSkeleton ? (
-                            <span className="inline-block w-40 h-3 bg-white/[0.05] animate-pulse rounded" />
+                            <span className="inline-block w-40 h-3 bg-muted animate-pulse rounded" />
                         ) : (
                             <span>{greeting.text}, {name}</span>
                         )}
@@ -92,27 +117,30 @@ export function DashboardHeader() {
                 <div className="flex items-center gap-3">
                     {/* Search */}
                     <div className="relative hidden lg:flex">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" />
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Search markets..."
                             aria-label="Search markets"
-                            className="bg-white/[0.04] border border-white/[0.07] rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-zinc-400 placeholder:text-zinc-600 focus:border-blue-500/40 focus:bg-white/[0.06] outline-none transition-all"
+                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-blue-500/40 focus:bg-muted outline-none transition-all shadow-sm"
                         />
                     </div>
 
+                    {/* Theme Toggle */}
+                    <ThemeToggle />
+
                     {/* Notification bell */}
                     <button
-                        className="relative w-9 h-9 bg-white/[0.04] rounded-xl border border-white/[0.07] hover:bg-white/[0.08] transition-all flex items-center justify-center group"
+                        className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm"
                         aria-label="View notifications"
                     >
-                        <Bell size={16} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+                        <Bell size={16} className="text-muted-foreground group-hover:text-foreground transition-colors" />
                         <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-blue-500 rounded-full" />
                     </button>
 
                     {/* Avatar */}
                     <button
-                        className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs hover:bg-blue-500 transition-all"
+                        className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs hover:bg-blue-500 transition-all shadow-md shadow-blue-500/20"
                         aria-label="User profile"
                     >
                         {initial}

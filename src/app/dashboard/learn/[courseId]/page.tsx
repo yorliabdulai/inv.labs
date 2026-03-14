@@ -77,7 +77,7 @@ export default function CourseLearningPage() {
         return (
             <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans">
                 <DashboardHeader />
-                <div className="py-24 text-center text-white/40 animate-pulse text-[10px] font-bold uppercase tracking-widest">
+                <div className="py-24 text-center text-muted-foreground/40 animate-pulse text-[10px] font-bold uppercase tracking-widest">
                     Initializing Institutional Course Module...
                 </div>
             </div>
@@ -106,50 +106,50 @@ export default function CourseLearningPage() {
 
             <button
                 onClick={() => router.push("/dashboard/learn")}
-                className="flex items-center gap-2 text-[10px] font-bold text-zinc-500 hover:text-white uppercase tracking-widest transition-colors"
+                className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
             >
                 <ArrowLeft size={14} /> Back to Academy Catalog
             </button>
 
             {/* Course Header */}
-            <div className="relative rounded-2xl p-8 md:p-12 bg-white/[0.02] border border-white/[0.06] shadow-2xl flex flex-col md:flex-row gap-8 items-start justify-between overflow-hidden group backdrop-blur-md">
-                <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none group-hover:bg-blue-600/20 transition-all duration-700" />
+            <div className="relative rounded-2xl p-8 md:p-12 bg-card border border-border shadow-premium flex flex-col md:flex-row gap-8 items-start justify-between overflow-hidden group backdrop-blur-md">
+                <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none group-hover:bg-primary/20 transition-all duration-700" />
 
                 <div className="relative z-10 flex gap-6 max-w-3xl">
-                    <div className="w-16 h-16 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-600/20 transition-transform group-hover:scale-110 duration-500">
+                    <div className="w-16 h-16 rounded-xl bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20 transition-transform group-hover:scale-110 duration-500">
                         <IconComponent size={28} />
                     </div>
                     <div className="space-y-4">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg text-[9px] font-bold uppercase tracking-widest text-zinc-500">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted/30 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                             {course.level}
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight uppercase font-instrument-serif leading-tight">
+                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-instrument-serif leading-tight">
                             {course.title}
                         </h1>
-                        <p className="text-zinc-500 text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
+                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
                             {course.description}
                         </p>
                     </div>
                 </div>
 
-                <div className="relative z-10 bg-white/[0.03] border border-white/[0.06] p-6 rounded-xl min-w-[240px] shrink-0 space-y-6 backdrop-blur-md">
+                <div className="relative z-10 bg-muted/30 border border-border p-6 rounded-xl min-w-[240px] shrink-0 space-y-6 backdrop-blur-md">
                     <div>
                         <div className="flex justify-between items-end mb-2">
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-blue-500">Progress</span>
-                            <span className="text-xl font-bold text-white tabular-nums tracking-tight">{enrollment?.progress || 0}%</span>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Progress</span>
+                            <span className="text-xl font-bold text-foreground tabular-nums tracking-tight">{enrollment?.progress || 0}%</span>
                         </div>
-                        <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-600 transition-all duration-1000 rounded-full" style={{ width: `${enrollment?.progress || 0}%` }} />
+                        <div className="w-full h-1.5 bg-muted/20 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary transition-all duration-1000 rounded-full" style={{ width: `${enrollment?.progress || 0}%` }} />
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                            <span className="flex items-center gap-2"><BookOpen size={12} className="text-blue-500" /> Modules</span>
-                            <span className="text-white">{enrollment?.completed_lessons || 0} / {course.total_lessons}</span>
+                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                            <span className="flex items-center gap-2"><BookOpen size={12} className="text-primary" /> Modules</span>
+                            <span className="text-foreground">{enrollment?.completed_lessons || 0} / {course.total_lessons}</span>
                         </div>
-                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                            <span className="flex items-center gap-2"><Clock size={12} className="text-blue-500" /> Est. Time</span>
-                            <span className="text-white">{course.estimated_time}</span>
+                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                            <span className="flex items-center gap-2"><Clock size={12} className="text-primary" /> Est. Time</span>
+                            <span className="text-foreground">{course.estimated_time}</span>
                         </div>
                     </div>
                 </div>
@@ -159,7 +159,7 @@ export default function CourseLearningPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left side: Curriculum list */}
                 <div className="lg:col-span-1 space-y-4 order-2 lg:order-1">
-                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Course Curriculum</h3>
+                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-6">Course Curriculum</h3>
                     <div className="space-y-3">
                         {Array.from({ length: course.total_lessons }).map((_, i) => {
                             const lessonNum = i + 1;
@@ -170,20 +170,20 @@ export default function CourseLearningPage() {
                                 <div
                                     key={i}
                                     className={`p-5 border rounded-xl flex items-center justify-between transition-all ${isCurrent
-                                        ? "bg-blue-600/10 border-blue-600/30 text-white shadow-lg shadow-blue-600/5 translate-x-2"
+                                        ? "bg-primary/10 border-primary/30 text-foreground shadow-premium translate-x-2"
                                         : isPast
-                                            ? "bg-white/[0.02] border-emerald-500/20 text-zinc-400"
-                                            : "bg-[#121417]/50 border-white/[0.04] text-zinc-600"
+                                            ? "bg-card/50 border-emerald-500/20 text-muted-foreground"
+                                            : "bg-card/30 border-border text-muted-foreground"
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold ${isPast ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : isCurrent ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "bg-white/[0.03] border border-white/[0.06] text-zinc-500"
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold ${isPast ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : isCurrent ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-muted/10 border border-border text-muted-foreground"
                                             }`}>
                                             {isPast ? <CheckCircle size={14} /> : lessonNum}
                                         </div>
                                         <span className="text-[10px] font-bold uppercase tracking-widest">Module {lessonNum}</span>
                                     </div>
-                                    {isCurrent && <PlayCircle size={14} className="text-blue-500 animate-pulse" />}
+                                    {isCurrent && <PlayCircle size={14} className="text-primary animate-pulse" />}
                                 </div>
                             );
                         })}
@@ -192,21 +192,21 @@ export default function CourseLearningPage() {
 
                 {/* Right side: Player interface */}
                 <div className="lg:col-span-2 order-1 lg:order-2">
-                    <div className="bg-[#121417]/50 backdrop-blur-xl border border-white/[0.06] rounded-2xl shadow-2xl flex flex-col h-full min-h-[500px] overflow-hidden">
+                    <div className="bg-card backdrop-blur-xl border border-border rounded-2xl shadow-premium flex flex-col h-full min-h-[500px] overflow-hidden">
                         {isCompleted ? (
                             <div className="p-16 flex-1 flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in-95 duration-700">
-                                <div className="w-24 h-24 bg-blue-600/10 rounded-3xl flex items-center justify-center border border-blue-600/30 text-blue-500 shadow-2xl shadow-blue-600/10">
+                                <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/30 text-primary shadow-2xl shadow-primary/10">
                                     <Shield size={48} />
                                 </div>
                                 <div className="space-y-4 max-w-sm">
-                                    <h2 className="text-3xl font-bold text-white uppercase tracking-tight font-instrument-serif leading-none">Certification Earned</h2>
-                                    <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-widest leading-loose">
+                                    <h2 className="text-3xl font-bold text-foreground uppercase tracking-tight font-instrument-serif leading-none">Certification Earned</h2>
+                                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
                                         You have successfully graduated from this curriculum. Your profile has been credited with {course.xp_reward} Knowledge XP.
                                     </p>
                                 </div>
                                 <button
                                     onClick={() => router.push("/dashboard/learn")}
-                                    className="px-8 py-4 bg-white/[0.03] text-white hover:bg-white/[0.06] border border-white/[0.06] rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-xl"
+                                    className="px-8 py-4 bg-muted/30 text-foreground hover:bg-muted/50 border border-border rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-premium"
                                 >
                                     Return to Academy
                                 </button>
@@ -214,34 +214,34 @@ export default function CourseLearningPage() {
                         ) : (
                             <div className="flex flex-col h-full">
                                 {/* Video Placeholder */}
-                                <div className="aspect-video w-full bg-black flex items-center justify-center border-b border-white/[0.06] relative overflow-hidden group/video cursor-pointer">
+                                <div className="aspect-video w-full bg-black flex items-center justify-center border-b border-border relative overflow-hidden group/video cursor-pointer">
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                                    <div className="w-20 h-20 rounded-full bg-blue-600/20 backdrop-blur-md flex items-center justify-center border border-blue-600/30 group-hover/video:scale-110 transition-all duration-500 z-20">
-                                        <PlayCircle size={48} className="text-blue-500 group-hover/video:text-blue-400 transition-all" />
+                                    <div className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/30 group-hover/video:scale-110 transition-all duration-500 z-20">
+                                        <PlayCircle size={48} className="text-primary group-hover/video:text-primary transition-all" />
                                     </div>
                                     <div className="absolute bottom-6 left-8 z-20">
-                                        <span className="text-[10px] font-bold text-white px-3 py-1.5 bg-blue-600 rounded-lg uppercase tracking-widest shadow-xl">Live Execution Protocol</span>
+                                        <span className="text-[10px] font-bold text-white px-3 py-1.5 bg-primary rounded-lg uppercase tracking-widest shadow-xl">Live Execution Protocol</span>
                                     </div>
                                 </div>
 
                                 <div className="p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
-                                        <h3 className="text-2xl font-bold text-white uppercase tracking-tight font-instrument-serif">
+                                        <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight font-instrument-serif">
                                             Instructional Module {currentModule}
                                         </h3>
-                                        <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-widest leading-loose">
+                                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
                                             Please review the video module above before proceeding. The knowledge tested here will directly impact your strategic allocation skills within the terminal simulator.
                                         </p>
                                     </div>
 
-                                    <div className="pt-10 w-full border-t border-white/[0.06] mt-10 flex items-center justify-between">
+                                    <div className="pt-10 w-full border-t border-border mt-10 flex items-center justify-between">
                                         <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
                                             <CheckCircle size={14} /> Auto-Saving Progress
                                         </span>
                                         <button
                                             onClick={handleCompleteModule}
                                             disabled={advancing}
-                                            className="px-10 py-5 bg-blue-600 text-white hover:bg-blue-700 active:scale-95 disabled:opacity-50 font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-blue-600/20"
+                                            className="px-10 py-5 bg-primary text-white hover:bg-primary/90 active:scale-95 disabled:opacity-50 font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-primary/20"
                                         >
                                             {advancing ? "Validating..." : "Complete Module & Advance"}
                                         </button>

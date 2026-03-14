@@ -44,7 +44,7 @@ export default async function DashboardLayout({
 
     return (
         <UserProfileProvider initialUser={user} initialProfile={hydratedProfile}>
-            <div className="min-h-screen bg-[#0D0F12] relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+            <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white transition-colors duration-300">
                 <Sidebar />
 
                 <div className="flex flex-col min-h-screen md:pl-64 transition-all duration-300 ease-out z-10 relative">

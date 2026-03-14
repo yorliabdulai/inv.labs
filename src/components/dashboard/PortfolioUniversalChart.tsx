@@ -44,28 +44,28 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
         if (active && payload && payload.length) {
             const item = payload[0].payload as ChartData;
             return (
-                <div className="bg-[#1A1C4E] border border-white/10 p-4 rounded-2xl shadow-2xl text-white min-w-[180px] backdrop-blur-md">
-                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2 border-b border-white/5 pb-2">
+                <div className="bg-card border border-border p-4 rounded-2xl shadow-2xl text-foreground min-w-[180px] backdrop-blur-md">
+                    <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2 border-b border-border pb-2">
                         {item.time}
                     </p>
                     <div className="space-y-1.5">
                         <div className="flex justify-between items-center gap-4">
-                            <span className="text-[10px] font-black uppercase text-slate-400">Net Value</span>
+                            <span className="text-[10px] font-black uppercase text-muted-foreground">Net Value</span>
                             <span className="text-sm font-black tabular-nums">{formatCurrency(item.value)}</span>
                         </div>
                         {chartType === 'candle' && (
                             <>
                                 <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-slate-400">Open</span>
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground">Open</span>
                                     <span className="text-xs font-black tabular-nums">{formatCurrency(item.open)}</span>
                                 </div>
                                 <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-slate-400">High</span>
-                                    <span className="text-xs font-black text-emerald-400 tabular-nums">{formatCurrency(item.high)}</span>
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground">High</span>
+                                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{formatCurrency(item.high)}</span>
                                 </div>
                                 <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-slate-400">Low</span>
-                                    <span className="text-xs font-black text-red-400 tabular-nums">{formatCurrency(item.low)}</span>
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground">Low</span>
+                                    <span className="text-xs font-black text-red-600 dark:text-red-400 tabular-nums">{formatCurrency(item.low)}</span>
                                 </div>
                             </>
                         )}
@@ -87,16 +87,17 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                                 <stop offset="95%" stopColor="#C05E42" stopOpacity={0.2} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
+                            tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }}
+                            className="text-muted-foreground"
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(249, 249, 249, 0.05)', radius: 2 }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', className: 'text-muted/30', radius: 2 }} />
                         <Bar
                             dataKey="value"
                             fill="url(#barGradient)"
@@ -108,16 +109,17 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
             case 'candle':
                 return (
                     <ComposedChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
+                            tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }}
+                            className="text-muted-foreground"
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(249, 249, 249, 0.1)', strokeWidth: 1 }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'currentColor', className: 'text-border', strokeWidth: 1 }} />
                         <Bar dataKey="high" fill="transparent">
                             {data.map((entry, index) => {
                                 const isUp = entry.close >= entry.open;
@@ -152,16 +154,17 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                     <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#C05E42" stopOpacity={0.15} />
-                                <stop offset="95%" stopColor="#C05E42" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15} />
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(249, 249, 249, 0.05)" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
                         <XAxis
                             dataKey="time"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fontWeight: 900, fill: 'rgba(249, 249, 249, 0.4)' }}
+                            tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }}
+                            className="text-muted-foreground"
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
@@ -169,7 +172,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                         <Area
                             type="monotone"
                             dataKey="value"
-                            stroke="#C05E42"
+                            stroke="#2563eb"
                             strokeWidth={2}
                             fillOpacity={1}
                             fill="url(#colorValue)"

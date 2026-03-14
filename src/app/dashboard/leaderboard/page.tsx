@@ -71,16 +71,16 @@ export default function LeaderboardPage() {
             <DashboardHeader />
 
             {/* ── Header / Banner ── */}
-            <div className="relative rounded-2xl p-8 md:p-16 bg-[#121417] text-white border border-white/[0.06] shadow-3xl overflow-hidden group">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-blue-600/10" />
+            <div className="relative rounded-2xl p-8 md:p-16 bg-card text-foreground border border-border shadow-premium overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-primary/10" />
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
                     <div className="space-y-6">
-                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06] text-[10px] font-bold uppercase tracking-widest text-blue-500">
+                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 rounded-lg border border-border text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Activity size={12} /> Global Rankings
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif text-white">Platform Leaderboards</h1>
-                        <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest max-w-lg leading-relaxed">
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif text-foreground">Platform Leaderboards</h1>
+                        <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest max-w-lg leading-relaxed">
                             Assess top performing assets in the market and benchmark your performance and accreditation XP against top traders in the network.
                         </p>
                     </div>
@@ -88,7 +88,7 @@ export default function LeaderboardPage() {
                     <button
                         onClick={() => loadRankings(true)}
                         disabled={refreshing}
-                        className="group flex items-center gap-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-blue-900/20"
+                        className="group flex items-center gap-4 px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-primary/20"
                     >
                         <RefreshCcw size={16} className={refreshing ? "animate-spin" : "transition-transform duration-700 group-hover:rotate-180"} />
                         {refreshing ? "SYNCING..." : "Refresh Feed"}
@@ -97,16 +97,16 @@ export default function LeaderboardPage() {
             </div>
 
             {/* ── View Toggle & Strategy Selectors ── */}
-            <div className="flex border-b border-white/[0.06] mb-8">
+            <div className="flex border-b border-border mb-8">
                 <button
                     onClick={() => setViewMode("market")}
-                    className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 ${viewMode === "market" ? "text-blue-500 border-blue-500" : "text-zinc-500 border-transparent hover:text-white"}`}
+                    className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 ${viewMode === "market" ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"}`}
                 >
                     Market Assets
                 </button>
                 <button
                     onClick={() => setViewMode("users")}
-                    className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 flex items-center gap-2 ${viewMode === "users" ? "text-blue-500 border-blue-500" : "text-zinc-500 border-transparent hover:text-white"}`}
+                    className={`px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 flex items-center gap-2 ${viewMode === "users" ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"}`}
                 >
                     <Users size={14} /> Top Traders
                 </button>
@@ -119,20 +119,20 @@ export default function LeaderboardPage() {
                             key={cat.key}
                             onClick={() => setCategory(cat.key)}
                             className={`p-6 rounded-2xl border transition-all text-left group relative flex flex-col h-full backdrop-blur-md ${category === cat.key
-                                ? "bg-white/[0.03] border-blue-500/40 shadow-2xl"
-                                : "bg-white/[0.01] border-white/[0.06] hover:border-white/10 hover:bg-white/[0.03]"
+                                ? "bg-card border-primary/40 shadow-premium"
+                                : "bg-card/50 border-border hover:border-primary/30 hover:bg-card"
                                 }`}
                         >
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 border ${category === cat.key
-                                ? "bg-blue-600/10 text-blue-500 border-blue-500/20 shadow-lg shadow-blue-900/20"
-                                : "bg-white/[0.03] text-zinc-400 border-white/[0.06] group-hover:text-white"
+                                ? "bg-primary/10 text-primary border-primary/20 shadow-lg shadow-primary/10"
+                                : "bg-muted/30 text-muted-foreground border-border group-hover:text-foreground"
                                 }`}>
                                 <cat.icon size={20} />
                             </div>
-                            <h3 className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${category === cat.key ? "text-white" : "text-zinc-400 group-hover:text-white"}`}>
+                            <h3 className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${category === cat.key ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
                                 {cat.label}
                             </h3>
-                            <p className="text-zinc-500 text-[10px] font-medium leading-relaxed line-clamp-2">
+                            <p className="text-muted-foreground text-[10px] font-medium leading-relaxed line-clamp-2">
                                 {cat.description}
                             </p>
                         </button>
@@ -144,33 +144,33 @@ export default function LeaderboardPage() {
             <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-6 px-2">
                     <div className="relative w-full max-w-md">
-                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Search assets or traders..."
                             aria-label="Search items"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl text-xs font-semibold focus:bg-white/[0.06] focus:border-blue-500/50 outline-none transition-all placeholder:text-zinc-600 text-white"
+                            className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl text-xs font-semibold focus:bg-muted/20 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/60 text-foreground shadow-sm"
                         />
                     </div>
-                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest whitespace-nowrap">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">
                         Displaying {filteredRankings.length} results
                     </p>
                 </div>
 
-                <div className="bg-[#0D0F12] border border-white/[0.06] rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
+                <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-premium backdrop-blur-md">
                     {loading ? (
                         <div className="py-48 flex flex-col items-center gap-6">
-                            <RefreshCcw size={40} className="animate-spin text-blue-500 opacity-50" />
-                            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Aggregating Layouts...</span>
+                            <RefreshCcw size={40} className="animate-spin text-primary opacity-50" />
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Aggregating Layouts...</span>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
                                     {viewMode === "market" ? (
-                                        <tr className="bg-white/[0.02] border-b border-white/[0.06] text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                        <tr className="bg-muted/10 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                             <th className="px-8 py-5">Rank</th>
                                             <th className="px-8 py-5">Asset</th>
                                             <th className="px-6 py-5 text-right">Live Price</th>
@@ -179,7 +179,7 @@ export default function LeaderboardPage() {
                                             <th className="px-8 py-5 text-right">Momentum Vector</th>
                                         </tr>
                                     ) : (
-                                        <tr className="bg-white/[0.02] border-b border-white/[0.06] text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                        <tr className="bg-muted/10 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                             <th className="px-8 py-5 text-center w-24">Global Rank</th>
                                             <th className="px-8 py-5">Trader Profile</th>
                                             <th className="px-6 py-5 text-right">Accreditation Level</th>
@@ -187,7 +187,7 @@ export default function LeaderboardPage() {
                                         </tr>
                                     )}
                                 </thead>
-                                <tbody className="divide-y divide-white/[0.06]">
+                                <tbody className="divide-y divide-border">
                                     {viewMode === "market" ? filteredRankings.map((asset) => {
                                         const scoreValue = category === 'stability' ? asset.stabilityScore :
                                             category === 'momentum' ? asset.momentumScore :
@@ -197,10 +197,10 @@ export default function LeaderboardPage() {
                                         const rankRising = (asset.prevRank ?? asset.rank) > asset.rank;
 
                                         return (
-                                            <tr key={asset.symbol} className="group hover:bg-white/[0.03] transition-colors">
+                                            <tr key={asset.symbol} className="group hover:bg-muted/20 transition-colors">
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-4">
-                                                        <span className={`text-base font-bold w-6 tabular-nums tracking-tight ${asset.rank <= 3 ? "text-blue-500" : "text-zinc-500"
+                                                        <span className={`text-base font-bold w-6 tabular-nums tracking-tight ${asset.rank <= 3 ? "text-primary" : "text-muted-foreground"
                                                             }`}>
                                                             {asset.rank === 1 ? "01" : asset.rank < 10 ? `0${asset.rank}` : asset.rank}
                                                         </span>
@@ -213,17 +213,17 @@ export default function LeaderboardPage() {
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-xl bg-white/[0.03] flex items-center justify-center font-bold text-zinc-400 text-xs border border-white/[0.06] group-hover:bg-white/[0.06] group-hover:border-blue-500/40 group-hover:text-blue-500 transition-all uppercase tracking-widest leading-none">
+                                                        <div className="w-12 h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-muted/50 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none">
                                                             {asset.symbol.slice(0, 2)}
                                                         </div>
                                                         <div>
-                                                            <div className="text-sm font-bold text-white leading-tight uppercase tracking-widest">{asset.symbol}</div>
-                                                            <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mt-1">{asset.sector}</div>
+                                                            <div className="text-sm font-bold text-foreground leading-tight uppercase tracking-widest">{asset.symbol}</div>
+                                                            <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mt-1">{asset.sector}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-6 text-right">
-                                                    <div className="text-sm font-bold text-white tabular-nums tracking-tight">GH₵{asset.price.toFixed(2)}</div>
+                                                    <div className="text-sm font-bold text-foreground tabular-nums tracking-tight">GH₵{asset.price.toFixed(2)}</div>
                                                 </td>
                                                 <td className="px-6 py-6 text-right">
                                                     <div className={`text-sm font-bold tabular-nums tracking-tight ${isUp ? "text-emerald-500" : "text-red-500"}`}>
@@ -232,14 +232,14 @@ export default function LeaderboardPage() {
                                                 </td>
                                                 <td className="px-6 py-6 text-right">
                                                     <div className="flex items-center justify-end gap-4">
-                                                        <div className="flex-1 max-w-[80px] h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                                                        <div className="flex-1 max-w-[80px] h-1.5 bg-muted/20 rounded-full overflow-hidden">
                                                             <div
-                                                                className={`h-full rounded-full transition-all duration-1000 ${category === 'gainers' || category === 'stability' ? 'bg-emerald-500' : 'bg-blue-500'
+                                                                className={`h-full rounded-full transition-all duration-1000 ${category === 'gainers' || category === 'stability' ? 'bg-emerald-500' : 'bg-primary'
                                                                     }`}
                                                                 style={{ width: `${Math.min(100, Math.abs(scoreValue))}%` }}
                                                             />
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-white tabular-nums tracking-tight w-8 text-right">
+                                                        <span className="text-[10px] font-bold text-foreground tabular-nums tracking-tight w-8 text-right">
                                                             {Math.abs(scoreValue).toFixed(1)}
                                                         </span>
                                                     </div>
@@ -247,7 +247,7 @@ export default function LeaderboardPage() {
                                                 <td className="px-8 py-6 text-right">
                                                     <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${asset.trend === 'up' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" :
                                                         asset.trend === 'down' ? "bg-red-500/10 text-red-500 border border-red-500/20" :
-                                                            "bg-white/[0.03] text-zinc-500 border border-white/[0.06]"
+                                                            "bg-muted/30 text-muted-foreground border border-border"
                                                         }`}>
                                                         {asset.trend === 'up' ? <TrendingUp size={12} /> : asset.trend === 'down' ? <TrendingDown size={12} /> : <Minus size={12} />}
                                                         {asset.trend}
@@ -258,28 +258,28 @@ export default function LeaderboardPage() {
                                     }) : filteredRankings.map((user, idx) => {
                                         const rank = idx + 1;
                                         return (
-                                            <tr key={user.id} className="group hover:bg-white/[0.03] transition-colors">
+                                            <tr key={user.id} className="group hover:bg-muted/20 transition-colors">
                                                 <td className="px-8 py-6 text-center">
-                                                    <span className={`text-xl font-bold tabular-nums tracking-tight ${rank <= 3 ? "text-blue-500" : "text-zinc-500"}`}>
+                                                    <span className={`text-xl font-bold tabular-nums tracking-tight ${rank <= 3 ? "text-primary" : "text-muted-foreground"}`}>
                                                         {rank < 10 ? `0${rank}` : rank}
                                                     </span>
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-xl bg-white/[0.03] flex items-center justify-center font-bold text-zinc-400 text-xs border border-white/[0.06] group-hover:bg-blue-600/10 group-hover:border-blue-500/40 group-hover:text-blue-500 transition-all uppercase tracking-widest leading-none shadow-xl shadow-transparent group-hover:shadow-blue-900/10">
+                                                        <div className="w-12 h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none shadow-premium group-hover:shadow-primary/10">
                                                             {user.full_name ? user.full_name.charAt(0) : "T"}
                                                         </div>
                                                         <div>
-                                                            <div className="text-sm font-bold text-white leading-tight flex items-center gap-2">
+                                                            <div className="text-sm font-bold text-foreground leading-tight flex items-center gap-2">
                                                                 {user.full_name || "Anonymous Trader"}
-                                                                {rank === 1 && <Crown size={14} className="text-blue-500" />}
+                                                                {rank === 1 && <Crown size={14} className="text-primary" />}
                                                             </div>
-                                                            <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mt-1">ID: {user.id.substring(0, 8)}</div>
+                                                            <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mt-1">ID: {user.id.substring(0, 8)}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-6 text-right">
-                                                    <div className="text-sm font-bold text-white tabular-nums tracking-tight">
+                                                    <div className="text-sm font-bold text-foreground tabular-nums tracking-tight">
                                                         Level {user.accreditation_level || 1}
                                                     </div>
                                                 </td>

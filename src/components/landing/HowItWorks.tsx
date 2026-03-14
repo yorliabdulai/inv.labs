@@ -22,7 +22,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section id="how-it-works" className="relative py-32 overflow-hidden">
       {/* Decorative gradient orb */}
       <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-50 rounded-full blur-[100px] opacity-60 pointer-events-none" />
 
@@ -33,7 +33,7 @@ const HowItWorks = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-            className="text-[3.5rem] md:text-[5rem] lg:text-[6.5rem] font-bold text-zinc-950 leading-[0.85] tracking-[-0.04em] text-balance mb-6"
+            className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[6.5rem] font-bold text-zinc-950 leading-[0.85] tracking-[-0.04em] text-balance mb-6 break-words"
           >
             A clear path to <br className="hidden md:block" />
             <span className="text-zinc-400">financial confidence.</span>
