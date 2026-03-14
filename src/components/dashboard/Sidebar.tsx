@@ -42,7 +42,7 @@ export function Sidebar() {
             <Link
                 href={href}
                 onClick={onClick}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] ${active
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${active
                         ? "bg-white/[0.08] text-white"
                         : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]"
                     }`}
@@ -72,7 +72,7 @@ export function Sidebar() {
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileOpen(true)}
-                className="md:hidden fixed top-3 left-4 z-50 w-9 h-9 bg-[#1A1D21] rounded-xl border border-white/[0.08] flex items-center justify-center hover:bg-white/[0.08] transition-all touch-manipulation active:scale-95"
+                className="md:hidden fixed top-3 left-4 z-50 w-9 h-9 bg-[#1A1D21] rounded-xl border border-white/[0.08] flex items-center justify-center hover:bg-white/[0.08] transition-all touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                 aria-label="Open menu"
             >
                 <Menu size={18} className="text-zinc-400" />
@@ -114,7 +114,7 @@ export function Sidebar() {
 
                 {/* Desktop Footer */}
                 <div className="p-3 border-t border-white/[0.05]">
-                    <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1">
+                    <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                         <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                             {loading ? "·" : displayInitial}
                         </div>
@@ -125,7 +125,7 @@ export function Sidebar() {
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all"
+                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                     >
                         <LogOut size={16} />
                         Sign out
@@ -143,7 +143,7 @@ export function Sidebar() {
                     <Logo />
                     <button
                         onClick={() => setIsMobileOpen(false)}
-                        className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-white/[0.08] transition-colors touch-manipulation active:scale-95"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-white/[0.08] transition-colors touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                         aria-label="Close menu"
                     >
                         <X size={18} className="text-zinc-500" />
@@ -171,7 +171,7 @@ export function Sidebar() {
 
                 {/* Mobile Footer */}
                 <div className="p-3 border-t border-white/[0.06]">
-                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1">
+                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
                         <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                             {loading ? "·" : displayInitial}
                         </div>
@@ -182,7 +182,7 @@ export function Sidebar() {
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all"
+                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
                     >
                         <LogOut size={16} />
                         Sign out
