@@ -5,10 +5,9 @@ import Lenis from "lenis";
 
 export default function SmoothScroller() {
     useEffect(() => {
-        // Suppress the native document scrollbar so Lenis is the sole scroll handler
-        const html = document.documentElement;
-        const prevOverflow = html.style.overflow;
-        html.style.overflow = "hidden";
+        // Only initialize Lenis on desktop viewports
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        if (isMobile) return;
 
         const lenis = new Lenis({
             duration: 1.2,
@@ -27,8 +26,6 @@ export default function SmoothScroller() {
         return () => {
             lenis.destroy();
             cancelAnimationFrame(rafId);
-            // Restore overflow on unmount (e.g. when navigating to dashboard)
-            html.style.overflow = prevOverflow;
         };
     }, []);
 

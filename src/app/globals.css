@@ -875,11 +875,6 @@ h2 { ... }
     margin-top: 1.5rem;
   }
 
-  /* Mobile-optimized scroll behavior */
-  * {
-    -webkit-overflow-scrolling: touch;
-  }
-
   /* Prevent text selection on buttons for better mobile UX */
   button {
     -webkit-tap-highlight-color: transparent;
