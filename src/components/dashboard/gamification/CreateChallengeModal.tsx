@@ -74,60 +74,63 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-950/80 backdrop-blur-sm animate-in fade-in duration-300 font-instrument-sans">
-            <div className="relative w-full max-w-lg bg-[#121417] border border-white/10 rounded-[2px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300 font-instrument-sans">
+            <div className="relative w-full max-w-lg bg-[#0D0F12] border border-white/[0.06] shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-500">
 
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/[0.02]">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-[2px] bg-[#C05E42]/10 flex items-center justify-center border border-[#C05E42]/20">
-                            <Target size={18} className="text-[#C05E42]" />
+                <div className="flex items-center justify-between p-8 border-b border-white/[0.06] bg-[#0D0F12]/80 backdrop-blur-md">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center border border-blue-600/20 shadow-xl shadow-blue-600/5">
+                            <Target size={20} className="text-blue-500" />
                         </div>
                         <div>
-                            <h2 className="text-[#F9F9F9] font-black uppercase tracking-widest text-sm">Create Challenge</h2>
-                            <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Gamified Cohort Learning</p>
+                            <h2 className="text-white font-bold uppercase tracking-widest text-sm font-instrument-serif text-lg">Create Challenge</h2>
+                            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Gamified Institutional Learning</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2 text-white/40 hover:text-[#F9F9F9] hover:bg-white/5 rounded-[2px] transition-colors" aria-label="Close">
+                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] rounded-xl transition-all" aria-label="Close">
                         <X size={20} />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 space-y-6">
+                <div className="p-8 space-y-8">
                     {inviteLink ? (
-                        <div className="space-y-6 py-4">
-                            <div className="p-6 border border-[#10B981]/30 bg-[#10B981]/5 rounded-[2px] text-center space-y-4">
-                                <div className="mx-auto w-12 h-12 bg-[#10B981]/20 rounded-full flex items-center justify-center">
-                                    <Check size={24} className="text-[#10B981]" />
+                        <div className="space-y-8 py-4">
+                            <div className="p-8 border border-emerald-500/20 bg-emerald-500/5 rounded-3xl text-center space-y-6 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] -mr-16 -mt-16" />
+                                <div className="mx-auto w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-xl shadow-emerald-500/10 relative z-10">
+                                    <Check size={32} className="text-emerald-500" />
                                 </div>
-                                <h3 className="text-[#F9F9F9] font-black uppercase tracking-widest text-lg">Challenge Live!</h3>
-                                <p className="text-xs text-white/40 uppercase tracking-widest max-w-[280px] mx-auto leading-relaxed">
-                                    Your challenge has been created. Invite peers using the unique link below.
-                                </p>
+                                <div className="relative z-10">
+                                    <h3 className="text-white font-bold uppercase tracking-tight text-xl font-instrument-serif">Challenge Live!</h3>
+                                    <p className="text-[11px] text-zinc-500 uppercase tracking-widest max-w-[280px] mx-auto mt-3 leading-relaxed">
+                                        Your challenge has been commissioned. Invite peers using the secure link below.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Share Invitation Link</label>
-                                <div className="flex items-center gap-2">
-                                    <div className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-[2px] text-xs font-mono text-[#F9F9F9] truncate">
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Share Invitation Link</label>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex-1 px-5 py-4 bg-white/[0.03] border border-white/[0.06] rounded-xl text-xs font-mono text-white truncate shadow-inner">
                                         {inviteLink}
                                     </div>
                                     <button
                                         onClick={copyToClipboard}
-                                        className="h-10 px-4 flex items-center gap-2 bg-white/10 hover:bg-white/20 text-[#F9F9F9] rounded-[2px] font-black text-[10px] uppercase tracking-widest transition-colors"
+                                        className="h-12 px-6 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95"
                                     >
-                                        {copied ? <Check size={14} className="text-[#10B981]" /> : <Copy size={14} />}
-                                        {copied ? "Copied" : "Copy"}
+                                        {copied ? <Check size={14} className="text-white" /> : <Copy size={14} />}
+                                        {copied ? "Copied" : "Copy Link"}
                                     </button>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                                    <Target size={12} className="text-white/20" /> Challenge Name
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    <Target size={14} className="text-blue-500" /> Challenge Identity
                                 </label>
                                 <input
                                     required
@@ -135,44 +138,49 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="e.g. GSE Q1 Trading Competition"
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-[2px] text-xs font-black text-[#F9F9F9] placeholder:text-white/20 outline-none focus:border-[#C05E42]/50 focus:bg-white/10 transition-all uppercase tracking-widest"
+                                    className="w-full px-6 py-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-xs font-bold text-white placeholder:text-zinc-800 outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all uppercase tracking-widest shadow-inner"
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                                    <CalendarDays size={12} className="text-white/20" /> Duration (Days)
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    <CalendarDays size={14} className="text-blue-500" /> Timeline Duration
                                 </label>
-                                <select
-                                    value={formData.days}
-                                    onChange={(e) => setFormData({ ...formData, days: e.target.value })}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-[2px] text-xs font-black text-[#F9F9F9] outline-none focus:border-[#C05E42]/50 transition-all uppercase tracking-widest appearance-none"
-                                >
-                                    <option value="7">1 Week</option>
-                                    <option value="14">2 Weeks</option>
-                                    <option value="30">1 Month</option>
-                                    <option value="90">1 Quarter</option>
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        value={formData.days}
+                                        onChange={(e) => setFormData({ ...formData, days: e.target.value })}
+                                        className="w-full px-6 py-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-xs font-bold text-white outline-none focus:border-blue-500/50 transition-all uppercase tracking-widest appearance-none shadow-inner"
+                                    >
+                                        <option value="7" className="bg-[#0D0F12]">1 Week Schedule</option>
+                                        <option value="14" className="bg-[#0D0F12]">2 Weeks Schedule</option>
+                                        <option value="30" className="bg-[#0D0F12]">1 Month Tenure</option>
+                                        <option value="90" className="bg-[#0D0F12]">1 Quarter Roadmap</option>
+                                    </select>
+                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Objective Description (Optional)</label>
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Strategic Objective (Optional)</label>
                                 <textarea
                                     rows={3}
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Describe the rules and goals..."
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-[2px] text-xs font-black text-[#F9F9F9] placeholder:text-white/20 outline-none focus:border-[#C05E42]/50 focus:bg-white/10 transition-all uppercase tracking-widest resize-none"
+                                    placeholder="Describe rules, milestones and goal parameters..."
+                                    className="w-full px-6 py-5 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-xs font-bold text-white placeholder:text-zinc-800 outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all uppercase tracking-widest resize-none shadow-inner"
                                 />
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading || !formData.title}
-                                className="w-full py-4 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] text-[10px] uppercase tracking-[0.3em] hover:bg-[#C05E42]/90 transition-all shadow-xl shadow-[#C05E42]/10 active:scale-95 disabled:opacity-50 flex justify-center items-center gap-2"
+                                className="w-full py-6 bg-blue-600 text-white font-bold rounded-2xl text-[11px] uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/20 active:scale-95 disabled:opacity-20 disabled:grayscale flex justify-center items-center gap-4 mt-4"
                             >
-                                {loading ? "Generating Parameters..." : "Initialize Challenge Segment"}
-                                {!loading && <KeyRound size={14} />}
+                                {loading ? "Authorizing Parameters..." : "Initialize Segment"}
+                                {!loading && <KeyRound size={18} />}
                             </button>
                         </form>
                     )}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, ChevronRight, X, Menu, Briefcase } from "lucide-react";
+import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, X, Menu, Briefcase } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
 
@@ -16,7 +16,7 @@ export function Sidebar() {
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
     const navItems = [
-        { href: "/dashboard", label: "Command Center", icon: Home },
+        { href: "/dashboard", label: "Dashboard", icon: Home },
         { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
         { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase },
@@ -24,19 +24,11 @@ export function Sidebar() {
         { href: "/dashboard/learn", label: "Education", icon: GraduationCap },
     ];
 
-    useEffect(() => {
-        setIsMobileOpen(false);
-    }, [pathname]);
+    useEffect(() => { setIsMobileOpen(false); }, [pathname]);
 
     useEffect(() => {
-        if (isMobileOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
+        document.body.style.overflow = isMobileOpen ? "hidden" : "";
+        return () => { document.body.style.overflow = ""; };
     }, [isMobileOpen]);
 
     const handleSignOut = async () => {
@@ -44,20 +36,34 @@ export function Sidebar() {
         router.push("/login");
     };
 
-    const UserCard = ({ compact = false }: { compact?: boolean }) => (
-        <div className={`flex items-center gap-3 ${compact ? '' : 'w-full'}`}>
-            <div className={`${compact ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-gradient-to-br from-brand to-brand-accent text-white flex items-center justify-center font-bold ${compact ? 'text-xs' : 'text-sm'} ring-2 ring-white flex-shrink-0`}>
-                {loading ? "·" : displayInitial}
+    const NavItem = ({ href, label, icon: Icon, onClick }: { href: string; label: string; icon: React.ElementType; onClick?: () => void }) => {
+        const active = href === "/dashboard" ? pathname === "/dashboard" : isActive(href);
+        return (
+            <Link
+                href={href}
+                onClick={onClick}
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] ${active
+                        ? "bg-white/[0.08] text-white"
+                        : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]"
+                    }`}
+            >
+                <Icon
+                    size={18}
+                    className={`flex-shrink-0 transition-colors ${active ? "text-blue-400" : "text-zinc-600 group-hover:text-zinc-400"}`}
+                    strokeWidth={active ? 2.5 : 2}
+                />
+                <span>{label}</span>
+                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500" />}
+            </Link>
+        );
+    };
+
+    const Logo = () => (
+        <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-inner shadow-blue-500/30 flex-shrink-0">
+                iL
             </div>
-            <div className="flex-1 overflow-hidden min-w-0">
-                <div className={`${compact ? 'text-xs' : 'text-sm'} font-bold text-text-primary truncate`}>
-                    {loading ? "Loading..." : displayName}
-                </div>
-                <div className={`${compact ? 'text-[10px]' : 'text-xs'} font-medium text-text-tertiary`}>
-                    Investor Account
-                </div>
-            </div>
-            <ChevronRight size={compact ? 14 : 16} className="text-text-tertiary flex-shrink-0" />
+            <span className="font-bold text-base tracking-tight text-white">inv.labs</span>
         </div>
     );
 
@@ -66,200 +72,120 @@ export function Sidebar() {
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileOpen(true)}
-                className="md:hidden fixed top-3 left-4 z-50 w-10 h-10 bg-background-surface rounded-xl shadow-premium border border-border flex items-center justify-center hover:bg-background-elevated transition-all touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
+                className="md:hidden fixed top-3 left-4 z-50 w-9 h-9 bg-[#1A1D21] rounded-xl border border-white/[0.08] flex items-center justify-center hover:bg-white/[0.08] transition-all touch-manipulation active:scale-95"
                 aria-label="Open menu"
             >
-                <Menu size={20} className="text-text-secondary" />
+                <Menu size={18} className="text-zinc-400" />
             </button>
 
             {/* Mobile Overlay */}
             {isMobileOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-text-primary/20 backdrop-blur-sm z-40 transition-opacity"
+                    className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
                     onClick={() => setIsMobileOpen(false)}
                     aria-hidden="true"
                 />
             )}
 
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-[#121417] z-50">
+            <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-[#0D0F12] border-r border-white/[0.06] z-50">
                 {/* Logo */}
-                <div className="h-header flex items-center px-6 border-b border-white/5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-[2px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
-                            <TrendingUp className="text-[#F9F9F9]" size={18} />
-                        </div>
-                        <span className="text-xl font-black text-[#F9F9F9] tracking-tighter font-instrument-serif">
-                            INVEST<span className="text-[#C05E42]">.</span>LABS
-                        </span>
-                    </div>
+                <div className="h-16 flex items-center px-5 border-b border-white/[0.05]">
+                    <Logo />
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 py-10 space-y-10 overflow-y-auto">
+                <nav className="flex-1 px-3 py-5 space-y-6 overflow-y-auto">
                     <div>
-                        <h3 className="text-[9px] font-black text-[#C05E42]/80 uppercase tracking-[0.3em] px-3 mb-4">Terminal Navigation</h3>
-                        <div className="space-y-1.5">
-                            {navItems.map(({ href, label, icon: Icon }) => {
-                                const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
-                                return (
-                                    <Link
-                                        key={href}
-                                        href={href}
-                                        className={`group flex items-center justify-between px-3 py-3 rounded-[1px] text-[11px] font-bold uppercase tracking-widest transition-all duration-200 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${active
-                                            ? "bg-white/5 text-[#F9F9F9] border border-white/5"
-                                            : "text-white/40 hover:bg-white/5 hover:text-[#F9F9F9]"
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`transition-colors duration-200 ${active ? "text-[#C05E42]" : "text-white/20 group-hover:text-white/40"}`}>
-                                                <Icon size={18} strokeWidth={active ? 3 : 2} />
-                                            </div>
-                                            <span>{label}</span>
-                                        </div>
-                                        {active && <div className="w-1 h-3 bg-[#C05E42] rounded-full" />}
-                                    </Link>
-                                );
-                            })}
+                        <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider px-3 mb-2">Navigation</p>
+                        <div className="space-y-0.5">
+                            {navItems.map((item) => <NavItem key={item.href} {...item} />)}
                         </div>
                     </div>
 
                     <div>
-                        <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Configuration</h3>
-                        <div className="space-y-1.5">
-                            <Link href="/dashboard/profile" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                                <User size={18} className="text-white/20 group-hover:text-white/40" />
-                                <span>Profile</span>
-                            </Link>
-                            <Link href="/dashboard/settings" className="group flex items-center gap-3 px-3 py-3 rounded-[1px] text-[11px] font-bold text-white/40 hover:bg-white/5 hover:text-[#F9F9F9] transition-all min-h-[44px] border border-transparent hover:border-white/5 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                                <Settings size={18} className="text-white/20 group-hover:text-white/40" />
-                                <span>Settings</span>
-                            </Link>
+                        <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider px-3 mb-2">Account</p>
+                        <div className="space-y-0.5">
+                            <NavItem href="/dashboard/profile" label="Profile" icon={User} />
+                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} />
                         </div>
                     </div>
                 </nav>
 
                 {/* Desktop Footer */}
-                <div className="p-4 mt-auto border-t border-white/5 bg-black/20">
-                    <Link href="/dashboard/profile" className="block mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                        <div className="bg-white/5 border border-white/10 p-3 rounded-[1px] hover:bg-white/10 transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-xs ring-1 ring-white/10 flex-shrink-0">
-                                    {loading ? "·" : displayInitial}
-                                </div>
-                                <div className="flex-1 overflow-hidden min-w-0">
-                                    <div className="text-[11px] font-black text-[#F9F9F9] truncate uppercase tracking-tight">
-                                        {loading ? "..." : displayName}
-                                    </div>
-                                    <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest">
-                                        Investor
-                                    </div>
-                                </div>
-                            </div>
+                <div className="p-3 border-t border-white/[0.05]">
+                    <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1">
+                        <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                            {loading ? "·" : displayInitial}
+                        </div>
+                        <div className="flex-1 overflow-hidden min-w-0">
+                            <div className="text-sm font-semibold text-zinc-300 truncate">{loading ? "Loading…" : displayName}</div>
+                            <div className="text-xs text-zinc-600">Investor</div>
                         </div>
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-3 text-[10px] uppercase tracking-widest font-black text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
+                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all"
                     >
-                        <LogOut size={16} /> Sign Out
+                        <LogOut size={16} />
+                        Sign out
                     </button>
                 </div>
             </aside>
 
             {/* Mobile Sidebar Drawer */}
             <aside
-                className={`md:hidden fixed top-0 left-0 h-full w-[85vw] max-w-[320px] bg-[#121417] z-50 shadow-3xl transform transition-transform duration-300 ease-out border-r border-white/10 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`md:hidden fixed top-0 left-0 h-full w-[80vw] max-w-[300px] bg-[#0D0F12] z-50 shadow-2xl transform transition-transform duration-300 ease-out border-r border-white/[0.08] ${isMobileOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
             >
                 {/* Mobile Header */}
-                <div className="h-header flex items-center justify-between px-6 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-[1px] bg-[#C05E42] flex items-center justify-center shadow-lg shadow-[#C05E42]/20">
-                            <TrendingUp className="text-[#F9F9F9]" size={18} />
-                        </div>
-                        <span className="text-xl font-black text-[#F9F9F9] tracking-tighter font-instrument-serif">
-                            INVEST<span className="text-[#C05E42]">.</span>LABS
-                        </span>
-                    </div>
+                <div className="h-16 flex items-center justify-between px-5 border-b border-white/[0.06]">
+                    <Logo />
                     <button
                         onClick={() => setIsMobileOpen(false)}
-                        className="w-10 h-10 rounded-[1px] flex items-center justify-center hover:bg-white/10 transition-colors touch-manipulation active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-white/[0.08] transition-colors touch-manipulation active:scale-95"
                         aria-label="Close menu"
                     >
-                        <X size={20} className="text-white/60" />
+                        <X size={18} className="text-zinc-500" />
                     </button>
                 </div>
 
                 {/* Mobile Navigation */}
-                <nav className="flex-1 px-4 py-8 space-y-10 overflow-y-auto h-[calc(100vh-144px)]">
+                <nav className="flex-1 px-3 py-5 space-y-6 overflow-y-auto h-[calc(100vh-128px)]">
                     <div>
-                        <h3 className="text-[9px] font-black text-[#C05E42]/80 uppercase tracking-[0.3em] px-3 mb-4">Navigation</h3>
-                        <div className="space-y-1.5">
-                            {navItems.map(({ href, label, icon: Icon }) => {
-                                const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
-                                return (
-                                    <Link
-                                        key={href}
-                                        href={href}
-                                        onClick={() => setIsMobileOpen(false)}
-                                        className={`group flex items-center justify-between px-4 py-4 rounded-[1px] text-sm font-bold uppercase tracking-widest transition-all duration-200 min-h-[52px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] ${active
-                                            ? "bg-white/5 text-[#F9F9F9] border border-white/5 shadow-sm shadow-black/20"
-                                            : "text-white/40 hover:bg-white/5"
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`transition-colors duration-200 ${active ? "text-[#C05E42]" : "text-white/20"}`}>
-                                                <Icon size={22} strokeWidth={active ? 3 : 2} />
-                                            </div>
-                                            <span>{label}</span>
-                                        </div>
-                                        {active && <div className="w-1.5 h-6 bg-[#C05E42] rounded-full" />}
-                                    </Link>
-                                );
-                            })}
+                        <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider px-3 mb-2">Navigation</p>
+                        <div className="space-y-0.5">
+                            {navItems.map((item) => (
+                                <NavItem key={item.href} {...item} onClick={() => setIsMobileOpen(false)} />
+                            ))}
                         </div>
                     </div>
-
                     <div>
-                        <h3 className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] px-3 mb-4">Settings</h3>
-                        <div className="space-y-1.5">
-                            <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                                <User size={22} className="text-white/20" />
-                                <span>Profile</span>
-                            </Link>
-                            <Link href="/dashboard/settings" onClick={() => setIsMobileOpen(false)} className="group flex items-center gap-4 px-4 py-4 rounded-[1px] text-sm font-bold text-white/40 hover:bg-white/5 transition-all min-h-[52px] uppercase tracking-widest border border-transparent hover:border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                                <Settings size={22} className="text-white/20" />
-                                <span>Settings</span>
-                            </Link>
+                        <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider px-3 mb-2">Account</p>
+                        <div className="space-y-0.5">
+                            <NavItem href="/dashboard/profile" label="Profile" icon={User} onClick={() => setIsMobileOpen(false)} />
+                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} onClick={() => setIsMobileOpen(false)} />
                         </div>
                     </div>
                 </nav>
 
                 {/* Mobile Footer */}
-                <div className="p-4 border-t border-white/10 bg-black/40">
-                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="block mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]">
-                        <div className="p-4 rounded-[1px] bg-white/5 border border-white/10">
-                            <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-[1px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-bold text-base shadow-lg shadow-[#C05E42]/20">
-                                    {loading ? "·" : displayInitial}
-                                </div>
-                                <div className="flex-1 overflow-hidden min-w-0">
-                                    <div className="text-sm font-black text-[#F9F9F9] truncate uppercase tracking-tight">
-                                        {loading ? "..." : displayName}
-                                    </div>
-                                    <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
-                                        Investor
-                                    </div>
-                                </div>
-                            </div>
+                <div className="p-3 border-t border-white/[0.06]">
+                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] transition-colors mb-1">
+                        <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                            {loading ? "·" : displayInitial}
+                        </div>
+                        <div className="flex-1 overflow-hidden min-w-0">
+                            <div className="text-sm font-semibold text-zinc-300 truncate">{loading ? "Loading…" : displayName}</div>
+                            <div className="text-xs text-zinc-600">Investor</div>
                         </div>
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center justify-center gap-2 w-full px-4 py-4 text-xs font-black uppercase tracking-widest text-[#EF4444] hover:bg-[#EF4444]/10 rounded-[1px] transition-colors min-h-[52px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417]"
+                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-zinc-600 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all"
                     >
-                        <LogOut size={18} /> Sign Out
+                        <LogOut size={16} />
+                        Sign out
                     </button>
                 </div>
             </aside>

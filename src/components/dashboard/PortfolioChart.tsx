@@ -63,8 +63,8 @@ export function PortfolioChart({
             const changePct = ((change / startingValue) * 100).toFixed(2);
 
             return (
-                <div className="bg-[#1A1C4E] border border-white/10 p-4 rounded-2xl shadow-2xl text-white min-w-[180px] backdrop-blur-md">
-                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2 border-b border-white/5 pb-2">
+                <div className="bg-[#0D0F12] border border-white/10 p-4 rounded-xl shadow-2xl text-white min-w-[180px] backdrop-blur-md">
+                    <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2 border-b border-white/5 pb-2">
                         {label}
                     </p>
                     <div className="space-y-1.5">
@@ -148,8 +148,8 @@ export function PortfolioChart({
                     <BarChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
                         <defs>
                             <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
-                                <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.2} />
+                                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8} />
+                                <stop offset="95%" stopColor="#2563EB" stopOpacity={0.2} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F1F5F9" />
@@ -177,16 +177,16 @@ export function PortfolioChart({
                     <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
                         <defs>
                             <linearGradient id="areaIndigoFill" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#1A1C4E" stopOpacity={0.1} />
-                                <stop offset="95%" stopColor="#1A1C4E" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
+                                <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" opacity={0.1} />
                         <XAxis
                             dataKey="label"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }}
+                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
@@ -194,13 +194,13 @@ export function PortfolioChart({
                         <Area
                             type="monotone"
                             dataKey="value"
-                            stroke="#1A1C4E"
+                            stroke="#2563EB"
                             strokeWidth={3}
                             fillOpacity={1}
                             fill="url(#areaIndigoFill)"
                             animationDuration={1500}
                             dot={false}
-                            activeDot={{ r: 5, fill: "#1A1C4E", strokeWidth: 2, stroke: '#fff' }}
+                            activeDot={{ r: 5, fill: "#2563EB", strokeWidth: 2, stroke: '#fff' }}
                         />
                     </AreaChart>
                 );

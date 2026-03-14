@@ -125,17 +125,17 @@ const Hero = () => {
           <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[70%] bg-blue-500/15 blur-[120px] rounded-[100%] pointer-events-none" />
 
           {/* The Dashboard Frame */}
-          <div className="relative rounded-[2.5rem] border border-white/60 bg-white/40 backdrop-blur-2xl shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] p-4 md:p-6 overflow-hidden ring-1 ring-inset ring-white/50 backdrop-saturate-150">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent pointer-events-none rounded-[2.5rem]" />
+          <div className="relative rounded-3xl border border-white/10 bg-[#0D0F12] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] p-4 md:p-6 overflow-hidden ring-1 ring-inset ring-white/5">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none rounded-3xl" />
 
             {/* Fake macOS Chrome */}
             <div className="flex justify-between items-center mb-6 px-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400/80 shadow-inner"></div>
-                <div className="w-3 h-3 rounded-full bg-amber-400/80 shadow-inner"></div>
-                <div className="w-3 h-3 rounded-full bg-emerald-400/80 shadow-inner"></div>
+                <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-inner"></div>
+                <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-inner"></div>
+                <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-inner"></div>
               </div>
-              <div className="flex items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-zinc-400">
+              <div className="flex items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-zinc-500">
                 <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> Encrypted Session</span>
                 <span className="hidden sm:inline-block">inv.labs / terminal</span>
               </div>
@@ -146,21 +146,25 @@ const Hero = () => {
 
               {/* Left Nav Pane (Hidden on smaller screens, giving it an app feel) */}
               <div className="hidden lg:flex flex-col gap-4">
-                <div className="bg-white/80 rounded-2xl p-5 border border-zinc-100 shadow-sm backdrop-blur-sm h-full flex flex-col">
+                <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.05] h-full flex flex-col">
                   <div className="mb-8">
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">Command Center</p>
-                    <div className="space-y-2">
-                      {['Portfolio', 'Market Scanner', 'Ato AI', 'Ledger', 'Settings'].map((item, i) => (
-                        <div key={i} className={`px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 transition-colors cursor-pointer ${i === 0 ? 'bg-zinc-950 text-white shadow-md' : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900'}`}>
-                          {i === 0 ? <PieChart className="w-4 h-4" /> : <Activity className="w-4 h-4 opacity-50" />}
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center">
+                        <span className="text-white font-bold text-sm tracking-tighter">iL</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {['Dashboard', 'Market Scanner', 'Portfolio', 'Mutual Funds', 'Settings'].map((item, i) => (
+                        <div key={i} className={`px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors cursor-pointer ${i === 0 ? 'bg-white/[0.05] text-white/90 shadow-sm border border-white/[0.05]' : 'text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300'}`}>
+                          {i === 0 ? <Activity className="w-4 h-4 text-blue-400" /> : <PieChart className="w-4 h-4 opacity-50" />}
                           {item}
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div className="mt-auto bg-blue-50/50 rounded-xl p-4 border border-blue-100/50">
-                    <p className="text-[10px] font-black text-blue-600/60 uppercase tracking-widest mb-1">System Status</p>
-                    <p className="text-xs font-bold text-blue-900 flex items-center gap-2">
+                  <div className="mt-auto bg-white/[0.02] rounded-xl p-4 border border-white/[0.05]">
+                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">System Status</p>
+                    <p className="text-xs font-bold text-blue-400 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Live connection
                     </p>
                   </div>
@@ -172,17 +176,15 @@ const Hero = () => {
 
                 {/* Stats Row */}
                 <div className="grid grid-cols-2 gap-6 h-32">
-                  <div className="bg-white/90 rounded-2xl border border-zinc-100 p-6 shadow-sm flex flex-col justify-between backdrop-blur-md relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><PieChart className="w-16 h-16 text-zinc-900" /></div>
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest relative z-10">Net Liquidation</p>
-                    <h3 className="text-3xl font-bold tracking-tighter text-zinc-900 relative z-10">GH₵ 12,450.00</h3>
+                  <div className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest relative z-10">Total Equity</p>
+                    <h3 className="text-3xl font-bold tracking-tight text-white relative z-10 tabular-nums">12,450.00</h3>
                   </div>
-                  <div className="bg-blue-600 rounded-2xl border border-blue-500 p-6 shadow-xl shadow-blue-600/20 flex flex-col justify-between text-white relative overflow-hidden">
-                    <div className="absolute top-[-50%] right-[-10%] w-[150%] h-[150%] bg-gradient-to-br from-white/20 to-transparent rotate-12 blur-2xl pointer-events-none" />
-                    <p className="text-[10px] font-black text-blue-200 uppercase tracking-widest relative z-10">Daily P&L</p>
+                  <div className="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest relative z-10">Daily P&L</p>
                     <div className="flex items-center gap-3 relative z-10">
-                      <h3 className="text-3xl font-bold tracking-tighter text-white">+GH₵ 342.50</h3>
-                      <div className="px-2 py-1 rounded bg-white/20 backdrop-blur-sm text-xs font-black flex items-center gap-1">
+                      <h3 className="text-3xl font-bold tracking-tight text-emerald-400 tabular-nums">+342.50</h3>
+                      <div className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-semibold flex items-center gap-1">
                         <TrendingUp className="w-3 h-3" /> 2.8%
                       </div>
                     </div>
@@ -190,16 +192,13 @@ const Hero = () => {
                 </div>
 
                 {/* Main Infinite Chart Zone */}
-                <div className="bg-white/80 rounded-2xl border border-zinc-100 p-6 shadow-sm flex-1 flex flex-col relative overflow-hidden backdrop-blur-md">
+                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-6 shadow-sm flex-1 flex flex-col relative overflow-hidden">
                   <div className="flex justify-between items-center mb-6">
                     <div className="flex gap-4">
-                      <span className="text-xs font-bold text-zinc-900 border-b-2 border-zinc-900 pb-1">1D</span>
-                      <span className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors pb-1 cursor-pointer">1W</span>
-                      <span className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors pb-1 cursor-pointer">1M</span>
-                      <span className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors pb-1 cursor-pointer">YTD</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-400">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" /> GSE Market Open
+                      <span className="text-xs font-semibold text-white bg-white/[0.05] px-2 py-1 rounded-md">1D</span>
+                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">1W</span>
+                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">1M</span>
+                      <span className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors py-1 cursor-pointer">YTD</span>
                     </div>
                   </div>
 
@@ -208,7 +207,7 @@ const Hero = () => {
                     {/* Grid Lines */}
                     <div className="absolute inset-0 flex flex-col justify-between py-6">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="w-full h-px bg-zinc-100" />
+                        <div key={i} className="w-full h-px bg-white/[0.03]" />
                       ))}
                     </div>
                     {/* Graph Path */}
@@ -226,9 +225,9 @@ const Hero = () => {
                       <path
                         d="M0,80 C10,70 20,85 30,60 C40,35 50,55 60,30 C70,5 80,45 90,20 C95,10 100,10 100,10"
                         fill="none" stroke="currentColor" strokeWidth="2.5"
-                        className="text-blue-600 drop-shadow-[0_8px_12px_rgba(37,99,235,0.4)]"
+                        className="text-blue-500 drop-shadow-[0_8px_12px_rgba(37,99,235,0.4)]"
                       />
-                      <circle cx="100" cy="10" r="4" className="fill-blue-600 animate-pulse" />
+                      <circle cx="100" cy="10" r="4" className="fill-blue-400 animate-pulse drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
                     </svg>
                   </div>
                 </div>
@@ -238,46 +237,46 @@ const Hero = () => {
               <div className="hidden md:flex flex-col gap-6 h-full">
 
                 {/* Simulated Order Ticket */}
-                <div className="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 shadow-xl text-white h-[60%] flex flex-col relative overflow-hidden group">
+                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-6 text-white h-[60%] flex flex-col relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-6 border-b border-zinc-800 pb-4">Rapid Execution</p>
+                  <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Rapid Execution</p>
 
-                  <div className="bg-zinc-900 rounded-xl p-3 border border-zinc-800 mb-4 flex justify-between items-center cursor-pointer hover:bg-zinc-800 transition-colors">
-                    <span className="text-xs font-bold text-zinc-400">Ticker</span>
-                    <span className="text-sm font-black tracking-wider text-white flex items-center gap-2">MTNGH <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-1.5 py-0.5 rounded">1.82</span></span>
+                  <div className="bg-white/[0.03] rounded-xl p-3 border border-white/[0.05] mb-4 flex justify-between items-center cursor-pointer hover:bg-white/[0.05] transition-colors">
+                    <span className="text-xs font-semibold text-zinc-400">Ticker</span>
+                    <span className="text-sm font-bold tracking-tight text-white flex items-center gap-2">MTNGH <span className="bg-zinc-800 border border-zinc-700 text-zinc-300 text-[10px] px-1.5 py-0.5 rounded-md">1.82</span></span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mb-auto">
-                    <button className="bg-white text-zinc-900 py-3 rounded-xl text-xs font-black tracking-widest uppercase hover:bg-zinc-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]">Buy</button>
-                    <button className="bg-zinc-900 text-white py-3 rounded-xl border border-zinc-800 text-xs font-black tracking-widest uppercase hover:bg-zinc-800 transition-colors">Sell</button>
+                    <button className="bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold tracking-wider hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(37,99,235,0.2)]">Buy</button>
+                    <button className="bg-white/[0.05] text-white py-2.5 rounded-xl border border-white/[0.1] text-xs font-bold tracking-wider hover:bg-white/[0.1] transition-colors">Sell</button>
                   </div>
 
-                  <div className="pt-4 border-t border-zinc-800 flex justify-between items-end">
+                  <div className="pt-4 border-t border-white/[0.06] flex justify-between items-end">
                     <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Est. Cost</p>
-                      <p className="text-sm font-black text-white">GH₵ 18,200.00</p>
+                      <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Est. Cost</p>
+                      <p className="text-sm font-bold text-white tabular-nums">GH₵ 18,200.00</p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.5)] cursor-pointer hover:bg-blue-500 transition-colors">
-                      <ArrowRight className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center cursor-pointer hover:bg-white/[0.1] transition-colors">
+                      <ArrowRight className="w-4 h-4 text-zinc-400" />
                     </div>
                   </div>
                 </div>
 
                 {/* Top Movers Snippet */}
-                <div className="bg-white/90 rounded-2xl border border-zinc-100 p-5 shadow-sm backdrop-blur-md h-[40%] flex flex-col">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">Volume Leaders</p>
+                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-5 h-[40%] flex flex-col">
+                  <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-4">Volume Leaders</p>
                   <div className="space-y-4 overflow-hidden">
                     {marketData.map((s, i) => (
                       <div key={i} className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-md bg-zinc-100 flex items-center justify-center font-bold text-[8px] text-zinc-500 border border-zinc-200">
+                          <div className="w-6 h-6 rounded-md bg-white/[0.05] flex items-center justify-center font-bold text-[8px] text-zinc-400 border border-white/[0.1]">
                             {s.name.substring(0, 2)}
                           </div>
-                          <span className="font-bold text-zinc-900 text-xs tracking-tight">{s.name}</span>
+                          <span className="font-semibold text-zinc-200 text-xs tracking-tight">{s.name}</span>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-zinc-900 font-bold text-xs">{s.price}</span>
-                          <span className={`text-[9px] font-black tracking-wider ${s.up === true ? "text-emerald-500" : s.up === false ? "text-red-500" : "text-zinc-400"}`}>{s.change}</span>
+                          <span className="text-zinc-200 font-semibold text-xs tabular-nums">{s.price}</span>
+                          <span className={`text-[10px] font-semibold ${s.up === true ? "text-emerald-400" : s.up === false ? "text-red-400" : "text-zinc-500"}`}>{s.change}</span>
                         </div>
                       </div>
                     ))}

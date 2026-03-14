@@ -1,37 +1,16 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
-import { TrendingUp, ShieldCheck, Mail, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
-import gsap from "gsap";
+import { AlertCircle, Mail, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            tl.from(".auth-card", {
-                opacity: 0,
-                y: 40,
-                duration: 1,
-                ease: "expo.out"
-            })
-                .from(".auth-item", {
-                    opacity: 0,
-                    y: 20,
-                    stagger: 0.1,
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "-=0.6");
-        }, containerRef);
-        return () => ctx.revert();
-    }, []);
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,359 +31,111 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div ref={containerRef} className="auth-container">
-            {/* Background Decorative Element */}
-            <div className="auth-bg-glow"></div>
+        <div className="min-h-screen bg-[#0D0F12] flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Ambient background */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-blue-600/8 rounded-full blur-[160px] pointer-events-none" />
 
-            <div className="auth-card glass-card">
-                <div className="auth-item auth-header">
-                    <div className="auth-logo">
-                        <TrendingUp className="logo-icon" size={32} />
-                        <span className="logo-text">GSE<span className="logo-labs">.LABS</span></span>
-                    </div>
-                    <h1 className="auth-title">Reset Password</h1>
-                    <p className="auth-subtitle">
-                        {success
-                            ? "Check your email for the reset link."
-                            : "Enter your email and we'll send you a reset link."
-                        }
-                    </p>
-                </div>
+            <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full max-w-[440px] relative z-10"
+            >
+                <div className="bg-white/[0.04] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
 
-                {error && (
-                    <div className="auth-item error-banner">
-                        <ShieldCheck size={18} /> {error}
-                    </div>
-                )}
-
-                {success ? (
-                    <div className="success-state">
-                        <div className="success-icon">
-                            <CheckCircle size={48} />
+                    {/* Logo */}
+                    <div className="flex items-center gap-2.5 mb-8">
+                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner shadow-blue-500/30">
+                            iL
                         </div>
-                        <h3 className="success-title">Email Sent!</h3>
-                        <p className="success-text">
-                            We've sent a password reset link to <strong>{email}</strong>.
-                            Please check your inbox and follow the instructions.
-                        </p>
-                        <Link href="/login" className="btn-premium btn-premium-solid back-btn">
-                            <ArrowLeft size={18} />
-                            Back to Login
-                        </Link>
+                        <span className="font-bold text-lg tracking-tight text-white">inv.labs</span>
                     </div>
-                ) : (
-                    <>
-                        <form onSubmit={handleResetPassword} className="auth-form">
-                            <div className="auth-item form-group">
-                                <label className="form-label">Email Address</label>
-                                <div className="input-with-icon">
-                                    <Mail size={18} className="input-icon" />
-                                    <input
-                                        type="email"
-                                        placeholder="name@company.com"
-                                        className="form-input with-icon"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
+
+                    {success ? (
+                        /* Success state */
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                            className="flex flex-col items-center text-center py-4"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+                                <CheckCircle className="w-8 h-8 text-emerald-400" />
                             </div>
-
-                            <button
-                                type="submit"
-                                className="auth-item btn-premium btn-premium-solid submit-btn"
-                                disabled={loading}
+                            <h2 className="text-xl font-bold text-white tracking-tight mb-2">Check your inbox</h2>
+                            <p className="text-sm text-zinc-400 leading-relaxed mb-8 max-w-xs">
+                                We sent a password reset link to <span className="text-zinc-300 font-medium">{email}</span>.
+                            </p>
+                            <Link
+                                href="/login"
+                                className="flex items-center gap-2 w-full justify-center py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(37,99,235,0.35)] transition-all duration-200"
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="spinner" size={18} />
-                                        Sending Reset Link...
-                                    </>
-                                ) : (
-                                    "Send Reset Link"
-                                )}
-                            </button>
-                        </form>
-
-                        <div className="auth-item auth-footer">
-                            <Link href="/login" className="back-link">
-                                <ArrowLeft size={16} />
+                                <ArrowLeft className="w-4 h-4" />
                                 Back to Login
                             </Link>
-                        </div>
-                    </>
-                )}
-            </div>
+                        </motion.div>
+                    ) : (
+                        <>
+                            {/* Header */}
+                            <div className="mb-8">
+                                <h1 className="text-2xl font-bold text-white tracking-tight mb-1.5">Reset password</h1>
+                                <p className="text-sm text-zinc-400 leading-relaxed">
+                                    Enter your email and we'll send you a reset link.
+                                </p>
+                            </div>
 
-            <style jsx>{`
-                .auth-container {
-                    min-height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: var(--bg-page);
-                    position: relative;
-                    overflow: hidden;
-                    padding: 1rem;
-                }
+                            {/* Error */}
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex items-center gap-2.5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm mb-6"
+                                >
+                                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                                    {error}
+                                </motion.div>
+                            )}
 
-                .auth-bg-glow {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 600px;
-                    height: 600px;
-                    background: radial-gradient(circle, rgba(55, 48, 163, 0.05) 0%, transparent 70%);
-                    z-index: 0;
-                }
+                            {/* Form */}
+                            <form onSubmit={handleResetPassword} className="flex flex-col gap-5">
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-xs font-semibold text-zinc-400 tracking-wide">Email address</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                                        <input
+                                            type="email"
+                                            placeholder="your@email.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            className="w-full pl-10 pr-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-sm text-white placeholder:text-zinc-600 outline-none focus:border-blue-500/70 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/10 transition-all font-medium"
+                                        />
+                                    </div>
+                                </div>
 
-                .auth-card {
-                    width: 100%;
-                    max-width: 440px;
-                    padding: 2rem;
-                    position: relative;
-                    z-index: 1;
-                    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.08);
-                }
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex items-center justify-center gap-2 w-full py-3.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(37,99,235,0.35)] hover:shadow-[0_6px_24px_rgba(37,99,235,0.45)] hover:-translate-y-0.5 transition-all duration-200"
+                                >
+                                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Sending...</> : "Send Reset Link"}
+                                </button>
+                            </form>
 
-                .auth-header {
-                    text-align: center;
-                    margin-bottom: 2rem;
-                }
-
-                .auth-logo {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.5rem;
-                    margin-bottom: 1.5rem;
-                }
-
-                .logo-icon {
-                    color: var(--brand-primary);
-                }
-
-                .logo-text {
-                    font-size: 1.5rem;
-                    font-weight: 900;
-                    color: var(--text-primary);
-                    letter-spacing: -0.04em;
-                }
-
-                .logo-labs {
-                    opacity: 0.4;
-                }
-
-                .auth-title {
-                    font-size: 2rem;
-                    margin-bottom: 0.75rem;
-                    color: var(--text-primary);
-                    font-weight: 800;
-                }
-
-                .auth-subtitle {
-                    font-size: 1rem;
-                    color: var(--text-secondary);
-                    line-height: 1.5;
-                }
-
-                .error-banner {
-                    background-color: #FEF2F2;
-                    border: 1px solid #FEE2E2;
-                    color: #B91C1C;
-                    padding: 1rem;
-                    border-radius: 12px;
-                    margin-bottom: 1.5rem;
-                    font-size: 0.875rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .auth-form {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.25rem;
-                }
-
-                .form-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-
-                .form-label {
-                    font-size: 0.875rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                }
-
-                .input-with-icon {
-                    position: relative;
-                }
-
-                .input-icon {
-                    position: absolute;
-                    left: 1rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: var(--text-tertiary);
-                    pointer-events: none;
-                }
-
-                .form-input {
-                    width: 100%;
-                    padding: 0.875rem 1rem;
-                    border-radius: 10px;
-                    border: 1px solid var(--border-default);
-                    outline: none;
-                    font-size: 1rem;
-                    transition: all 0.2s;
-                    background: var(--bg-surface);
-                    color: var(--text-primary);
-                }
-
-                .form-input.with-icon {
-                    padding-left: 2.8rem;
-                }
-
-                .form-input:focus {
-                    border-color: var(--brand-primary);
-                    box-shadow: 0 0 0 4px rgba(55, 48, 163, 0.05);
-                }
-
-                .submit-btn {
-                    width: 100%;
-                    padding: 1rem;
-                    font-size: 1rem;
-                    margin-top: 1rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.5rem;
-                }
-
-                .submit-btn:disabled {
-                    opacity: 0.7;
-                    cursor: not-allowed;
-                }
-
-                .spinner {
-                    animation: spin 1s linear infinite;
-                }
-
-                @keyframes spin {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(360deg);
-                    }
-                }
-
-                .auth-footer {
-                    text-align: center;
-                    margin-top: 2rem;
-                }
-
-                .back-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    font-size: 0.875rem;
-                    font-weight: 600;
-                    color: var(--brand-primary);
-                    text-decoration: none;
-                    transition: opacity 0.2s;
-                }
-
-                .back-link:hover {
-                    opacity: 0.8;
-                }
-
-                .success-state {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    text-align: center;
-                    padding: 1rem 0;
-                }
-
-                .success-icon {
-                    color: var(--color-success);
-                    margin-bottom: 1.5rem;
-                }
-
-                .success-title {
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                    color: var(--text-primary);
-                    margin-bottom: 1rem;
-                }
-
-                .success-text {
-                    font-size: 0.9375rem;
-                    color: var(--text-secondary);
-                    line-height: 1.6;
-                    margin-bottom: 2rem;
-                    max-width: 360px;
-                }
-
-                .success-text strong {
-                    color: var(--text-primary);
-                    font-weight: 700;
-                }
-
-                .back-btn {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    padding: 0.875rem 1.5rem;
-                    text-decoration: none;
-                }
-
-                /* Responsive Design */
-                @media (max-width: 640px) {
-                    .auth-card {
-                        padding: 1.5rem;
-                    }
-
-                    .auth-title {
-                        font-size: 1.75rem;
-                    }
-
-                    .auth-subtitle {
-                        font-size: 0.9375rem;
-                    }
-
-                    .logo-text {
-                        font-size: 1.25rem;
-                    }
-
-                    .success-title {
-                        font-size: 1.25rem;
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    .auth-container {
-                        padding: 0.5rem;
-                    }
-
-                    .auth-card {
-                        padding: 1.25rem;
-                    }
-
-                    .auth-title {
-                        font-size: 1.5rem;
-                    }
-
-                    .form-input {
-                        font-size: 0.9375rem;
-                    }
-                }
-            `}</style>
+                            {/* Back link */}
+                            <div className="flex justify-center mt-6">
+                                <Link
+                                    href="/login"
+                                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 hover:text-zinc-300 transition-colors"
+                                >
+                                    <ArrowLeft className="w-3.5 h-3.5" />
+                                    Back to Login
+                                </Link>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </motion.div>
         </div>
     );
 }

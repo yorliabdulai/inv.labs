@@ -122,56 +122,56 @@ export default function MutualFundsPage() {
     };
 
     return (
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans text-[#F9F9F9]">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700">
             <DashboardHeader />
 
             {/* ── Page Header & Institutional Overview ── */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-8 flex flex-col justify-center space-y-6">
                     <div className="space-y-2">
-                        <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase font-instrument-serif leading-none">
-                            Investment <span className="text-[#C05E42]">Funds.</span>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none">
+                            Mutual Funds
                         </h2>
-                        <p className="text-white/40 text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest max-w-2xl">
-                            Explore professionally managed portfolios tailored for institutional-grade risk management and alpha generation.
+                        <p className="text-zinc-400 text-sm md:text-base font-medium leading-relaxed max-w-2xl">
+                            Explore professionally managed portfolios tailored for risk management and strong returns.
                         </p>
                     </div>
 
                     <div className="flex flex-wrap gap-4">
-                        <div className="flex items-center gap-3 px-4 py-2 bg-white/5 text-[#C05E42] rounded-[1px] border border-white/10 text-[10px] font-black uppercase tracking-[0.2em]">
-                            <Zap size={14} className="animate-pulse" />
-                            {funds.length}_Available_Nodes
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 text-xs font-semibold">
+                            <Zap size={14} />
+                            {funds.length} Available Funds
                         </div>
-                        <div className="flex items-center gap-3 px-4 py-2 bg-white/5 text-white/40 rounded-[1px] border border-white/10 text-[10px] font-black uppercase tracking-[0.2em]">
-                            <ShieldCheck size={14} className="text-[#C05E42]" />
-                            SEC_Regulated_Framework
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] text-zinc-400 rounded-lg border border-white/[0.06] text-xs font-semibold">
+                            <ShieldCheck size={14} className="text-zinc-500" />
+                            SEC Regulated
                         </div>
                     </div>
                 </div>
 
                 <div className="lg:col-span-4">
-                    <div className="bg-[#121417] rounded-[2px] p-8 text-[#F9F9F9] border border-white/10 shadow-3xl relative overflow-hidden group">
-                        <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#C05E42]/5 rounded-full blur-[80px] group-hover:bg-[#C05E42]/10 transition-all" />
+                    <div className="bg-white/[0.02] rounded-2xl p-8 border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute -right-8 -top-8 w-40 h-40 bg-blue-500/5 rounded-full blur-[60px] group-hover:bg-blue-500/10 transition-all pointer-events-none" />
                         <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="space-y-1">
-                                <div className="flex items-center gap-3 text-[#C05E42] mb-2">
-                                    <Wallet size={16} />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">Asset_Intensity</span>
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-zinc-400 mb-1">
+                                    <Wallet size={16} className="text-blue-400" />
+                                    <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">Portfolio Value</span>
                                 </div>
-                                <div className="text-4xl font-black font-instrument-serif tracking-tighter">
+                                <div className="text-4xl font-bold tracking-tight text-white tabular-nums">
                                     {formatCurrency(totalPortfolioValue)}
                                 </div>
                             </div>
 
-                            <div className="mt-8 space-y-6 pt-6 border-t border-white/5">
+                            <div className="mt-8 space-y-6 pt-6 border-t border-white/[0.06]">
                                 <div className="flex justify-between items-end">
                                     <div>
-                                        <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Active_Nodes</div>
-                                        <div className="text-xl font-black font-instrument-serif">{holdings.length}</div>
+                                        <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Active Positions</div>
+                                        <div className="text-xl font-bold text-white tabular-nums">{holdings.length}</div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Node_Weight</div>
-                                        <div className="text-xl font-black font-instrument-serif text-[#C05E42]">
+                                        <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Asset Weight</div>
+                                        <div className="text-xl font-bold tabular-nums text-blue-400">
                                             {totalPortfolioValue > 0 ? ((totalPortfolioValue / (totalPortfolioValue + cashBalance)) * 100).toFixed(1) : "0"}%
                                         </div>
                                     </div>
@@ -184,45 +184,45 @@ export default function MutualFundsPage() {
 
             {/* ── High-Velocity Performance ── */}
             {!loading && trendingFunds.length > 0 && (
-                <section className="space-y-10">
+                <section className="space-y-6">
                     <div className="flex items-center justify-between px-2">
-                        <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.4em] flex items-center gap-4">
-                            <TrendingUp size={18} className="text-[#C05E42]" />
-                            Alpha_Leaders
+                        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                            <TrendingUp size={16} className="text-blue-400" />
+                            Top Performers
                         </h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {trendingFunds.map((fund) => {
                             const isOwned = holdings.some(h => h.fund_id === fund.fund_id);
                             return (
                                 <div
                                     key={fund.fund_id}
                                     onClick={() => handleFundClick(fund.fund_id)}
-                                    className="group bg-white/5 rounded-[2px] p-8 border border-white/10 hover:border-[#C05E42]/40 transition-all cursor-pointer shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[220px]"
+                                    className="group bg-white/[0.02] rounded-2xl p-6 border border-white/[0.06] hover:bg-white/[0.04] hover:border-blue-500/30 transition-all cursor-pointer shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[220px]"
                                 >
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full -mr-12 -mt-12 -z-0" />
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.01] rounded-full -mr-12 -mt-12 pointer-events-none" />
                                     <div className="relative z-10 space-y-6">
                                         <div className="flex items-center justify-between">
-                                            <span className="px-3 py-1 bg-white/5 text-[#C05E42] rounded-[1px] text-[9px] font-black uppercase tracking-widest border border-white/5">
+                                            <span className="px-3 py-1 bg-white/[0.03] text-blue-400 rounded-lg text-xs font-semibold border border-white/[0.06]">
                                                 {fund.fund_type.replace(' Fund', '')}
                                             </span>
-                                            <ArrowUpRight size={18} className="text-white/10 group-hover:text-[#C05E42] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                                            <ArrowUpRight size={18} className="text-zinc-600 group-hover:text-blue-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                                         </div>
                                         <div className="space-y-1">
-                                            <h4 className="font-black text-[#F9F9F9] text-xl leading-tight uppercase tracking-tighter font-instrument-sans group-hover:text-[#C05E42] transition-colors">{fund.fund_name}</h4>
-                                            <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{fund.fund_manager}</div>
+                                            <h4 className="font-bold text-white text-lg tracking-tight group-hover:text-blue-400 transition-colors">{fund.fund_name}</h4>
+                                            <div className="text-xs font-medium text-zinc-500">{fund.fund_manager}</div>
                                         </div>
                                     </div>
-                                    <div className="relative z-10 mt-8 flex items-end justify-between border-t border-white/5 pt-6">
+                                    <div className="relative z-10 mt-6 flex items-end justify-between border-t border-white/[0.06] pt-5">
                                         <div>
-                                            <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">1Y_Cycle_Return</div>
-                                            <div className="text-3xl font-black text-[#10B981] font-instrument-serif tracking-tighter">
+                                            <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">1Y Return</div>
+                                            <div className="text-2xl font-bold text-emerald-400 tabular-nums tracking-tight">
                                                 +{fundPerformanceMap[fund.fund_id]?.oneYear?.toFixed(2)}%
                                             </div>
                                         </div>
                                         {isOwned && (
-                                            <div className="px-3 py-1 bg-[#10B981]/10 text-[#10B981] rounded-[1px] text-[8px] font-black uppercase tracking-[0.2em] border border-[#10B981]/20">
-                                                ACQUIRED
+                                            <div className="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-md text-[10px] font-semibold border border-blue-500/20">
+                                                OWNED
                                             </div>
                                         )}
                                     </div>
@@ -234,59 +234,59 @@ export default function MutualFundsPage() {
             )}
 
             {/* ── Intelligence Filter Array ── */}
-            <div className="bg-[#121417] rounded-[2px] p-8 border border-white/10 shadow-3xl space-y-10">
-                <div className="flex flex-col md:flex-row gap-8">
+            <div className="bg-white/[0.02] rounded-2xl p-6 lg:p-8 border border-white/[0.06] shadow-2xl space-y-8 mx-4 md:mx-0">
+                <div className="flex flex-col md:flex-row gap-6">
                     <div className="relative flex-1 group">
-                        <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C05E42] transition-colors" />
+                        <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-400 transition-colors" />
                         <input
                             type="text"
-                            placeholder="FILTER_BY_NODE_NAME_OR_ID..."
-                            aria-label="FILTER BY NODE NAME OR ID"
+                            placeholder="Search by fund name or manager..."
+                            aria-label="Search mutual funds"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-16 pr-6 py-5 bg-white/5 border border-white/10 rounded-[2px] text-[#F9F9F9] focus:ring-1 focus:ring-[#C05E42]/30 focus:border-[#C05E42]/40 outline-none transition-all text-xs font-black uppercase tracking-widest placeholder:text-white/10"
+                            className="w-full pl-12 pr-6 py-4 bg-white/[0.03] border border-white/[0.06] rounded-xl text-white focus:bg-white/[0.05] focus:border-blue-500/50 outline-none transition-all text-sm font-medium placeholder:text-zinc-600"
                         />
                     </div>
                     <button
                         onClick={() => fetchData(false)}
-                        className="px-6 py-5 bg-white/5 border border-white/10 rounded-[2px] hover:bg-white/10 transition-all group"
+                        className="px-5 py-4 bg-white/[0.03] border border-white/[0.06] rounded-xl hover:bg-white/[0.08] transition-all group"
                         aria-label="Refresh Mutual Funds"
                     >
-                        <RefreshCw size={20} className="text-white/20 group-hover:text-[#C05E42] group-hover:rotate-180 transition-all duration-700" />
+                        <RefreshCw size={18} className="text-zinc-500 group-hover:text-white group-hover:rotate-180 transition-all duration-700" />
                     </button>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] px-2">Strategy_Domain</div>
-                    <div className="flex flex-wrap items-center gap-3">
+                <div className="space-y-4">
+                    <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest px-1">Strategy Type</div>
+                    <div className="flex flex-wrap items-center gap-2">
                         {fundTypes.map((type) => (
                             <button
                                 key={type}
                                 onClick={() => setFilterType(type)}
-                                className={`px-6 py-2.5 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all border ${filterType === type
-                                    ? "bg-[#C05E42] border-[#C05E42] text-[#F9F9F9] shadow-2xl shadow-[#C05E42]/20"
-                                    : "bg-white/5 border-white/10 text-white/30 hover:border-white/30 hover:text-[#F9F9F9]"
+                                className={`px-5 py-2 rounded-lg text-xs font-semibold transition-all border ${filterType === type
+                                    ? "bg-blue-600 border-transparent text-white shadow-sm shadow-blue-500/20"
+                                    : "bg-white/[0.03] border-white/[0.06] text-zinc-400 hover:bg-white/[0.06] hover:text-white"
                                     }`}
                             >
-                                {type === "All" ? "Global_Strategy" : type.toUpperCase().replace(' ', '_')}
+                                {type === "All" ? "All Strategies" : type}
                             </button>
                         ))}
                     </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-8 pt-4 border-t border-white/5">
-                    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] px-2 min-w-[120px]">Risk_Intensity</div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-6 border-t border-white/[0.04]">
+                    <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest px-1 min-w-[120px]">Risk Level</div>
                     <div className="flex gap-2">
                         {[0, 1, 2, 3, 4, 5].map((risk) => (
                             <button
                                 key={risk}
                                 onClick={() => setFilterRisk(risk)}
-                                className={`w-12 h-12 flex items-center justify-center rounded-[1px] text-[11px] font-black transition-all border uppercase ${filterRisk === risk
-                                    ? "bg-[#C05E42] border-[#C05E42] text-[#F9F9F9]"
-                                    : "bg-white/5 border-white/10 text-white/20 hover:border-[#C05E42]/30 hover:text-[#F9F9F9]"
+                                className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-semibold transition-all border ${filterRisk === risk
+                                    ? "bg-blue-600 border-transparent text-white shadow-sm"
+                                    : "bg-white/[0.03] border-white/[0.06] text-zinc-400 hover:bg-white/[0.08] hover:text-white"
                                     }`}
                             >
-                                {risk === 0 ? "ALL" : risk}
+                                {risk === 0 ? "All" : risk}
                             </button>
                         ))}
                     </div>
@@ -295,33 +295,33 @@ export default function MutualFundsPage() {
 
             {/* ── Terminal Fund Array ── */}
             {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-4 md:mx-0">
                     {Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="bg-white/5 rounded-[2px] border border-white/10 h-[320px] animate-pulse" />
+                        <div key={i} className="bg-white/[0.02] rounded-2xl border border-white/[0.05] h-[320px] animate-pulse" />
                     ))}
                 </div>
             ) : filteredFunds.length === 0 ? (
-                <div className="bg-[#121417] rounded-[2px] border border-white/10 p-24 text-center shadow-3xl">
-                    <div className="w-24 h-24 rounded-[2px] bg-white/5 flex items-center justify-center mx-auto mb-10 border border-white/10">
-                        <Filter size={40} className="text-white/10" />
+                <div className="bg-white/[0.02] rounded-2xl border border-white/[0.06] p-16 text-center mx-4 md:mx-0">
+                    <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-6 border border-white/[0.05]">
+                        <Filter size={32} className="text-zinc-600" />
                     </div>
-                    <h3 className="text-3xl font-black text-[#F9F9F9] uppercase tracking-tighter mb-4 font-instrument-serif">Zero_Nodes_Detected</h3>
-                    <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.3em] mb-12 max-w-sm mx-auto leading-loose">The requested parameters produced an empty result set. Adjust the filter array to resume scanning.</p>
+                    <h3 className="text-2xl font-bold text-white tracking-tight mb-2">No Funds Found</h3>
+                    <p className="text-zinc-500 text-sm font-medium mb-8 max-w-sm mx-auto">Try adjusting your search criteria or removing filters to view more mutual funds.</p>
                     <button
                         onClick={() => { setSearch(""); setFilterType("All"); setFilterRisk(0); }}
-                        className="px-10 py-5 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] text-[10px] uppercase tracking-[0.4em] hover:bg-[#D16D4F] transition-all shadow-2xl active:scale-95"
+                        className="px-8 py-3 bg-white/[0.03] text-white font-semibold rounded-xl hover:bg-white/[0.08] border border-white/[0.06] transition-all"
                     >
-                        Reset_Filter_Matrix
+                        Clear All Filters
                     </button>
                 </div>
             ) : (
-                <div className="space-y-10">
+                <div className="space-y-6 mx-4 md:mx-0">
                     <div className="px-2 flex items-center justify-between">
-                        <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">
-                            Active_Node_Count: {filteredFunds.length}
+                        <span className="text-xs font-semibold text-zinc-500">
+                            Showing {filteredFunds.length} funds
                         </span>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredFunds.map((fund) => (
                             <MutualFundCard
                                 key={fund.fund_id}

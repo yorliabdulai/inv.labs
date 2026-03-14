@@ -1,11 +1,11 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { TrendingUp, AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
-import gsap from "gsap";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,37 +14,13 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            tl.from(".auth-card", {
-                opacity: 0,
-                y: 40,
-                duration: 1,
-                ease: "expo.out"
-            })
-                .from(".auth-item", {
-                    opacity: 0,
-                    y: 20,
-                    stagger: 0.1,
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "-=0.6");
-        }, containerRef);
-        return () => ctx.revert();
-    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
 
         if (error) {
             setError(error.message);
@@ -58,451 +34,143 @@ export default function LoginPage() {
     const handleOAuth = async (provider: 'google' | 'apple') => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
+            options: { redirectTo: `${window.location.origin}/auth/callback` },
         });
         if (error) setError(error.message);
     };
 
     return (
-        <div ref={containerRef} className="auth-container">
-            {/* Animated background */}
-            <div className="auth-bg-orbs">
-                <div className="orb orb-1" />
-                <div className="orb orb-2" />
-                <div className="orb orb-3" />
-            </div>
+        <div className="min-h-screen bg-[#0D0F12] flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Ambient background */}
+            <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/8 rounded-full blur-[160px] pointer-events-none" />
 
-            <div className="auth-card glass-card">
-                <div className="auth-item auth-header">
-                    <div className="auth-logo">
-                        <div className="logo-icon-wrap">
-                            <TrendingUp size={22} className="logo-icon" />
+            <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full max-w-[440px] relative z-10"
+            >
+                {/* Card */}
+                <div className="bg-white/[0.04] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
+
+                    {/* Logo */}
+                    <div className="flex items-center gap-2.5 mb-8">
+                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner shadow-blue-500/30">
+                            iL
                         </div>
-                        <span className="logo-text">GSE<span className="logo-highlight">.LABS</span></span>
+                        <span className="font-bold text-lg tracking-tight text-white">inv.labs</span>
                     </div>
-                    <h1 className="auth-title">Welcome back</h1>
-                    <p className="auth-subtitle">Sign in to your investment dashboard.</p>
-                </div>
 
-                {error && (
-                    <div className="auth-item error-banner">
-                        <AlertCircle size={16} /> {error}
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h1 className="text-2xl font-bold text-white tracking-tight mb-1.5">Welcome back</h1>
+                        <p className="text-sm text-zinc-400 leading-relaxed">Sign in to your investment dashboard.</p>
                     </div>
-                )}
 
-                <div className="auth-item oauth-buttons">
-                    <button
-                        onClick={() => handleOAuth('google')}
-                        className="oauth-btn oauth-btn-google"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 24 24">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                        </svg>
-                        Continue with Google
-                    </button>
-                    <button
-                        onClick={() => handleOAuth('apple')}
-                        className="oauth-btn oauth-btn-apple"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                            <path d="M17.05 20.28c-.96.95-2.04 2.22-3.66 2.22-1.58 0-2.08-.96-3.88-.96-1.83 0-2.39.95-3.86.95-1.58 0-2.79-1.39-3.76-2.36-2-2-3.48-5.32-3.48-8.52 0-5.24 3.38-8.01 6.58-8.01 1.64 0 3.01.95 3.96.95.95 0 2.24-1.07 4.09-1.07.78 0 3.09.28 4.54 2.4-3.67 2.14-3.08 6.51.52 8-.74 1.84-2.2 4.01-4 6.4zM12.03 3.31c.12-2 .81-3.6 2.39-4.31-.05 1.96-.83 3.65-2.39 4.31z" />
-                        </svg>
-                        Continue with Apple
-                    </button>
-                </div>
+                    {/* Error banner */}
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex items-center gap-2.5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm mb-6"
+                        >
+                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            {error}
+                        </motion.div>
+                    )}
 
-                <div className="auth-item auth-divider">
-                    <div className="divider-line" />
-                    <span className="divider-text">or continue with email</span>
-                    <div className="divider-line" />
-                </div>
-
-                <form onSubmit={handleLogin} className="auth-form">
-                    <div className="form-group">
-                        <label className="form-label">Email Address</label>
-                        <input
-                            type="email"
-                            placeholder="your@email.com"
-                            className="form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    {/* OAuth */}
+                    <div className="flex flex-col gap-3 mb-6">
+                        <button
+                            onClick={() => handleOAuth('google')}
+                            className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white/[0.06] border border-white/[0.1] rounded-xl text-sm font-semibold text-zinc-300 hover:bg-white/[0.1] hover:border-white/20 transition-all duration-200"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                            </svg>
+                            Continue with Google
+                        </button>
+                        <button
+                            onClick={() => handleOAuth('apple')}
+                            className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white border border-white/20 rounded-xl text-sm font-semibold text-zinc-900 hover:bg-zinc-100 transition-all duration-200"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.05 20.28c-.96.95-2.04 2.22-3.66 2.22-1.58 0-2.08-.96-3.88-.96-1.83 0-2.39.95-3.86.95-1.58 0-2.79-1.39-3.76-2.36-2-2-3.48-5.32-3.48-8.52 0-5.24 3.38-8.01 6.58-8.01 1.64 0 3.01.95 3.96.95.95 0 2.24-1.07 4.09-1.07.78 0 3.09.28 4.54 2.4-3.67 2.14-3.08 6.51.52 8-.74 1.84-2.2 4.01-4 6.4zM12.03 3.31c.12-2 .81-3.6 2.39-4.31-.05 1.96-.83 3.65-2.39 4.31z" />
+                            </svg>
+                            Continue with Apple
+                        </button>
                     </div>
-                    <div className="form-group">
-                        <div className="form-label-row">
-                            <label className="form-label">Password</label>
-                            <Link href="/forgot-password" className="forgot-link">Forgot password?</Link>
-                        </div>
-                        <div className="password-input-wrapper">
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="flex-1 h-px bg-white/[0.08]" />
+                        <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-wider">or email</span>
+                        <div className="flex-1 h-px bg-white/[0.08]" />
+                    </div>
+
+                    {/* Form */}
+                    <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-semibold text-zinc-400 tracking-wide">Email address</label>
                             <input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="form-input"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                type="email"
+                                placeholder="your@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
+                                className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-sm text-white placeholder:text-zinc-600 outline-none focus:border-blue-500/70 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/10 transition-all font-medium"
                             />
-                            <button
-                                type="button"
-                                className="password-toggle"
-                                onClick={() => setShowPassword(!showPassword)}
-                                aria-label="Toggle password visibility"
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
                         </div>
-                    </div>
 
-                    <button
-                        type="submit"
-                        className="btn-premium btn-premium-solid submit-btn"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <>
-                                <Loader2 className="spinner" size={18} />
-                                Signing in...
-                            </>
-                        ) : (
-                            "Sign In"
-                        )}
-                    </button>
-                </form>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                                <label className="text-xs font-semibold text-zinc-400 tracking-wide">Password</label>
+                                <Link href="/forgot-password" className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors">
+                                    Forgot password?
+                                </Link>
+                            </div>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="w-full px-4 py-3 pr-12 bg-white/[0.05] border border-white/[0.1] rounded-xl text-sm text-white placeholder:text-zinc-600 outline-none focus:border-blue-500/70 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/10 transition-all font-medium"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                                    aria-label="Toggle password visibility"
+                                >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                            </div>
+                        </div>
 
-                <div className="auth-footer">
-                    <p className="footer-text">
-                        New here? <Link href="/register" className="footer-link">Create a free account</Link>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="flex items-center justify-center gap-2 w-full py-3.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(37,99,235,0.35)] hover:shadow-[0_6px_24px_rgba(37,99,235,0.45)] hover:-translate-y-0.5 transition-all duration-200"
+                        >
+                            {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Signing in...</> : "Sign In"}
+                        </button>
+                    </form>
+
+                    {/* Footer */}
+                    <p className="text-center text-sm text-zinc-500 mt-6">
+                        New here?{" "}
+                        <Link href="/register" className="font-semibold text-zinc-300 hover:text-white transition-colors">
+                            Create a free account
+                        </Link>
                     </p>
                 </div>
-            </div>
-
-            <style jsx>{`
-                .auth-container {
-                    min-height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: #121417;
-                    position: relative;
-                    overflow: hidden;
-                    padding: 1rem;
-                    font-family: var(--font-geist-sans), sans-serif;
-                }
-
-                .auth-bg-orbs {
-                    position: absolute;
-                    inset: 0;
-                    pointer-events: none;
-                }
-
-                .orb {
-                    position: absolute;
-                    border-radius: 50%;
-                    filter: blur(120px);
-                    opacity: 0.1;
-                }
-
-                .orb-1 {
-                    width: 600px;
-                    height: 600px;
-                    background: radial-gradient(circle, #C05E42, transparent);
-                    top: -200px;
-                    left: -200px;
-                }
-
-                .orb-2 {
-                    width: 500px;
-                    height: 500px;
-                    background: radial-gradient(circle, #F9F9F9, transparent);
-                    bottom: -150px;
-                    right: -150px;
-                }
-
-                .auth-card {
-                    width: 100%;
-                    max-width: 440px;
-                    padding: 3rem 2.5rem;
-                    position: relative;
-                    z-index: 1;
-                    background: rgba(18, 20, 23, 0.8);
-                    backdrop-filter: blur(20px);
-                    border-radius: 2px;
-                    border: 1px solid rgba(192, 94, 66, 0.2);
-                    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-                }
-
-                .auth-header {
-                    text-align: left;
-                    margin-bottom: 2.5rem;
-                }
-
-                .auth-logo {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    margin-bottom: 2rem;
-                }
-
-                .logo-icon-wrap {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 2px;
-                    background: #C05E42;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .logo-icon {
-                    color: #F9F9F9;
-                }
-
-                .logo-text {
-                    font-size: 1.25rem;
-                    font-weight: 800;
-                    color: #F9F9F9;
-                    letter-spacing: -0.02em;
-                    font-family: var(--font-instrument-sans), sans-serif;
-                }
-
-                .logo-highlight {
-                    color: #C05E42;
-                }
-
-                .auth-title {
-                    font-size: 2.25rem;
-                    margin-bottom: 0.75rem;
-                    color: #F9F9F9;
-                    font-weight: 800;
-                    letter-spacing: -0.03em;
-                    font-family: var(--font-instrument-serif), serif;
-                }
-
-                .auth-subtitle {
-                    font-size: 0.875rem;
-                    color: rgba(249, 249, 249, 0.7);
-                    line-height: 1.6;
-                }
-
-                .error-banner {
-                    background: rgba(185, 28, 28, 0.1);
-                    border: 1px solid rgba(185, 28, 28, 0.2);
-                    color: #FCA5A5;
-                    padding: 1rem;
-                    border-radius: 2px;
-                    margin-bottom: 2rem;
-                    font-size: 0.875rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-
-                .oauth-buttons {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.75rem;
-                    margin-bottom: 2rem;
-                }
-
-                .oauth-btn {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 100%;
-                    gap: 12px;
-                    padding: 0.875rem;
-                    border-radius: 2px;
-                    font-weight: 600;
-                    font-size: 0.875rem;
-                    transition: all 0.2s ease;
-                    cursor: pointer;
-                    text-decoration: none;
-                    border: 1px solid rgba(249, 249, 249, 0.1);
-                    background: rgba(249, 249, 249, 0.05);
-                    color: #F9F9F9;
-                }
-
-                .oauth-btn:hover {
-                    background: rgba(249, 249, 249, 0.1);
-                    border-color: rgba(249, 249, 249, 0.2);
-                }
-
-                .oauth-btn-apple {
-                    background: #F9F9F9 !important;
-                    color: #121417 !important;
-                }
-
-                .auth-divider {
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                    margin-bottom: 2rem;
-                }
-
-                .divider-line {
-                    flex: 1;
-                    height: 1px;
-                    background: rgba(249, 249, 249, 0.1);
-                }
-
-                .divider-text {
-                    font-size: 0.7rem;
-                    font-weight: 600;
-                    color: rgba(249, 249, 249, 0.4);
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
-                }
-
-                .auth-form {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.5rem;
-                }
-
-                .form-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.625rem;
-                }
-
-                .form-label {
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    color: rgba(249, 249, 249, 0.85);
-                    text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                }
-
-                .form-label-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .forgot-link {
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    color: #C05E42;
-                    text-decoration: none;
-                    transition: opacity 0.2s;
-                }
-
-                .form-input {
-                    width: 100%;
-                    padding: 1rem;
-                    border-radius: 2px;
-                    border: 1px solid rgba(249, 249, 249, 0.1);
-                    outline: none;
-                    font-size: 0.9375rem;
-                    transition: all 0.2s;
-                    background: rgba(18, 20, 23, 0.5);
-                    color: #F9F9F9;
-                    box-sizing: border-box;
-                    font-family: var(--font-geist-sans), sans-serif;
-                }
-
-                .form-input:focus {
-                    border-color: #C05E42;
-                    background: rgba(18, 20, 23, 0.8);
-                }
-
-                .form-input::placeholder {
-                    color: rgba(249, 249, 249, 0.2);
-                }
-
-                .password-input-wrapper {
-                    position: relative;
-                }
-
-                .password-toggle {
-                    position: absolute;
-                    right: 1rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-                    color: rgba(249, 249, 249, 0.3);
-                    padding: 0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .submit-btn {
-                    width: 100%;
-                    padding: 1rem;
-                    font-size: 1rem;
-                    margin-top: 1rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.75rem;
-                    background: #C05E42;
-                    color: #F9F9F9;
-                    border: none;
-                    border-radius: 2px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    letter-spacing: 0.02em;
-                    text-transform: uppercase;
-                }
-
-                .submit-btn:hover:not(:disabled) {
-                    background: #D16D4F;
-                    transform: translateY(-1px);
-                    box-shadow: 0 10px 20px rgba(192, 94, 66, 0.2);
-                }
-
-                .submit-btn:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
-                }
-
-                .spinner {
-                    animation: spin 1s linear infinite;
-                }
-
-                @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-
-                .auth-footer {
-                    text-align: center;
-                    margin-top: 2.5rem;
-                }
-
-                .footer-text {
-                    font-size: 0.875rem;
-                    color: rgba(249, 249, 249, 0.5);
-                }
-
-                .footer-link {
-                    font-weight: 700;
-                    color: #F9F9F9;
-                    text-decoration: underline;
-                    text-underline-offset: 4px;
-                    text-decoration-color: rgba(192, 94, 66, 0.4);
-                }
-
-                @media (max-width: 480px) {
-                    .auth-card {
-                        padding: 2.5rem 1.5rem;
-                    }
-
-                    .auth-title {
-                        font-size: 1.875rem;
-                    }
-                }
-            `}</style>
+            </motion.div>
         </div>
     );
 }

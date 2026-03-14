@@ -7,12 +7,11 @@ import {
     TrendingDown,
     Layers,
     Activity,
-    Zap,
-    PieChart,
-    Eye,
     Target,
     ChevronRight,
-    Search
+    Search,
+    PieChart,
+    Wallet
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";
@@ -43,9 +42,12 @@ export default function DashboardPage() {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-4">
-                <div className="w-8 h-8 border-2 border-[#1A1C4E] border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-black uppercase tracking-widest text-[#1A1C4E]/40">Authenticating Ledger...</p>
+            <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+                <span className="relative flex h-8 w-8">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-20"></span>
+                    <span className="relative inline-flex rounded-full h-8 w-8 bg-blue-600/50 border border-blue-500/20"></span>
+                </span>
+                <p className="text-xs font-semibold tracking-wider text-zinc-500 animate-pulse">Establishing secure connection...</p>
             </div>
         );
     }
@@ -53,169 +55,130 @@ export default function DashboardPage() {
     const isPositive = (data?.dailyChange ?? 0) >= 0;
 
     return (
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 space-y-10 pb-20 animate-in fade-in duration-700">
+        <div className="max-w-[1440px] mx-auto space-y-8 animate-in fade-in duration-700">
             <DashboardHeader />
 
-            {/* Cinematic Brand Hero */}
-            <div className="relative mb-12 overflow-hidden rounded-[2px] bg-[#121417] p-8 md:p-16 border border-white/5 shadow-3xl">
-                {/* Visual Identity Accents */}
-                <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-[#C05E42] opacity-[0.08] blur-[120px]" />
-                <div className="absolute -left-32 -bottom-32 h-80 w-80 rounded-full bg-[#F9F9F9] opacity-[0.03] blur-[100px]" />
+            {/* Top Metrics Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-10">
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3">
-                            <span className="h-0.5 w-8 bg-[#C05E42]" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C05E42]">
-                                Purchasing Power
-                            </p>
-                        </div>
-
-                        <div className="space-y-2">
-                            <h1 className="font-instrument-serif text-6xl md:text-9xl font-normal leading-none text-[#F9F9F9] tracking-tighter tabular-nums drop-shadow-sm">
-                                {formatCurrency(data?.totalEquity ?? 10000)}
-                            </h1>
-                            <div className="flex items-center gap-3">
-                                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-bold border ${isPositive ? 'bg-[#10B981]/10 border-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/10 border-[#EF4444]/20 text-[#EF4444]'}`}>
-                                    {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                                    <span>{isPositive ? '+' : ''}{data?.dailyChangePercent.toFixed(2)}%</span>
-                                </div>
-                                <span className="text-xs font-medium text-white/30 uppercase tracking-widest">Global Performance Index</span>
-                            </div>
-                        </div>
-
-                        <p className="mt-6 text-sm md:text-base font-light text-white/40 max-w-xl leading-relaxed font-instrument-sans">
-                            Your institutional-grade terminal for the Ghana Stock Exchange.
-                            Strategize, deploy, and monitor your digital assets with surgical precision.
-                        </p>
+                {/* Main Equity Panel */}
+                <div className="lg:col-span-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity duration-700 pointer-events-none">
+                        <Wallet size={120} />
                     </div>
-
-                    <div className="flex flex-col sm:flex-row flex-wrap gap-4 w-full lg:w-auto mt-8 lg:mt-0">
-                        <button className="group flex flex-1 sm:flex-auto lg:flex-initial items-center justify-center gap-3 rounded-[2px] bg-[#C05E42] px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-black text-[#F9F9F9] uppercase tracking-widest transition-all hover:bg-[#D16D4F] active:scale-95 shadow-xl shadow-[#C05E42]/20 whitespace-nowrap">
-                            <TrendingUp size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 shrink-0" />
-                            Execute Trades
-                        </button>
-                        <button className="flex flex-1 sm:flex-auto lg:flex-initial items-center justify-center gap-3 rounded-[2px] bg-white/5 border border-white/10 px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-black text-[#F9F9F9] uppercase tracking-widest backdrop-blur-xl transition-all hover:bg-white/10 active:scale-95 whitespace-nowrap">
-                            <Layers size={16} className="shrink-0" />
-                            Asset Allocation
-                        </button>
+                    <div>
+                        <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 relative z-10 flex items-center gap-2">
+                            <span>Total Equity</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        </p>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight tabular-nums relative z-10">
+                            {formatCurrency(data?.totalEquity ?? 10000)}
+                        </h1>
+                    </div>
+                    <div className="mt-8 flex items-center gap-3 relative z-10">
+                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold ${isPositive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                            {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                            <span>{isPositive ? '+' : ''}{formatCurrency(data?.dailyChange ?? 0)} ({data?.dailyChangePercent.toFixed(2)}%)</span>
+                        </div>
+                        <span className="text-sm font-medium text-zinc-500">Today</span>
                     </div>
                 </div>
 
-                {/* Data Visualizer Strips */}
-                <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-white/5 pt-10">
-                    <div className="space-y-1">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Available Cash</p>
-                        <p className="text-xl font-medium text-[#F9F9F9] font-instrument-sans">{formatCurrency(data?.cashBalance ?? 0)}</p>
+                {/* Secondary Stats Grid */}
+                <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 flex flex-col justify-center transition-colors hover:bg-white/[0.03]">
+                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Purchasing Power</p>
+                        <p className="text-xl md:text-2xl font-bold text-zinc-100 tabular-nums">{formatCurrency(data?.cashBalance ?? 0)}</p>
                     </div>
-                    <div className="space-y-1">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Total Realized</p>
-                        <p className="text-xl font-medium text-[#F9F9F9] font-instrument-sans">{formatCurrency(data?.totalGain ?? 0)}</p>
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 flex flex-col justify-center transition-colors hover:bg-white/[0.03]">
+                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Total Return</p>
+                        <p className={`text-xl md:text-2xl font-bold tabular-nums ${(data?.totalGain ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {(data?.totalGain ?? 0) >= 0 ? '+' : ''}{formatCurrency(data?.totalGain ?? 0)}
+                        </p>
                     </div>
-                    <div className="space-y-1">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Active Assets</p>
-                        <p className="text-xl font-medium text-[#F9F9F9] font-instrument-sans">{data?.activePositions ?? 0} Position{(data?.activePositions ?? 0) !== 1 ? 's' : ''}</p>
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 flex flex-col justify-center transition-colors hover:bg-white/[0.03]">
+                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Active Positions</p>
+                        <p className="text-xl md:text-2xl font-bold text-zinc-100 tabular-nums">{data?.activePositions ?? 0}</p>
                     </div>
-                    <div className="space-y-1">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C05E42]/80">Terminal State</p>
-                        <div className="flex items-center gap-2 text-xl font-medium text-[#F9F9F9] font-instrument-sans">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 flex flex-col justify-center transition-colors hover:bg-white/[0.03]">
+                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">System Status</p>
+                        <div className="flex items-center gap-2 text-xl md:text-2xl font-bold text-blue-400">
+                            <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+                            </span>
                             Live
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
-                {/* Main Market Visualizer Area */}
-                <div className="lg:col-span-8 space-y-8">
-                    <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl overflow-hidden min-h-[600px] flex flex-col group">
-                        <div className="p-6 md:p-8 border-b border-white/5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/5">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-[#C05E42] rounded-[2px] flex items-center justify-center text-[#F9F9F9] shadow-lg shadow-[#C05E42]/20 group-hover:scale-105 transition-transform">
-                                    <Activity size={24} />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                {/* Main Content Column */}
+                <div className="lg:col-span-8 space-y-6">
+
+                    {/* Chart Panel */}
+                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl flex flex-col overflow-hidden">
+                        <div className="p-5 md:px-6 md:py-4 border-b border-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.01]">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-center text-blue-400">
+                                    <Activity size={16} />
                                 </div>
-                                <div>
-                                    <h3 className="text-lg font-black text-[#F9F9F9] tracking-tight truncate max-w-[200px] md:max-w-none font-instrument-sans uppercase">Portfolio Intelligence</h3>
-                                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.2em] mt-0.5 whitespace-nowrap">Proprietary Performance Visualizer</p>
-                                </div>
+                                <h3 className="text-base font-semibold text-white">Performance Overview</h3>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                                {/* Chart Type Toggle */}
-                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px] max-w-full">
+                            <div className="flex items-center gap-3 bg-black/20 p-1 rounded-xl border border-white/[0.04]">
+                                {['1D', '1W', '1M', '3M', '1Y'].map((range) => (
                                     <button
-                                        onClick={() => setChartType('area')}
-                                        className={`px-3 py-1.5 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${chartType === 'area' ? 'bg-[#C05E42] text-[#F9F9F9]' : 'text-white/40 hover:text-[#F9F9F9]'}`}
+                                        key={range}
+                                        onClick={() => setActiveRange(range)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeRange === range
+                                                ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
+                                                : 'text-zinc-500 hover:text-white hover:bg-white/[0.05]'
+                                            }`}
                                     >
-                                        Area
+                                        {range}
                                     </button>
-                                    <button
-                                        onClick={() => setChartType('bar')}
-                                        className={`px-3 py-1.5 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${chartType === 'bar' ? 'bg-[#C05E42] text-[#F9F9F9]' : 'text-white/40 hover:text-[#F9F9F9]'}`}
-                                    >
-                                        Bar
-                                    </button>
-                                    <button
-                                        onClick={() => setChartType('candle')}
-                                        className={`px-3 py-1.5 rounded-[1px] text-[10px] font-black uppercase tracking-widest transition-all ${chartType === 'candle' ? 'bg-[#C05E42] text-[#F9F9F9]' : 'text-white/40 hover:text-[#F9F9F9]'}`}
-                                    >
-                                        Candle
-                                    </button>
-                                </div>
-
-                                {/* Period Toggle */}
-                                <div className="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-[2px] max-w-full">
-                                    {['1D', '1W', '1M', '3M', '1Y'].map((range) => (
-                                        <button
-                                            key={range}
-                                            onClick={() => setActiveRange(range)}
-                                            className={`px-4 py-1.5 rounded-[1px] text-[10px] font-black tracking-widest transition-all ${activeRange === range
-                                                ? 'bg-[#F9F9F9] text-[#121417]'
-                                                : 'text-white/40 hover:text-[#F9F9F9]'
-                                                }`}
-                                        >
-                                            {range}
-                                        </button>
-                                    ))}
-                                </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Chart Container */}
-                        <div className="flex-1 w-full relative bg-transparent p-6 min-h-[450px]">
+                        <div className="flex-1 w-full relative p-6 min-h-[400px]">
+                            {/* Pass minimal props as before, UI chart library handles drawing */}
                             <PortfolioUniversalChart period={activeRange} chartType={chartType} currentTotal={data?.totalEquity ?? 10000} />
                         </div>
                     </div>
 
-                    {/* Top Holdings Section */}
+                    {/* Holdings Grid */}
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between px-2">
-                            <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] flex items-center gap-3">
-                                <Layers size={18} className="text-[#C05E42]" />
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
+                                <Layers size={16} className="text-zinc-500" />
                                 Core Holdings
                             </h3>
-                            <Link href="/dashboard/portfolio" className="text-[10px] font-black text-[#C05E42] uppercase tracking-[0.3em] flex items-center gap-1 hover:gap-2 transition-all">
-                                Expand Portfolio <ChevronRight size={12} />
+                            <Link href="/dashboard/portfolio" className="text-xs font-semibold text-blue-500 hover:text-blue-400 flex items-center gap-1 group transition-colors">
+                                View Portfolio <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {data?.holdings.slice(0, 4).map((holding) => (
-                                <div key={holding.symbol} className="group p-5 bg-white/5 border border-white/5 rounded-[2px] hover:border-[#C05E42]/30 transition-all flex items-center justify-between shadow-2xl hover:-translate-y-1">
+                                <div key={holding.symbol} className="group p-5 bg-white/[0.02] border border-white/[0.05] rounded-2xl hover:bg-white/[0.04] hover:border-blue-500/20 transition-all flex items-center justify-between">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-[2px] bg-[#C05E42] text-[#F9F9F9] flex items-center justify-center font-black text-xs shadow-lg shadow-[#C05E42]/10 group-hover:scale-105 transition-transform uppercase">
+                                        <div className="w-10 h-10 rounded-xl bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs uppercase border border-zinc-700 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-colors">
                                             {holding.symbol.substring(0, 2)}
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-[#F9F9F9] text-sm leading-tight uppercase font-instrument-sans">{holding.name}</h4>
-                                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest mt-1 block tracking-[0.2em]">{holding.symbol}</span>
+                                            <h4 className="font-semibold text-zinc-100 text-sm">{holding.name}</h4>
+                                            <span className="text-[10px] font-semibold text-zinc-500 tracking-wider mt-0.5 block">{holding.symbol}</span>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-black text-[#F9F9F9] tabular-nums text-base">{formatCurrency(holding.value)}</p>
-                                        <div className={`flex items-center justify-end gap-1 text-[10px] font-black mt-1.5 ${holding.change >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                                        <p className="font-semibold text-zinc-100 tabular-nums text-sm">{formatCurrency(holding.value)}</p>
+                                        <div className={`flex items-center justify-end gap-1 text-[11px] font-semibold mt-1 ${holding.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                             {holding.change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                                            <span>{Math.abs(holding.change).toFixed(2)}%</span>
+                                            <span>{Math.abs(holding.changePercent).toFixed(2)}%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -224,120 +187,113 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Insights Sidebar */}
-                <div className="lg:col-span-4 space-y-8">
-                    {/* Challenge Prompt */}
-                    <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl p-6 group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#C05E42]/5 rounded-full blur-[40px] -mr-16 -mt-16 transition-all group-hover:bg-[#C05E42]/10" />
-                        <div className="flex items-start justify-between mb-4 relative z-10">
-                            <div>
-                                <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] flex items-center gap-3">
-                                    <Target size={18} className="text-[#C05E42]" />
-                                    Cohorts
-                                </h3>
-                                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Gamified Trading</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => setIsChallengeModalOpen(true)}
-                            className="w-full mt-2 py-4 bg-white/5 hover:bg-white/10 text-[#F9F9F9] border border-white/10 rounded-[2px] text-[10px] font-black uppercase tracking-[0.2em] transition-all"
-                        >
-                            Initialize Challenge
-                        </button>
-                    </div>
+                {/* Sidebar Column */}
+                <div className="lg:col-span-4 space-y-6">
 
-                    {/* Recent Activity Feed */}
-                    <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl p-6 flex flex-col h-[400px]">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] flex items-center gap-3">
-                                <Activity size={18} className="text-[#C05E42]" />
-                                Feed
+                    {/* Activity Feed */}
+                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 flex flex-col h-[400px]">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
+                                <Activity size={16} className="text-zinc-500" />
+                                Ledger
                             </h3>
-                            <div className="p-2 bg-white/5 rounded-[2px] text-white/40 border border-white/5 hover:bg-white/10 hover:text-[#F9F9F9] cursor-pointer transition-colors">
+                            <button className="p-1.5 text-zinc-500 hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors">
                                 <Search size={14} />
-                            </div>
+                            </button>
                         </div>
-
-                        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar -mr-1">
                             <RecentActivity transactions={data?.recentActivity ?? []} />
                         </div>
                     </div>
 
-                    {/* Allocation Insight - BRAND STYLE */}
-                    <div className="bg-[#121417] border border-white/5 rounded-[2px] shadow-2xl p-6 group">
-                        <div className="flex items-center justify-between mb-10">
-                            <h3 className="text-sm font-black text-[#F9F9F9] uppercase tracking-[0.2em] flex items-center gap-3">
-                                <PieChart size={18} className="text-[#C05E42]" />
+                    {/* Allocation */}
+                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
+                                <PieChart size={16} className="text-zinc-500" />
                                 Allocation
                             </h3>
-                            <div className="text-[8px] font-black text-[#F9F9F9] bg-[#C05E42] px-2 py-1 rounded-[1px] shadow-lg shadow-[#C05E42]/10 uppercase tracking-widest">
-                                Institutional
-                            </div>
+                            <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                                Computed
+                            </span>
                         </div>
 
-                        <div className="h-44 mb-10 group-hover:scale-105 transition-transform duration-500">
+                        <div className="h-40 mb-8">
                             {data && data.allocation.length > 0 ? (
                                 <AllocationChart data={data.allocation} />
                             ) : (
-                                <div className="h-full flex items-center justify-center text-white/10 font-black uppercase text-[10px] tracking-[0.3em] border border-white/5 rounded-[2px]">
-                                    Awaiting Ledger
+                                <div className="h-full flex items-center justify-center text-zinc-600 font-semibold text-xs tracking-wider border border-white/[0.05] rounded-xl border-dashed">
+                                    Awaiting Initial Capital
                                 </div>
                             )}
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {data?.allocation.slice(0, 3).map((item) => (
-                                <div key={item.name} className="flex items-center justify-between group/item border-b border-white/5 pb-2 last:border-0">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full" style={{ background: item.color }} />
-                                        <span className="text-[10px] font-black text-white/40 group-hover/item:text-[#F9F9F9] transition-colors uppercase tracking-widest truncate max-w-[120px]">{item.name}</span>
+                                <div key={item.name} className="flex items-center justify-between group/item">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-sm" style={{ background: item.color }} />
+                                        <span className="text-xs font-medium text-zinc-400 group-hover/item:text-zinc-200 transition-colors truncate max-w-[120px]">{item.name}</span>
                                     </div>
-                                    <span className="text-xs font-black text-[#F9F9F9] tabular-nums">
+                                    <span className="text-xs font-semibold text-zinc-200 tabular-nums">
                                         {((item.value / (data.totalEquity || 1)) * 100).toFixed(1)}%
                                     </span>
                                 </div>
                             ))}
                         </div>
                     </div>
+
+                    {/* Gamification Action */}
+                    <button
+                        onClick={() => setIsChallengeModalOpen(true)}
+                        className="w-full flex items-center justify-between p-4 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/40 rounded-2xl transition-all group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                                <Target size={16} />
+                            </div>
+                            <div className="text-left">
+                                <p className="text-sm font-semibold text-indigo-100">Trading Cohorts</p>
+                                <p className="text-[10px] text-indigo-300 mt-0.5">Start a challenge</p>
+                            </div>
+                        </div>
+                        <ChevronRight size={16} className="text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                    </button>
                 </div>
             </div>
 
-            <div className="bg-[#121417] rounded-[2px] p-8 md:p-16 text-[#F9F9F9] relative overflow-hidden border border-white/5 shadow-3xl">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C05E42]/10 rounded-full -mr-48 -mt-48 blur-[120px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#F9F9F9]/5 rounded-full -ml-40 -mb-40 blur-[100px]" />
+            {/* Bottom Conversion Area */}
+            <div className="bg-gradient-to-br from-blue-900/20 to-zinc-900/10 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden border border-blue-500/10">
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full -mr-48 -mt-48 blur-[100px]" />
 
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
-                    <div className="max-w-2xl space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-[2px] bg-white/5 flex items-center justify-center border border-white/10 shadow-lg">
-                                <Zap size={18} className="text-[#C05E42]" />
-                            </div>
-                            <span className="text-[10px] font-black text-[#C05E42] uppercase tracking-[0.4em]">Strategic Opportunity</span>
-                        </div>
-                        <h3 className="text-3xl md:text-6xl font-normal font-instrument-serif mb-6 leading-tight tracking-tighter">Your capital is ready.<br />Optimize your next move.</h3>
-                        <p className="text-white/40 text-sm md:text-base font-medium leading-relaxed max-w-xl font-instrument-sans uppercase tracking-widest">
-                            Based on your institutional risk profile, we&apos;ve identified emerging trends in the alpha-heavy sectors. Check out the latest opportunities on the terminal.
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10 w-full">
+                    <div className="max-w-xl space-y-4">
+                        <h3 className="text-2xl md:text-3xl font-bold tracking-tight">Expand your portfolio footprint.</h3>
+                        <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                            Analyze advanced market patterns in real-time or securely execute block trades over the Ghana Stock Exchange sandbox protocol.
                         </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-6 flex-shrink-0">
+                    <div className="flex flex-col sm:flex-row gap-4 shrink-0">
                         <Link
                             href="/dashboard/market"
-                            className="px-10 py-5 bg-[#C05E42] text-[#F9F9F9] font-black rounded-[2px] hover:bg-[#D16D4F] active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-3 uppercase text-xs tracking-widest shadow-[#C05E42]/20"
+                            className="px-6 py-3.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-500 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 text-sm"
                         >
-                            <Eye size={18} />
-                            Terminal Market
+                            <Activity size={16} />
+                            Launch Market Scanner
                         </Link>
                         <Link
                             href="/dashboard/portfolio"
-                            className="px-10 py-5 bg-white/5 text-[#F9F9F9] font-black rounded-[2px] hover:bg-white/10 active:scale-95 transition-all shadow-2xl border border-white/10 flex items-center justify-center gap-3 uppercase text-xs tracking-widest"
+                            className="px-6 py-3.5 bg-white/[0.05] text-white font-semibold rounded-xl hover:bg-white/[0.1] active:scale-95 transition-all border border-white/[0.1] flex items-center justify-center gap-2 text-sm"
                         >
-                            <Target size={18} />
-                            Master Portfolio
+                            <Wallet size={16} />
+                            Manage Portfolio
                         </Link>
                     </div>
                 </div>
             </div>
+
             <CreateChallengeModal
                 isOpen={isChallengeModalOpen}
                 onClose={() => setIsChallengeModalOpen(false)}
