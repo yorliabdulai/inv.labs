@@ -107,7 +107,7 @@ export function RedeemMutualFundModal({
                 {/* Header */}
                 <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-foreground tracking-tight font-instrument-serif uppercase">Liquidate Units</h2>
+                        <h2 className="text-2xl font-bold text-foreground tracking-tight font-syne uppercase">Liquidate Units</h2>
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">{fund.fund_name}</p>
                     </div>
                     <button
@@ -137,7 +137,7 @@ export function RedeemMutualFundModal({
                         <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-8 shadow-premium animate-in zoom-in-50 duration-500">
                             <CheckCircle size={40} className="text-emerald-500" />
                         </div>
-                        <h3 className="text-2xl font-bold text-foreground mb-3 font-instrument-serif uppercase tracking-tight">Liquidation Complete</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-3 font-syne uppercase tracking-tight">Liquidation Complete</h3>
                         <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest leading-relaxed">
                             Funds have been credited to your institutional ledger.
                         </p>
@@ -153,11 +153,11 @@ export function RedeemMutualFundModal({
                                     <div className="grid grid-cols-2 gap-12">
                                         <div>
                                             <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Accumulated Units</div>
-                                            <div className="text-3xl font-bold text-foreground tabular-nums tracking-tighter font-instrument-serif">{holding.units_held.toFixed(4)}</div>
+                                            <div className="text-3xl font-bold text-foreground tabular-nums tracking-tighter font-syne">{holding.units_held.toFixed(4)}</div>
                                         </div>
                                         <div>
                                             <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Entrance NAV</div>
-                                            <div className="text-3xl font-bold text-foreground tabular-nums tracking-tighter font-instrument-serif">{formatCurrency(holding.average_nav)}</div>
+                                            <div className="text-3xl font-bold text-foreground tabular-nums tracking-tighter font-syne">{formatCurrency(holding.average_nav)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@ export function RedeemMutualFundModal({
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder={redemptionMethod === "units" ? "Enter units" : "Enter amount"}
-                                    className="w-full px-8 py-8 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:bg-muted/80 focus:border-primary/50 text-4xl font-bold text-foreground tabular-nums transition-all shadow-premium placeholder:text-muted-foreground/30 font-instrument-serif"
+                                    className="w-full px-8 py-8 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:bg-muted/80 focus:border-primary/50 text-4xl font-bold text-foreground tabular-nums transition-all shadow-premium placeholder:text-muted-foreground/30 font-syne"
                                 />
                             </div>
 
@@ -248,7 +248,7 @@ export function RedeemMutualFundModal({
                                     )}
                                     <div className="pt-8 border-t border-border flex items-center justify-between">
                                         <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Net Capital Gain</span>
-                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-instrument-serif">{formatCurrency(preview.netProceeds)}</span>
+                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-syne">{formatCurrency(preview.netProceeds)}</span>
                                     </div>
                                 </div>
                             )}

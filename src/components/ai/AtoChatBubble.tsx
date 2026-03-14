@@ -32,7 +32,7 @@ export function AtoChatBubble({ role, content, timestamp }: AtoChatBubbleProps) 
                     : "bg-muted/10 text-foreground border border-border backdrop-blur-md"
                     }`}>
                     {/* Render content with basic markdown support */}
-                    <div className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap break-words font-instrument-sans">
+                    <div className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap break-words font-sans">
                         {content.split('\n').map((line, i) => {
                             // Bold text
                             const boldRegex = /\*\*(.*?)\*\*/g;

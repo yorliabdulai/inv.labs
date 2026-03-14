@@ -254,7 +254,7 @@
     background: transparent;
     color: hsl(var(--paper-text));
     padding: 0.75rem 2rem;
-    font-family: var(--font-instrument-sans), sans-serif;
+    font-family: var(--font-plus-jakarta), sans-serif;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -273,7 +273,7 @@
     background: hsl(var(--terracotta));
     color: hsl(var(--paper));
     padding: 0.75rem 2rem;
-    font-family: var(--font-instrument-sans), sans-serif;
+    font-family: var(--font-plus-jakarta), sans-serif;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;

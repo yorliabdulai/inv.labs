@@ -94,7 +94,7 @@ export function BuyMutualFundModal({
                 {/* Header */}
                 <div className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-foreground tracking-tight font-instrument-serif uppercase">Acquire Units</h2>
+                        <h2 className="text-2xl font-bold text-foreground tracking-tight font-syne uppercase">Acquire Units</h2>
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">{fund.fund_name}</p>
                     </div>
                     <button
@@ -124,7 +124,7 @@ export function BuyMutualFundModal({
                         <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-8 shadow-premium animate-in zoom-in-50 duration-500">
                             <CheckCircle size={40} className="text-emerald-500" />
                         </div>
-                        <h3 className="text-2xl font-bold text-foreground mb-3 font-instrument-serif uppercase tracking-tight">Acquisition Confirmed</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-3 font-syne uppercase tracking-tight">Acquisition Confirmed</h3>
                         <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest leading-relaxed">
                             Your units have been successfully added to the portfolio.
                         </p>
@@ -137,7 +137,7 @@ export function BuyMutualFundModal({
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -mr-16 -mt-16" />
                                 <div className="relative z-10">
                                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">Current Unit Price (NAV)</div>
-                                    <div className="text-4xl md:text-5xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-instrument-serif">{formatCurrency(fund.current_nav)}</div>
+                                    <div className="text-4xl md:text-5xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-syne">{formatCurrency(fund.current_nav)}</div>
                                     <div className="text-[10px] font-bold text-primary mt-6 uppercase tracking-widest flex items-center gap-3">
                                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                                         Standard Performance Unit
@@ -187,7 +187,7 @@ export function BuyMutualFundModal({
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder={investmentMethod === "amount" ? "Enter amount" : "Enter units"}
-                                        className="w-full px-8 py-8 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:bg-muted/80 focus:border-primary/50 text-4xl font-bold text-foreground tabular-nums transition-all shadow-premium placeholder:text-muted-foreground/30 font-instrument-serif"
+                                        className="w-full px-8 py-8 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:bg-muted/80 focus:border-primary/50 text-4xl font-bold text-foreground tabular-nums transition-all shadow-premium placeholder:text-muted-foreground/30 font-syne"
                                     />
                                 </div>
                                 <div className="mt-4 px-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center justify-between">
@@ -215,7 +215,7 @@ export function BuyMutualFundModal({
                                     )}
                                     <div className="pt-8 border-t border-border flex items-center justify-between">
                                         <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Final Token Value</span>
-                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-instrument-serif">{formatCurrency(preview.totalCost)}</span>
+                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter leading-none font-syne">{formatCurrency(preview.totalCost)}</span>
                                     </div>
                                 </div>
                             )}

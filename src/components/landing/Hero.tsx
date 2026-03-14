@@ -143,7 +143,7 @@ const Hero = () => {
               </div>
               <div className="flex items-center gap-4 text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
                 <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> Secure Terminal</span>
-                <span className="hidden sm:inline-block font-instrument-sans">inv.labs / system_kernel</span>
+                <span className="hidden sm:inline-block font-sans">inv.labs / system_kernel</span>
               </div>
             </div>
 
@@ -185,13 +185,13 @@ const Hero = () => {
                   <div className="bg-white rounded-2xl border border-zinc-200/50 p-8 shadow-premium flex flex-col justify-between group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl -mr-12 -mt-12" />
                     <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest relative z-10">Institutional Equity</p>
-                    <h3 className="text-4xl font-bold tracking-tight text-zinc-950 relative z-10 tabular-nums font-instrument-serif">12,450.00</h3>
+                    <h3 className="text-4xl font-bold tracking-tight text-zinc-950 relative z-10 tabular-nums font-syne">12,450.00</h3>
                   </div>
                   <div className="bg-white rounded-2xl border border-zinc-200/50 p-8 shadow-premium flex flex-col justify-between overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-12 -mt-12" />
                     <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest relative z-10">Delta Variance</p>
                     <div className="flex flex-col relative z-10">
-                      <h3 className="text-4xl font-bold tracking-tight text-emerald-600 tabular-nums font-instrument-serif">+342.50</h3>
+                      <h3 className="text-4xl font-bold tracking-tight text-emerald-600 tabular-nums font-syne">+342.50</h3>
                       <div className="inline-flex items-center gap-2 mt-2">
                         <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 uppercase tracking-widest">
                           +2.8% Yield
@@ -266,7 +266,7 @@ const Hero = () => {
                   <div className="pt-6 border-t border-zinc-800 flex justify-between items-end">
                     <div>
                       <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Est. Ledger Cost</p>
-                      <p className="text-lg font-bold text-white tabular-nums font-instrument-serif tracking-tight">GH₵ 18,200.00</p>
+                      <p className="text-lg font-bold text-white tabular-nums font-syne tracking-tight">GH₵ 18,200.00</p>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
                       <ArrowRight className="w-5 h-5 text-white" />

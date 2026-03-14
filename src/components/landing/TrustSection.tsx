@@ -87,7 +87,7 @@ const TrustSection = () => {
               transition={{ duration: 0.8, delay: 0.3 + (i * 0.1), ease: [0.16, 1, 0.3, 1] as const }}
               className="relative p-8 rounded-[2rem] bg-zinc-900/50 border border-zinc-800 hover:border-blue-500/30 transition-colors group"
             >
-              <div className="absolute top-6 left-6 text-6xl font-serif text-white/5 group-hover:text-blue-500/10 pointer-events-none transition-colors">"</div>
+              <div className="absolute top-6 left-6 text-6xl font-syne text-white/5 group-hover:text-primary/10 pointer-events-none transition-colors">"</div>
               <p className="text-lg text-zinc-300 font-medium leading-relaxed italic mb-8 relative z-10">
                 {t.quote}
               </p>

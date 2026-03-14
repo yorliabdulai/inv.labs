@@ -13,7 +13,6 @@ const FinalCTA = () => {
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       {/* Grid Pattern overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_20%,transparent_100%)] pointer-events-none -z-10" />
 
       <div className="container mx-auto px-6 md:px-12 text-center relative z-10 max-w-4xl">
         <motion.div
@@ -22,9 +21,7 @@ const FinalCTA = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
-          <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase mb-12 shadow-[0_0_30px_rgba(43,89,255,0.2)]">
-            Start Free
-          </div>
+
           <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight tracking-tight text-balance mb-8 w-full overflow-hidden">
             Ready to trade <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-400 to-purple-400">with confidence?</span>

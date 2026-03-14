@@ -17,7 +17,7 @@ export default function SettingsPage() {
     ];
 
     return (
-        <div className="pb-24 space-y-8 md:space-y-12 font-instrument-sans max-w-[1440px] mx-auto px-4 md:px-8">
+        <div className="pb-24 space-y-8 md:space-y-12 font-sans max-w-[1440px] mx-auto px-4 md:px-8">
             <DashboardHeader />
 
             {/* ── Header ── */}
@@ -29,7 +29,7 @@ export default function SettingsPage() {
                             {displayInitial}
                         </div>
                         <div>
-                            <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">
+                            <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne">
                                 System Settings
                             </h1>
                             <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
@@ -164,7 +164,7 @@ export default function SettingsPage() {
                                                 <div className="w-10 h-5 bg-muted/40 border border-border rounded-full peer peer-checked:bg-primary/20 peer-checked:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-muted-foreground/40 peer-checked:after:bg-primary after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
                                             </div>
                                             <div>
-                                                <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors uppercase tracking-tight font-instrument-sans">{item.title}</div>
+                                                <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors uppercase tracking-tight font-sans">{item.title}</div>
                                                 <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-medium">{item.desc}</div>
                                             </div>
                                         </label>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
                                                 <Lock size={20} />
                                             </div>
                                             <div>
-                                                <h3 className="text-sm font-bold text-foreground uppercase tracking-tight font-instrument-sans">Access Credentials</h3>
+                                                <h3 className="text-sm font-bold text-foreground uppercase tracking-tight font-sans">Access Credentials</h3>
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1.5 font-medium leading-relaxed">Recommended to update passwords cyclically to prevent unauthorized terminal access.</p>
                                             </div>
                                         </div>
@@ -198,7 +198,7 @@ export default function SettingsPage() {
                                         </button>
                                     </div>
                                     <div className="p-6 border border-red-500/10 bg-red-500/5 rounded-xl">
-                                        <h3 className="text-sm font-bold text-red-500 uppercase tracking-tight font-instrument-sans mb-2">Eradicate Node</h3>
+                                        <h3 className="text-sm font-bold text-red-500 uppercase tracking-tight font-sans mb-2">Eradicate Node</h3>
                                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4 font-medium leading-relaxed">Critical: Permanent deletion of all simulation data, holdings, and history. This action is irreversible.</p>
                                         <button className="px-6 py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-[10px] font-bold uppercase tracking-widest transition-all rounded-lg">
                                             Format Terminal

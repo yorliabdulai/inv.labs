@@ -29,7 +29,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 px-4 md:px-0 font-instrument-sans">
+        <div className="max-w-6xl mx-auto pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 px-4 md:px-0 font-sans">
             <DashboardHeader />
 
             <div className="flex items-center justify-between px-2">
@@ -58,7 +58,7 @@ export default function ProfilePage() {
                                     displayInitial
                                 )}
                             </div>
-                            <h3 className="text-2xl font-bold text-foreground mb-1 font-instrument-serif tracking-tight">{displayName}</h3>
+                            <h3 className="text-2xl font-bold text-foreground mb-1 font-syne tracking-tight">{displayName}</h3>
                             <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">Professional Accreditation ID: GH-7742</p>
 
                             <div className="grid grid-cols-2 gap-4 w-full">
@@ -191,7 +191,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Award className="text-primary" size={24} />
-                        <h3 className="font-bold text-xl text-foreground uppercase tracking-tight font-instrument-sans">Milestone Certificates</h3>
+                        <h3 className="font-bold text-xl text-foreground uppercase tracking-tight font-sans">Milestone Certificates</h3>
                     </div>
                     <button className="text-[10px] font-bold text-primary uppercase tracking-widest hover:text-primary/80 transition-colors">
                         Audited Report PDF
@@ -245,7 +245,7 @@ export default function ProfilePage() {
                                     <item.icon size={22} />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-bold text-foreground uppercase tracking-tight font-instrument-sans">{item.label}</div>
+                                    <div className="text-sm font-bold text-foreground uppercase tracking-tight font-sans">{item.label}</div>
                                     <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mt-1.5">{item.desc}</div>
                                 </div>
                             </div>

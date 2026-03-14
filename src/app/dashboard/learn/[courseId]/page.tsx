@@ -75,7 +75,7 @@ export default function CourseLearningPage() {
 
     if (loading) {
         return (
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-8 animate-in fade-in duration-700 font-sans">
                 <DashboardHeader />
                 <div className="py-24 text-center text-muted-foreground/40 animate-pulse text-[10px] font-bold uppercase tracking-widest">
                     Initializing Institutional Course Module...
@@ -123,7 +123,7 @@ export default function CourseLearningPage() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted/30 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                             {course.level}
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-instrument-serif leading-tight">
+                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne leading-tight">
                             {course.title}
                         </h1>
                         <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
@@ -199,7 +199,7 @@ export default function CourseLearningPage() {
                                     <Shield size={48} />
                                 </div>
                                 <div className="space-y-4 max-w-sm">
-                                    <h2 className="text-3xl font-bold text-foreground uppercase tracking-tight font-instrument-serif leading-none">Certification Earned</h2>
+                                    <h2 className="text-3xl font-bold text-foreground uppercase tracking-tight font-syne leading-none">Certification Earned</h2>
                                     <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
                                         You have successfully graduated from this curriculum. Your profile has been credited with {course.xp_reward} Knowledge XP.
                                     </p>
@@ -226,7 +226,7 @@ export default function CourseLearningPage() {
 
                                 <div className="p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
-                                        <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight font-instrument-serif">
+                                        <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight font-syne">
                                             Instructional Module {currentModule}
                                         </h3>
                                         <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">

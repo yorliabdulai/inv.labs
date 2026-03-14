@@ -74,7 +74,7 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xl animate-in fade-in duration-300 font-instrument-sans">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xl animate-in fade-in duration-300 font-sans">
             <div className="relative w-full max-w-lg bg-card border border-border shadow-premium rounded-3xl overflow-hidden animate-in zoom-in-95 duration-500">
 
                 {/* Header */}
@@ -84,7 +84,7 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                             <Target size={20} className="text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-foreground font-bold uppercase tracking-widest text-sm font-instrument-serif text-lg">Create Challenge</h2>
+                            <h2 className="text-foreground font-bold uppercase tracking-widest text-sm font-syne text-lg">Create Challenge</h2>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Gamified Institutional Learning</p>
                         </div>
                     </div>
@@ -103,7 +103,7 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                                     <Check size={32} className="text-emerald-500" />
                                 </div>
                                 <div className="relative z-10">
-                                    <h3 className="text-foreground font-bold uppercase tracking-tight text-xl font-instrument-serif">Challenge Live!</h3>
+                                    <h3 className="text-foreground font-bold uppercase tracking-tight text-xl font-syne">Challenge Live!</h3>
                                     <p className="text-[11px] text-muted-foreground uppercase tracking-widest max-w-[280px] mx-auto mt-3 leading-relaxed">
                                         Your challenge has been commissioned. Invite peers using the secure link below.
                                     </p>

@@ -140,7 +140,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20 rounded-t-3xl md:rounded-t-2xl">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                            <span className="text-white font-bold text-xl font-instrument-serif">A</span>
+                            <span className="text-white font-bold text-xl font-syne">A</span>
                         </div>
                         <div>
                             <h3 className="text-sm font-bold text-foreground uppercase tracking-widest">Ato</h3>

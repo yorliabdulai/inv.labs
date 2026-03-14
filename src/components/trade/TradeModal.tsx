@@ -105,7 +105,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                     <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/10">
                         <CheckCircle size={40} className="text-emerald-500" />
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight uppercase font-instrument-serif">Trade Authorized</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight uppercase font-syne">Trade Authorized</h3>
                     <p className="text-muted-foreground font-medium mb-8 text-sm">
                         Successfully {type === "BUY" ? "commissioned" : "liquidated"} {quantity} shares of {stock.symbol}
                     </p>
@@ -134,7 +134,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                             {stock.symbol.substring(0, 3)}
                         </div>
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-none font-instrument-serif">{stock.symbol}</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-none font-syne">{stock.symbol}</h2>
                             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">{stock.name}</p>
                         </div>
                     </div>

@@ -67,7 +67,7 @@ export default function LeaderboardPage() {
     ];
 
     return (
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-instrument-sans">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-12 animate-in fade-in duration-700 font-sans">
             <DashboardHeader />
 
             {/* ── Header / Banner ── */}
@@ -79,7 +79,7 @@ export default function LeaderboardPage() {
                         <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 rounded-lg border border-border text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Activity size={12} /> Global Rankings
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-instrument-serif text-foreground">Platform Leaderboards</h1>
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-syne text-foreground">Platform Leaderboards</h1>
                         <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest max-w-lg leading-relaxed">
                             Assess top performing assets in the market and benchmark your performance and accreditation XP against top traders in the network.
                         </p>

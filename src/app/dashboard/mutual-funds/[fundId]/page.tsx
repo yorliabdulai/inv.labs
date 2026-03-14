@@ -186,7 +186,7 @@ export default function MutualFundDetailPage() {
                             </div>
                             <div className="flex-1 min-w-0 space-y-5">
                                 <div className="space-y-2">
-                                    <h1 className="text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-none font-instrument-serif uppercase">
+                                    <h1 className="text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-none font-syne uppercase">
                                         {fund.fund_name}
                                     </h1>
                                     <p className="text-muted-foreground font-bold text-[11px] uppercase tracking-[0.2em] flex items-center gap-2">
@@ -333,7 +333,7 @@ export default function MutualFundDetailPage() {
                                     <Target size={18} className="text-primary" />
                                     Fund Objective
                                 </h3>
-                                <p className="text-foreground text-xl md:text-3xl font-bold leading-tight font-instrument-serif">{fund.objective}</p>
+                                <p className="text-foreground text-xl md:text-3xl font-bold leading-tight font-syne">{fund.objective}</p>
                             </div>
 
                             {/* Key Information Grid */}
@@ -345,7 +345,7 @@ export default function MutualFundDetailPage() {
                                             Launch Date
                                         </span>
                                     </div>
-                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-syne">
                                         {new Date(fund.inception_date).toLocaleDateString("en-GB", {
                                             day: "2-digit",
                                             month: "long",
@@ -361,7 +361,7 @@ export default function MutualFundDetailPage() {
                                             Initial Capital
                                         </span>
                                     </div>
-                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums font-instrument-serif uppercase">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums font-syne uppercase">
                                         {formatCurrency(fund.minimum_investment)}
                                     </div>
                                 </div>
@@ -373,7 +373,7 @@ export default function MutualFundDetailPage() {
                                             Risk Rating
                                         </span>
                                     </div>
-                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-instrument-serif">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase font-syne">
                                         {getRiskRatingLabel(fund.risk_rating)} ({fund.risk_rating}/5)
                                     </div>
                                 </div>
@@ -385,7 +385,7 @@ export default function MutualFundDetailPage() {
                                             Expense Ratio
                                         </span>
                                     </div>
-                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums uppercase font-instrument-serif px-1">
+                                    <div className="text-2xl md:text-3xl font-bold text-foreground tracking-tight tabular-nums uppercase font-syne px-1">
                                         {formatPercent(fund.expense_ratio, false)} <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest font-sans">Per Annum</span>
                                     </div>
                                 </div>
@@ -484,7 +484,7 @@ export default function MutualFundDetailPage() {
                                                     <span className="text-xs font-bold text-primary group-hover:text-primary-foreground tracking-widest">#{index + 1}</span>
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <span className="font-bold text-foreground tracking-tight text-lg uppercase font-instrument-serif">{holding.name}</span>
+                                                    <span className="font-bold text-foreground tracking-tight text-lg uppercase font-syne">{holding.name}</span>
                                                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Strategic Asset</div>
                                                 </div>
                                             </div>
