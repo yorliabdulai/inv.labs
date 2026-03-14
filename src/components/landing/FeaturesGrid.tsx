@@ -91,7 +91,7 @@ const MiniFundCompare = () => (
 // BENTO CONFIGURATION
 // ----------------------------------------------------------------------
 
-const bentoFeatures = [
+const stockFeatures = [
   {
     title: "Real Ghana Stock Exchange Stocks",
     desc: "Trade MTN, GCB, Ecobank, Total, and 40+ other companies. Real prices. Real companies. Virtual money. See exactly what it feels like to buy your first stock without the fear.",
@@ -102,24 +102,14 @@ const bentoFeatures = [
     uiContainerClass: "h-32 md:h-48 w-[80%] mb-8"
   },
   {
-    title: "Meet Ato - AI Guide",
-    desc: "Confused? Ask Ato. 'What does P/E ratio mean?' Ato explains everything in simple language. 24/7. No judgment. No stupid questions.",
-    uiSnippet: <MiniAIChat />,
-    className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[350px] bg-zinc-950 border-zinc-800",
-    titleClass: "text-2xl font-black text-white mb-3 tracking-tight",
-    descClass: "text-zinc-400",
-    glowColor: "group-hover:bg-indigo-500/10",
-    dark: true,
-    uiContainerClass: "h-32 w-full mb-6 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 relative"
-  },
-  {
-    title: "Learn Mutual Funds Too",
-    desc: "Most Ghanaians should start with mutual funds. They're safer and professionally managed. We teach you how to filter by risk and compare returns.",
-    uiSnippet: <MiniFundCompare />,
-    className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[350px]",
-    titleClass: "text-2xl font-black mb-3 tracking-tight",
-    glowColor: "group-hover:bg-amber-500/5",
-    uiContainerClass: "h-32 w-full mb-6 bg-zinc-50 rounded-xl p-2 border border-zinc-100"
+    title: "Watch Your Money Grow",
+    desc: "See your portfolio value change in real-time. Track which investments are winning and learn from the ones that aren't with clear charts and graphs.",
+    uiSnippet: <MiniChart />,
+    className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 bg-white border-zinc-200 lg:min-h-[300px]",
+    titleClass: "text-2xl font-black mb-3 text-zinc-950 tracking-tight",
+    descClass: "text-zinc-500",
+    glowColor: "group-hover:bg-blue-500/10",
+    uiContainerClass: "h-24 w-[70%] mb-6"
   },
   {
     title: "Learn Realistic Fees",
@@ -138,16 +128,6 @@ const bentoFeatures = [
     uiContainerClass: "h-24 w-full mb-6"
   },
   {
-    title: "Watch Your Money Grow",
-    desc: "See your portfolio value change in real-time. Track which investments are winning and learn from the ones that aren't with clear charts and graphs.",
-    uiSnippet: <MiniChart />,
-    className: "col-span-1 md:col-span-2 lg:col-span-2 row-span-1 bg-white border-zinc-200 lg:min-h-[300px]",
-    titleClass: "text-3xl font-black mb-3 text-zinc-950 tracking-tight",
-    descClass: "text-zinc-500",
-    glowColor: "group-hover:bg-blue-500/10",
-    uiContainerClass: "h-24 w-[70%] mb-6"
-  },
-  {
     title: "Make Every Mistake Here",
     desc: "Put all your money in one company? Panic sold? Every mistake teaches you something and costs you GH₵0.",
     uiSnippet: <MiniSafe />,
@@ -157,6 +137,56 @@ const bentoFeatures = [
     uiContainerClass: "h-20 w-full mb-6 flex items-center justify-start"
   },
 ];
+
+const aiFeatures = [
+  {
+    title: "Meet Ato - AI Guide",
+    desc: "Confused? Ask Ato. 'What does P/E ratio mean?' Ato explains everything in simple language. 24/7. No judgment. No stupid questions.",
+    uiSnippet: <MiniAIChat />,
+    className: "col-span-1 md:col-span-3 lg:col-span-4 row-span-1 lg:min-h-[350px] bg-zinc-950 border-zinc-800",
+    titleClass: "text-3xl md:text-5xl font-black text-white mb-4 tracking-tight",
+    descClass: "text-zinc-400",
+    glowColor: "group-hover:bg-indigo-500/10",
+    dark: true,
+    uiContainerClass: "h-48 w-full mb-8 rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 relative max-w-2xl"
+  },
+];
+
+const fundFeatures = [
+  {
+    title: "Learn Mutual Funds Too",
+    desc: "Most Ghanaians should start with mutual funds. They're safer and professionally managed. We teach you how to filter by risk and compare returns.",
+    uiSnippet: <MiniFundCompare />,
+    className: "col-span-1 md:col-span-3 lg:col-span-4 row-span-1 lg:min-h-[350px]",
+    titleClass: "text-3xl md:text-5xl font-black mb-4 tracking-tight",
+    glowColor: "group-hover:bg-amber-500/5",
+    uiContainerClass: "h-32 md:h-48 w-full mb-8 bg-zinc-50 rounded-2xl p-4 border border-zinc-100 max-w-2xl"
+  },
+];
+
+const FeatureCard = ({ item }: { item: any }) => (
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 40 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } }
+    }}
+    className={`group overflow-hidden relative rounded-[2.5rem] p-10 lg:p-12 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] shadow-[0_8px_30px_-15px_rgba(0,0,0,0.08)] ring-1 ring-inset ${item.dark ? "bg-zinc-950 ring-white/10" : "bg-white/80 backdrop-blur-xl ring-zinc-900/5 hover:ring-zinc-900/10"
+      } ${item.className}`}
+  >
+    <div className={`absolute inset-0 transition-colors duration-700 ${item.glowColor} pointer-events-none`} />
+    <div className={item.uiContainerClass}>
+      {item.uiSnippet}
+    </div>
+    <div className="relative z-10 mt-auto">
+      <h3 className={`leading-none ${item.titleClass} ${item.dark ? "text-white" : "text-zinc-950"}`}>
+        {item.title}
+      </h3>
+      <p className={`text-base md:text-lg leading-relaxed font-medium tracking-tight mt-4 ${item.descClass || (item.dark ? "text-zinc-400" : "text-zinc-500")}`}>
+        {item.desc}
+      </p>
+    </div>
+  </motion.div>
+);
 
 const FeaturesGrid = () => {
   return (
@@ -193,45 +223,71 @@ const FeaturesGrid = () => {
           </motion.p>
         </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-          }}
-          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
-        >
-          {bentoFeatures.map((item, i) => (
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } }
-              }}
-              key={i}
-              className={`group overflow-hidden relative rounded-[2.5rem] p-10 lg:p-12 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] shadow-[0_8px_30px_-15px_rgba(0,0,0,0.08)] ring-1 ring-inset ${item.dark ? "bg-zinc-950 ring-white/10" : "bg-white/80 backdrop-blur-xl ring-zinc-900/5 hover:ring-zinc-900/10"
-                } ${item.className}`}
-            >
-              {/* Subtle hover glow mesh */}
-              <div className={`absolute inset-0 transition-colors duration-700 ${item.glowColor} pointer-events-none`} />
+        {/* Group 01: Stock Mastery */}
+        <div className="mb-24">
+          <div className="flex items-center gap-4 mb-10">
+            <span className="text-blue-600 font-black text-sm uppercase tracking-widest">01. Stock Mastery</span>
+            <div className="h-px flex-1 bg-zinc-100" />
+          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          >
+            {stockFeatures.map((item, i) => (
+              <FeatureCard key={i} item={item} />
+            ))}
+          </motion.div>
+        </div>
 
-              {/* Real UI Snippet Container */}
-              <div className={item.uiContainerClass}>
-                {item.uiSnippet}
-              </div>
+        {/* Group 02: AI Guidance */}
+        <div className="mb-24">
+          <div className="flex items-center gap-4 mb-10">
+            <span className="text-indigo-600 font-black text-sm uppercase tracking-widest">02. AI Guidance</span>
+            <div className="h-px flex-1 bg-zinc-100" />
+          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
+          >
+            {aiFeatures.map((item, i) => (
+              <FeatureCard key={i} item={item} />
+            ))}
+          </motion.div>
+        </div>
 
-              <div className="relative z-10 mt-auto">
-                <h3 className={`leading-none ${item.titleClass} ${item.dark ? "text-white" : "text-zinc-950"}`}>
-                  {item.title}
-                </h3>
-                <p className={`text-base md:text-lg leading-relaxed font-medium tracking-tight mt-4 ${item.descClass || (item.dark ? "text-zinc-400" : "text-zinc-500")}`}>
-                  {item.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Group 03: Mutual Funds */}
+        <div>
+          <div className="flex items-center gap-4 mb-10">
+            <span className="text-amber-600 font-black text-sm uppercase tracking-widest">03. Diversification</span>
+            <div className="h-px flex-1 bg-zinc-100" />
+          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
+          >
+            {fundFeatures.map((item, i) => (
+              <FeatureCard key={i} item={item} />
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

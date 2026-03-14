@@ -4,7 +4,7 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import ProblemSection from "@/components/landing/ProblemSection";
 import SolutionSection from "@/components/landing/SolutionSection";
-import FeaturesGrid from "@/components/landing/FeaturesGrid";
+import LearningToolsShowcase from "@/components/landing/LearningToolsShowcase";
 import HowItWorks from "@/components/landing/HowItWorks";
 import TrustSection from "@/components/landing/TrustSection";
 import PricingSection from "@/components/landing/PricingSection";
@@ -35,7 +35,7 @@ export default function Home() {
         <div className="relative z-10">
           <ProblemSection />
           <SolutionSection />
-          <FeaturesGrid />
+          <LearningToolsShowcase />
         </div>
 
         <HowItWorks />
