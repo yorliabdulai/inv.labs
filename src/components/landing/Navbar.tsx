@@ -36,15 +36,17 @@ const Navbar = () => {
 
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8">
-                        <Link href="#how-it-works" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">How it works</Link>
-                        <Link href="#features" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">Features</Link>
-                        <Link href="#trust" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">Wall of Love</Link>
+                        <Link href="#how-it-works" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors uppercase tracking-widest text-[10px]">How it works</Link>
+                        <Link href="#features" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors uppercase tracking-widest text-[10px]">Features</Link>
+                        <Link href="#trust" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors uppercase tracking-widest text-[10px]">Trust</Link>
+                        <Link href="#pricing" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors uppercase tracking-widest text-[10px]">Pricing</Link>
+                        <Link href="#faq" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors uppercase tracking-widest text-[10px]">FAQ</Link>
                     </nav>
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-4">
-                        <Link href="/login" className="text-sm font-bold text-zinc-900 hover:text-blue-600 transition-colors">Log in</Link>
-                        <Link href="/register" className="text-sm font-bold text-white bg-zinc-950 px-5 py-2.5 rounded-full hover:bg-blue-600 hover:shadow-md transition-all">Start Free</Link>
+                        <Link href="/login" className="text-sm font-bold text-zinc-900 hover:text-blue-600 transition-colors uppercase tracking-widest text-[10px]">Login</Link>
+                        <Link href="/register" className="bg-zinc-950 hover:bg-zinc-800 text-white font-black px-6 py-3 rounded-full text-[10px] uppercase tracking-widest shadow-lg transition-all hover:-translate-y-0.5">Start Practicing Free</Link>
                     </div>
 
                     {/* Mobile Menu Toggle */}
@@ -73,11 +75,13 @@ const Navbar = () => {
                         <nav className="flex flex-col gap-2">
                             <Link href="#how-it-works" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>How it works</Link>
                             <Link href="#features" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>Features</Link>
-                            <Link href="#trust" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>Wall of Love</Link>
+                            <Link href="#trust" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>Trust</Link>
+                            <Link href="#pricing" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>Pricing</Link>
+                            <Link href="#faq" className="block w-full text-base font-bold text-zinc-900 py-3 px-4 rounded-xl hover:bg-zinc-100/50 transition-colors" onClick={() => setIsOpen(false)}>FAQ</Link>
                         </nav>
                         <div className="flex flex-col gap-3 mt-2">
-                            <Link href="/login" className="flex items-center justify-center w-full text-sm font-bold text-zinc-900 px-4 py-4 rounded-xl border border-zinc-200 hover:bg-zinc-50 transition-colors shadow-sm text-balance break-words text-center" onClick={() => setIsOpen(false)}>Log in</Link>
-                            <Link href="/register" className="flex items-center justify-center w-full text-sm font-bold text-white bg-blue-600 px-4 py-4 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.39)] hover:bg-blue-500 transition-colors text-balance break-words text-center" onClick={() => setIsOpen(false)}>Start Free</Link>
+                            <Link href="/login" className="flex items-center justify-center w-full text-sm font-bold text-zinc-900 px-4 py-4 rounded-xl border border-zinc-200 hover:bg-zinc-50 transition-colors shadow-sm text-balance break-words text-center" onClick={() => setIsOpen(false)}>Login</Link>
+                            <Link href="/register" className="flex items-center justify-center w-full text-sm font-bold text-white bg-zinc-950 px-4 py-4 rounded-xl shadow-lg hover:bg-zinc-800 transition-colors text-balance break-words text-center" onClick={() => setIsOpen(false)}>Start Practicing Free</Link>
                         </div>
                     </motion.div>
                 )}

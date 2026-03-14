@@ -1,34 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Sparkles } from "lucide-react";
 
 const included = [
-  "Unlimited practice trades",
-  "All 40+ GSE stocks",
-  "All mutual fund types",
-  "Portfolio tracking & analytics",
-  "Ato AI (20 conversations/day)",
-  "Educational content library",
+  "GH₵10,000 Virtual Capital",
+  "40+ Real GSE Stocks",
+  "Mutual Fund Practice",
+  "Ato AI Guide",
+  "Portfolio Tracking",
+  "Learning Dashboard",
 ];
 
 const PricingSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden">
+    <section id="pricing" className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden text-zinc-950">
       {/* Decorative Background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       <div className="px-6 md:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-600 w-fit text-sm font-semibold mb-6 shadow-sm border border-emerald-200">
-          <span>Straightforward Pricing</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-600 w-fit text-sm font-semibold mb-6 shadow-sm border border-blue-200">
+          <span>Pricing</span>
         </div>
 
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight max-w-2xl mx-auto">
-          Start Learning for Free. <br />
-          <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">Forever.</span>
+        <h2 className="text-4xl md:text-[5rem] lg:text-[6rem] font-bold text-zinc-950 mb-6 leading-[0.9] tracking-[-0.04em] max-w-3xl mx-auto text-balance">
+          Start Free. <br />
+          <span className="text-blue-600">Stay Free.</span>
         </h2>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-16 font-medium">
-          No credit card required. No hidden fees. Just powerful tools to help you master the stock market.
+        <p className="text-xl text-zinc-500 leading-relaxed max-w-xl mx-auto mb-16 font-medium">
+          No hidden fees. No subscription. Just pure learning for the next generation of Ghanaian investors.
         </p>
 
         {/* Pricing card — Modern Glass Panel */}
@@ -36,42 +36,46 @@ const PricingSection = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="glass-panel p-8 md:p-12 max-w-lg w-full rounded-[2.5rem] shadow-xl border border-white/80 relative text-left"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
+          className="bg-white p-10 md:p-14 max-w-xl w-full rounded-[3rem] shadow-[0_20px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-200 relative text-left group"
         >
+          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-blue-600 to-indigo-600" />
+
           {/* Badge */}
-          <div className="absolute -top-4 right-8 bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider py-1.5 px-4 rounded-full shadow-lg shadow-emerald-500/30 flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3" />
-            Most Popular
+          <div className="absolute -top-4 right-10 bg-zinc-950 text-white text-[10px] font-black uppercase tracking-widest py-2 px-4 rounded-full shadow-lg flex items-center gap-2">
+            <Sparkles className="w-3 h-3 text-blue-400" />
+            Join 487 Ghanaians
           </div>
 
-          <div className="border-b border-slate-100 pb-8 mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-2">Basic Simulator</h3>
-            <p className="font-black text-6xl text-foreground tracking-tighter">
-              GH₵0<span className="text-xl text-muted-foreground font-medium tracking-normal">/mo</span>
-            </p>
+          <div className="border-b border-zinc-100 pb-10 mb-10">
+            <h3 className="text-2xl font-black text-zinc-950 mb-4 tracking-tight">Free Forever</h3>
+            <div className="flex items-baseline gap-2">
+              <span className="text-6xl md:text-7xl font-black text-zinc-950 tracking-tighter tabular-nums">GH₵ 0</span>
+              <span className="text-zinc-400 font-bold uppercase tracking-widest text-sm">/ year</span>
+            </div>
           </div>
 
-          <div className="space-y-4 mb-10">
+          <div className="space-y-5 mb-12">
             {included.map((item, i) => (
               <div key={i} className="flex items-start gap-4">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check className="w-4 h-4 text-emerald-600" />
+                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-0.5 border border-blue-100">
+                  <Check className="w-4 h-4 text-blue-600" />
                 </div>
-                <span className="text-slate-600 font-medium text-[15px]">{item}</span>
+                <span className="text-zinc-600 font-semibold text-[15px] tracking-tight">{item}</span>
               </div>
             ))}
           </div>
 
-          <button className="w-full bg-foreground text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-800 transition-colors text-lg mb-6">
-            Get Started Free
+          <button className="w-full bg-zinc-950 hover:bg-zinc-900 text-white font-black py-6 rounded-2xl shadow-xl transition-all hover:-translate-y-1 flex items-center justify-center gap-3 group">
+            <span className="uppercase tracking-widest text-xs">Start Practicing Free</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
 
           {/* Premium teaser */}
-          <div className="pt-6 border-t border-slate-100/80 text-center">
-            <p className="text-primary text-xs font-bold uppercase tracking-wider mb-2">Coming Soon: Pro</p>
-            <p className="text-slate-500 text-sm font-medium">
-              Unlimited AI · Advanced analytics
+          <div className="pt-10 mt-6 border-t border-zinc-100 text-center">
+            <p className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Coming Soon: Pro Tier</p>
+            <p className="text-zinc-500 text-sm font-medium leading-relaxed">
+              Connect a real broker, advanced analysis tools, and 1-on-1 coaching for <span className="text-zinc-950 font-bold">GH₵20 / month</span>.
             </p>
           </div>
         </motion.div>

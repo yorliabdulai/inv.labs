@@ -89,29 +89,43 @@ const Hero = () => {
 
             {/* V4 Clamped Typography: Stable Scale */}
             <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-bold tracking-tight text-zinc-950 leading-[0.9] text-balance mb-10 w-full overflow-hidden break-words">
-              Trade without<br />
+              Learn to Invest<br />
               <span className="relative inline-block pb-4">
                 <span className="absolute inset-x-0 bottom-4 h-[30%] bg-blue-200/50 -rotate-2 -z-10" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-500">consequence.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-500">Without Losing Money.</span>
               </span>
             </motion.h1>
 
             <motion.p variants={fadeUp} className="text-lg md:text-xl text-zinc-500 font-medium leading-relaxed max-w-xl mx-auto mb-12 text-balance">
-              An institutional-grade sandboxed environment. Deploy GH₵10,000 in virtual capital into live GSE equities and master the market mechanics.
+              Practice trading real Ghana Stock Exchange stocks with virtual money. Build confidence. Then invest for real.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <Link href="/register" className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold text-white bg-zinc-950 rounded-full transition-all shadow-2xl hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] hover:-translate-y-1 overflow-hidden w-full sm:w-auto">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient-x" />
-                <span className="relative z-10 uppercase tracking-wider text-xs">Initialize Portfolio</span>
-                <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110" />
-              </Link>
-              <button className="group inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold text-zinc-900 bg-white/80 backdrop-blur-md border border-zinc-200/50 rounded-full hover:bg-white transition-all shadow-sm hover:shadow-lg w-full sm:w-auto">
-                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center transition-colors group-hover:bg-blue-50 group-hover:text-blue-600">
-                  <Play className="w-3 h-3 ml-0.5" fill="currentColor" />
+            <motion.div variants={fadeUp} className="flex flex-col items-center gap-6 w-full">
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                <Link href="/register" className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold text-white bg-zinc-950 rounded-full transition-all shadow-2xl hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] hover:-translate-y-1 overflow-hidden w-full sm:w-auto">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient-x" />
+                  <span className="relative z-10 uppercase tracking-wider text-xs">Start Practicing Free</span>
+                  <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110" />
+                </Link>
+                <button className="group inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold text-zinc-900 bg-white/80 backdrop-blur-md border border-zinc-200/50 rounded-full hover:bg-white transition-all shadow-sm hover:shadow-lg w-full sm:w-auto">
+                  <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center transition-colors group-hover:bg-blue-50 group-hover:text-blue-600">
+                    <Play className="w-3 h-3 ml-0.5" fill="currentColor" />
+                  </div>
+                  <span className="uppercase tracking-wider text-xs">Watch How It Works</span>
+                </button>
+              </div>
+
+              {/* Social Proof */}
+              <div className="flex items-center gap-2 text-zinc-400 text-[11px] font-bold uppercase tracking-widest">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-zinc-100 flex items-center justify-center overflow-hidden">
+                      <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300" />
+                    </div>
+                  ))}
                 </div>
-                <span className="uppercase tracking-wider text-xs">View Mechanics</span>
-              </button>
+                <span>Join 487 Ghanaians already learning • 100% Free to start</span>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>

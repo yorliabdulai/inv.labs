@@ -5,24 +5,24 @@ import { motion } from "framer-motion";
 const steps = [
   {
     num: "01",
-    title: "Capital Injection",
-    desc: "Start instantly with GH₵10,000 in virtual funding. No bank linking, no verification delays. Just immediate access to the simulated market.",
+    title: "Sign Up (30 seconds)",
+    desc: "Just your email. No credit card. Get GH₵10,000 virtual cash instantly and start exploring the market.",
   },
   {
     num: "02",
-    title: "Analyze & Execute",
-    desc: "Browse 40+ real GSE equities and mutual funds. Review historical performance charts, ask Ato AI for explanations, and execute trades with accurate fee reductions.",
+    title: "Practice Trading",
+    desc: "Buy MTN stock. Sell Ecobank. Try mutual funds. See what happens when prices go up and down. Learn what fees actually cost — all with money you can't lose.",
   },
   {
     num: "03",
-    title: "Build the Habit",
-    desc: "Track your portfolio over weeks and months. Learn how dividends hit your balance, understand capital gains, and iterate on your investment strategy safely.",
+    title: "Get Confident. Invest for Real.",
+    desc: "After weeks of practice, you'll know how to pick stocks, diversify, and manage fees. When you're ready, connect to a real broker. Your practice paid off.",
   },
 ];
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="relative py-32 overflow-hidden">
+    <section id="how-it-works" className="relative py-24 md:py-32 overflow-hidden bg-white">
       {/* Decorative gradient orb */}
       <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-50 rounded-full blur-[100px] opacity-60 pointer-events-none" />
 
@@ -33,10 +33,10 @@ const HowItWorks = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-            className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[6.5rem] font-bold text-zinc-950 leading-[0.85] tracking-[-0.04em] text-balance mb-6 break-words"
+            className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[6rem] font-bold text-zinc-950 leading-[0.9] tracking-[-0.04em] text-balance mb-6 break-words"
           >
-            A clear path to <br className="hidden md:block" />
-            <span className="text-zinc-400">financial confidence.</span>
+            Start Investing in <br className="hidden md:block" />
+            <span className="text-blue-600">3 simple steps.</span>
           </motion.h2>
         </div>
 
@@ -56,18 +56,16 @@ const HowItWorks = () => {
               >
                 {/* Step Number Badge */}
                 <div className="relative">
-                  <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white border-2 border-zinc-200 shadow-sm flex items-center justify-center shrink-0 z-10 transition-colors duration-500 group-hover:border-blue-500 group-hover:bg-blue-50">
-                    <span className="text-lg md:text-2xl font-black text-zinc-300 transition-colors duration-500 group-hover:text-blue-600">
-                      {step.num}
+                  <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white border-2 border-zinc-200 shadow-sm flex items-center justify-center shrink-0 z-10 transition-all duration-500 group-hover:border-blue-500 group-hover:bg-blue-50">
+                    <span className="text-xl md:text-3xl font-black text-zinc-300 transition-colors duration-500 group-hover:text-blue-600">
+                      {i + 1}
                     </span>
                   </div>
-                  {/* Subtle pulsing ring on hover */}
-                  <div className="absolute inset-0 rounded-full border-2 border-blue-400 opacity-0 scale-50 transition-all duration-500 group-hover:scale-150 group-hover:opacity-0" />
                 </div>
 
                 {/* Step Content */}
                 <div className="pt-2 md:pt-4 max-w-2xl">
-                  <h3 className="text-3xl md:text-[2.5rem] font-black text-zinc-950 mb-5 tracking-[-0.03em] transition-colors duration-300 group-hover:text-blue-600 leading-none">
+                  <h3 className="text-3xl md:text-4xl font-black text-zinc-950 mb-4 tracking-[-0.03em] transition-colors duration-300 group-hover:text-blue-600 leading-none">
                     {step.title}
                   </h3>
                   <p className="text-xl text-zinc-500 leading-relaxed font-medium tracking-tight">

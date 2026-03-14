@@ -125,7 +125,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-zinc-500 text-base font-medium leading-relaxed">
-              Ghana's premier investment simulator. Practice trading, build portfolios, and master the stock market without risking real capital.
+              Helping 1,000 Ghanaians become confident investors by 2026. Practice trading, build portfolios, and master the stock market without risking a single cedi.
             </p>
           </div>
 

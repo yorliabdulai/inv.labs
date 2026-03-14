@@ -3,9 +3,8 @@
 import { motion } from "framer-motion";
 
 const stats = [
-  { value: "68%", label: "of Ghanaians cannot explain how a stock works." },
-  { value: "43%", label: "of Gen Z Ghanaians have never invested a single cedi." },
-  { value: "1%", label: "of Ghanaians participate in the stock exchange." },
+  { value: "43%", label: "of young Ghanaians have zero investments because they're afraid to start." },
+  { value: "68%", label: "of Ghanaians lack basic financial knowledge — Standard & Poor's Survey" },
 ];
 
 const containerVariants = {
@@ -33,17 +32,25 @@ const ProblemSection = () => {
             transition={{ duration: 0.6 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 text-red-600 w-fit text-sm font-semibold mb-6">
-              <span>The Financial Gap</span>
+              <span>The Problem</span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight">
-              Learning by losing money <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">is broken.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-[1.1] tracking-tight">
+              You Want to Invest.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400 text-balance">But You're Scared.</span>
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg mb-8 font-medium">
-              It's not that Ghanaians don't want to invest. It's that the only way to learn is by risking money they can't afford to lose. Workshops teach theory, but reality demands practice.
-            </p>
+            <div className="space-y-4 text-lg text-muted-foreground font-medium leading-relaxed max-w-lg mb-8">
+              <p>
+                You've read the articles. You've attended the workshops. You know investing is important.
+              </p>
+              <p>
+                But when it's time to actually buy a stock? <span className="text-foreground font-bold italic">You freeze.</span>
+              </p>
+              <p>
+                What if you pick the wrong one? What if you lose money you can't afford to lose? So your money sits in a savings account, losing value to inflation every single day.
+              </p>
+            </div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
-              Source: KPMG 2025 · Afrobarometer
+              Yet every way to learn asks you to risk real money first.
             </p>
           </motion.div>
 

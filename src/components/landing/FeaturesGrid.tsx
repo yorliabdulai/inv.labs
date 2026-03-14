@@ -93,17 +93,17 @@ const MiniFundCompare = () => (
 
 const bentoFeatures = [
   {
-    title: "Market Mechanics",
-    desc: "Monitor your virtual positions instantly. Watch how your strategies perform against live market data across the entire Ghana Stock Exchange.",
-    uiSnippet: <MiniChart />,
+    title: "Real Ghana Stock Exchange Stocks",
+    desc: "Trade MTN, GCB, Ecobank, Total, and 40+ other companies. Real prices. Real companies. Virtual money. See exactly what it feels like to buy your first stock without the fear.",
+    uiSnippet: <MiniStockList />,
     className: "col-span-1 md:col-span-2 lg:col-span-2 row-span-2 lg:min-h-[400px]",
     titleClass: "text-3xl md:text-5xl font-black mb-4 tracking-[-0.04em]",
     glowColor: "group-hover:bg-blue-500/5",
     uiContainerClass: "h-32 md:h-48 w-[80%] mb-8"
   },
   {
-    title: "AI Copilot: Ato",
-    desc: "Unsure about SEC Levies? Ask Ato. He explains complex financial concepts in plain language directly within the dashboard.",
+    title: "Meet Ato - AI Guide",
+    desc: "Confused? Ask Ato. 'What does P/E ratio mean?' Ato explains everything in simple language. 24/7. No judgment. No stupid questions.",
     uiSnippet: <MiniAIChat />,
     className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[350px] bg-zinc-950 border-zinc-800",
     titleClass: "text-2xl font-black text-white mb-3 tracking-tight",
@@ -113,53 +113,65 @@ const bentoFeatures = [
     uiContainerClass: "h-32 w-full mb-6 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 relative"
   },
   {
-    title: "40+ GSE Equities",
-    desc: "Trade MTN, GCB, and Ecobank with absolute zero risk.",
-    uiSnippet: <MiniStockList />,
+    title: "Learn Mutual Funds Too",
+    desc: "Most Ghanaians should start with mutual funds. They're safer and professionally managed. We teach you how to filter by risk and compare returns.",
+    uiSnippet: <MiniFundCompare />,
     className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[350px]",
     titleClass: "text-2xl font-black mb-3 tracking-tight",
-    glowColor: "group-hover:bg-emerald-500/5",
-    uiContainerClass: "h-32 w-full mb-6 bg-zinc-50 rounded-xl p-2 border border-zinc-100 inset-shadow-sm"
+    glowColor: "group-hover:bg-amber-500/5",
+    uiContainerClass: "h-32 w-full mb-6 bg-zinc-50 rounded-xl p-2 border border-zinc-100"
   },
   {
-    title: "Zero Risk",
-    desc: "Every trade is sandboxed. Protect your wealth while you learn.",
-    uiSnippet: <MiniSafe />,
-    className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[300px]",
-    titleClass: "text-2xl font-black mb-3 tracking-tight",
-    glowColor: "group-hover:bg-rose-500/5",
-    uiContainerClass: "h-24 w-full mb-6"
-  },
-  {
-    title: "Mutual Funds & Fixed Income",
-    desc: "Diversify beyond stocks. Compare and invest in top-performing Ghanaian mutual funds and T-Bills based on historical NAV paths.",
-    uiSnippet: <MiniFundCompare />,
-    className: "col-span-1 md:col-span-2 lg:col-span-2 row-span-1 bg-gradient-to-br from-amber-50/80 to-orange-50/40 border-amber-200/50 lg:min-h-[300px]",
-    titleClass: "text-3xl font-black mb-3 text-amber-950 tracking-tight",
-    descClass: "text-amber-900/80",
-    glowColor: "group-hover:bg-amber-500/10",
-    uiContainerClass: "h-24 w-[70%] mb-6"
-  },
-  {
-    title: "Realistic Yields",
-    desc: "Learn to project dividends and capital gains accurately.",
+    title: "Learn Realistic Fees",
+    desc: "We show you the REAL fees: Broker commissions, SEC levies, GSE levies, and VAT. So when you invest for real? No surprises.",
     uiSnippet: (
-      <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center relative overflow-hidden group-hover:scale-110 transition-transform">
-        <PieChart className="w-8 h-8 text-teal-600" />
+      <div className="w-full h-full flex flex-col justify-center p-4 bg-zinc-50 rounded-xl border border-zinc-200">
+        <div className="flex justify-between text-[10px] font-bold text-zinc-400 mb-1"><span>SEC Levy</span><span>0.4%</span></div>
+        <div className="flex justify-between text-[10px] font-bold text-zinc-400 mb-1"><span>Brokerage</span><span>1.5%</span></div>
+        <div className="w-full h-px bg-zinc-200 my-2" />
+        <div className="flex justify-between text-[10px] font-black text-zinc-900"><span>Total Est.</span><span>2.04%</span></div>
       </div>
     ),
     className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[300px]",
     titleClass: "text-2xl font-black mb-3 tracking-tight",
-    glowColor: "group-hover:bg-teal-500/5",
+    glowColor: "group-hover:bg-emerald-500/5",
+    uiContainerClass: "h-24 w-full mb-6"
+  },
+  {
+    title: "Watch Your Money Grow",
+    desc: "See your portfolio value change in real-time. Track which investments are winning and learn from the ones that aren't with clear charts and graphs.",
+    uiSnippet: <MiniChart />,
+    className: "col-span-1 md:col-span-2 lg:col-span-2 row-span-1 bg-white border-zinc-200 lg:min-h-[300px]",
+    titleClass: "text-3xl font-black mb-3 text-zinc-950 tracking-tight",
+    descClass: "text-zinc-500",
+    glowColor: "group-hover:bg-blue-500/10",
+    uiContainerClass: "h-24 w-[70%] mb-6"
+  },
+  {
+    title: "Make Every Mistake Here",
+    desc: "Put all your money in one company? Panic sold? Every mistake teaches you something and costs you GH₵0.",
+    uiSnippet: <MiniSafe />,
+    className: "col-span-1 md:col-span-1 lg:col-span-1 row-span-1 lg:min-h-[300px]",
+    titleClass: "text-2xl font-black mb-3 tracking-tight",
+    glowColor: "group-hover:bg-rose-500/5",
     uiContainerClass: "h-20 w-full mb-6 flex items-center justify-start"
   },
 ];
 
 const FeaturesGrid = () => {
   return (
-    <section className="relative py-24 md:py-32 z-20">
+    <section id="features" className="relative py-24 md:py-32 z-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl">
         <div className="flex flex-col mb-20 max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 w-fit text-sm font-semibold mb-6 border border-blue-100 shadow-sm"
+          >
+            <span>Learning Tools</span>
+          </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -167,8 +179,8 @@ const FeaturesGrid = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
             className="text-5xl md:text-6xl lg:text-7xl font-black text-zinc-950 leading-[0.9] tracking-[-0.04em] mb-8"
           >
-            A true arsenal for <br className="hidden md:block" />
-            <span className="text-zinc-400">the modern investor.</span>
+            Everything you need <br className="hidden md:block" />
+            <span className="text-blue-600">to learn investing.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -177,7 +189,7 @@ const FeaturesGrid = () => {
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] as const }}
             className="text-xl md:text-2xl text-zinc-500 font-medium leading-relaxed tracking-tight"
           >
-            We abstracted away the complex spreadsheets. Everything you need to track, query, and analyze your simulated portfolio is engineered into a seamless interface.
+            We've built a professional-grade environment that's simplified for humans. No jargon, no hidden fees, just pure learning.
           </motion.p>
         </div>
 
@@ -213,7 +225,7 @@ const FeaturesGrid = () => {
                 <h3 className={`leading-none ${item.titleClass} ${item.dark ? "text-white" : "text-zinc-950"}`}>
                   {item.title}
                 </h3>
-                <p className={`text-base md:text-lg leading-relaxed font-medium tracking-tight ${item.descClass || (item.dark ? "text-zinc-400" : "text-zinc-500")}`}>
+                <p className={`text-base md:text-lg leading-relaxed font-medium tracking-tight mt-4 ${item.descClass || (item.dark ? "text-zinc-400" : "text-zinc-500")}`}>
                   {item.desc}
                 </p>
               </div>
