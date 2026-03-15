@@ -222,7 +222,7 @@ export default function MutualFundDetailPage() {
                         <div className="inline-flex flex-col space-y-3 p-8 bg-muted/20 border border-border rounded-2xl backdrop-blur-3xl shadow-premium">
                             <div className="flex items-baseline gap-6">
                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Session NAV</span>
-                                <span className="text-5xl md:text-7xl font-bold text-foreground tabular-nums tracking-tighter">
+                                <span className="text-2xl md:text-7xl font-bold text-foreground tabular-nums tracking-tighter">
                                     {formatCurrency(fund.current_nav)}
                                 </span>
                             </div>
@@ -302,7 +302,7 @@ export default function MutualFundDetailPage() {
             {/* ── Intelligence Tabs ── */}
             <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
                 <div className="border-b border-border px-6 md:px-10 bg-muted/20">
-                    <div className="flex gap-10 overflow-x-auto no-scrollbar">
+                    <div className="flex gap-10 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap lg:whitespace-normal">
                         {[
                             { id: "overview", label: "Overview", icon: Info },
                             { id: "performance", label: "Performance Series", icon: BarChart3 },
@@ -311,7 +311,7 @@ export default function MutualFundDetailPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
-                                className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-all border-b-2 ${activeTab === tab.id
+                                className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] transition-all border-b-2 ${activeTab === tab.id
                                     ? "border-primary text-foreground"
                                     : "border-transparent text-muted-foreground hover:text-foreground"
                                     }`}

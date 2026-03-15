@@ -648,12 +648,12 @@ export default function PortfolioPage() {
                     </div>
                     <div className="flex items-center gap-4">
                         {/* Holdings tabs - scrollable on mobile */}
-                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar max-w-[200px] sm:max-w-none pr-6">
+                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap lg:whitespace-normal max-w-[280px] sm:max-w-none pr-8">
                             {([["all", "ALL ASSETS"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}
                                     onClick={() => setHoldingsTab(key)}
-                                    className={`px-4 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                                    className={`px-4 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest flex-shrink-0 ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                                 >{label}</button>
                             ))}
                         </div>
@@ -785,7 +785,7 @@ export default function PortfolioPage() {
                                 <div className="hidden md:block overflow-x-auto">
                                     <table className="w-full text-left">
                                         <thead>
-                                            <tr className="bg-white/[0.02] border-b border-white/[0.06] text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                            <tr className="bg-muted/10 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                                 <th className="px-8 py-5">Fund Identifier</th>
                                                 <th className="px-6 py-5 text-right">Units</th>
                                                 <th className="px-6 py-5 text-right">Avg NAV</th>
@@ -799,27 +799,27 @@ export default function PortfolioPage() {
                                                 const gain = (h.current_value ?? 0) - (h.total_invested ?? 0);
                                                 const gainPct = h.total_invested > 0 ? (gain / h.total_invested) * 100 : 0;
                                                 return (
-                                                    <tr key={h.fund_id} className="hover:bg-white/[0.03] transition-colors group">
+                                                    <tr key={h.fund_id} className="hover:bg-muted/10 transition-colors group">
                                                         <td className="px-8 py-6">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500 font-bold text-xs tracking-widest">
                                                                     MF
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-bold text-white uppercase tracking-widest text-sm">{h.fund_name ?? "Mutual Fund"}</div>
-                                                                    <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-widest mt-1">{h.fund_type ?? "Fund"}</div>
+                                                                    <div className="font-bold text-[--text-primary] dark:text-[--text-dark-primary] uppercase tracking-widest text-sm">{h.fund_name ?? "Mutual Fund"}</div>
+                                                                    <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-1">{h.fund_type ?? "Fund"}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-6 text-right font-bold text-white tabular-nums tracking-tight text-sm">{(h.units_held ?? 0).toFixed(4)}</td>
-                                                        <td className="px-6 py-6 text-right font-semibold text-zinc-400 tabular-nums">GH₵{(h.average_nav ?? 0).toFixed(4)}</td>
+                                                        <td className="px-6 py-6 text-right font-bold text-[--text-primary] dark:text-[--text-dark-primary] tabular-nums tracking-tight text-sm">{(h.units_held ?? 0).toFixed(4)}</td>
+                                                        <td className="px-6 py-6 text-right font-semibold text-muted-foreground tabular-nums">GH₵{(h.average_nav ?? 0).toFixed(4)}</td>
                                                         <td className="px-6 py-6 text-right">
                                                             <div className="flex items-center justify-end gap-2">
-                                                                <span className="font-bold text-white tabular-nums">GH₵{(h.current_nav ?? 0).toFixed(4)}</span>
+                                                                <span className="font-bold text-[--text-primary] dark:text-[--text-dark-primary] tabular-nums">GH₵{(h.current_nav ?? 0).toFixed(4)}</span>
                                                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-6 text-right font-bold text-white tabular-nums">
+                                                        <td className="px-6 py-6 text-right font-bold text-[--text-primary] dark:text-[--text-dark-primary] tabular-nums">
                                                             GH₵{(h.current_value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                         </td>
                                                         <td className="px-8 py-6 text-right">
@@ -846,9 +846,9 @@ export default function PortfolioPage() {
                                                 <div className="flex items-start justify-between mb-6">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center font-bold text-xs border border-blue-500/20">MF</div>
-                                                        <div>
-                                                            <div className="font-bold text-white uppercase tracking-widest leading-tight">{h.fund_name ?? "Mutual Fund"}</div>
-                                                            <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-widest mt-1">{h.fund_type ?? "Fund"}</div>
+                                                        <div className="min-w-0">
+                                                            <div className="font-bold text-[--text-primary] dark:text-[--text-dark-primary] uppercase tracking-widest leading-tight truncate">{h.fund_name ?? "Mutual Fund"}</div>
+                                                            <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-1">{h.fund_type ?? "Fund"}</div>
                                                         </div>
                                                     </div>
                                                     <div className={`text-right ${gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>
@@ -864,8 +864,8 @@ export default function PortfolioPage() {
                                                         ["Current Val", `GH₵${(h.current_value ?? 0).toFixed(2)}`],
                                                     ].map(([label, val]) => (
                                                         <div key={label}>
-                                                            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">{label}</div>
-                                                            <div className="text-xs font-bold text-white tabular-nums">{val}</div>
+                                                            <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mb-1">{label}</div>
+                                                            <div className="text-xs font-bold text-[--text-primary] dark:text-[--text-dark-primary] tabular-nums">{val}</div>
                                                         </div>
                                                     ))}
                                                 </div>

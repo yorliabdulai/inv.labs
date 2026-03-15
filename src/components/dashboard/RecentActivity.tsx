@@ -36,10 +36,10 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                             }`}>
                             {tx.type.includes('BUY') ? <ShoppingCart size={18} /> : <Wallet size={18} />}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate tracking-tight max-w-[140px] md:max-w-none">{tx.name}</span>
-                                <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
+                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate tracking-tight">{tx.name}</span>
+                                <span className={`flex-shrink-0 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
                                     ? 'bg-muted text-muted-foreground border-border'
                                     : 'bg-primary/10 text-primary border-primary/20'
                                     }`}>
@@ -56,11 +56,11 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                         </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-right flex-shrink-0 ml-4">
                         <div className="font-semibold text-sm text-foreground tabular-nums tracking-tight">
                             {tx.type.includes('BUY') ? '-' : '+'}{formatCurrency(tx.amount)}
                         </div>
-                        <div className="text-[10px] text-muted-foreground mt-1">
+                        <div className="text-[10px] text-muted-foreground mt-1 whitespace-nowrap">
                             {tx.units?.toFixed(2)} @ {formatCurrency(tx.price || 0)}
                         </div>
                     </div>

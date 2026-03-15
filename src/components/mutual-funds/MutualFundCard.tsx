@@ -103,7 +103,7 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
                         </div>
                         <span className="text-foreground">{fund.risk_rating}/5</span>
                     </div>
-                    <div className="h-1.5 w-full bg-muted border border-border rounded-full overflow-hidden flex gap-1">
+                    <div className="h-1.5 w-full bg-muted border border-border rounded-full overflow-hidden flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((level) => (
                             <div
                                 key={level}

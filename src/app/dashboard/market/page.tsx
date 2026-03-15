@@ -269,24 +269,39 @@ export default function StocksPage() {
                         aria-label="Search global equities"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-14 pr-4 py-3.5 text-sm font-semibold bg-muted/30 border border-border rounded-xl focus:bg-muted/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/60 text-foreground shadow-inner shadow-black/5"
+                        className="w-full pl-10 pr-4 py-3.5 text-sm font-semibold bg-muted/30 border border-border rounded-xl focus:bg-muted/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/60 text-foreground shadow-inner shadow-black/5"
                     />
                 </div>
 
-                {/* Sector filter chips - scrollable on mobile */}
-                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 border-b border-border sm:flex-wrap pr-6">
-                    {sectors.map((sec) => (
-                        <button
-                            key={sec}
-                            onClick={() => setSectorFilter(sec)}
-                            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm ${sectorFilter === sec
-                                ? "bg-primary text-white shadow-primary/20"
-                                : "bg-muted/30 text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground"
-                                }`}
+                {/* Sector filter - Pills on desktop, Select on mobile */}
+                <div className="border-b border-border pb-6">
+                    <div className="hidden md:flex flex-wrap gap-2">
+                        {sectors.map((sec) => (
+                            <button
+                                key={sec}
+                                onClick={() => setSectorFilter(sec)}
+                                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm ${sectorFilter === sec
+                                    ? "bg-primary text-white shadow-primary/20"
+                                    : "bg-muted/30 text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground"
+                                    }`}
+                            >
+                                {sec}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="md:hidden">
+                        <label htmlFor="sector-filter" className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 px-1">Filter by Sector</label>
+                        <select
+                            id="sector-filter"
+                            value={sectorFilter}
+                            onChange={(e) => setSectorFilter(e.target.value)}
+                            className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3.5 text-sm font-semibold text-foreground outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
                         >
-                            {sec}
-                        </button>
-                    ))}
+                            {sectors.map((sec) => (
+                                <option key={sec} value={sec}>{sec}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Sort & view controls */}

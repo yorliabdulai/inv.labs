@@ -190,7 +190,7 @@ export default function LearnPage() {
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight break-words">
+                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight break-words line-clamp-2">
                                     {course.title}
                                 </h3>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
@@ -262,7 +262,7 @@ export default function LearnPage() {
                                     </span>
                                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight">
+                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight break-words line-clamp-2">
                                     {mod.title}
                                 </h3>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed">

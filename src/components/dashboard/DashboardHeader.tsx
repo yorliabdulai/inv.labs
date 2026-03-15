@@ -140,7 +140,7 @@ export function DashboardHeader() {
 
                     {/* Avatar */}
                     <button
-                        className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+                        className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
                         aria-label="User profile"
                     >
                         {initial}
