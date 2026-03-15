@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-06 - Nested Component Declarations Cause Severe Chart Jank
+**Learning:** Declaring a child component (like `CustomTooltip` for Recharts) directly inside the render function of a parent component (`MutualFundChart.tsx`) creates a completely new function reference on every parent render cycle. React interprets this as a brand new component type and completely unmounts/destroys the DOM nodes and remounts them. For charts updating on fast pointer events (like hovering over points), this constant unmount/remount cycle causes massive browser main-thread jank and extreme performance degradation.
+**Action:** Always extract child component declarations completely outside of their parent component function bodies, or, if they require parent scope variables, memoize them stringently with `useCallback` or `useMemo`.
