@@ -53,7 +53,15 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
         return (
             <>
                 <div
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setIsModalOpen(true);
+                        }
+                    }}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0 focus-visible:outline-none focus-visible:bg-muted/30 focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] focus-visible:ring-inset"
                     onClick={() => setIsModalOpen(true)}
                 >
                     {/* Symbol Icon */}
@@ -97,7 +105,15 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
     return (
         <>
             <div
-                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setIsModalOpen(true);
+                    }
+                }}
+                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C05E42] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121417] focus-visible:border-transparent ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
                     }`}
                 onClick={() => setIsModalOpen(true)}
             >
