@@ -124,10 +124,10 @@ export default function LearnPage() {
                         <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 border border-border rounded-lg text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Sparkles size={12} /> Institutional Academy
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-syne leading-tight text-foreground">
+                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-syne leading-tight text-foreground whitespace-normal break-words w-full pr-4">
                             Elevate Your <span className="text-primary">Market Intelligence.</span>
                         </h1>
-                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
+                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest whitespace-normal break-words w-full pr-4">
                             Professional accreditation paths designed to transition investors from fundamental awareness to institutional-grade execution.
                         </p>
                     </div>
@@ -262,10 +262,10 @@ export default function LearnPage() {
                                     </span>
                                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight break-words line-clamp-2">
+                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight break-words line-clamp-2 w-full pr-2">
                                     {mod.title}
                                 </h3>
-                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed">
+                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed whitespace-normal break-words w-full pr-2">
                                     {mod.description}
                                 </p>
                             </div>

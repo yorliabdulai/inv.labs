@@ -202,7 +202,7 @@ export default function MutualFundDetailPage() {
                                             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em]">Risk Intensity</span>
                                             <span className="text-[11px] font-bold text-primary tabular-nums tracking-widest">{fund.risk_rating}/5</span>
                                         </div>
-                                        <div className="h-1.5 w-24 bg-muted border border-border rounded-full overflow-hidden flex gap-0.5">
+                                        <div className="h-1.5 w-24 bg-muted border border-border rounded-full overflow-hidden flex gap-0.5 min-w-0">
                                             {[1, 2, 3, 4, 5].map((level) => (
                                                 <div
                                                     key={level}
@@ -302,7 +302,7 @@ export default function MutualFundDetailPage() {
             {/* ── Intelligence Tabs ── */}
             <div className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
                 <div className="border-b border-border px-6 md:px-10 bg-muted/20">
-                    <div className="flex gap-10 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap lg:whitespace-normal">
+                    <div className="flex items-center gap-6 overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap lg:whitespace-normal w-full">
                         {[
                             { id: "overview", label: "Overview", icon: Info },
                             { id: "performance", label: "Performance Series", icon: BarChart3 },
@@ -311,7 +311,7 @@ export default function MutualFundDetailPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
-                                className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] transition-all border-b-2 ${activeTab === tab.id
+                                className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] transition-all border-b-2 flex-shrink-0 whitespace-nowrap ${activeTab === tab.id
                                     ? "border-primary text-foreground"
                                     : "border-transparent text-muted-foreground hover:text-foreground"
                                     }`}

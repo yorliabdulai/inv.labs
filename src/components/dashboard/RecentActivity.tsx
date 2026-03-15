@@ -38,7 +38,7 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                         </div>
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate tracking-tight">{tx.name}</span>
+                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate block w-full tracking-tight">{tx.name}</span>
                                 <span className={`flex-shrink-0 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
                                     ? 'bg-muted text-muted-foreground border-border'
                                     : 'bg-primary/10 text-primary border-primary/20'
