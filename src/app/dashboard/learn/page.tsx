@@ -133,12 +133,12 @@ export default function LearnPage() {
                     </div>
 
                     {/* Proficiency Stats */}
-                    <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-12 bg-muted/20 backdrop-blur-xl p-8 sm:p-10 rounded-2xl border border-border shadow-xl w-full lg:w-auto">
-                        <div className="space-y-3 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-12 bg-muted/20 backdrop-blur-xl p-6 sm:p-10 rounded-2xl border border-border shadow-xl w-full lg:w-auto">
+                        <div className="space-y-2 w-full sm:w-auto">
                             <p className="text-[10px] font-bold text-primary uppercase tracking-widest text-center sm:text-left">Accreditation</p>
-                            <p className="text-4xl font-bold font-syne tracking-tight text-foreground text-center sm:text-left">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
-                            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest text-center sm:text-left">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
-                            <div className="w-full sm:w-40 h-1.5 bg-muted/30 rounded-full mt-6 overflow-hidden">
+                            <p className="text-3xl sm:text-4xl font-bold font-syne tracking-tight text-foreground text-center sm:text-left leading-none">Level {Math.floor(totalXp / 1000) + 1 < 10 ? `0${Math.floor(totalXp / 1000) + 1}` : Math.floor(totalXp / 1000) + 1}</p>
+                            <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-widest text-center sm:text-left">{totalXp > 3000 ? "Senior Analyst" : totalXp > 1000 ? "Analyst" : "Junior Analyst"}</p>
+                            <div className="w-full sm:w-40 h-1.5 bg-muted/30 rounded-full mt-4 overflow-hidden">
                                 <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${(totalXp % 1000) / 10}%` }} />
                             </div>
                         </div>
@@ -190,7 +190,7 @@ export default function LearnPage() {
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight">
+                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight break-words">
                                     {course.title}
                                 </h3>
                                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
@@ -257,7 +257,7 @@ export default function LearnPage() {
                         <div key={i} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col shadow-premium backdrop-blur-md">
                             <div className="p-8 space-y-6 flex-grow">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">
+                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20 whitespace-nowrap">
                                         {mod.category}
                                     </span>
                                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>

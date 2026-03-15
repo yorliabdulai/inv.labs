@@ -83,8 +83,8 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                     <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#C05E42" stopOpacity={0.8} />
-                                <stop offset="95%" stopColor="#C05E42" stopOpacity={0.2} />
+                                <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.8} />
+                                <stop offset="95%" stopColor="var(--brand-primary)" stopOpacity={0.2} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
@@ -154,8 +154,8 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                     <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#2B59FF" stopOpacity={0.15} />
-                                <stop offset="95%" stopColor="#2B59FF" stopOpacity={0} />
+                                <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.15} />
+                                <stop offset="95%" stopColor="var(--brand-primary)" stopOpacity={0} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border" />
@@ -172,7 +172,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                         <Area
                             type="monotone"
                             dataKey="value"
-                            stroke="#2B59FF"
+                            stroke="var(--brand-primary)"
                             strokeWidth={2}
                             fillOpacity={1}
                             fill="url(#colorValue)"

@@ -88,7 +88,7 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Gamified Institutional Learning</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 border border-border rounded-xl transition-all" aria-label="Close">
+                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center text-[--text-primary] dark:text-[--text-dark-primary] hover:bg-muted/80 border border-border rounded-xl transition-all" aria-label="Close">
                         <X size={20} />
                     </button>
                 </div>

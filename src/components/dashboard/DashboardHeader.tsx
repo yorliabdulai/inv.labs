@@ -42,9 +42,9 @@ function ThemeToggle() {
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={16} className="text-primary" />
+                <Sun size={16} className="text-[--text-dark-primary]" />
             ) : (
-                <Moon size={16} className="text-zinc-500" />
+                <Moon size={16} className="text-[--text-primary]" />
             )}
         </button>
     );
@@ -68,8 +68,8 @@ export function DashboardHeader() {
 
     return (
         <header className="relative z-10 mb-8 w-full">
-            {/* Status strip - Hidden on smallest mobile to save space */}
-            <div className="hidden sm:block bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
+            {/* Status strip - Hidden on mobile/tablet to prioritize logo/title */}
+            <div className="hidden md:flex bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between px-4 py-2.5">
                     <div className="flex items-center gap-3">
                         <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
@@ -134,7 +134,7 @@ export function DashboardHeader() {
                         className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm"
                         aria-label="View notifications"
                     >
-                        <Bell size={16} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                        <Bell size={16} className="text-[--text-primary] dark:text-[--text-dark-primary] group-hover:text-foreground transition-colors" />
                         <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
                     </button>
 

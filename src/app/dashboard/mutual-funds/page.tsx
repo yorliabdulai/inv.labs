@@ -244,7 +244,7 @@ export default function MutualFundsPage() {
                             aria-label="Search mutual funds"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-12 pr-6 py-4 bg-muted/30 border border-border rounded-xl text-foreground focus:bg-muted/50 focus:border-primary/50 outline-none transition-all text-sm font-bold placeholder:text-muted-foreground/50 uppercase tracking-widest"
+                            className="w-full pl-14 pr-6 py-4 bg-muted/30 border border-border rounded-xl text-foreground focus:bg-muted/50 focus:border-primary/50 outline-none transition-all text-sm font-bold placeholder:text-muted-foreground/50 uppercase tracking-widest shadow-inner shadow-black/5"
                         />
                     </div>
                     <button
@@ -258,7 +258,7 @@ export default function MutualFundsPage() {
 
                 <div className="space-y-4">
                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1">Strategy Type</div>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
                         {fundTypes.map((type) => (
                             <button
                                 key={type}
@@ -276,7 +276,7 @@ export default function MutualFundsPage() {
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-8 border-t border-border">
                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1 min-w-[120px]">Risk Intensity</div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
                         {[0, 1, 2, 3, 4, 5].map((risk) => (
                             <button
                                 key={risk}

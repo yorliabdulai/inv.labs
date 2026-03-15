@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type TransactionRecord } from "@/app/actions/dashboard";
 import { ShoppingCart, Wallet, Clock, ChevronRight, Search } from "lucide-react";
 import { formatCurrency } from "@/lib/mutual-funds-data";
@@ -37,7 +38,7 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                         </div>
                         <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-foreground text-sm truncate tracking-tight">{tx.name}</span>
+                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate tracking-tight max-w-[140px] md:max-w-none">{tx.name}</span>
                                 <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
                                     ? 'bg-muted text-muted-foreground border-border'
                                     : 'bg-primary/10 text-primary border-primary/20'
@@ -66,10 +67,10 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                 </div>
             ))}
 
-            <button className="w-full mt-4 py-3.5 text-xs font-semibold text-muted-foreground bg-muted hover:bg-muted/80 hover:text-foreground border border-border rounded-xl transition-all flex items-center justify-center gap-2 group shadow-sm">
+            <Link href="/dashboard/portfolio" className="w-full mt-4 py-3.5 text-xs font-semibold text-[--text-primary] dark:text-[--text-dark-primary] bg-muted hover:bg-muted/80 hover:text-foreground border border-border rounded-xl transition-all flex items-center justify-center gap-2 group shadow-sm">
                 View Transaction Ledger
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
         </div>
     );
 }

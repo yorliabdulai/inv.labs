@@ -71,7 +71,7 @@ export default function DashboardPage() {
                             <span>Total Equity</span>
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         </p>
-                        <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight tabular-nums relative z-10">
+                        <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight tabular-nums relative z-10 font-syne">
                             {formatCurrency(data?.totalEquity ?? 10000)}
                         </h1>
                     </div>
@@ -87,18 +87,18 @@ export default function DashboardPage() {
                 {/* Secondary Stats Grid */}
                 <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                     <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Purchasing Power</p>
-                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums">{formatCurrency(data?.cashBalance ?? 0)}</p>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Purchasing Power</p>
+                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums font-syne">{formatCurrency(data?.cashBalance ?? 0)}</p>
                     </div>
                     <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Total Return</p>
-                        <p className={`text-xl md:text-2xl font-bold tabular-nums ${(data?.totalGain ?? 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Total Return</p>
+                        <p className={`text-xl md:text-2xl font-bold tabular-nums font-syne ${(data?.totalGain ?? 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                             {(data?.totalGain ?? 0) >= 0 ? '+' : ''}{formatCurrency(data?.totalGain ?? 0)}
                         </p>
                     </div>
                     <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Active Positions</p>
-                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums">{data?.activePositions ?? 0}</p>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Active Positions</p>
+                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums font-syne">{data?.activePositions ?? 0}</p>
                     </div>
                     <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
                         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">System Status</p>

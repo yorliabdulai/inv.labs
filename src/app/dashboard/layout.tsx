@@ -48,7 +48,7 @@ export default async function DashboardLayout({
                 <Sidebar />
 
                 <div className="flex flex-col min-h-screen md:pl-64 transition-all duration-300 ease-out z-10 relative">
-                    <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 py-4 md:px-8 md:py-8 pb-24 md:pb-12 safe-area-inset-bottom">
+                    <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 py-4 md:px-8 md:py-8 pb-32 md:pb-12 safe-area-inset-bottom">
                         <div className="h-2 md:hidden"></div>
                         {children}
                     </main>

@@ -269,12 +269,12 @@ export default function StocksPage() {
                         aria-label="Search global equities"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 text-sm font-semibold bg-muted/30 border border-border rounded-xl focus:bg-muted/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/60 text-foreground"
+                        className="w-full pl-14 pr-4 py-3.5 text-sm font-semibold bg-muted/30 border border-border rounded-xl focus:bg-muted/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/60 text-foreground shadow-inner shadow-black/5"
                     />
                 </div>
 
                 {/* Sector filter chips - scrollable on mobile */}
-                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 border-b border-border sm:flex-wrap">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 border-b border-border sm:flex-wrap pr-6">
                     {sectors.map((sec) => (
                         <button
                             key={sec}

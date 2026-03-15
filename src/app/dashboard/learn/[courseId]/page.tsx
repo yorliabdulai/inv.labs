@@ -123,7 +123,7 @@ export default function CourseLearningPage() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted/30 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                             {course.level}
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne leading-tight">
+                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne leading-tight break-words">
                             {course.title}
                         </h1>
                         <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
@@ -224,9 +224,9 @@ export default function CourseLearningPage() {
                                     </div>
                                 </div>
 
-                                <div className="p-6 md:p-10 flex-1 flex flex-col items-start justify-between">
+                                <div className="p-5 md:p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
-                                        <h3 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne">
+                                        <h3 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne leading-tight break-words">
                                             Instructional Module {currentModule}
                                         </h3>
                                         <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">

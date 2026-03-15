@@ -16,7 +16,7 @@ export function AtoFloatingButton({ onClick, hasUnread = false }: AtoFloatingBut
             onClick={onClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="fixed bottom-28 md:bottom-8 right-6 z-50 group transition-all duration-500"
+            className="fixed bottom-32 md:bottom-8 right-6 z-[9999] group transition-all duration-500"
             aria-label="Open Ato AI Assistant"
         >
             {/* Main button */}

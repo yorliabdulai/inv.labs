@@ -556,7 +556,7 @@ export default function PortfolioPage() {
                                 label: "Avg Position Size",
                                 value: `GH₵${avgPositionSize.toFixed(0)}`,
                                 sub: `${holdings.length} POSITIONS`,
-                                color: "text-primary-foreground", bgColor: "bg-primary shadow-xl shadow-primary/20 border-primary"
+                                color: "text-primary-foreground", bgColor: "bg-[--brand-primary] shadow-xl shadow-primary/20 border-primary"
                             },
                             {
                                 label: "Infrastructure",
@@ -566,8 +566,8 @@ export default function PortfolioPage() {
                             },
                         ].map(m => (
                             <div key={m.label} className={`${m.bgColor} rounded-xl p-5 border`}>
-                                <div className={`text-xl font-bold tabular-nums tracking-tight ${m.color}`}>{m.value}</div>
-                                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">{m.label}</div>
+                                <div className={`text-xl font-bold tabular-nums tracking-tight font-syne ${m.color}`}>{m.value}</div>
+                                <div className="text-[10px] font-bold text-[--text-primary] dark:text-[--text-dark-primary] uppercase tracking-widest mt-2">{m.label}</div>
                                 <div className="text-[9px] font-semibold text-muted-foreground mt-1 uppercase tracking-widest truncate">{m.sub}</div>
                             </div>
                         ))}
@@ -648,7 +648,7 @@ export default function PortfolioPage() {
                     </div>
                     <div className="flex items-center gap-4">
                         {/* Holdings tabs - scrollable on mobile */}
-                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar max-w-[200px] sm:max-w-none">
+                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar max-w-[200px] sm:max-w-none pr-6">
                             {([["all", "ALL ASSETS"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}

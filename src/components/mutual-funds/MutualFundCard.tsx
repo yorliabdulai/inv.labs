@@ -48,7 +48,7 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
                         </span>
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 tracking-tighter uppercase font-syne">
+                        <h3 className="text-xl font-bold text-[--text-primary] dark:text-[--text-dark-primary] group-hover:text-primary transition-colors line-clamp-2 tracking-tighter uppercase font-syne">
                             {fund.fund_name}
                         </h3>
                         <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-widest">
@@ -63,7 +63,7 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
                 <div className="flex items-end justify-between">
                     <div>
                         <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Current Nav</div>
-                        <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
+                        <div className="text-2xl font-bold text-[--text-primary] dark:text-[--text-dark-primary] tabular-nums tracking-tight">
                             {formatCurrency(fund.current_nav)}
                         </div>
                     </div>
