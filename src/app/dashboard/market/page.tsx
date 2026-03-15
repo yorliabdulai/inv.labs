@@ -273,8 +273,8 @@ export default function StocksPage() {
                     />
                 </div>
 
-                {/* Sector filter chips */}
-                <div className="flex gap-2 flex-wrap pb-4 border-b border-border">
+                {/* Sector filter chips - scrollable on mobile */}
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 border-b border-border sm:flex-wrap">
                     {sectors.map((sec) => (
                         <button
                             key={sec}

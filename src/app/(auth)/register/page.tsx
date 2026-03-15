@@ -75,7 +75,7 @@ export default function RegisterPage() {
 
                     {/* Logo */}
                     <div className="flex items-center gap-2.5 mb-8">
-                        <div className="w-8 h-8 bg-[#215E84] rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner shadow-blue-500/30">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner shadow-primary-deep/30">
                             iL
                         </div>
                         <span className="font-bold text-lg tracking-tight text-white">inv.labs</span>
@@ -210,7 +210,7 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex items-center justify-center gap-2 w-full py-3.5 bg-[#215E84] hover:bg-[#2872A1] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(37,99,235,0.35)] hover:shadow-[0_6px_24px_rgba(37,99,235,0.45)] hover:-translate-y-0.5 transition-all duration-200"
+                            className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary hover:bg-primary-deep disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(33,94,132,0.35)] hover:shadow-[0_6px_24px_rgba(33,94,132,0.45)] hover:-translate-y-0.5 transition-all duration-200"
                         >
                             {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Creating account...</> : "Create Free Account"}
                         </button>

@@ -68,9 +68,9 @@ export function DashboardHeader() {
 
     return (
         <header className="relative z-10 mb-8 w-full">
-            {/* Status strip */}
-            <div className="bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
-                <div className="flex items-center justify-between px-4 py-3">
+            {/* Status strip - Hidden on smallest mobile to save space */}
+            <div className="hidden sm:block bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
+                <div className="flex items-center justify-between px-4 py-2.5">
                     <div className="flex items-center gap-3">
                         <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                             <Activity size={14} className="text-primary dark:text-primary" />

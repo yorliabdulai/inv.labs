@@ -128,23 +128,23 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
             <div className="w-full max-w-4xl bg-background border border-border shadow-2xl md:rounded-3xl overflow-hidden flex flex-col relative h-full md:h-auto md:max-h-[90vh]">
 
                 {/* Sticky Header with Logo and Close */}
-                <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border p-6 md:p-8 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-base shadow-xl shadow-primary/20 transition-transform hover:scale-110">
+                <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border p-4 md:p-8 flex items-center justify-between">
+                    <div className="flex items-center gap-4 md:gap-6">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-sm md:text-base shadow-xl shadow-primary/20 transition-transform hover:scale-110">
                             {stock.symbol.substring(0, 3)}
                         </div>
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-none font-syne">{stock.symbol}</h2>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">{stock.name}</p>
+                            <h2 className="text-xl md:text-3xl font-bold text-foreground tracking-tight leading-none font-syne">{stock.symbol}</h2>
+                            <p className="text-[9px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1.5 md:mt-2">{stock.name}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border transition-all group" aria-label="Close">
-                        <X size={20} className="text-muted-foreground group-hover:text-foreground" />
+                    <button onClick={onClose} className="p-2.5 md:p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border transition-all group" aria-label="Close">
+                        <X size={18} className="text-muted-foreground group-hover:text-foreground" />
                     </button>
                 </div>
 
                 {/* Sticky Balance Bar - ALWAYS VISIBLE */}
-                <div className="sticky top-[97px] md:top-[113px] z-10 bg-primary/5 border-b border-primary/20 px-6 md:px-10 py-4 flex items-center justify-between backdrop-blur-md">
+                <div className="sticky top-[73px] md:top-[113px] z-20 bg-primary/5 border-b border-primary/20 px-6 md:px-10 py-3 md:py-4 flex items-center justify-between backdrop-blur-md">
                     <div className="flex items-center gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                             <DollarSign size={12} className="text-primary" />

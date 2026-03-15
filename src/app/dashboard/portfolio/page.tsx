@@ -339,7 +339,7 @@ export default function PortfolioPage() {
                                     GH₵{cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
                                 <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Available Liquidity</div>
-                                <div className="text-[11px] font-semibold text-muted-foreground mt-3 uppercase tracking-widest">
+                                <div className="text-[11px] font-bold text-muted-foreground mt-3 uppercase tracking-widest">
                                     {totalEquity > 0 ? ((cashBalance / totalEquity) * 100).toFixed(1) : 0}% Liquid Ratio
                                 </div>
                             </div>
@@ -549,14 +549,14 @@ export default function PortfolioPage() {
                                 label: "Volatility Drag",
                                 value: worstPosition ? `${worstPosition.gainPercent >= 0 ? "+" : ""}${worstPosition.gainPercent.toFixed(1)}%` : "—",
                                 sub: worstPosition?.symbol ?? "NO ASSETS",
-                                color: worstPosition && worstPosition.gainPercent < 0 ? "text-red-500" : "text-zinc-500",
-                                bgColor: worstPosition && worstPosition.gainPercent < 0 ? "bg-red-500/5 border-red-500/10" : "bg-white/[0.03] border-white/[0.06]"
+                                color: worstPosition && worstPosition.gainPercent < 0 ? "text-red-600 dark:text-red-400" : "text-muted-foreground",
+                                bgColor: worstPosition && worstPosition.gainPercent < 0 ? "bg-red-500/10 border-red-500/20" : "bg-muted/30 border-border"
                             },
                             {
                                 label: "Avg Position Size",
                                 value: `GH₵${avgPositionSize.toFixed(0)}`,
                                 sub: `${holdings.length} POSITIONS`,
-                                color: "text-white", bgColor: "bg-primary shadow-xl shadow-primary/20 border-primary"
+                                color: "text-primary-foreground", bgColor: "bg-primary shadow-xl shadow-primary/20 border-primary"
                             },
                             {
                                 label: "Infrastructure",
@@ -647,8 +647,8 @@ export default function PortfolioPage() {
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        {/* Holdings tabs */}
-                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl">
+                        {/* Holdings tabs - scrollable on mobile */}
+                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar max-w-[200px] sm:max-w-none">
                             {([["all", "ALL ASSETS"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}

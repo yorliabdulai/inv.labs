@@ -224,24 +224,23 @@ export default function CourseLearningPage() {
                                     </div>
                                 </div>
 
-                                <div className="p-10 flex-1 flex flex-col items-start justify-between">
+                                <div className="p-6 md:p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
-                                        <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight font-syne">
+                                        <h3 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne">
                                             Instructional Module {currentModule}
                                         </h3>
-                                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
+                                        <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
                                             Please review the video module above before proceeding. The knowledge tested here will directly impact your strategic allocation skills within the terminal simulator.
                                         </p>
                                     </div>
-
-                                    <div className="pt-10 w-full border-t border-border mt-10 flex items-center justify-between">
-                                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                                    <div className="pt-8 w-full border-t border-border mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                                        <span className="text-[9px] md:text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
                                             <CheckCircle size={14} /> Auto-Saving Progress
                                         </span>
                                         <button
                                             onClick={handleCompleteModule}
                                             disabled={advancing}
-                                            className="px-10 py-5 bg-primary text-white hover:bg-primary/90 active:scale-95 disabled:opacity-50 font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-primary/20"
+                                            className="w-full sm:w-auto px-10 py-5 bg-primary text-white hover:bg-primary/90 active:scale-95 disabled:opacity-50 font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-primary/20"
                                         >
                                             {advancing ? "Validating..." : "Complete Module & Advance"}
                                         </button>
