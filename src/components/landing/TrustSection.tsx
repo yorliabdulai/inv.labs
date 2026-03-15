@@ -47,7 +47,7 @@ const TrustSection = () => {
             className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] font-bold text-white leading-[0.85] tracking-[-0.04em] mb-8 text-balance break-words"
           >
             Ghanaians Are <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-indigo-300">Already Learning.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-deep via-primary to-primary-light">Already Learning.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

@@ -50,11 +50,11 @@ const FAQSection = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl md:text-5xl lg:text-6xl font-black text-zinc-950 leading-[0.9] tracking-tight mb-6"
+                        className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[0.9] tracking-tight mb-6"
                     >
                         Common <span className="text-primary">Questions.</span>
                     </motion.h2>
-                    <p className="text-lg text-zinc-500 font-medium tracking-tight">
+                    <p className="text-lg text-muted-foreground font-medium tracking-tight">
                         Everything you need to know about getting started with inv.labs.
                     </p>
                 </div>
@@ -67,18 +67,18 @@ const FAQSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.05 }}
-                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-primary/20 bg-primary/5 shadow-sm" : "border-zinc-200 bg-white hover:border-zinc-300"
+                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-primary/20 bg-primary/5 shadow-sm" : "border-border bg-card hover:border-border/80"
                                 }`}
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                                 className="w-full flex items-center justify-between p-6 md:p-8 text-left"
                             >
-                                <span className={`text-lg md:text-xl font-bold tracking-tight transition-colors ${openIndex === i ? "text-primary" : "text-zinc-900"
+                                <span className={`text-lg md:text-xl font-bold tracking-tight transition-colors ${openIndex === i ? "text-primary" : "text-foreground"
                                     }`}>
                                     {faq.question}
                                 </span>
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === i ? "bg-primary text-white rotate-180" : "bg-zinc-100 text-zinc-400"
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === i ? "bg-primary text-white rotate-180" : "bg-muted text-muted-foreground"
                                     }`}>
                                     {openIndex === i ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                                 </div>
@@ -93,7 +93,7 @@ const FAQSection = () => {
                                         transition={{ duration: 0.3, ease: "easeInOut" }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="p-6 md:p-8 pt-0 text-zinc-600 font-medium text-lg leading-relaxed">
+                                        <div className="p-6 md:p-8 pt-0 text-muted-foreground font-medium text-lg leading-relaxed">
                                             {faq.answer}
                                         </div>
                                     </motion.div>

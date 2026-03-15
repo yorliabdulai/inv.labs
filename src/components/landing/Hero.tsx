@@ -84,7 +84,9 @@ const Hero = () => {
               Learn to Invest<br />
               <span className="relative inline-block pb-4">
                 <span className="absolute inset-x-0 bottom-4 h-[30%] bg-blue-200/40 -rotate-2 -z-10" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-500">Without Losing Money.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary-deep via-primary to-primary-light">
+                  Without Losing Money.
+                </span>
               </span>
             </motion.h1>
 
@@ -170,8 +172,9 @@ const Hero = () => {
                   </div>
                   <div className="mt-auto bg-white rounded-xl p-5 border border-zinc-200/50 shadow-sm">
                     <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Protocol Health</p>
-                    <p className="text-[10px] font-bold text-blue-600 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Live connection
+                    <p className="text-[10px] font-bold text-primary flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                      Live connection
                     </p>
                   </div>
                 </div>
@@ -237,7 +240,7 @@ const Hero = () => {
                         fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round"
                         className="drop-shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
                       />
-                      <circle cx="100" cy="10" r="4" className="fill-blue-600 drop-shadow-[0_0_12px_rgba(37,99,235,0.6)]" />
+                      <circle cx="100" cy="10" r="4" className="fill-primary drop-shadow-[0_0_12px_rgba(37,99,235,0.6)]" />
                     </svg>
                   </div>
                 </div>
@@ -248,7 +251,7 @@ const Hero = () => {
 
                 {/* Simulated Order Ticket */}
                 <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-white h-[65%] flex flex-col relative overflow-hidden shadow-2xl">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16" />
                   <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-8 border-b border-zinc-800 pb-5">Rapid Execution</p>
 
                   <div className="bg-white/5 rounded-xl p-4 border border-white/5 mb-6 flex justify-between items-center group cursor-pointer hover:bg-white/10 transition-all">
@@ -259,7 +262,7 @@ const Hero = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-auto">
-                    <button className="bg-blue-600 text-white py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-blue-500 transition-all shadow-xl shadow-blue-500/20 active:scale-95">Buy</button>
+                    <button className="bg-primary text-white py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-primary-deep transition-all shadow-xl shadow-blue-500/20 active:scale-95">Buy</button>
                     <button className="bg-white/5 text-white py-4 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95">Sell</button>
                   </div>
 
@@ -268,7 +271,7 @@ const Hero = () => {
                       <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Est. Ledger Cost</p>
                       <p className="text-lg font-bold text-white tabular-nums font-syne tracking-tight">GH₵ 18,200.00</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-blue-500/20">
                       <ArrowRight className="w-5 h-5 text-white" />
                     </div>
                   </div>

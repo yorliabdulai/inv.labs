@@ -18,7 +18,7 @@ const LifetimeBanner = () => {
                 className="bg-zinc-950 text-white p-4 md:p-5 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-6"
             >
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0 animate-pulse">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 animate-pulse">
                         <span className="text-[10px] font-black tracking-tighter">HOT</span>
                     </div>
                     <div>

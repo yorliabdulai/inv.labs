@@ -248,7 +248,7 @@ const FeaturesGrid = () => {
         {/* Group 02: AI Guidance */}
         <div className="mb-24">
           <div className="flex items-center gap-4 mb-10">
-            <span className="text-indigo-600 font-black text-sm uppercase tracking-widest">02. AI Guidance</span>
+            <span className="text-[#2872A1] font-black text-sm uppercase tracking-widest">02. AI Guidance</span>
             <div className="h-px flex-1 bg-zinc-100" />
           </div>
           <motion.div

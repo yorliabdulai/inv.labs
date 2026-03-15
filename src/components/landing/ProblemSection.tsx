@@ -22,7 +22,7 @@ const itemVariants = {
 
 const ProblemSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-white overflow-hidden">
+    <section className="relative py-24 md:py-32 bg-background overflow-hidden">
       <div className="px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <motion.div
@@ -65,7 +65,7 @@ const ProblemSection = () => {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="bg-white border border-border/50 p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-6 md:gap-8 group cursor-default"
+                className="bg-card border border-border/50 p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-6 md:gap-8 group cursor-default"
               >
                 <div className="w-28 shrink-0 border-r border-border/50 pr-6 group-hover:border-primary/30 transition-colors">
                   <span className="text-5xl md:text-6xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors">{stat.value}</span>

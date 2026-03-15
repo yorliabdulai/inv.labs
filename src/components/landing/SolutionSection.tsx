@@ -16,7 +16,7 @@ const SolutionSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-600 w-fit text-sm font-semibold mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-primary w-fit text-sm font-semibold mb-6"
           >
             <span>What If There Was a Better Way?</span>
           </motion.div>
@@ -45,7 +45,7 @@ const SolutionSection = () => {
             <div className="absolute inset-0 bg-blue-500/10 rounded-[2.5rem] blur-2xl transition-all duration-500 group-hover:bg-blue-500/20" />
 
             <div className="relative bg-white shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)] ring-1 ring-inset ring-zinc-900/5 rounded-[2.5rem] p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] hover:ring-zinc-900/10">
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary-deep via-primary to-primary-light" />
 
               <div className="flex justify-between items-center mb-10">
                 <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ const SolutionSection = () => {
                 </div>
               </div>
 
-              <div className="px-4 py-5 bg-zinc-900 dark:bg-zinc-800 rounded-xl text-white shadow-inner mb-6 relative overflow-hidden transition-colors duration-300">
+              <div className="px-4 py-5 bg-zinc-900 rounded-xl text-white shadow-inner mb-6 relative overflow-hidden transition-colors duration-300">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2" />
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-sm text-zinc-400 font-medium tracking-tight">Simulator Cost</span>
@@ -84,7 +84,7 @@ const SolutionSection = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+              <button className="w-full bg-primary-deep hover:bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
                 Submit Practice Trade
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -101,7 +101,7 @@ const SolutionSection = () => {
           >
             <div className="space-y-6">
               <p className="text-2xl text-zinc-950 font-bold leading-tight">
-                inv.labs is like a <span className="text-blue-600">flight simulator</span>. <br />
+                inv.labs is like a <span className="text-primary">flight simulator</span>. <br />
                 But for investing.
               </p>
               <div className="space-y-4">
@@ -112,7 +112,7 @@ const SolutionSection = () => {
                 ].map((item, i) => (
                   <div key={i} className="flex gap-5 items-start">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
-                      <item.icon className="w-5 h-5 text-blue-600" />
+                      <item.icon className="w-5 h-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-zinc-950 mb-1 tracking-tight">{item.title}</h3>

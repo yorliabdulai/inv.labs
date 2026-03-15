@@ -12,10 +12,9 @@ import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
 import LifetimeBanner from "@/components/landing/LifetimeBanner";
-
 export default function Home() {
   return (
-    <div className="min-h-screen text-zinc-900 selection:bg-blue-500/30 overflow-x-hidden relative bg-white">
+    <div className="min-h-screen text-foreground selection:bg-primary/30 overflow-x-hidden relative bg-background landing-page-lock">
 
       {/* V3 Global Fluid Background Mesh - Anchors the entire page */}
       <div className="fixed inset-0 pointer-events-none -z-50">

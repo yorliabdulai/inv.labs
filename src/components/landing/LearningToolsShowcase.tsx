@@ -26,7 +26,7 @@ const StockMasteryMockup = () => (
       <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 to-transparent" />
       <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
-            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.2" />
             <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
           </linearGradient>
@@ -82,14 +82,14 @@ const AIGuidanceMockup = () => (
     </div>
 
     <div className="space-y-3">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         className="self-end ml-auto bg-zinc-800 text-zinc-300 text-xs p-3 rounded-2xl rounded-br-none max-w-[80%]"
       >
         Is GCB a good buy right now?
       </motion.div>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 }}
@@ -122,11 +122,11 @@ const DiversificationMockup = () => (
             <span className="text-white">{item.p}</span>
           </div>
           <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden">
-            <motion.div 
+            <motion.div
               initial={{ width: 0 }}
               animate={{ width: item.p }}
               transition={{ duration: 1, delay: i * 0.1 }}
-              className={cn("h-full rounded-full", item.color)} 
+              className={cn("h-full rounded-full", item.color)}
             />
           </div>
         </div>
@@ -197,29 +197,29 @@ const LearningToolsShowcase = () => {
   return (
     <section id="features" ref={containerRef} className="relative bg-background">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl">
-        
+
         {/* Intro Header (Non-sticky) */}
         <div className="py-24 md:py-32 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 w-fit text-sm font-semibold mb-8 border border-blue-100"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-[#2872A1] w-fit text-sm font-semibold mb-8 border border-blue-100"
           >
             <span>Platform Showcase</span>
           </motion.div>
-          <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black text-zinc-950 leading-[0.9] tracking-[-0.04em] mb-10">
+          <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black text-foreground leading-[0.9] tracking-[-0.04em] mb-10">
             Professional tools. <br />
             <span className="text-primary">Human simplicity.</span>
           </h2>
-          <p className="text-xl md:text-2xl text-zinc-500 font-medium max-w-2xl leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground font-medium max-w-2xl leading-relaxed">
             We've stripped away the complexity of traditional finance tools to give you an interface that feels intuitive, powerful, and built for your growth.
           </p>
         </div>
 
         {/* Cinematic Split-Screen (Desktop Only) */}
         <div className="hidden lg:flex min-h-[300vh] relative">
-          
+
           {/* Scrollable Content (Left) */}
           <div className="w-1/2 flex flex-col">
             {sections.map((section, i) => (
@@ -231,17 +231,17 @@ const LearningToolsShowcase = () => {
                   )}>
                     {section.tag}
                   </span>
-                  <h3 className="text-5xl font-black text-zinc-950 tracking-tight leading-tight">
+                  <h3 className="text-5xl font-black text-foreground tracking-tight leading-tight">
                     {section.title}
                   </h3>
-                  <p className="text-lg text-zinc-500 font-medium leading-relaxed">
+                  <p className="text-lg text-muted-foreground font-medium leading-relaxed">
                     {section.description}
                   </p>
                   <div className="py-4 space-y-4">
                     {section.features.map(f => (
                       <div key={f} className="flex items-center gap-3">
                         <CheckCircle2 className="w-4 h-4 text-primary" />
-                        <span className="text-zinc-700 font-bold">{f}</span>
+                        <span className="text-foreground font-bold">{f}</span>
                       </div>
                     ))}
                   </div>
@@ -292,16 +292,16 @@ const LearningToolsShowcase = () => {
           {sections.map((section) => (
             <div key={section.id} className="space-y-12">
               <div className="space-y-6">
-                 <span className={cn(
+                <span className={cn(
                   "text-xs font-black uppercase tracking-widest",
                   section.color === "blue" ? "text-blue-600" : section.color === "indigo" ? "text-indigo-600" : "text-amber-600"
                 )}>
                   {section.tag}
                 </span>
-                <h3 className="text-4xl font-black text-zinc-950 tracking-tight leading-tight">
+                <h3 className="text-4xl font-black text-foreground tracking-tight leading-tight">
                   {section.title}
                 </h3>
-                <p className="text-base text-zinc-500 font-medium leading-relaxed">
+                <p className="text-base text-muted-foreground font-medium leading-relaxed">
                   {section.description}
                 </p>
               </div>
@@ -317,7 +317,7 @@ const LearningToolsShowcase = () => {
                     <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
                       <CheckCircle2 className="w-3 h-3 text-blue-600" />
                     </div>
-                    <span className="text-zinc-700 font-bold text-sm">{f}</span>
+                    <span className="text-foreground font-bold text-sm">{f}</span>
                   </div>
                 ))}
               </div>
@@ -328,19 +328,19 @@ const LearningToolsShowcase = () => {
 
       {/* Final Wrap-up CTA (Optional/Transition) */}
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl pt-20 pb-32 border-t border-zinc-100">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-10 bg-zinc-50 p-10 md:p-16 rounded-[3rem] border border-zinc-200 shadow-sm relative overflow-hidden group">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 bg-muted/50 p-10 md:p-16 rounded-[3rem] border border-border shadow-sm relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -mr-40 -mt-40 transition-colors group-hover:bg-blue-500/10" />
-          
+
           <div className="relative z-10 max-w-xl">
-             <h4 className="text-3xl md:text-4xl font-black text-zinc-950 tracking-tight mb-4">
-               Ready to see it in action?
-             </h4>
-             <p className="text-lg text-zinc-500 font-medium">
-               Join 487 Ghanaians who are already building their skills in a risk-free environment.
-             </p>
+            <h4 className="text-3xl md:text-4xl font-black text-foreground tracking-tight mb-4">
+              Ready to see it in action?
+            </h4>
+            <p className="text-lg text-muted-foreground font-medium">
+              Join 487 Ghanaians who are already building their skills in a risk-free environment.
+            </p>
           </div>
 
-          <motion.button 
+          <motion.button
             whileHover={{ scale: 1.02 }}
             className="relative z-10 bg-zinc-950 text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl flex items-center gap-3 shrink-0 whitespace-nowrap"
           >

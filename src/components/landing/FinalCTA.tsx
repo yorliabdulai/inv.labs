@@ -24,7 +24,7 @@ const FinalCTA = () => {
 
           <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight tracking-tight text-balance mb-8 w-full overflow-hidden">
             Ready to trade <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-400 to-purple-400">with confidence?</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#215E84] via-[#2872A1] to-[#3C89B8]">with confidence?</span>
           </h2>
           <p className="text-xl text-zinc-400 font-medium leading-relaxed max-w-2xl mx-auto mb-12">
             Join thousands of Ghanaians mastering the stock market. Zero hidden fees. Zero real capital required.
@@ -35,7 +35,7 @@ const FinalCTA = () => {
               href="/register"
               className="group relative inline-flex items-center justify-center gap-2 px-10 py-5 text-base font-bold text-white bg-primary rounded-full overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(43,89,255,0.4)]"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#215E84] via-[#2872A1] to-[#3C89B8] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative z-10">Create Free Account</span>
               <ArrowRight className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
