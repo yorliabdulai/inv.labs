@@ -2,6 +2,7 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -14,21 +15,32 @@ interface TradeParams {
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent } = params;
+    const { symbol, type, quantity } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
-    if (!symbol || !name) {
+    if (!symbol) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
     }
 
     try {
-        // Step 1: Authenticate user
+        // Step 1: Fetch fresh stock data server-side
+        const freshStockData = await fetchStockBySymbol(symbol);
+
+        if (!freshStockData) {
+            return { success: false, message: `Stock symbol "${symbol}" not found or currently unavailable.` };
+        }
+
+        const { price, name, sector, changePercent } = freshStockData;
+
+        // Security: validate the fetched price
+        if (!price || price <= 0) {
+            return { success: false, message: "Invalid price retrieved from market data." };
+        }
+
+        // Step 2: Authenticate user
         const supabase = await createServerClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
@@ -40,8 +52,8 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
-        // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
+        // Step 3: Calculate costs server-side (Ghana Stock Exchange fee structure)
+        // Price comes from the server-side fetched data.
         // This is a simulator — no real money is at stake.
         const subtotal = price * quantity;
 
@@ -55,7 +67,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
-        // Step 3: Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU).
+        // Step 4: Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU).
         // The function handles: upserting stock, validating balance/holdings, creating
         // transaction record, updating balance, and updating holdings — all in one DB transaction.
         const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
@@ -91,7 +103,7 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error(`Database transaction failed: ${rpcError.message}`);
         }
 
-        // Step 4: Revalidate cache for affected views
+        // Step 5: Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
