@@ -143,12 +143,11 @@ const aiFeatures = [
     title: "Meet Ato - AI Guide",
     desc: "Confused? Ask Ato. 'What does P/E ratio mean?' Ato explains everything in simple language. 24/7. No judgment. No stupid questions.",
     uiSnippet: <MiniAIChat />,
-    className: "col-span-1 md:col-span-3 lg:col-span-4 row-span-1 lg:min-h-[350px] bg-zinc-950 border-zinc-800",
-    titleClass: "text-3xl md:text-5xl font-black text-white mb-4 tracking-tight",
-    descClass: "text-zinc-400",
-    glowColor: "group-hover:bg-indigo-500/10",
-    dark: true,
-    uiContainerClass: "h-48 w-full mb-8 rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 relative max-w-2xl"
+    className: "col-span-1 md:col-span-3 lg:col-span-4 row-span-1 lg:min-h-[350px] bg-indigo-50/30 border-indigo-100",
+    titleClass: "text-3xl md:text-5xl font-black text-zinc-950 mb-4 tracking-tight",
+    descClass: "text-zinc-600",
+    glowColor: "group-hover:bg-indigo-500/5",
+    uiContainerClass: "h-48 w-full mb-8 rounded-2xl overflow-hidden bg-white border border-indigo-100 relative max-w-2xl"
   },
 ];
 

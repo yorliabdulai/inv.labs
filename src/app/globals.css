@@ -63,44 +63,7 @@
   --loss-red: 0 72% 51%;
 }
 
-/* Forced Light Mode Lock for Landing Page */
-.landing-page-lock {
-  --background: 200 40% 97%;
-  --foreground: 224 71.4% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 224 71.4% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 224 71.4% 4.1%;
-  --primary: 203 60% 39.4%;
-  --primary-deep: 203 60% 32.5%;
-  --primary-light: 203 51% 48%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 95%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 227 100% 59%;
-  
-  --bg-page: #F8FAFC;
-  --bg-surface: #FFFFFF;
-  --bg-surface-secondary: #F1F5F9;
-  --border-default: #E2E8F0;
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(0, 0, 0, 0.04);
 
-  /* Force text and background colors to use these tokens */
-  color: hsl(var(--foreground)) !important;
-  background-color: hsl(var(--background)) !important;
-}
-
-/* Ensure children also inherit or use these tokens even if .dark is present */
-.landing-page-lock * {
-  border-color: hsl(var(--border) / 0.1);
-}
 
 .dark {
   --background: 222 47% 4%;
