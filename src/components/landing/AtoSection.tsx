@@ -54,15 +54,15 @@ const AtoSection = () => {
   };
 
   return (
-    <section className="relative py-24 md:py-32 bg-white">
+    <section className="relative py-24 md:py-32 bg-background">
       <div className="px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="flex flex-col items-center text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 w-fit text-sm font-semibold mb-6 border border-indigo-100 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary w-fit text-sm font-semibold mb-6 border border-primary/20 shadow-sm">
             <Sparkles className="w-4 h-4" />
             <span>AI Investment Guide</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6 leading-tight tracking-tight">
-            Meet Ato. Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">financial copilot.</span>
+            Meet Ato. Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-light">financial copilot.</span>
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto font-medium">
             Ask anything about investing in Ghana. Get answers in plain language — absolutely no jargon allowed.
@@ -78,41 +78,41 @@ const AtoSection = () => {
                 key={i}
                 onClick={() => handleSelect(i)}
                 className={`w-full text-left px-5 py-4 rounded-2xl font-semibold text-sm transition-all duration-200 flex items-center justify-between group ${activeIdx === i
-                    ? "bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm ring-1 ring-indigo-200"
-                    : "bg-white border-slate-100 text-slate-600 hover:bg-slate-50 border shadow-sm hover:shadow"
+                    ? "bg-primary/10 border-primary/20 text-primary shadow-sm ring-1 ring-primary/20"
+                    : "bg-card border-border text-muted-foreground hover:bg-secondary/50 border shadow-sm hover:shadow"
                   }`}
               >
                 <span>{topic.label}</span>
-                <ArrowRight className={`w-4 h-4 transition-transform ${activeIdx === i ? "text-indigo-500" : "text-slate-300 group-hover:text-slate-400 group-hover:translate-x-1"}`} />
+                <ArrowRight className={`w-4 h-4 transition-transform ${activeIdx === i ? "text-primary" : "text-muted-foreground group-hover:text-foreground group-hover:translate-x-1"}`} />
               </button>
             ))}
           </div>
 
           {/* Chat Interface Preview */}
-          <div className="glass-panel border-slate-200/60 shadow-xl rounded-[2rem] p-6 md:p-8 bg-white/80">
+          <div className="glass-panel border-border shadow-xl rounded-[2rem] p-6 md:p-8 bg-card/80">
             {/* User message */}
             <div className="flex items-start gap-4 mb-8 justify-end">
               <div className="bg-primary text-white p-4 rounded-2xl rounded-tr-sm shadow-sm max-w-[80%]">
                 <p className="text-sm font-medium">{topics[activeIdx].query}</p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200">
-                <User className="w-5 h-5 text-slate-500" />
+              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shrink-0 border border-border">
+                <User className="w-5 h-5 text-muted-foreground" />
               </div>
             </div>
 
             {/* Ato response */}
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 border border-indigo-200 shadow-sm">
-                <Bot className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 shadow-sm">
+                <Bot className="w-5 h-5 text-primary" />
               </div>
-              <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl rounded-tl-sm shadow-sm max-w-[90%] relative min-h-[120px]">
-                <p className="text-slate-700 text-base leading-relaxed font-medium">
+              <div className="bg-secondary/50 border border-border p-5 rounded-2xl rounded-tl-sm shadow-sm max-w-[90%] relative min-h-[120px]">
+                <p className="text-foreground text-base leading-relaxed font-medium">
                   {displayText}
                   {isTyping && (
                     <motion.span
                       animate={{ opacity: [1, 0] }}
                       transition={{ repeat: Infinity, duration: 0.8 }}
-                      className="inline-block w-1.5 h-4 bg-indigo-500 ml-1 align-middle"
+                      className="inline-block w-1.5 h-4 bg-primary ml-1 align-middle"
                     />
                   )}
                 </p>

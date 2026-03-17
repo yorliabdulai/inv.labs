@@ -4,9 +4,8 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { AlertCircle, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-
 import { ThemeProvider } from "next-themes";
 
 export default function LoginPage() {
@@ -22,14 +21,16 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
 
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-        if (error) {
-            setError(error.message);
+        if (signInError) {
+            setError(signInError.message);
             setLoading(false);
         } else {
             router.push("/dashboard");
-            router.refresh();
         }
     };
 
@@ -42,13 +43,13 @@ export default function LoginPage() {
     };
 
     return (
-        <ThemeProvider attribute="class" forcedTheme="light">
+        <ThemeProvider attribute="class">
             <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-                {/* V3 Global Fluid Background Mesh - Anchors the entire page */}
+                {/* V3 Global Fluid Background Mesh - Anchors the entire page using Brand Primary */}
                 <div className="fixed inset-0 pointer-events-none -z-50">
-                    <div className="absolute top-[0%] left-[-10%] w-[50%] h-[40%] bg-blue-50/50 rounded-full blur-[140px] opacity-60 mix-blend-multiply" />
-                    <div className="absolute top-[30%] right-[-10%] w-[40%] h-[40%] bg-indigo-50/40 rounded-full blur-[160px] opacity-60 mix-blend-multiply" />
-                    <div className="absolute top-[60%] left-[20%] w-[50%] h-[50%] bg-blue-50/50 rounded-full blur-[180px] opacity-50 mix-blend-multiply" />
+                    <div className="absolute top-[0%] left-[-10%] w-[50%] h-[40%] bg-primary/10 rounded-full blur-[140px] opacity-60 mix-blend-multiply" />
+                    <div className="absolute top-[30%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[160px] opacity-60 mix-blend-multiply" />
+                    <div className="absolute top-[60%] left-[20%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[180px] opacity-50 mix-blend-multiply" />
                     <div className="absolute inset-0 opacity-[0.01]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
                 </div>
 
@@ -58,24 +59,25 @@ export default function LoginPage() {
                     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full max-w-[440px] relative z-10"
                 >
-                    {/* Card */}
-                    <div className="bg-white/80 backdrop-blur-2xl border border-zinc-200 rounded-3xl p-8 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)]">
+                    <div className="bg-card/80 backdrop-blur-2xl border border-border rounded-3xl p-8 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)]">
 
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2.5 mb-8 group">
-                            <div className="w-8 h-8 bg-zinc-950 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner transition-transform group-hover:scale-110">
+                        <Link href="/" className="flex items-center gap-2.5 mb-10 group">
+                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner transition-transform group-hover:scale-110">
                                 iL
                             </div>
-                            <span className="font-bold text-lg tracking-tight text-zinc-950">inv.labs</span>
+                            <span className="font-bold text-lg tracking-tight text-foreground underline decoration-primary/30 decoration-2 underline-offset-4">inv.labs</span>
                         </Link>
 
                         {/* Header */}
                         <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-zinc-950 tracking-tight mb-1.5 font-syne">Welcome back</h1>
-                            <p className="text-sm text-zinc-500 font-medium leading-relaxed">Sign in to your investment dashboard.</p>
+                            <h1 className="text-3xl font-bold text-foreground tracking-tight mb-1.5 font-syne">Welcome back</h1>
+                            <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                                Sign in to your investment dashboard.
+                            </p>
                         </div>
 
-                        {/* Error banner */}
+                        {/* Error */}
                         {error && (
                             <motion.div
                                 initial={{ opacity: 0, y: -8 }}
@@ -87,11 +89,11 @@ export default function LoginPage() {
                             </motion.div>
                         )}
 
-                        {/* OAuth */}
+                        {/* OAuth Group */}
                         <div className="flex flex-col gap-3 mb-6">
                             <button
                                 onClick={() => handleOAuth('google')}
-                                className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white border border-zinc-200 rounded-xl text-sm font-bold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 transition-all duration-200 shadow-sm"
+                                className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-xl text-sm font-bold text-foreground hover:bg-secondary/50 hover:border-border transition-all duration-200 shadow-sm"
                             >
                                 <svg width="16" height="16" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -114,40 +116,44 @@ export default function LoginPage() {
 
                         {/* Divider */}
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="flex-1 h-px bg-zinc-100" />
-                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">or email</span>
-                            <div className="flex-1 h-px bg-zinc-100" />
+                            <div className="flex-1 h-px bg-border" />
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">or email</span>
+                            <div className="flex-1 h-px bg-border" />
                         </div>
 
-                        {/* Form */}
+                        {/* Login Form */}
                         <form onSubmit={handleLogin} className="flex flex-col gap-5">
                             <div className="flex flex-col gap-2">
                                 <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Email address</label>
-                                <input
-                                    type="email"
-                                    placeholder="your@email.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="w-full px-4 py-3.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-950 placeholder:text-zinc-400 outline-none focus:border-blue-500/70 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-medium shadow-sm"
-                                />
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                                    <input
+                                        type="email"
+                                        placeholder="your@email.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        className="w-full pl-11 pr-4 py-3.5 bg-secondary/50 border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 focus:bg-card focus:ring-4 focus:ring-primary/5 transition-all font-medium shadow-sm"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between ml-1">
+                                <div className="flex items-center justify-between px-1">
                                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Password</label>
-                                    <Link href="/forgot-password" className="text-[11px] font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-widest">
+                                    <Link href="/forgot-password" title="sm" className="text-[10px] font-bold text-primary hover:text-primary-deep transition-colors uppercase tracking-wider">
                                         Forgot password?
                                     </Link>
                                 </div>
                                 <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3.5 pr-12 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-950 placeholder:text-zinc-400 outline-none focus:border-blue-500/70 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-medium shadow-sm"
+                                        className="w-full pl-11 pr-12 py-3.5 bg-secondary/50 border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 focus:bg-card focus:ring-4 focus:ring-primary/5 transition-all font-medium shadow-sm"
                                     />
                                     <button
                                         type="button"
@@ -163,9 +169,9 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="group relative flex items-center justify-center gap-2 w-full py-4 text-sm font-bold text-white bg-zinc-950 rounded-xl shadow-xl hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] hover:-translate-y-1 transition-all duration-300 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                                className="group relative flex items-center justify-center gap-2 w-full py-4 text-sm font-bold text-white bg-primary rounded-xl shadow-xl hover:shadow-[0_20px_40px_-10px_rgba(40,114,161,0.3)] hover:-translate-y-1 transition-all duration-300 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient-x" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary-deep to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient-x" />
                                 <span className="relative z-10 uppercase tracking-widest text-xs">
                                     {loading ? "Signing in..." : "Sign In"}
                                 </span>
@@ -174,10 +180,10 @@ export default function LoginPage() {
                             </button>
                         </form>
 
-                        {/* Footer */}
-                        <p className="text-center text-sm text-zinc-500 font-medium mt-8">
+                        {/* Register Link */}
+                        <p className="text-center text-sm text-muted-foreground font-medium mt-8">
                             New here?{" "}
-                            <Link href="/register" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                            <Link href="/register" className="font-bold text-primary hover:text-primary-deep transition-colors">
                                 Create a free account
                             </Link>
                         </p>

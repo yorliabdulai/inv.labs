@@ -67,7 +67,7 @@ const FAQSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.05 }}
-                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-primary/20 bg-primary/5 shadow-sm" : "border-border bg-card hover:border-border/80"
+                            className={`rounded-3xl border transition-all duration-300 ${openIndex === i ? "border-primary/20 bg-secondary shadow-sm" : "border-border bg-card hover:border-border/80"
                                 }`}
                         >
                             <button

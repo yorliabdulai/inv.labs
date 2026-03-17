@@ -14,7 +14,7 @@ const included = [
 
 const PricingSection = () => {
   return (
-    <section id="pricing" className="relative py-24 md:py-32 bg-secondary/50 overflow-hidden text-foreground">
+    <section id="pricing" className="relative py-24 md:py-32 bg-secondary/50 overflow-hidden">
       {/* Decorative Background */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
 
@@ -43,7 +43,7 @@ const PricingSection = () => {
 
           {/* Badge */}
           <div className="absolute -top-4 right-10 bg-foreground text-background text-[10px] font-black uppercase tracking-widest py-2 px-4 rounded-full shadow-lg flex items-center gap-2">
-            <Sparkles className="w-3 h-3 text-primary-foreground" />
+            <Sparkles className="w-3 h-3" />
             Join 487 Ghanaians
           </div>
 

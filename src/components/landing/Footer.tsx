@@ -49,13 +49,13 @@ const MobileAccordionSection = ({ section }: { section: typeof footerLinks[0] })
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-zinc-200">
+    <div className="border-b border-border">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-5 text-left font-bold text-zinc-900 focus:outline-none"
+        className="w-full flex items-center justify-between py-5 text-left font-bold text-foreground focus:outline-none"
       >
         <span>{section.title}</span>
-        <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
       <div
         className="overflow-hidden transition-all duration-300 ease-in-out"
@@ -64,7 +64,7 @@ const MobileAccordionSection = ({ section }: { section: typeof footerLinks[0] })
         <ul className="pb-5 space-y-4">
           {section.links.map((link) => (
             <li key={link.name}>
-              <Link href={link.href} className="text-zinc-500 hover:text-primary transition-colors text-base font-medium block">
+              <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors text-base font-medium block">
                 {link.name}
               </Link>
             </li>
@@ -81,11 +81,11 @@ const MobileAccordionSection = ({ section }: { section: typeof footerLinks[0] })
 const DesktopColumn = ({ section }: { section: typeof footerLinks[0] }) => {
   return (
     <div>
-      <h4 className="font-bold text-zinc-900 mb-6 tracking-tight">{section.title}</h4>
+      <h4 className="font-bold text-foreground mb-6 tracking-tight">{section.title}</h4>
       <ul className="space-y-4">
         {section.links.map((link) => (
           <li key={link.name}>
-            <Link href={link.href} className="text-zinc-500 hover:text-primary transition-colors text-sm font-medium inline-block relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all hover:after:w-full">
+            <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium inline-block relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all hover:after:w-full">
               {link.name}
             </Link>
           </li>
@@ -110,9 +110,9 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-zinc-100/50 pt-24 pb-12 border-t border-zinc-200 relative isolate">
+    <footer className="bg-background pt-24 pb-12 border-t border-border relative isolate">
       {/* Premium ambient glow */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-100/30 dark:bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       <div className="container mx-auto px-6 md:px-12 lg:px-20 max-w-7xl">
         <div className="flex flex-col lg:flex-row justify-between gap-16 mb-20">
@@ -120,11 +120,11 @@ const Footer = () => {
           {/* Brand Identity */}
           <div className="max-w-sm">
             <Link href="/" className="inline-block mb-6 group">
-              <span className="text-3xl font-black tracking-tighter text-zinc-900 transition-colors group-hover:text-primary">
+              <span className="text-3xl font-black tracking-tighter text-foreground transition-colors group-hover:text-primary">
                 inv.labs<span className="text-primary">.</span>
               </span>
             </Link>
-            <p className="text-zinc-500 text-base font-medium leading-relaxed">
+            <p className="text-muted-foreground text-base font-medium leading-relaxed">
               Helping 1,000 Ghanaians become confident investors by 2026. Practice trading, build portfolios, and master the stock market without risking a single cedi.
             </p>
           </div>
@@ -151,8 +151,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-zinc-200 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-zinc-500 text-sm font-medium">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-muted-foreground text-sm font-medium">
             © {new Date().getFullYear()} inv.labs. Built in Accra.
           </p>
           <div className="flex items-center gap-8">
@@ -160,7 +160,7 @@ const Footer = () => {
               <a
                 key={social}
                 href="#"
-                className="text-zinc-400 hover:text-zinc-900 transition-colors text-sm font-bold uppercase tracking-wider relative after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-zinc-900 after:transition-all hover:after:w-full"
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm font-bold uppercase tracking-wider relative after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
               >
                 {social}
               </a>

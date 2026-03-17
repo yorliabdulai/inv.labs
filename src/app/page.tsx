@@ -15,7 +15,7 @@ import LifetimeBanner from "@/components/landing/LifetimeBanner";
 import { ThemeProvider } from "next-themes";
 export default function Home() {
   return (
-    <ThemeProvider attribute="class" forcedTheme="light">
+    <ThemeProvider attribute="class">
       <div className="min-h-screen text-foreground selection:bg-primary/30 overflow-x-hidden relative bg-background">
 
         {/* V3 Global Fluid Background Mesh - Anchors the entire page */}

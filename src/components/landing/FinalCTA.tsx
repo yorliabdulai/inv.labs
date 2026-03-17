@@ -40,7 +40,7 @@ const FinalCTA = () => {
               <ArrowRight className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
-            <p className="text-sm text-zinc-500 font-medium mt-4 sm:mt-0 sm:ml-4">
+            <p className="text-sm text-zinc-500 dark:text-muted-foreground font-medium mt-4 sm:mt-0 sm:ml-4">
               Takes 30 seconds.
             </p>
           </div>

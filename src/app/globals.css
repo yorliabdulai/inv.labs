@@ -66,43 +66,43 @@
 
 
 .dark {
-  --background: 222 47% 4%;
-  --foreground: 210 40% 98%;
+  --background: 222 47% 7%; /* #0F1117 - Canvas */
+  --foreground: 210 40% 93%; /* #E8EAF0 - Primary Text */
 
-  --card: 222 47% 6%;
-  --card-foreground: 210 40% 98%;
+  --card: 222 47% 12%; /* #1A1D27 - Surface */
+  --card-foreground: 210 40% 93%;
 
-  --popover: 222 47% 4%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 222 47% 12%;
+  --popover-foreground: 210 40% 93%;
 
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 47.4% 11.2%;
+  --primary: 203 60% 39.4%; /* Retained Brand Blue Base */
+  --primary-foreground: 210 40% 98%;
 
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 230 25% 15%; /* #1E2235 - Muted Neutral */
+  --secondary-foreground: 210 40% 93%;
 
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
+  --muted: 230 25% 15%;
+  --muted-foreground: 215 20% 65%; /* #94A3B8 - Secondary Text */
 
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 230 25% 15%;
+  --accent-foreground: 210 40% 93%;
 
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 48%;
+  --border: 230 25% 25%; /* #2E3250 - Subtle Border */
+  --input: 230 25% 25%;
+  --ring: 203 60% 45%;
 
-  /* Dashboard Surfaces (Dark) */
-  --bg-page: #0D0F12;
-  --bg-surface: #121417;
-  --bg-surface-secondary: #1A1D21;
-  --border-default: rgba(255, 255, 255, 0.06);
+  /* Dashboard & Landing Elevated Surfaces (Dark) */
+  --bg-page: #0F1117;
+  --bg-surface: #1A1D27;
+  --bg-surface-secondary: #22263A;
+  --border-default: rgba(255, 255, 255, 0.08);
 
   /* Glass Effects (Dark) */
-  --glass-bg: rgba(13, 15, 18, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(15, 17, 23, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 @theme {

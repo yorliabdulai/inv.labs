@@ -31,7 +31,7 @@ const ProblemSection = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 text-red-600 w-fit text-sm font-semibold mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 w-fit text-sm font-semibold mb-6">
               <span>The Problem</span>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-[1.1] tracking-tight">
@@ -49,7 +49,7 @@ const ProblemSection = () => {
                 What if you pick the wrong one? What if you lose money you can't afford to lose? So your money sits in a savings account, losing value to inflation every single day.
               </p>
             </div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
               Yet every way to learn asks you to risk real money first.
             </p>
           </motion.div>
