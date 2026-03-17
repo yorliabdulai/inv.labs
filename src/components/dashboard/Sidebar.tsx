@@ -60,7 +60,7 @@ export function Sidebar() {
 
     const Logo = () => (
         <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-inner shadow-blue-500/30 flex-shrink-0">
+            <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-inner shadow-blue-500/30 flex-shrink-0">
                 iL
             </div>
             <span className="font-bold text-base tracking-tight text-foreground dark:text-white">inv.labs</span>
@@ -115,7 +115,7 @@ export function Sidebar() {
                 {/* Desktop Footer */}
                 <div className="p-3 border-t border-border">
                     <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors mb-1">
-                        <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                             {loading ? "·" : displayInitial}
                         </div>
                         <div className="flex-1 overflow-hidden min-w-0">
