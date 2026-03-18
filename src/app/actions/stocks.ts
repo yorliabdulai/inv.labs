@@ -2,6 +2,7 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -40,10 +41,17 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
+        // Security: Fetch real-time market data server-side to prevent parameter tampering
+        // Override client-provided price, changePercent, name, and sector
+        const stock = await fetchStockBySymbol(symbol);
+        const serverPrice = stock.price;
+        const serverName = stock.name;
+        const serverSector = stock.sector;
+        const serverChangePercent = stock.changePercent;
+
         // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
-        // This is a simulator — no real money is at stake.
-        const subtotal = price * quantity;
+        // Use the securely fetched serverPrice to prevent client manipulation
+        const subtotal = serverPrice * quantity;
 
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
@@ -53,7 +61,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
+        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${serverPrice} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
         // Step 3: Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU).
         // The function handles: upserting stock, validating balance/holdings, creating
@@ -61,10 +69,10 @@ export async function executeStockTrade(params: TradeParams) {
         const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
             p_user_id: user.id,
             p_symbol: symbol,
-            p_stock_name: name,
-            p_stock_sector: sector,
-            p_current_price: price,
-            p_change_percent: changePercent,
+            p_stock_name: serverName,
+            p_stock_sector: serverSector,
+            p_current_price: serverPrice,
+            p_change_percent: serverChangePercent,
             p_type: type,
             p_quantity: quantity,
             p_total_cost: totalCost,
