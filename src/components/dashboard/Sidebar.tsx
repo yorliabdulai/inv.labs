@@ -139,8 +139,7 @@ export function Sidebar() {
                     }`}
             >
                 {/* Mobile Header */}
-                <div className="h-16 flex items-center justify-between px-5 border-b border-border">
-                    <Logo />
+                <div className="h-16 flex items-center justify-end px-5 border-b border-border">
                     <button
                         onClick={() => setIsMobileOpen(false)}
                         className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted/50 transition-colors touch-manipulation active:scale-95"

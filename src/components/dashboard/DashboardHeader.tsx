@@ -42,9 +42,9 @@ function ThemeToggle() {
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={16} className="text-[--text-dark-primary] stroke-current" />
+                <Sun size={16} className="text-foreground stroke-current" />
             ) : (
-                <Moon size={16} className="text-[--text-primary] stroke-current" />
+                <Moon size={16} className="text-foreground stroke-current" />
             )}
         </button>
     );
@@ -134,7 +134,7 @@ export function DashboardHeader() {
                         className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm"
                         aria-label="View notifications"
                     >
-                        <Bell size={16} className="text-[--text-primary] dark:text-[--text-dark-primary] stroke-current group-hover:text-foreground transition-colors" />
+                        <Bell size={16} className="text-foreground stroke-current group-hover:text-foreground transition-colors" />
                         <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
                     </button>
 
