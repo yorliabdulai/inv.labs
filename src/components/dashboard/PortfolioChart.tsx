@@ -19,6 +19,52 @@ export interface PortfolioDataPoint {
     close?: number;
 }
 
+const CustomTooltip = ({ active, payload, label, startingValue, chartType }: any) => {
+    if (active && payload && payload.length) {
+        const item = payload[0].payload as PortfolioDataPoint;
+        const val = item.value;
+        const change = val - startingValue;
+        const changePct = ((change / startingValue) * 100).toFixed(2);
+
+        return (
+            <div className="bg-card border border-border p-4 rounded-xl shadow-premium text-foreground min-w-[200px] backdrop-blur-md">
+                <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-3 border-b border-border pb-2">
+                    {label}
+                </p>
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Position Value</span>
+                        <span className="text-sm font-bold tabular-nums">GH₵ {val.toLocaleString('en-GH', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Total Change</span>
+                        <span className={`text-xs font-bold tabular-nums ${change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                            {change >= 0 ? '+' : ''}{change.toFixed(2)} ({change >= 0 ? '+' : ''}{changePct}%)
+                        </span>
+                    </div>
+                    {chartType === 'candle' && item.open !== undefined && (
+                        <div className="pt-2 mt-2 border-t border-border space-y-1.5">
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Open</span>
+                                <span className="text-xs font-bold tabular-nums text-foreground">{item.open.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">High</span>
+                                <span className="text-xs font-bold text-emerald-500 tabular-nums">{item.high?.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Low</span>
+                                <span className="text-xs font-bold text-red-500 tabular-nums">{item.low?.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+    return null;
+};
+
 interface PortfolioChartProps {
     data?: PortfolioDataPoint[];
     period?: string;
@@ -55,52 +101,6 @@ export function PortfolioChart({
         { label: 'Now', value: startingValue, date: '' },
     ];
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
-        if (active && payload && payload.length) {
-            const item = payload[0].payload as PortfolioDataPoint;
-            const val = item.value;
-            const change = val - startingValue;
-            const changePct = ((change / startingValue) * 100).toFixed(2);
-
-            return (
-                <div className="bg-card border border-border p-4 rounded-xl shadow-premium text-foreground min-w-[200px] backdrop-blur-md">
-                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-3 border-b border-border pb-2">
-                        {label}
-                    </p>
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Position Value</span>
-                            <span className="text-sm font-bold tabular-nums">GH₵ {val.toLocaleString('en-GH', { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Total Change</span>
-                            <span className={`text-xs font-bold tabular-nums ${change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-                                {change >= 0 ? '+' : ''}{change.toFixed(2)} ({change >= 0 ? '+' : ''}{changePct}%)
-                            </span>
-                        </div>
-                        {chartType === 'candle' && item.open !== undefined && (
-                            <div className="pt-2 mt-2 border-t border-border space-y-1.5">
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Open</span>
-                                    <span className="text-xs font-bold tabular-nums text-foreground">{item.open.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">High</span>
-                                    <span className="text-xs font-bold text-emerald-500 tabular-nums">{item.high?.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Low</span>
-                                    <span className="text-xs font-bold text-red-500 tabular-nums">{item.low?.toFixed(2)}</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        }
-        return null;
-    };
-
     const renderChartContent = () => {
         // Shared theme colors for Recharts
         const gridColor = "var(--border)";
@@ -120,7 +120,7 @@ export function PortfolioChart({
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: tickColor, strokeWidth: 1, strokeOpacity: 0.2 }} />
+                        <Tooltip content={<CustomTooltip startingValue={startingValue} chartType={chartType} />} cursor={{ stroke: tickColor, strokeWidth: 1, strokeOpacity: 0.2 }} />
                         <Bar dataKey="high" fill="transparent">
                             {chartData.map((entry, index) => {
                                 const isUp = (entry.close ?? entry.value) >= (entry.open ?? entry.value);
@@ -166,7 +166,7 @@ export function PortfolioChart({
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 8 }} />
+                        <Tooltip content={<CustomTooltip startingValue={startingValue} chartType={chartType} />} cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 8 }} />
                         <Bar
                             dataKey="value"
                             fill="url(#barGrad)"
@@ -195,7 +195,7 @@ export function PortfolioChart({
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip startingValue={startingValue} chartType={chartType} />} />
                         <Area
                             type="monotone"
                             dataKey="value"
