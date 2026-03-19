@@ -38,7 +38,7 @@ function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-9 h-9 bg-card border border-border rounded-xl flex items-center justify-center hover:bg-muted transition-all active:scale-95 shadow-sm"
+            className="w-9 h-9 bg-card border border-border rounded-xl flex items-center justify-center hover:bg-muted transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
@@ -122,7 +122,7 @@ export function DashboardHeader() {
                             type="text"
                             placeholder="Search markets..."
                             aria-label="Search markets"
-                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-blue-500/40 focus:bg-muted outline-none transition-all shadow-sm"
+                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-blue-500/40 focus:bg-muted outline-none transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         />
                     </div>
 
@@ -131,7 +131,7 @@ export function DashboardHeader() {
 
                     {/* Notification bell */}
                     <button
-                        className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm"
+                        className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         aria-label="View notifications"
                     >
                         <Bell size={16} className="text-foreground stroke-current group-hover:text-foreground transition-colors" />
@@ -140,7 +140,7 @@ export function DashboardHeader() {
 
                     {/* Avatar */}
                     <button
-                        className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+                        className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         aria-label="User profile"
                     >
                         {initial}
