@@ -23,6 +23,43 @@ interface PortfolioUniversalChartProps {
     currentTotal: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload, chartType }: { active?: boolean; payload?: any[]; chartType?: string }) => {
+    if (active && payload && payload.length) {
+        const item = payload[0].payload as ChartData;
+        return (
+            <div className="bg-card border border-border p-4 rounded-2xl shadow-2xl text-foreground min-w-[180px] backdrop-blur-md">
+                <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 border-b border-border pb-2">
+                    {item.time}
+                </p>
+                <div className="space-y-1.5">
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-[10px] font-black uppercase text-muted-foreground">Net Value</span>
+                        <span className="text-sm font-black tabular-nums">{formatCurrency(item.value)}</span>
+                    </div>
+                    {chartType === 'candle' && (
+                        <>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-black uppercase text-muted-foreground">Open</span>
+                                <span className="text-xs font-black tabular-nums">{formatCurrency(item.open)}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-black uppercase text-muted-foreground">High</span>
+                                <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{formatCurrency(item.high)}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-4">
+                                <span className="text-[10px] font-black uppercase text-muted-foreground">Low</span>
+                                <span className="text-xs font-black text-red-600 dark:text-red-400 tabular-nums">{formatCurrency(item.low)}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    }
+    return null;
+};
+
 export function PortfolioUniversalChart({ period, chartType, currentTotal }: PortfolioUniversalChartProps) {
     const [mounted, setMounted] = useState(false);
 
@@ -38,43 +75,6 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
     }, []);
 
     if (!mounted) return <div className="h-[400px] w-full" />;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
-        if (active && payload && payload.length) {
-            const item = payload[0].payload as ChartData;
-            return (
-                <div className="bg-card border border-border p-4 rounded-2xl shadow-2xl text-foreground min-w-[180px] backdrop-blur-md">
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 border-b border-border pb-2">
-                        {item.time}
-                    </p>
-                    <div className="space-y-1.5">
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-[10px] font-black uppercase text-muted-foreground">Net Value</span>
-                            <span className="text-sm font-black tabular-nums">{formatCurrency(item.value)}</span>
-                        </div>
-                        {chartType === 'candle' && (
-                            <>
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-muted-foreground">Open</span>
-                                    <span className="text-xs font-black tabular-nums">{formatCurrency(item.open)}</span>
-                                </div>
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-muted-foreground">High</span>
-                                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{formatCurrency(item.high)}</span>
-                                </div>
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase text-muted-foreground">Low</span>
-                                    <span className="text-xs font-black text-red-600 dark:text-red-400 tabular-nums">{formatCurrency(item.low)}</span>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            );
-        }
-        return null;
-    };
 
     const renderChart = () => {
         switch (chartType) {
@@ -97,7 +97,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', className: 'text-muted/30', radius: 2 }} />
+                        <Tooltip content={<CustomTooltip chartType={chartType} />} cursor={{ fill: 'currentColor', className: 'text-muted/30', radius: 2 }} />
                         <Bar
                             dataKey="value"
                             fill="url(#barGradient)"
@@ -119,7 +119,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'currentColor', className: 'text-border', strokeWidth: 1 }} />
+                        <Tooltip content={<CustomTooltip chartType={chartType} />} cursor={{ stroke: 'currentColor', className: 'text-border', strokeWidth: 1 }} />
                         <Bar dataKey="high" fill="transparent">
                             {data.map((entry, index) => {
                                 const isUp = entry.close >= entry.open;
@@ -168,7 +168,7 @@ export function PortfolioUniversalChart({ period, chartType, currentTotal }: Por
                             dy={10}
                         />
                         <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip chartType={chartType} />} />
                         <Area
                             type="monotone"
                             dataKey="value"
