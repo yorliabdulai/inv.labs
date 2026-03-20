@@ -106,10 +106,11 @@ export default function ForgotPasswordPage() {
                                 {/* Form */}
                                 <form onSubmit={handleResetPassword} className="flex flex-col gap-5">
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Email address</label>
+                                        <label htmlFor="email" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1 cursor-pointer">Email address</label>
                                         <div className="relative">
                                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                             <input
+                                                id="email"
                                                 type="email"
                                                 placeholder="your@email.com"
                                                 value={email}
