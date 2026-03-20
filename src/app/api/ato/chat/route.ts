@@ -49,6 +49,19 @@ export async function POST(request: NextRequest) {
         // Get or create conversation
         let activeConversationId = conversationId;
 
+        if (activeConversationId) {
+            // Verify ownership to prevent IDOR
+            const { data: conversation } = await supabase
+                .from("ato_conversations")
+                .select("user_id")
+                .eq("id", activeConversationId)
+                .single();
+
+            if (!conversation || conversation.user_id !== user.id) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
+        }
+
         if (!activeConversationId) {
             // Create new conversation
             const title =
