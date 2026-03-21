@@ -140,9 +140,12 @@ export default function StocksPage() {
     }, [stocks]);
 
     const sorted = useMemo(() => {
+        // ⚡ Bolt Performance Optimization:
+        // Hoisted .toLowerCase() outside the .filter() loop to prevent O(N) redundant string computations.
+        const searchLower = debouncedSearch.toLowerCase();
         const filtered = stocks.filter((s) => {
-            const matchSearch = s.symbol.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                s.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+            const matchSearch = s.symbol.toLowerCase().includes(searchLower) ||
+                s.name.toLowerCase().includes(searchLower);
             const matchSector = sectorFilter === "All" || s.sector === sectorFilter;
             return matchSearch && matchSector;
         });
