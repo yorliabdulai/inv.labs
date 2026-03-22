@@ -103,7 +103,7 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
             >
                 {/* Ownership Label */}
                 {isOwned && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
+                    <div className="absolute top-4 right-4 hidden md:flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
                         <CheckCircle2 size={12} className="text-primary" />
                         <span className="text-[10px] font-semibold text-primary tracking-wide">Owned</span>
                     </div>

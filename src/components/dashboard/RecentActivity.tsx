@@ -29,16 +29,18 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
                     key={tx.id}
                     className="group flex items-center justify-between p-4 rounded-xl bg-card hover:bg-muted transition-all cursor-pointer border border-border hover:border-primary/40 shadow-sm"
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 ${tx.type.includes('BUY')
                             ? "bg-primary/10 text-primary border border-primary/20"
                             : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                             }`}>
                             {tx.type.includes('BUY') ? <ShoppingCart size={18} /> : <Wallet size={18} />}
                         </div>
-                        <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate block w-full tracking-tight">{tx.name}</span>
+                        <div className="min-w-0 flex-1 pr-2">
+                            <div className="flex items-center gap-2 mb-0.5">
+                                <span className="font-semibold text-[--text-primary] dark:text-[--text-dark-primary] text-sm truncate tracking-tight">
+                                    {tx.name}
+                                </span>
                                 <span className={`flex-shrink-0 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md border leading-none ${tx.type.includes('STOCK')
                                     ? 'bg-muted text-muted-foreground border-border'
                                     : 'bg-primary/10 text-primary border-primary/20'

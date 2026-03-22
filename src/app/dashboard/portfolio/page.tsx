@@ -740,16 +740,16 @@ export default function PortfolioPage() {
                                     {holdings.map(h => (
                                         <div key={h.symbol} className="bg-muted/10 rounded-xl p-6 border border-border">
                                             <div className="flex items-start justify-between mb-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs border ${h.gain >= 0 ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}>
+                                                <div className="flex items-center gap-4 min-w-0 flex-1">
+                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs border flex-shrink-0 ${h.gain >= 0 ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}>
                                                         {h.symbol.substring(0, 2)}
                                                     </div>
-                                                    <div>
-                                                        <div className="font-bold text-foreground uppercase tracking-widest">{h.symbol}</div>
-                                                        <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">{h.sector}</div>
+                                                    <div className="min-w-0 flex-1 pr-2">
+                                                        <div className="font-bold text-foreground uppercase tracking-widest truncate">{h.symbol}</div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 truncate">{h.sector}</div>
                                                     </div>
                                                 </div>
-                                                <div className={`text-right ${h.gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                                <div className={`text-right flex-shrink-0 ${h.gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                                                     <div className="font-bold tabular-nums tracking-tight">{h.gain >= 0 ? "+" : ""}GH₵{Math.abs(h.gain).toFixed(2)}</div>
                                                     <div className="text-[10px] font-semibold uppercase tracking-widest">{h.gainPercent >= 0 ? "+" : ""}{h.gainPercent.toFixed(2)}%</div>
                                                 </div>
@@ -846,9 +846,9 @@ export default function PortfolioPage() {
                                                 <div className="flex items-start justify-between mb-6">
                                                     <div className="flex items-center gap-4 min-w-0 flex-1">
                                                         <div className="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center font-bold text-xs border border-blue-500/20 flex-shrink-0">MF</div>
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="font-bold text-[--text-primary] dark:text-[--text-dark-primary] uppercase tracking-widest leading-tight truncate block w-full">{h.fund_name ?? "Mutual Fund"}</div>
-                                                            <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-1">{h.fund_type ?? "Fund"}</div>
+                                                        <div className="min-w-0 flex-1 pr-2">
+                                                            <div className="font-bold text-[--text-primary] dark:text-[--text-dark-primary] uppercase tracking-widest leading-tight truncate">{h.fund_name ?? "Mutual Fund"}</div>
+                                                            <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-1 truncate">{h.fund_type ?? "Fund"}</div>
                                                         </div>
                                                     </div>
                                                     <div className={`text-right flex-shrink-0 ml-4 ${gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>

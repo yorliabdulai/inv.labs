@@ -240,7 +240,9 @@ export function getRiskRatingColor(rating: number): string {
  * Format currency (GHS)
  */
 export function formatCurrency(amount: number): string {
-    return `GH₵${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const isNegative = amount < 0;
+    const absValueString = Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${isNegative ? '-' : ''}GH₵${absValueString}`;
 }
 
 /**

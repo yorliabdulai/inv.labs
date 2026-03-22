@@ -71,7 +71,7 @@ export default function DashboardPage() {
                             <span>Total Equity</span>
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         </p>
-                        <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight tabular-nums relative z-10 font-syne">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight tabular-nums relative z-10 font-syne break-words overflow-wrap-anywhere w-full pr-4">
                             {formatCurrency(data?.totalEquity ?? 10000)}
                         </h1>
                     </div>
@@ -85,25 +85,25 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Secondary Stats Grid */}
-                <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                    <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Purchasing Power</p>
-                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums font-syne">{formatCurrency(data?.cashBalance ?? 0)}</p>
+                <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 min-w-0">
+                    <div className="bg-card/50 border border-border rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md min-w-0">
+                        <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Purchasing Power</p>
+                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground tabular-nums tracking-tight font-syne break-words">{formatCurrency(data?.cashBalance ?? 0)}</p>
                     </div>
-                    <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Total Return</p>
-                        <p className={`text-xl md:text-2xl font-bold tabular-nums font-syne ${(data?.totalGain ?? 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                    <div className="bg-card/50 border border-border rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md min-w-0">
+                        <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Total Return</p>
+                        <p className={`text-lg sm:text-xl md:text-2xl font-bold tabular-nums tracking-tight font-syne break-words ${(data?.totalGain ?? 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                             {(data?.totalGain ?? 0) >= 0 ? '+' : ''}{formatCurrency(data?.totalGain ?? 0)}
                         </p>
                     </div>
-                    <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Active Positions</p>
-                        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums font-syne">{data?.activePositions ?? 0}</p>
+                    <div className="bg-card/50 border border-border rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md min-w-0">
+                        <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-70">Active Positions</p>
+                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground tabular-nums tracking-tight font-syne">{data?.activePositions ?? 0}</p>
                     </div>
-                    <div className="bg-card/50 border border-border rounded-2xl p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">System Status</p>
-                        <div className="flex items-center gap-2 text-xl md:text-2xl font-bold text-primary">
-                            <span className="relative flex h-3 w-3">
+                    <div className="bg-card/50 border border-border rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-all hover:bg-card hover:shadow-md min-w-0">
+                        <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">System Status</p>
+                        <div className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl font-bold text-primary">
+                            <span className="relative flex h-3 w-3 flex-shrink-0">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/75 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
                             </span>

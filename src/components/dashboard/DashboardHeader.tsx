@@ -56,16 +56,18 @@ export function DashboardHeader() {
             <div className="flex items-center justify-between gap-4 px-4 md:px-0">
                 {/* Left: title + greeting */}
                 <div className="min-w-0 flex-1">
-                    <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-0.5 truncate">
-                        Dashboard
-                    </h1>
-                    <div className="hidden md:flex items-center gap-1.5 text-sm text-muted-foreground min-w-0 mt-1">
-                        <GreetIcon size={13} className="text-primary flex-shrink-0" />
-                        {showSkeleton ? (
-                            <span className="inline-block w-32 h-3 bg-muted animate-pulse rounded" />
-                        ) : (
-                            <span className="truncate">{greeting.text}, {name}</span>
-                        )}
+                    {/* Greeting Title (replaces "Dashboard" on all screens) */}
+                    <div className="flex items-center gap-2 min-w-0">
+                        <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight truncate flex items-center gap-2">
+                             {showSkeleton ? (
+                                <span className="inline-block w-32 h-6 md:h-8 bg-muted animate-pulse rounded" />
+                            ) : (
+                                <>
+                                    <GreetIcon className="text-primary flex-shrink-0 w-5 h-5 md:w-6 md:h-6" />
+                                    <span className="truncate">{greeting.text}, {name.split(' ')[0]}</span>
+                                </>
+                            )}
+                        </h1>
                     </div>
                 </div>
 
