@@ -69,25 +69,7 @@ export function Sidebar() {
 
     return (
         <>
-            {/* Mobile Menu Button */}
-            <button
-                onClick={() => setIsMobileOpen(true)}
-                className="md:hidden fixed top-3 left-4 z-50 w-9 h-9 bg-background rounded-xl border border-border flex items-center justify-center hover:bg-muted transition-all touch-manipulation active:scale-95 shadow-sm"
-                aria-label="Open menu"
-            >
-                <Menu size={18} className="text-muted-foreground" />
-            </button>
-
-            {/* Mobile Overlay */}
-            {isMobileOpen && (
-                <div
-                    className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                    onClick={() => setIsMobileOpen(false)}
-                    aria-hidden="true"
-                />
-            )}
-
-            {/* Desktop Sidebar */}
+            {/* Desktop Sidebar — renders at md+ breakpoint only */}
             <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-background border-r border-border z-50 transition-colors duration-300">
                 {/* Logo */}
                 <div className="h-16 flex items-center px-5 border-b border-border">
@@ -132,62 +114,6 @@ export function Sidebar() {
                     </button>
                 </div>
             </aside>
-
-            {/* Mobile Sidebar Drawer */}
-            <aside
-                className={`md:hidden fixed top-0 left-0 h-full w-[80vw] max-w-[300px] bg-background z-50 shadow-2xl transform transition-transform duration-300 ease-out border-r border-border ${isMobileOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
-            >
-                {/* Mobile Header */}
-                <div className="h-16 flex items-center justify-end px-5 border-b border-border">
-                    <button
-                        onClick={() => setIsMobileOpen(false)}
-                        className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted/50 transition-colors touch-manipulation active:scale-95"
-                        aria-label="Close menu"
-                    >
-                        <X size={18} className="text-zinc-500 font-bold" />
-                    </button>
-                </div>
-
-                {/* Mobile Navigation */}
-                <nav className="flex-1 px-3 py-5 space-y-6 overflow-y-auto h-[calc(100vh-128px)]">
-                    <div>
-                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Navigation</p>
-                        <div className="space-y-0.5">
-                            {navItems.map((item) => (
-                                <NavItem key={item.href} {...item} onClick={() => setIsMobileOpen(false)} />
-                            ))}
-                        </div>
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Account</p>
-                        <div className="space-y-0.5">
-                            <NavItem href="/dashboard/profile" label="Profile" icon={User} onClick={() => setIsMobileOpen(false)} />
-                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} onClick={() => setIsMobileOpen(false)} />
-                        </div>
-                    </div>
-                </nav>
-
-                {/* Mobile Footer */}
-                <div className="p-3 border-t border-border">
-                    <Link href="/dashboard/profile" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors mb-1">
-                        <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
-                            {loading ? "·" : displayInitial}
-                        </div>
-                        <div className="flex-1 overflow-hidden min-w-0">
-                            <div className="text-sm font-semibold text-foreground truncate">{loading ? "Loading…" : displayName}</div>
-                            <div className="text-xs text-muted-foreground">Investor</div>
-                        </div>
-                    </Link>
-                    <button
-                        onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-xl transition-all"
-                    >
-                        <LogOut size={16} />
-                        Sign out
-                    </button>
-                </div>
-            </aside>
         </>
     );
-}
+}

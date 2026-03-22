@@ -1,8 +1,9 @@
 "use client";
 
-import { Activity, Globe, Bell, Search, Sun, Moon, Sunset } from "lucide-react";
+import { Bell, Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/lib/useUserProfile";
+import { useTheme } from "next-themes";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -10,41 +11,24 @@ function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     return { text: "Good evening", icon: Moon };
 }
 
-function Clock() {
-    const [currentTime, setCurrentTime] = useState("");
-    useEffect(() => {
-        const updateTime = () => {
-            setCurrentTime(new Date().toLocaleTimeString("en-US", {
-                hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
-            }));
-        };
-        requestAnimationFrame(updateTime);
-        const interval = setInterval(updateTime, 1000);
-        return () => clearInterval(interval);
-    }, []);
-    return <>{currentTime}</>;
-}
-
-import { useTheme } from "next-themes";
-
 function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => setMounted(true), []);
 
-    if (!mounted) return <div className="w-9 h-9" />;
+    if (!mounted) return <div className="w-12 h-12 flex-shrink-0" />;
 
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-9 h-9 bg-card border border-border rounded-xl flex items-center justify-center hover:bg-muted transition-all active:scale-95 shadow-sm"
+            className="w-12 h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={16} className="text-foreground stroke-current" />
+                <Sun size={28} className="text-zinc-700 dark:text-zinc-200" />
             ) : (
-                <Moon size={16} className="text-foreground stroke-current" />
+                <Moon size={28} className="text-zinc-700 dark:text-zinc-200" />
             )}
         </button>
     );
@@ -52,13 +36,10 @@ function ThemeToggle() {
 
 export function DashboardHeader() {
     const { displayName, displayInitial, firstName, loading } = useUserProfile();
-    const [dateStr, setDateStr] = useState("");
     const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
     useEffect(() => {
-        const now = new Date();
-        setDateStr(now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
-        setGreeting(getGreeting(now.getHours()));
+        setGreeting(getGreeting(new Date().getHours()));
     }, []);
 
     const GreetIcon = greeting.icon;
@@ -68,61 +49,36 @@ export function DashboardHeader() {
 
     return (
         <header className="relative z-10 mb-8 w-full">
-            {/* Status strip - Hidden on mobile/tablet to prioritize logo/title */}
-            <div className="hidden md:flex bg-card border border-border rounded-xl mx-4 mb-6 md:mx-0 md:mb-8 shadow-sm transition-colors duration-300">
-                <div className="flex items-center justify-between px-4 py-2.5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-                            <Activity size={14} className="text-primary dark:text-primary" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary dark:bg-primary" />
-                                </span>
-                                <span className="text-xs font-semibold text-foreground tracking-tight">GSE Market</span>
-                            </div>
-                            <div className="text-[10px] text-muted-foreground mt-0.5">{dateStr}</div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <Globe size={11} className="text-primary/60" />
-                            Session active
-                        </span>
-                        <div className="bg-muted border border-border rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground tabular-nums">
-                            <Clock />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Title row */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 md:px-0">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-1">
+            {/*
+             * Premium Layout: Single row on all devices.
+             * On mobile, we hide the greeting to make room for the large action buttons.
+             */}
+            <div className="flex items-center justify-between gap-4 px-4 md:px-0">
+                {/* Left: title + greeting */}
+                <div className="min-w-0 flex-1">
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-0.5 truncate">
                         Dashboard
                     </h1>
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <GreetIcon size={13} className="text-primary dark:text-primary flex-shrink-0" />
+                    <div className="hidden md:flex items-center gap-1.5 text-sm text-muted-foreground min-w-0 mt-1">
+                        <GreetIcon size={13} className="text-primary flex-shrink-0" />
                         {showSkeleton ? (
-                            <span className="inline-block w-40 h-3 bg-muted animate-pulse rounded" />
+                            <span className="inline-block w-32 h-3 bg-muted animate-pulse rounded" />
                         ) : (
-                            <span>{greeting.text}, {name}</span>
+                            <span className="truncate">{greeting.text}, {name}</span>
                         )}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {/* Search */}
+                {/* Right: action buttons */}
+                <div className="flex items-center gap-3 flex-shrink-0">
+                    {/* Search — desktop only */}
                     <div className="relative hidden lg:flex">
                         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Search markets..."
                             aria-label="Search markets"
-                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-blue-500/40 focus:bg-muted outline-none transition-all shadow-sm"
+                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:bg-muted outline-none transition-all shadow-sm"
                         />
                     </div>
 
@@ -131,16 +87,16 @@ export function DashboardHeader() {
 
                     {/* Notification bell */}
                     <button
-                        className="relative w-9 h-9 bg-card rounded-xl border border-border hover:bg-muted transition-all flex items-center justify-center group shadow-sm"
+                        className="relative w-12 h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
                         aria-label="View notifications"
                     >
-                        <Bell size={16} className="text-foreground stroke-current group-hover:text-foreground transition-colors" />
-                        <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
+                        <Bell size={28} className="text-zinc-700 dark:text-zinc-200" />
+                        <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background" />
                     </button>
 
                     {/* Avatar */}
                     <button
-                        className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+                        className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0"
                         aria-label="User profile"
                     >
                         {initial}
