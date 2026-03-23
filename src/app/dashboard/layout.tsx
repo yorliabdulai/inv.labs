@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { UserProfileProvider } from "@/lib/UserProfileContext";
 import { createClient } from "@/lib/supabase/server";
 import { AtoChatContainer } from "@/components/ai/AtoChatContainer";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
 export default async function DashboardLayout({
     children,
@@ -30,6 +31,7 @@ export default async function DashboardLayout({
         avatar_url: profile.avatar_url || user.user_metadata?.avatar_url || "",
         cash_balance: Number(profile.cash_balance ?? 10000),
         username: profile.username || "",
+        onboarding_completed: !!profile.onboarding_completed,
         role: (profile as any).role || "user",
         created_at: profile.created_at,
     } : {
@@ -38,6 +40,7 @@ export default async function DashboardLayout({
         avatar_url: user.user_metadata?.avatar_url || "",
         cash_balance: 10000,
         username: "",
+        onboarding_completed: false,
         role: "user",
         created_at: new Date().toISOString(),
     };
@@ -57,6 +60,8 @@ export default async function DashboardLayout({
                 <BottomNav />
 
                 <AtoChatContainer />
+                
+                <OnboardingTour />
             </div>
         </UserProfileProvider>
     );

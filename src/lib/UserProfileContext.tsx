@@ -19,6 +19,7 @@ export interface UserProfile {
     avatar_url: string | null;
     cash_balance: number;
     username: string | null;
+    onboarding_completed: boolean;
     created_at: string | null;
 }
 

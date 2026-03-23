@@ -203,3 +203,21 @@ export async function advanceCourseProgress(courseId: string) {
 
     return { success: true, isCompleted, xp_reward: isCompleted ? staticCourse.xpReward : 0 };
 }
+
+export async function completeOnboarding() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
+
+    const { error } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('id', user.id);
+
+    if (error) {
+        console.error("Onboarding completion error:", error);
+        return { error: "Failed to complete onboarding." };
+    }
+
+    return { success: true };
+}

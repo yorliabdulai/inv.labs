@@ -16,12 +16,12 @@ export function Sidebar() {
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
     const navItems = [
-        { href: "/dashboard", label: "Dashboard", icon: Home },
-        { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
-        { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart },
-        { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase },
-        { href: "/dashboard/leaderboard", label: "Rankings", icon: Award },
-        { href: "/dashboard/learn", label: "Education", icon: GraduationCap },
+        { href: "/dashboard", label: "Dashboard", icon: Home, id: "tour-nav-dashboard" },
+        { href: "/dashboard/market", label: "Stocks", icon: TrendingUp, id: "tour-nav-stocks" },
+        { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart, id: "tour-nav-mutual-funds" },
+        { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase, id: "tour-nav-portfolio" },
+        { href: "/dashboard/leaderboard", label: "Rankings", icon: Award, id: "tour-nav-rankings" },
+        { href: "/dashboard/learn", label: "Education", icon: GraduationCap, id: "tour-nav-education" },
     ];
 
     useEffect(() => { setIsMobileOpen(false); }, [pathname]);
@@ -36,12 +36,13 @@ export function Sidebar() {
         router.push("/login");
     };
 
-    const NavItem = ({ href, label, icon: Icon, onClick }: { href: string; label: string; icon: React.ElementType; onClick?: () => void }) => {
+    const NavItem = ({ href, label, icon: Icon, onClick, id }: { href: string; label: string; icon: React.ElementType; onClick?: () => void; id?: string }) => {
         const active = href === "/dashboard" ? pathname === "/dashboard" : isActive(href);
         return (
             <Link
                 href={href}
                 onClick={onClick}
+                id={id}
                 className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] ${active
                     ? "bg-primary/10 text-primary dark:bg-white/[0.08] dark:text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -88,8 +89,8 @@ export function Sidebar() {
                     <div>
                         <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Account</p>
                         <div className="space-y-0.5">
-                            <NavItem href="/dashboard/profile" label="Profile" icon={User} />
-                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} />
+                            <NavItem href="/dashboard/profile" label="Profile" icon={User} id="tour-nav-profile" />
+                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} id="tour-nav-settings" />
                         </div>
                     </div>
                 </nav>
