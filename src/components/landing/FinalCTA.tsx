@@ -41,7 +41,7 @@ const FinalCTA = () => {
             </Link>
 
             <p className="text-sm text-zinc-500 dark:text-muted-foreground font-medium mt-4 sm:mt-0 sm:ml-4">
-              Takes 30 seconds.
+              Takes 30 seconds. Or <Link href="/waitlist" className="text-primary font-bold hover:underline">join the waitlist</Link>.
             </p>
           </div>
         </motion.div>

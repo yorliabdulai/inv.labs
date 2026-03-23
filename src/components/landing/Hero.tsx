@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play, BarChart3, TrendingUp, Activity, PieChart, Lock } from "lucide-react";
+import { ArrowRight, Play, BarChart3, TrendingUp, Activity, PieChart, Lock, Sparkles } from "lucide-react";
 import { getStocks, Stock } from "@/lib/market-data";
 
 const fadeUp = {
@@ -101,18 +101,15 @@ const Hero = () => {
                   <span className="relative z-10 uppercase tracking-wider text-xs">Start Practicing Free</span>
                   <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110" />
                 </Link>
-                <button className="group inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold bg-white dark:bg-zinc-900 border border-border rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm hover:shadow-md w-full sm:w-auto antialiased">
-
-                  {/* Play Icon Container - Force high contrast */}
-                  <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-white">
-                    <Play className="w-3 h-3 ml-0.5" fill="currentColor" />
+                <Link href="/waitlist" className="group inline-flex items-center justify-center gap-3 px-10 py-5 text-sm font-bold bg-white dark:bg-zinc-900 border border-border rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm hover:shadow-md w-full sm:w-auto antialiased">
+                  {/* Icon Container */}
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-white">
+                    <Sparkles className="w-3 h-3" />
                   </div>
-
-                  {/* Text - Fixed visibility and eliminated blur */}
                   <span className="uppercase tracking-widest text-[10px] text-slate-900 dark:text-zinc-100 opacity-100 transition-none">
-                    Watch How It Works
+                    Join Waitlist / Beta
                   </span>
-                </button>
+                </Link>
               </div>
 
               {/* Social Proof */}

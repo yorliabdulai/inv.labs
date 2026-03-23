@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Check, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 const included = [
   "GH₵10,000 Virtual Capital",
@@ -73,10 +74,18 @@ const PricingSection = () => {
             ))}
           </div>
 
-          <button className="w-full bg-foreground hover:bg-foreground/90 text-background font-black py-6 rounded-2xl shadow-xl transition-all hover:-translate-y-1 flex items-center justify-center gap-3 group">
+          <Link 
+            href="/register"
+            className="w-full bg-foreground hover:bg-foreground/90 text-background font-black py-6 rounded-2xl shadow-xl transition-all hover:-translate-y-1 flex items-center justify-center gap-3 group"
+          >
             <span className="uppercase tracking-widest text-xs">Start Practicing Free</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </button>
+          </Link>
+          
+          <Link href="/waitlist" className="w-full mt-4 bg-muted/50 hover:bg-muted text-foreground font-bold py-4 rounded-2xl border border-border transition-all flex items-center justify-center gap-3 group text-[10px] uppercase tracking-widest">
+            <span>Join Beta Waitlist</span>
+            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+          </Link>
 
           {/* Premium teaser */}
           <div className="pt-10 mt-6 border-t border-border/50 text-center">

@@ -38,9 +38,8 @@ const Navbar = () => {
                     <nav className="hidden md:flex items-center gap-8">
                         <Link href="#how-it-works" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-[10px]">How it works</Link>
                         <Link href="#features" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-[10px]">Features</Link>
-                        <Link href="#trust" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-[10px]">Trust</Link>
+                        <Link href="/waitlist" className="text-sm font-bold text-primary hover:text-primary-deep transition-colors uppercase tracking-widest text-[10px] animate-pulse">Join Waitlist</Link>
                         <Link href="#pricing" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-[10px]">Pricing</Link>
-                        <Link href="#faq" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-[10px]">FAQ</Link>
                     </nav>
 
                     {/* Desktop Actions */}
@@ -73,11 +72,11 @@ const Navbar = () => {
                         className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-3xl border-b border-border shadow-2xl py-6 px-6 flex flex-col gap-6"
                     >
                         <nav className="flex flex-col gap-2">
+                            <Link href="/waitlist" className="block w-full text-base font-bold text-primary py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Join Waitlist</Link>
                             <Link href="#how-it-works" className="block w-full text-base font-bold text-foreground py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>How it works</Link>
                             <Link href="#features" className="block w-full text-base font-bold text-foreground py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Features</Link>
                             <Link href="#trust" className="block w-full text-base font-bold text-foreground py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Trust</Link>
                             <Link href="#pricing" className="block w-full text-base font-bold text-foreground py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Pricing</Link>
-                            <Link href="#faq" className="block w-full text-base font-bold text-foreground py-3 px-4 rounded-xl hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>FAQ</Link>
                         </nav>
                         <div className="flex flex-col gap-3 mt-2">
                             <Link href="/login" className="flex items-center justify-center w-full text-sm font-bold text-foreground px-4 py-4 rounded-xl border border-border hover:bg-muted transition-colors shadow-sm text-balance break-words text-center" onClick={() => setIsOpen(false)}>Login</Link>
