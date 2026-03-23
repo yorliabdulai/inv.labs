@@ -98,7 +98,8 @@ export default function CourseLearningPage() {
     const IconComponent = getIconComponent(course.icon);
     const isCompleted = enrollment?.status === 'completed';
     // For visual purposes, we generate numbered modules based on total_lessons
-    const currentModule = Math.min((enrollment?.completed_lessons || 0) + 1, course.total_lessons);
+    const currentModuleIndex = Math.min(enrollment?.completed_lessons || 0, course.total_lessons - 1);
+    const currentLesson = course.lessons?.[currentModuleIndex];
 
     return (
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 pb-24 space-y-8 animate-in fade-in duration-700 font-instrument-sans">
@@ -161,10 +162,10 @@ export default function CourseLearningPage() {
                 <div className="lg:col-span-1 space-y-4 order-2 lg:order-1">
                     <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-6">Course Curriculum</h3>
                     <div className="space-y-3">
-                        {Array.from({ length: course.total_lessons }).map((_, i) => {
+                        {course.lessons?.map((lesson, i) => {
                             const lessonNum = i + 1;
                             const isPast = lessonNum <= (enrollment?.completed_lessons || 0);
-                            const isCurrent = lessonNum === currentModule && !isCompleted;
+                            const isCurrent = i === currentModuleIndex && !isCompleted;
 
                             return (
                                 <div
@@ -181,7 +182,10 @@ export default function CourseLearningPage() {
                                             }`}>
                                             {isPast ? <CheckCircle size={14} /> : lessonNum}
                                         </div>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest">Module {lessonNum}</span>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest line-clamp-1">{lesson.title}</span>
+                                            <span className="text-[8px] font-medium text-muted-foreground uppercase tracking-widest">{lesson.duration}</span>
+                                        </div>
                                     </div>
                                     {isCurrent && <PlayCircle size={14} className="text-primary animate-pulse" />}
                                 </div>
@@ -213,24 +217,33 @@ export default function CourseLearningPage() {
                             </div>
                         ) : (
                             <div className="flex flex-col h-full">
-                                {/* Video Placeholder */}
-                                <div className="aspect-video w-full bg-black flex items-center justify-center border-b border-border relative overflow-hidden group/video cursor-pointer">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                                    <div className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/30 group-hover/video:scale-110 transition-all duration-500 z-20">
-                                        <PlayCircle size={48} className="text-primary group-hover/video:text-primary transition-all" />
-                                    </div>
-                                    <div className="absolute bottom-6 left-8 z-20">
-                                        <span className="text-[10px] font-bold text-white px-3 py-1.5 bg-primary rounded-lg uppercase tracking-widest shadow-xl">Live Execution Protocol</span>
-                                    </div>
+                                {/* YouTube Video Player */}
+                                <div className="aspect-video w-full bg-black border-b border-border relative overflow-hidden group/video">
+                                    {currentLesson ? (
+                                        <iframe
+                                            width="100%"
+                                            height="100%"
+                                            src={`https://www.youtube.com/embed/${currentLesson.youtubeId}?rel=0&modestbranding=1`}
+                                            title={currentLesson.title}
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="absolute inset-0"
+                                        ></iframe>
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full text-muted-foreground text-[10px] uppercase font-bold tracking-widest">
+                                            Video not available
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="p-5 md:p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
                                         <h3 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne leading-tight break-words">
-                                            Instructional Module {currentModule}
+                                            {currentLesson?.title || `Instructional Module ${currentModuleIndex + 1}`}
                                         </h3>
                                         <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
-                                            Please review the video module above before proceeding. The knowledge tested here will directly impact your strategic allocation skills within the terminal simulator.
+                                            {currentLesson?.description || "Please review the video module above before proceeding. The knowledge tested here will directly impact your strategic allocation skills within the terminal simulator."}
                                         </p>
                                     </div>
                                     <div className="pt-8 w-full border-t border-border mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">

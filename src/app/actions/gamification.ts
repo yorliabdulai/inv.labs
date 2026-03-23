@@ -1,6 +1,15 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { ACADEMY_COURSES, CourseData } from "@/data/academy";
+
+export interface Lesson {
+    id: string;
+    title: string;
+    description: string;
+    youtubeId: string;
+    duration: string;
+}
 
 export interface Course {
     id: string;
@@ -11,6 +20,7 @@ export interface Course {
     xp_reward: number;
     icon: string;
     estimated_time: string;
+    lessons?: Lesson[];
 }
 
 export interface Enrollment {
@@ -23,14 +33,17 @@ export interface Enrollment {
 }
 
 export async function getCourses(): Promise<Course[]> {
-    const supabase = await createClient();
-    const { data, error } = await supabase.from('courses').select('*').order('created_at', { ascending: true });
-
-    if (error) {
-        console.error("Error fetching courses:", error);
-        return [];
-    }
-    return data || [];
+    // We use the hardcoded courses as the source of truth for content
+    return ACADEMY_COURSES.map(c => ({
+        id: c.id,
+        title: c.title,
+        description: c.description,
+        level: c.level,
+        total_lessons: c.lessons.length,
+        xp_reward: c.xpReward,
+        icon: c.icon,
+        estimated_time: c.estimatedTime
+    }));
 }
 
 export async function getUserEnrollments(): Promise<Enrollment[]> {
@@ -87,12 +100,20 @@ export async function getCourseWithEnrollment(courseId: string) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data: course, error: courseError } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('id', courseId)
-        .single();
-    if (courseError) return null;
+    const staticCourse = ACADEMY_COURSES.find(c => c.id === courseId);
+    if (!staticCourse) return null;
+
+    const course: Course = {
+        id: staticCourse.id,
+        title: staticCourse.title,
+        description: staticCourse.description,
+        level: staticCourse.level,
+        total_lessons: staticCourse.lessons.length,
+        xp_reward: staticCourse.xpReward,
+        icon: staticCourse.icon,
+        estimated_time: staticCourse.estimatedTime,
+        lessons: staticCourse.lessons
+    };
 
     const { data: enrollment } = await supabase
         .from('enrollments')
@@ -118,24 +139,20 @@ export async function advanceCourseProgress(courseId: string) {
 
     if (fetchErr || !enrollment) return { error: "Enrollment not found" };
 
-    const { data: course, error: cErr } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('id', courseId)
-        .single();
-
-    if (cErr || !course) return { error: "Course not found" };
+    const staticCourse = ACADEMY_COURSES.find(c => c.id === courseId);
+    if (!staticCourse) return { error: "Course not found" };
 
     if (enrollment.status === 'completed') return { success: true, isCompleted: true };
 
+    const totalLessons = staticCourse.lessons.length;
     const newCompleted = enrollment.completed_lessons + 1;
-    const isCompleted = newCompleted >= course.total_lessons;
-    const progress = Math.min(100, Math.round((newCompleted / course.total_lessons) * 100));
+    const isCompleted = newCompleted >= totalLessons;
+    const progress = Math.min(100, Math.round((newCompleted / totalLessons) * 100));
 
     const { error: updateErr } = await supabase
         .from('enrollments')
         .update({
-            completed_lessons: Math.min(newCompleted, course.total_lessons),
+            completed_lessons: Math.min(newCompleted, totalLessons),
             progress,
             status: isCompleted ? 'completed' : 'enrolled'
         })
@@ -145,7 +162,7 @@ export async function advanceCourseProgress(courseId: string) {
         const { data: profile } = await supabase.from('profiles').select('knowledge_xp').eq('id', user.id).single();
         if (profile) {
             await supabase.from('profiles').update({
-                knowledge_xp: (profile.knowledge_xp || 0) + course.xp_reward
+                knowledge_xp: (profile.knowledge_xp || 0) + staticCourse.xpReward
             }).eq('id', user.id);
         }
     }
@@ -155,5 +172,5 @@ export async function advanceCourseProgress(courseId: string) {
         return { error: "Failed to update course progress. Please try again later." };
     }
 
-    return { success: true, isCompleted, xp_reward: isCompleted ? course.xp_reward : 0 };
+    return { success: true, isCompleted, xp_reward: isCompleted ? staticCourse.xpReward : 0 };
 }
