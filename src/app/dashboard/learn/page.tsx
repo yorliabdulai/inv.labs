@@ -115,7 +115,7 @@ export default function LearnPage() {
             <DashboardHeader />
 
             {/* ── Academy Accreditation Hero ── */}
-            <div className="relative rounded-2xl p-8 md:p-16 bg-card text-foreground border border-border shadow-premium overflow-hidden group">
+            <div className="relative rounded-2xl p-6 md:p-16 bg-card text-foreground border border-border shadow-premium overflow-hidden group">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-primary/10" />
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-muted/20 rounded-full blur-[100px] -ml-40 -mb-40" />
 
@@ -124,10 +124,10 @@ export default function LearnPage() {
                         <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-muted/30 border border-border rounded-lg text-[10px] font-bold uppercase tracking-widest text-primary">
                             <Sparkles size={12} /> Institutional Academy
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase font-syne leading-tight text-foreground whitespace-normal break-words w-full pr-4">
+                        <h1 className="text-3xl md:text-6xl font-bold tracking-tight uppercase font-syne leading-tight text-foreground whitespace-normal break-words w-full pr-4">
                             Elevate Your <span className="text-primary">Market Intelligence.</span>
                         </h1>
-                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest whitespace-normal break-words w-full pr-4">
+                        <p className="text-muted-foreground text-[10px] md:text-base font-medium leading-relaxed uppercase tracking-normal md:tracking-widest whitespace-normal break-words w-full pr-4">
                             Professional accreditation paths designed to transition investors from fundamental awareness to institutional-grade execution.
                         </p>
                     </div>
@@ -180,7 +180,7 @@ export default function LearnPage() {
                         const IconComponent = getIconComponent(course.icon);
 
                         return (
-                            <div key={i} className="group bg-card border border-border rounded-2xl p-8 hover:bg-muted/30 hover:border-primary/30 transition-all duration-500 flex flex-col h-full shadow-premium backdrop-blur-sm">
+                            <div key={i} className="group bg-card border border-border rounded-2xl p-6 md:p-8 hover:bg-muted/30 hover:border-primary/30 transition-all duration-500 flex flex-col h-full shadow-premium backdrop-blur-sm">
                                 <div className="flex items-start justify-between mb-10">
                                     <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-border transition-colors bg-muted/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground shadow-lg shadow-transparent group-hover:shadow-primary/20`}>
                                         <IconComponent size={28} />
@@ -190,10 +190,10 @@ export default function LearnPage() {
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight break-words line-clamp-2">
+                                <h3 className="text-lg md:text-xl font-bold text-foreground mb-4 uppercase tracking-tight font-sans group-hover:text-primary transition-colors leading-tight break-words line-clamp-2">
                                     {course.title}
                                 </h3>
-                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed mb-10 flex-grow">
+                                <p className="text-muted-foreground text-[10px] md:text-xs font-medium uppercase tracking-normal md:tracking-widest leading-relaxed mb-10 flex-grow">
                                     {course.description}
                                 </p>
 
@@ -255,22 +255,22 @@ export default function LearnPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredModules.map((mod, i) => (
                         <div key={i} className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col shadow-premium backdrop-blur-md">
-                            <div className="p-8 space-y-6 flex-grow">
+                            <div className="p-6 md:p-8 space-y-6 flex-grow">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20 whitespace-nowrap">
+                                    <span className="text-[9px] md:text-[10px] font-bold text-primary uppercase tracking-normal md:tracking-widest bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20 whitespace-nowrap">
                                         {mod.category}
                                     </span>
-                                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
+                                    <span className="text-[9px] md:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{mod.type}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight break-words line-clamp-2 w-full pr-2">
+                                <h3 className="text-base md:text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors uppercase font-sans tracking-tight break-words line-clamp-2 w-full pr-2">
                                     {mod.title}
                                 </h3>
-                                <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest leading-relaxed whitespace-normal break-words w-full pr-2">
+                                <p className="text-muted-foreground text-[10px] md:text-xs font-medium uppercase tracking-normal md:tracking-widest leading-relaxed whitespace-normal break-words w-full pr-2">
                                     {mod.description}
                                 </p>
                             </div>
 
-                            <div className="px-8 pb-8 pt-6 border-t border-border space-y-6 bg-muted/5">
+                            <div className="px-6 md:px-8 pb-6 md:pb-8 pt-6 border-t border-border space-y-6 bg-muted/5">
                                 <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                     <div className="flex items-center gap-4">
                                         <span className="flex items-center gap-1.5"><Clock size={14} className="text-primary" /> {mod.readTime}</span>

@@ -19,7 +19,7 @@ export function BottomNav() {
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 safe-area-inset-bottom transition-colors duration-300">
-            <div className="flex justify-around items-center h-16 px-2 max-w-screen-xl mx-auto">
+            <div className="flex justify-between items-center h-16 px-4 max-w-screen-xl mx-auto">
                 {navItems.map(({ href, label, icon: Icon }) => {
                     const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
                     return (

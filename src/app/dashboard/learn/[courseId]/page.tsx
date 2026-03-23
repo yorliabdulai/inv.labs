@@ -113,10 +113,10 @@ export default function CourseLearningPage() {
             </button>
 
             {/* Course Header */}
-            <div className="relative rounded-2xl p-8 md:p-12 bg-card border border-border shadow-premium flex flex-col md:flex-row gap-8 items-start justify-between overflow-hidden group backdrop-blur-md">
+            <div className="relative rounded-2xl p-6 md:p-12 bg-card border border-border shadow-premium flex flex-col md:flex-row gap-8 items-start justify-between overflow-hidden group backdrop-blur-md">
                 <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none group-hover:bg-primary/20 transition-all duration-700" />
 
-                <div className="relative z-10 flex gap-6 max-w-3xl">
+                <div className="relative z-10 flex flex-col md:flex-row gap-4 md:gap-6 max-w-3xl">
                     <div className="w-16 h-16 rounded-xl bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20 transition-transform group-hover:scale-110 duration-500">
                         <IconComponent size={28} />
                     </div>
@@ -124,10 +124,10 @@ export default function CourseLearningPage() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted/30 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                             {course.level}
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne leading-tight break-words">
+                        <h1 className="text-2xl md:text-5xl font-bold text-foreground tracking-tight uppercase font-syne leading-tight break-words">
                             {course.title}
                         </h1>
-                        <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed uppercase tracking-widest">
+                        <p className="text-muted-foreground text-[10px] md:text-base font-medium leading-relaxed uppercase tracking-normal md:tracking-widest">
                             {course.description}
                         </p>
                     </div>
@@ -170,7 +170,7 @@ export default function CourseLearningPage() {
                             return (
                                 <div
                                     key={i}
-                                    className={`p-5 border rounded-xl flex items-center justify-between transition-all ${isCurrent
+                                    className={`p-4 md:p-5 border rounded-xl flex items-center justify-between transition-all ${isCurrent
                                         ? "bg-primary/10 border-primary/30 text-foreground shadow-premium translate-x-2"
                                         : isPast
                                             ? "bg-card/50 border-emerald-500/20 text-muted-foreground"
@@ -237,12 +237,12 @@ export default function CourseLearningPage() {
                                     )}
                                 </div>
 
-                                <div className="p-5 md:p-10 flex-1 flex flex-col items-start justify-between">
+                                <div className="p-6 md:p-10 flex-1 flex flex-col items-start justify-between">
                                     <div className="space-y-6 max-w-2xl">
-                                        <h3 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne leading-tight break-words">
+                                        <h3 className="text-lg md:text-2xl font-bold text-foreground uppercase tracking-tight font-syne leading-tight break-words">
                                             {currentLesson?.title || `Instructional Module ${currentModuleIndex + 1}`}
                                         </h3>
-                                        <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-widest leading-loose">
+                                        <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-normal md:tracking-widest leading-loose">
                                             {currentLesson?.description || "Please review the video module above before proceeding. The knowledge tested here will directly impact your strategic allocation skills within the terminal simulator."}
                                         </p>
                                     </div>

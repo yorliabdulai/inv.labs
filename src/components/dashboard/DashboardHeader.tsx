@@ -22,13 +22,13 @@ function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-12 h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={28} className="text-zinc-700 dark:text-zinc-200" />
+                <Sun size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
             ) : (
-                <Moon size={28} className="text-zinc-700 dark:text-zinc-200" />
+                <Moon size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
             )}
         </button>
     );
@@ -64,7 +64,11 @@ export function DashboardHeader() {
                             ) : (
                                 <>
                                     <GreetIcon className="text-primary flex-shrink-0 w-5 h-5 md:w-6 md:h-6" />
-                                    <span className="truncate">{greeting.text}, {name.split(' ')[0]}</span>
+                                    <span className="truncate max-w-[180px] xs:max-w-[250px] sm:max-w-none">
+                                        <span className="hidden sm:inline">{greeting.text}, </span>
+                                        <span className="sm:hidden">Hi, </span>
+                                        {name.split(' ')[0]}
+                                    </span>
                                 </>
                             )}
                         </h1>
@@ -89,16 +93,16 @@ export function DashboardHeader() {
 
                     {/* Notification bell */}
                     <button
-                        className="relative w-12 h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+                        className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
                         aria-label="View notifications"
                     >
-                        <Bell size={28} className="text-zinc-700 dark:text-zinc-200" />
-                        <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background" />
+                        <Bell size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background" />
                     </button>
 
                     {/* Avatar */}
                     <button
-                        className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0"
                         aria-label="User profile"
                     >
                         {initial}
