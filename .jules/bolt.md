@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - Nested Recharts CustomTooltips Cause Severe Interaction Jank
+**Learning:** Defining a custom Recharts tooltip component (`const CustomTooltip = ...`) inside its parent component's render body causes Recharts to recreate the component reference on every render. Because the tooltip relies on high-frequency events (like mouseover/mousemove), this triggers continuous unmounting and remounting of the tooltip element, leading to severe performance jank, especially on complex charts.
+**Action:** Always extract nested presentation components (like `CustomTooltip`) completely OUTSIDE the parent component. Pass any required parent state variables as explicit props to the `Tooltip` element (e.g., `<Tooltip content={<CustomTooltip chartType={chartType} />} />`), which Recharts will automatically clone and merge with its internal props (`active`, `payload`, `label`).
