@@ -38,7 +38,7 @@ export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) 
     };
 
     return (
-        <div className="h-64">
+        <div className="h-64 sm:h-72 pb-6">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
@@ -60,8 +60,9 @@ export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) 
                         verticalAlign="bottom"
                         height={48}
                         iconType="circle"
+                        wrapperStyle={{ left: 0, right: 0, padding: "0 10px", bottom: -10 }}
                         formatter={(value, entry: any) => (
-                            <span className="text-[10px] font-bold text-foreground uppercase tracking-widest px-2">
+                            <span className="text-[9px] sm:text-[10px] font-bold text-foreground uppercase tracking-widest px-1 sm:px-2">
                                 {value} <span className="text-muted-foreground ml-1">({entry.payload.value}%)</span>
                             </span>
                         )}

@@ -646,18 +646,18 @@ export default function PortfolioPage() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        {/* Holdings tabs - scrollable on mobile */}
-                        <div className="flex gap-1 p-1 bg-muted/30 border border-border rounded-xl overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap lg:whitespace-normal max-w-[280px] sm:max-w-none pr-8">
-                            {([["all", "ALL ASSETS"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mt-2 sm:mt-0">
+                        {/* Holdings tabs - wrapped on mobile for full visibility */}
+                        <div className="flex flex-wrap gap-1 p-1 bg-muted/30 border border-border rounded-xl w-full sm:w-auto">
+                            {([["all", "ALL"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}
                                     onClick={() => setHoldingsTab(key)}
-                                    className={`px-4 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest flex-shrink-0 ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                                    className={`flex-1 sm:flex-none px-3 sm:px-4 py-2.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest text-center ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
                                 >{label}</button>
                             ))}
                         </div>
-                        <Link href="/dashboard/market" className="px-5 py-2.5 bg-muted text-foreground border border-border rounded-xl text-[10px] font-bold hover:bg-muted/80 transition-all uppercase tracking-widest flex items-center gap-2">
+                        <Link href="/dashboard/market" className="w-full sm:w-auto px-6 py-3 bg-primary sm:bg-muted text-primary-foreground sm:text-foreground border border-transparent sm:border-border rounded-xl text-[10px] font-bold hover:opacity-90 transition-all uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm sm:shadow-none">
                             <Plus size={14} /> ACQUIRE
                         </Link>
                     </div>

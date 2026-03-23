@@ -186,23 +186,23 @@ export default function MutualFundDetailPage() {
                             </div>
                             <div className="flex-1 min-w-0 space-y-5">
                                 <div className="space-y-2">
-                                    <h1 className="text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-none font-syne uppercase">
+                                    <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-none font-syne uppercase break-words pr-2 sm:pr-0">
                                         {fund.fund_name}
                                     </h1>
                                     <p className="text-muted-foreground font-bold text-[11px] uppercase tracking-[0.2em] flex items-center gap-2">
                                         Portfolio Manager: <span className="text-primary">{fund.fund_manager}</span>
                                     </p>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-4">
-                                    <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold tracking-[0.1em] border border-primary/20 uppercase">
+                                <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2">
+                                    <span className="px-3 sm:px-4 py-1.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold tracking-[0.1em] border border-primary/20 uppercase whitespace-nowrap">
                                         {fund.fund_type}
                                     </span>
-                                    <div className="flex items-center gap-4 px-4 py-1.5 bg-muted/30 rounded-lg border border-border">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em]">Risk Intensity</span>
+                                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 px-3 sm:px-4 py-1.5 bg-muted/30 rounded-lg border border-border max-w-full">
+                                        <div className="flex items-center gap-2 sm:gap-3">
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em] whitespace-nowrap">Risk Intensity</span>
                                             <span className="text-[11px] font-bold text-primary tabular-nums tracking-widest">{fund.risk_rating}/5</span>
                                         </div>
-                                        <div className="h-1.5 w-24 bg-muted border border-border rounded-full overflow-hidden flex gap-0.5 min-w-0">
+                                        <div className="h-1.5 w-16 sm:w-24 bg-muted border border-border rounded-full overflow-hidden flex gap-0.5 shrink-0">
                                             {[1, 2, 3, 4, 5].map((level) => (
                                                 <div
                                                     key={level}
@@ -310,7 +310,10 @@ export default function MutualFundDetailPage() {
                         ].map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id as any)}
+                                onClick={(e) => {
+                                    setActiveTab(tab.id as any);
+                                    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                                }}
                                 className={`flex items-center gap-3 py-6 font-bold text-[10px] uppercase tracking-[0.2em] transition-all border-b-2 flex-shrink-0 whitespace-nowrap ${activeTab === tab.id
                                     ? "border-primary text-foreground"
                                     : "border-transparent text-muted-foreground hover:text-foreground"
@@ -449,15 +452,15 @@ export default function MutualFundDetailPage() {
                                         return (
                                             <div
                                                 key={perf.period}
-                                                className={`rounded-2xl p-6 md:p-8 border transition-all hover:scale-[1.02] duration-300 shadow-premium ${isPositive
+                                                className={`rounded-2xl p-5 sm:p-6 md:p-8 border transition-all hover:scale-[1.02] duration-300 shadow-premium min-w-0 flex flex-col justify-center ${isPositive
                                                     ? "bg-emerald-500/5 border-emerald-500/10"
                                                     : "bg-red-500/5 border-red-500/10"
                                                     }`}
                                             >
-                                                <div className={`text-[10px] font-bold mb-4 uppercase tracking-[0.2em] ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+                                                <div className={`text-[9px] sm:text-[10px] font-bold mb-3 sm:mb-4 uppercase tracking-[0.1em] sm:tracking-[0.2em] truncate ${isPositive ? "text-emerald-500" : "text-red-500"}`} title={getPeriodLabel(perf.period)}>
                                                     {getPeriodLabel(perf.period)}
                                                 </div>
-                                                <div className={`text-3xl md:text-4xl font-bold tabular-nums tracking-tighter ${isPositive ? "text-foreground" : "text-red-600"}`}>
+                                                <div className={`text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums tracking-tighter break-words ${isPositive ? "text-foreground" : "text-red-600"}`}>
                                                     {isPositive ? "+" : ""}{formatPercent(perf.return_percent)}
                                                 </div>
                                             </div>
@@ -477,22 +480,22 @@ export default function MutualFundDetailPage() {
                                     {fund.top_holdings.map((holding, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between p-6 md:p-8 bg-muted/20 rounded-2xl border border-border hover:border-primary/30 transition-all group shadow-premium"
+                                            className="flex items-center justify-between p-5 md:p-8 bg-muted/20 rounded-2xl border border-border hover:border-primary/30 transition-all group shadow-premium gap-3 sm:gap-4"
                                         >
-                                            <div className="flex items-center gap-6">
-                                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary transition-colors shadow-premium">
+                                            <div className="flex items-center gap-4 sm:gap-6 min-w-0 flex-1">
+                                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary transition-colors shadow-premium flex-shrink-0">
                                                     <span className="text-xs font-bold text-primary group-hover:text-primary-foreground tracking-widest">#{index + 1}</span>
                                                 </div>
-                                                <div className="space-y-1">
-                                                    <span className="font-bold text-foreground tracking-tight text-lg uppercase font-syne">{holding.name}</span>
-                                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Strategic Asset</div>
+                                                <div className="space-y-1 min-w-0 flex-1 pr-2">
+                                                    <span className="font-bold text-foreground tracking-tight text-base sm:text-lg uppercase font-syne block truncate" title={holding.name}>{holding.name}</span>
+                                                    <div className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">Strategic Asset</div>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="text-3xl font-bold text-primary tabular-nums tracking-tighter">
+                                            <div className="text-right flex-shrink-0">
+                                                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary tabular-nums tracking-tighter">
                                                     {holding.weight.toFixed(2)}%
                                                 </div>
-                                                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Weight</div>
+                                                <div className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Weight</div>
                                             </div>
                                         </div>
                                     ))}

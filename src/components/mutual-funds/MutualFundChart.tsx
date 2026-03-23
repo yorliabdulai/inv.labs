@@ -55,23 +55,23 @@ export function MutualFundChart({ navHistory, fundName }: MutualFundChartProps) 
     return (
         <div className="space-y-4">
             {/* Period Selector & Performance */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <div className={`text-2xl font-black ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
+                    <div className={`text-2xl font-black ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
                         {isPositive ? "+" : ""}{changePercent.toFixed(2)}%
                     </div>
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
                         {selectedPeriod} Performance
                     </div>
                 </div>
-                <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+                <div className="flex flex-wrap gap-1 bg-muted/30 border border-border p-1 rounded-xl w-full sm:w-auto">
                     {PERIODS.map((period) => (
                         <button
                             key={period.label}
                             onClick={() => setSelectedPeriod(period.label)}
-                            className={`px-3 py-2 rounded-lg text-xs font-black transition-all min-w-[44px] ${selectedPeriod === period.label
-                                    ? "bg-indigo-600 text-white shadow-lg"
-                                    : "text-gray-500 hover:text-indigo-600 hover:bg-white"
+                            className={`px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all min-w-[44px] flex-1 sm:flex-none ${selectedPeriod === period.label
+                                    ? "bg-primary text-primary-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                 }`}
                         >
                             {period.label}
