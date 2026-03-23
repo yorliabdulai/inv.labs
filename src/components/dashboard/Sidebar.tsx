@@ -11,7 +11,7 @@ export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const { displayName, displayInitial, loading } = useUserProfile();
+    const { displayName, displayInitial, profile, loading } = useUserProfile();
 
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
@@ -97,8 +97,12 @@ export function Sidebar() {
                 {/* Desktop Footer */}
                 <div className="p-3 border-t border-border">
                     <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors mb-1">
-                        <div className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
-                            {loading ? "·" : displayInitial}
+                        <div className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-xs flex-shrink-0 relative overflow-hidden">
+                            {profile?.avatar_url ? (
+                                <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+                            ) : (
+                                loading ? "·" : displayInitial
+                            )}
                         </div>
                         <div className="flex-1 overflow-hidden min-w-0">
                             <div className="text-sm font-semibold text-foreground truncate">{loading ? "Loading…" : displayName}</div>

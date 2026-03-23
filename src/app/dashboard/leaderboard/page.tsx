@@ -266,8 +266,12 @@ export default function LeaderboardPage() {
                                                 </td>
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none shadow-premium group-hover:shadow-primary/10">
-                                                            {user.full_name ? user.full_name.charAt(0) : "T"}
+                                                        <div className="w-12 h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none shadow-premium group-hover:shadow-primary/10 relative overflow-hidden">
+                                                            {user.avatar_url ? (
+                                                                <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                user.full_name ? user.full_name.charAt(0) : "T"
+                                                            )}
                                                         </div>
                                                         <div>
                                                             <div className="text-sm font-bold text-foreground leading-tight flex items-center gap-2">

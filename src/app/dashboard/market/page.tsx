@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { type Stock, GSE_API_BASE, KNOWN_METADATA } from "@/lib/market-data";
-import { getMarketData } from "@/app/actions/market";
+import { getMarketData, getBookmarks } from "@/app/actions/market";
 import { StockRow, type StockHolding } from "@/components/market/StockRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import {
@@ -12,6 +12,8 @@ import {
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
 import { useDebounce } from "@/hooks/use-debounce";
+import { WatchlistPanel } from "@/components/market/WatchlistPanel";
+import { Star } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type SortKey = "symbol" | "price" | "change" | "volume";
@@ -62,6 +64,8 @@ export default function StocksPage() {
     const [sortDir, setSortDir] = useState<SortDir>("asc");
     const [viewMode, setViewMode] = useState<ViewMode>("grid");
     const [holdings, setHoldings] = useState<Record<string, StockHolding>>({});
+    const [bookmarks, setBookmarks] = useState<string[]>([]);
+    const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     // Bolt Performance: Debounce search input to prevent expensive filtering/sorting on every keystroke
@@ -116,6 +120,11 @@ export default function StocksPage() {
         }
     };
 
+    const fetchBookmarks = async () => {
+        const b = await getBookmarks();
+        setBookmarks(b);
+    };
+
     useEffect(() => {
         if (profileLoading) return;
 
@@ -125,7 +134,10 @@ export default function StocksPage() {
             fetched.forEach((s) => { priceMap[s.symbol] = s.price; });
 
             if (user) {
-                await fetchHoldings(user.id, priceMap);
+                await Promise.all([
+                    fetchHoldings(user.id, priceMap),
+                    fetchBookmarks()
+                ]);
             }
         })();
 
@@ -202,6 +214,19 @@ export default function StocksPage() {
                             <span className="text-xs font-semibold text-primary">Total Exposure: {ownedCount} assets</span>
                         </div>
                     )}
+                    <button
+                        onClick={() => setIsWatchlistOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-card rounded-xl border border-border hover:bg-muted transition-colors shadow-sm group"
+                        title="Open Watchlist"
+                    >
+                        <Star size={16} className={`group-hover:text-yellow-500 transition-colors ${bookmarks.length > 0 ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"}`} />
+                        <span className="text-xs font-bold text-foreground">Watchlist</span>
+                        {bookmarks.length > 0 && (
+                            <span className="ml-1 px-1.5 py-0.5 bg-yellow-500/10 text-yellow-600 rounded-md text-[10px]">
+                                {bookmarks.length}
+                            </span>
+                        )}
+                    </button>
                     <button
                         onClick={() => fetchStocks(false)}
                         className="p-2.5 bg-card rounded-lg border border-border hover:bg-muted transition-colors group"
@@ -385,6 +410,7 @@ export default function StocksPage() {
                             key={stock.symbol}
                             stock={stock}
                             holding={holdings[stock.symbol]}
+                            initialIsBookmarked={bookmarks.includes(stock.symbol)}
                         />
                     ))}
                 </div>
@@ -401,11 +427,15 @@ export default function StocksPage() {
                             key={stock.symbol}
                             stock={stock}
                             holding={holdings[stock.symbol]}
+                            initialIsBookmarked={bookmarks.includes(stock.symbol)}
                             compact
                         />
                     ))}
                 </div>
             )}
+
+            {/* Watchlist Panel (Sidebar) */}
+            <WatchlistPanel isOpen={isWatchlistOpen} onClose={() => setIsWatchlistOpen(false)} />
         </div>
     );
 }

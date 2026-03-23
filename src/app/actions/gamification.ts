@@ -92,7 +92,36 @@ export async function getTopUsers() {
         console.error("Error fetching top users:", error);
         return [];
     }
-    return data || [];
+
+    const mockUsers = [
+        {
+            id: 'mock-1',
+            full_name: 'Ama Serwaa',
+            knowledge_xp: 1500,
+            accreditation_level: 3,
+            avatar_url: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop'
+        },
+        {
+            id: 'mock-2',
+            full_name: 'Kofi Mensah',
+            knowledge_xp: 1200,
+            accreditation_level: 2,
+            avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop'
+        },
+        {
+            id: 'mock-3',
+            full_name: 'Kwame Owusu',
+            knowledge_xp: 900,
+            accreditation_level: 1,
+            avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'
+        }
+    ];
+
+    const results = data || [];
+    if (results.length < 5) {
+        return [...results, ...mockUsers].sort((a, b) => (b.knowledge_xp || 0) - (a.knowledge_xp || 0)).slice(0, 10);
+    }
+    return results;
 }
 
 export async function getCourseWithEnrollment(courseId: string) {

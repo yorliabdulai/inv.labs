@@ -35,7 +35,7 @@ function ThemeToggle() {
 }
 
 export function DashboardHeader() {
-    const { displayName, displayInitial, firstName, loading } = useUserProfile();
+    const { displayName, displayInitial, firstName, profile, loading } = useUserProfile();
     const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export function DashboardHeader() {
                     {/* Greeting Title (replaces "Dashboard" on all screens) */}
                     <div className="flex items-center gap-2 min-w-0">
                         <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight truncate flex items-center gap-2">
-                             {showSkeleton ? (
+                            {showSkeleton ? (
                                 <span className="inline-block w-32 h-6 md:h-8 bg-muted animate-pulse rounded" />
                             ) : (
                                 <>
@@ -102,10 +102,14 @@ export function DashboardHeader() {
 
                     {/* Avatar */}
                     <button
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden"
                         aria-label="User profile"
                     >
-                        {initial}
+                        {profile?.avatar_url ? (
+                            <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+                        ) : (
+                            initial
+                        )}
                     </button>
                 </div>
             </div>

@@ -6,6 +6,8 @@ import { useState, useMemo } from "react";
 import { TradeModal } from "@/components/trade/TradeModal";
 import { Sparkline } from "./Sparkline";
 import { useUserProfile } from "@/lib/useUserProfile";
+import { toggleBookmark, getBookmarks } from "@/app/actions/market";
+import { useEffect } from "react";
 
 export interface StockHolding {
     qty: number;
@@ -19,6 +21,7 @@ interface StockRowProps {
     stock: Stock;
     holding?: StockHolding;
     compact?: boolean; // list view mode
+    initialIsBookmarked?: boolean;
 }
 
 // ⚡ BOLT OPTIMIZATION: Extracted seed generation and history computation
@@ -37,10 +40,11 @@ const generateSparkline = (symbol: string, price: number, isPositive: boolean) =
     return pts;
 };
 
-export function StockRow({ stock, holding, compact = false }: StockRowProps) {
+export function StockRow({ stock, holding, compact = false, initialIsBookmarked = false }: StockRowProps) {
     const isPositive = stock.change >= 0;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { profile, refetch } = useUserProfile();
+    const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
     const userBalance = profile?.cash_balance ?? 0;
     const isOwned = !!holding && holding.qty > 0;
 
@@ -180,11 +184,21 @@ export function StockRow({ stock, holding, compact = false }: StockRowProps) {
                         Trade Asset
                     </button>
                     <button
-                        className="px-5 py-3 bg-muted/30 text-muted-foreground rounded-xl hover:bg-muted/50 hover:text-foreground transition-all min-h-[44px] border border-border/60"
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label="Add to watchlist"
+                        className={`px-5 py-3 rounded-xl transition-all min-h-[44px] border ${
+                            isBookmarked 
+                                ? "bg-primary/10 text-primary border-primary/30" 
+                                : "bg-muted/30 text-muted-foreground border-border/60 hover:bg-muted/50 hover:text-foreground"
+                        }`}
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            const res = await toggleBookmark(stock.symbol);
+                            if (res && 'bookmarked' in res) {
+                                setIsBookmarked(!!res.bookmarked);
+                            }
+                        }}
+                        aria-label={isBookmarked ? "Remove from watchlist" : "Add to watchlist"}
                     >
-                        <Bookmark size={15} />
+                        <Bookmark size={15} fill={isBookmarked ? "currentColor" : "none"} />
                     </button>
                 </div>
             </div>
