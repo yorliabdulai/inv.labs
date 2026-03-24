@@ -49,6 +49,20 @@ export async function POST(request: NextRequest) {
         // Get or create conversation
         let activeConversationId = conversationId;
 
+        // Security: Verify ownership of provided conversationId (IDOR prevention)
+        if (activeConversationId) {
+            const { data: existingConv } = await supabase
+                .from("ato_conversations")
+                .select("user_id")
+                .eq("id", activeConversationId)
+                .single();
+
+            // Return generic 403 for both unauthorized and non-existent to prevent enumeration
+            if (!existingConv || existingConv.user_id !== user.id) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
+        }
+
         if (!activeConversationId) {
             // Create new conversation
             const title =
@@ -82,6 +96,7 @@ export async function POST(request: NextRequest) {
             .order("created_at", { ascending: true });
 
         const conversationHistory =
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             messages?.map((m: any) => ({
                 role: m.role as "user" | "assistant",
                 content: m.content,
@@ -132,6 +147,7 @@ export async function POST(request: NextRequest) {
                 limit: RATE_LIMIT,
             },
         });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         // Log the full error server-side
         console.error("[ATO API ERROR]:", error);
