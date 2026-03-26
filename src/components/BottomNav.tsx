@@ -26,7 +26,7 @@ export function BottomNav() {
                         <Link
                             key={href}
                             href={href}
-                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation ${active
+                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${active
                                 ? "text-primary scale-105"
                                 : "text-zinc-500 active:scale-95"
                                 }`}
