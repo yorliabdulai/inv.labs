@@ -2,33 +2,38 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
-    name: string;       // pass stock metadata from client (already fetched for UI display)
-    sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent } = params;
+    const { symbol, type, quantity } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
-    if (!symbol || !name) {
+    if (!symbol) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
     }
 
     try {
-        // Step 1: Authenticate user
+        // Step 1: Fetch actual real-time price server-side (Parameter Tampering Protection)
+        const stockData = await fetchStockBySymbol(symbol);
+        const price = stockData.price;
+        const name = stockData.name;
+        const sector = stockData.sector;
+        const changePercent = stockData.changePercent;
+
+        if (!price || price <= 0) {
+            return { success: false, message: "Invalid price fetched. Please try again." };
+        }
+
+        // Step 2: Authenticate user
         const supabase = await createServerClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
