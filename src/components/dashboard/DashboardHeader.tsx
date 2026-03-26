@@ -22,7 +22,7 @@ function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
@@ -93,7 +93,7 @@ export function DashboardHeader() {
 
                     {/* Notification bell */}
                     <button
-                        className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+                        className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         aria-label="View notifications"
                     >
                         <Bell size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
@@ -102,7 +102,7 @@ export function DashboardHeader() {
 
                     {/* Avatar */}
                     <button
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         aria-label="User profile"
                     >
                         {profile?.avatar_url ? (
