@@ -30,6 +30,41 @@ interface PortfolioCandleChartProps {
  * Professional Candlestick Chart for Portfolio Analysis
  * Highly legible, premium fintech aesthetic.
  */
+// ⚡ BOLT OPTIMIZATION: Extracted CustomTooltip out of PortfolioCandleChart component to avoid recreation during render.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload as CandleData;
+        const isUp = data.close >= data.open;
+        return (
+            <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-2xl text-white min-w-[180px]">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Portfolio Snapshot</p>
+                <div className="space-y-2">
+                    <div className="flex justify-between gap-4">
+                        <span className="text-xs font-bold text-slate-400">OPEN</span>
+                        <span className="text-xs font-black tabular-nums">GH₵ {data.open.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between gap-4 border-b border-slate-800 pb-2">
+                        <span className="text-xs font-bold text-slate-400">CLOSE</span>
+                        <span className={`text-xs font-black tabular-nums ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
+                            GH₵ {data.close.toLocaleString()}
+                        </span>
+                    </div>
+                    <div className="flex justify-between gap-4 pt-1">
+                        <span className="text-xs font-bold text-slate-400">HIGH</span>
+                        <span className="text-xs font-black tabular-nums">GH₵ {data.high.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                        <span className="text-xs font-bold text-slate-400">LOW</span>
+                        <span className="text-xs font-black tabular-nums">GH₵ {data.low.toLocaleString()}</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+};
+
 export function PortfolioCandleChart({ period = "1M" }: PortfolioCandleChartProps) {
     // Generate mock OHLC data based on the period
     const chartData = useMemo(() => {
@@ -56,39 +91,6 @@ export function PortfolioCandleChart({ period = "1M" }: PortfolioCandleChartProp
         }
         return data;
     }, [period]);
-
-    const CustomTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            const data = payload[0].payload as CandleData;
-            const isUp = data.close >= data.open;
-            return (
-                <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-2xl text-white min-w-[180px]">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Portfolio Snapshot</p>
-                    <div className="space-y-2">
-                        <div className="flex justify-between gap-4">
-                            <span className="text-xs font-bold text-slate-400">OPEN</span>
-                            <span className="text-xs font-black tabular-nums">GH₵ {data.open.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between gap-4 border-b border-slate-800 pb-2">
-                            <span className="text-xs font-bold text-slate-400">CLOSE</span>
-                            <span className={`text-xs font-black tabular-nums ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
-                                GH₵ {data.close.toLocaleString()}
-                            </span>
-                        </div>
-                        <div className="flex justify-between gap-4 pt-1">
-                            <span className="text-xs font-bold text-slate-400">HIGH</span>
-                            <span className="text-xs font-black tabular-nums">GH₵ {data.high.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                            <span className="text-xs font-bold text-slate-400">LOW</span>
-                            <span className="text-xs font-black tabular-nums">GH₵ {data.low.toLocaleString()}</span>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        return null;
-    };
 
     return (
         <div className="w-full h-full min-h-[400px]">
