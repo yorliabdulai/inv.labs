@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## $(date +%Y-%m-%d) - Prevent Destructuring Shifts on Promise.all Cleanups
+**Learning:** When refactoring unused variables from array destructuring assignments directly mapped to `Promise.all` or `Promise.allSettled`, simply deleting the unused variable identifier silently shifts all subsequent assignments. In `getPortfolioData`, deleting `mfTxResult` without leaving an empty comma `,` caused `profileResult` to receive the mutual fund transactions instead of the profile, entirely dropping the profile payload.
+**Action:** When removing unused destructured variables mapped positionally to Promises, either leave the empty comma `, ,` or, better yet, remove the corresponding underlying Promise from the `Promise.all` array entirely to prevent redundant fetching and structural shifts.

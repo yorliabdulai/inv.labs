@@ -5,6 +5,7 @@ import { getUserMutualFundHoldings } from "@/app/actions/mutual-funds";
 
 export interface PortfolioData {
     holdings: Holding[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutualFundHoldings: any[];
     cashBalance: number;
     totalValue: number;
@@ -57,7 +58,6 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             holdingsResult,
             stocksDbResult,
             mfHoldingsResult,
-            mfTxResult,
             profileResult
         ] = await Promise.allSettled([
             // holdings table — always accurate, written atomically by execute_stock_trade
@@ -71,20 +71,17 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
                 .from("stocks")
                 .select("symbol, name, sector, current_price"),
             getUserMutualFundHoldings(user.id),
-            supabase.from("mutual_fund_transactions").select("net_amount, transaction_type").eq("user_id", user.id),
             supabase.from("profiles").select("cash_balance").eq("id", user.id).single()
         ]);
 
         const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
         const dbStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value.data ?? [] : [];
         const mfHoldings = mfHoldingsResult.status === 'fulfilled' ? mfHoldingsResult.value : [];
-        const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data ?? [] : [];
         const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
 
         // Build lookup maps from the stocks table (already in DB from last trade)
         const stockPriceMap = new Map(dbStocks.map(s => [s.symbol, s.current_price]));
         const stockSectorMap = new Map(dbStocks.map(s => [s.symbol, s.sector ?? "Other"]));
-        const stockNameMap = new Map(dbStocks.map(s => [s.symbol, s.name ?? s.symbol]));
 
         // Build holdings from the DB holdings table — no API needed
         const holdings: Holding[] = [];
@@ -122,7 +119,20 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         // Metrics
         const winners = holdings.filter(h => h.gain > 0).length;
         const winRate = holdings.length > 0 ? Math.round((winners / holdings.length) * 100) : 0;
-        const sortedByGain = [...holdings].sort((a, b) => b.gainPercent - a.gainPercent);
+
+        // Bolt: Replace O(N log N) sort with O(N) single pass loop for min/max without allocation overhead
+        let bestPosition: Holding | null = null;
+        let worstPosition: Holding | null = null;
+
+        if (holdings.length > 0) {
+            bestPosition = holdings[0];
+            worstPosition = holdings[0];
+            for (let i = 1; i < holdings.length; i++) {
+                const h = holdings[i];
+                if (h.gainPercent > bestPosition.gainPercent) bestPosition = h;
+                if (h.gainPercent < worstPosition.gainPercent) worstPosition = h;
+            }
+        }
 
         // Sector Performance
         const sectorDataMap = new Map<string, { gain: number; cost: number; mv: number }>();
@@ -153,8 +163,8 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             totalInvested,
             metrics: {
                 winRate,
-                bestPosition: sortedByGain[0] || null,
-                worstPosition: sortedByGain[sortedByGain.length - 1] || null,
+                bestPosition,
+                worstPosition,
                 avgPositionSize: holdings.length > 0 ? stockMarketValue / holdings.length : 0,
                 numAssetClasses,
                 numSectors: sectorPerformance.length,
