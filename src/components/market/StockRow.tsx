@@ -57,8 +57,16 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
         return (
             <>
                 <div
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0"
+                    role="button"
+                    tabIndex={0}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     onClick={() => setIsModalOpen(true)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setIsModalOpen(true);
+                        }
+                    }}
                 >
                     {/* Symbol Icon */}
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 tracking-widest border ${isPositive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
@@ -101,9 +109,17 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
     return (
         <>
             <div
-                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
+                role="button"
+                tabIndex={0}
+                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
                     }`}
                 onClick={() => setIsModalOpen(true)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setIsModalOpen(true);
+                    }
+                }}
             >
                 {/* Ownership Label */}
                 {isOwned && (
