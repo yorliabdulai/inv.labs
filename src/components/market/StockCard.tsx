@@ -19,9 +19,17 @@ export function StockCard({ stock }: StockCardProps) {
     return (
         <>
             <div
-                className="card"
+                role="button"
+                tabIndex={0}
+                className="card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", cursor: "pointer" }}
                 onClick={() => setIsModalOpen(true)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setIsModalOpen(true);
+                    }
+                }}
             >
                 <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>

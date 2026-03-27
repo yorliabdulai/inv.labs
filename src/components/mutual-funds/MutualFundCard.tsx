@@ -28,8 +28,16 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
 
     return (
         <div
+            role="button"
+            tabIndex={0}
             onClick={onClick}
-            className={`group relative bg-card rounded-2xl p-6 md:p-8 border transition-all duration-300 cursor-pointer shadow-premium hover:border-primary/40 touch-manipulation active:scale-[0.98] overflow-hidden ${isOwned ? "border-primary/30" : "border-border"
+            onKeyDown={(e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+                    e.preventDefault();
+                    onClick();
+                }
+            }}
+            className={`group relative bg-card rounded-2xl p-6 md:p-8 border transition-all duration-300 cursor-pointer shadow-premium hover:border-primary/40 touch-manipulation active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background overflow-hidden ${isOwned ? "border-primary/30" : "border-border"
                 }`}
         >
             {/* ── Ownership Badge ── */}
