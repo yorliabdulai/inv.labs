@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-03-09 - Make Interactive Divs Accessible
+**Learning:** Found that custom interactive list items and cards built with `<div>` elements using `onClick` handlers often lack critical accessibility attributes. This prevents keyboard users from navigating to them (missing `tabIndex`) or activating them (missing `onKeyDown` and `role="button"`), and hides them from screen readers.
+**Action:** When building interactive elements using `<div>`, always include `role="button"`, `tabIndex={0}`, an `onKeyDown` handler mapped to 'Enter' and 'Space', and explicit Tailwind `focus-visible` utility classes (e.g. `focus-visible:ring-[#C05E42]`) for keyboard visibility.
