@@ -57,7 +57,15 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
         return (
             <>
                 <div
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0"
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer group border-b border-border last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setIsModalOpen(true);
+                        }
+                    }}
                     onClick={() => setIsModalOpen(true)}
                 >
                     {/* Symbol Icon */}
@@ -101,8 +109,16 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
     return (
         <>
             <div
-                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
+                className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
                     }`}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setIsModalOpen(true);
+                    }
+                }}
                 onClick={() => setIsModalOpen(true)}
             >
                 {/* Ownership Label */}
