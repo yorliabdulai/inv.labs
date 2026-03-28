@@ -91,8 +91,16 @@ export function OnboardingTour() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     const currentStep = STEPS[currentStepIndex];
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     useEffect(() => {
         if (profile && !profile.onboarding_completed) {
@@ -104,9 +112,19 @@ export function OnboardingTour() {
 
     const updateTargetRect = useCallback(() => {
         if (!isVisible) return;
-        const element = document.getElementById(currentStep.targetId);
-        if (element) {
-            setTargetRect(element.getBoundingClientRect());
+        const elements = document.querySelectorAll(`[id="${currentStep.targetId}"]`);
+        let targetElement: HTMLElement | null = null;
+        
+        elements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            // Intelligent visibility check: skip the hidden desktop sidebar on mobile
+            if (rect.width > 0 && rect.height > 0) {
+                targetElement = el as HTMLElement;
+            }
+        });
+
+        if (targetElement) {
+            setTargetRect((targetElement as Element).getBoundingClientRect());
         }
     }, [isVisible, currentStep.targetId]);
 
@@ -186,14 +204,22 @@ export function OnboardingTour() {
                     }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute z-[101] pointer-events-auto"
-                    style={{
-                        top: currentStep.position === "bottom" ? targetRect.bottom + 20 : 
-                             currentStep.position === "top" ? targetRect.top - 200 : 
-                             targetRect.top,
-                        left: currentStep.position === "right" ? targetRect.right + 24 : 
-                              currentStep.position === "left" ? targetRect.left - 344 : 
-                              targetRect.left,
-                    }}
+                    style={
+                        isMobile
+                            ? {
+                                top: 80, // Hang near the top of the mobile screen
+                                left: "50%",
+                                marginLeft: -160 // Center standard 320px width card
+                            }
+                            : {
+                                top: currentStep.position === "bottom" ? targetRect.bottom + 20 : 
+                                     currentStep.position === "top" ? targetRect.top - 200 : 
+                                     targetRect.top,
+                                left: currentStep.position === "right" ? targetRect.right + 24 : 
+                                      currentStep.position === "left" ? targetRect.left - 344 : 
+                                      targetRect.left,
+                            }
+                    }
                 >
                     <div className="w-[320px] bg-card border border-border rounded-2xl shadow-2xl p-6 overflow-hidden relative group">
                         {/* Progress Bar */}
