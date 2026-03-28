@@ -40,6 +40,32 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
         }
     }, [isOpen]);
 
+    // Fetch chat history natively on first mount
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const response = await fetch("/api/ato/chat/history");
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.messages && data.messages.length > 0) {
+                        setMessages(data.messages);
+                        if (data.conversationId) setConversationId(data.conversationId);
+                    }
+                    if (data.usage) {
+                        setUsage({
+                            used: data.usage.messagesUsed,
+                            remaining: data.usage.messagesRemaining,
+                            limit: data.usage.limit,
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load chat history", err);
+            }
+        };
+        fetchHistory();
+    }, []);
+
     const handleSendMessage = async (messageText?: string) => {
         const textToSend = messageText || input.trim();
 

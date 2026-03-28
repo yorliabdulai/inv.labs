@@ -156,6 +156,7 @@ export function OnboardingTour() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 bg-black/60 pointer-events-auto"
+                onClick={handleSkip}
                 style={{
                     clipPath: `polygon(
                         0% 0%, 
