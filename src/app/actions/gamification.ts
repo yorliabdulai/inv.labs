@@ -92,18 +92,19 @@ export async function getTopUsers(page: number = 1, pageSize: number = 10): Prom
     const supabase = await createClient();
     const from = (page - 1) * pageSize;
 
-    // Use SECURITY DEFINER RPCs — bypasses RLS so real XP is visible for all users
-    const [{ data, error }, { data: countData, error: countError }] = await Promise.all([
-        supabase.rpc('get_leaderboard', { p_limit: pageSize, p_offset: from }),
-        supabase.rpc('get_leaderboard_count'),
-    ]);
+    // Profiles are publicly readable (policy set in leaderboard_bookmarks migration)
+    const { data, error, count } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url, knowledge_xp, accreditation_level', { count: 'exact' })
+        .order('knowledge_xp', { ascending: false })
+        .range(from, from + pageSize - 1);
 
-    if (error || countError) {
-        console.error("Error fetching leaderboard:", error || countError);
+    if (error) {
+        console.error("Error fetching leaderboard:", error);
         return { users: [], total: 0, page, pageSize, totalPages: 0 };
     }
 
-    const total = Number(countData ?? 0);
+    const total = count ?? 0;
     const totalPages = Math.ceil(total / pageSize);
 
     // Annotate with page-aware global rank + movement direction

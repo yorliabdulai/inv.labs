@@ -38,7 +38,30 @@ export default function LeaderboardPage() {
                 setRankings(data);
             } else {
                 const result = await getTopUsers(page, PAGE_SIZE);
-                setUserRankings(result.users);
+
+                // Client-side rank change detection using localStorage snapshot
+                const SNAPSHOT_KEY = "inv_leaderboard_rank_snapshot";
+                let prevSnapshot: Record<string, number> = {};
+                try {
+                    prevSnapshot = JSON.parse(localStorage.getItem(SNAPSHOT_KEY) || "{}");
+                } catch {}
+
+                const annotated = result.users.map((user: any) => {
+                    const prevRank = prevSnapshot[user.id];
+                    let rankChange: 'up' | 'down' | 'same' = 'same';
+                    if (prevRank !== undefined) {
+                        if (user.globalRank < prevRank) rankChange = 'up';
+                        else if (user.globalRank > prevRank) rankChange = 'down';
+                    }
+                    return { ...user, rankChange };
+                });
+
+                // Save new snapshot (merge with existing pages so other pages aren't lost)
+                const newSnapshot = { ...prevSnapshot };
+                annotated.forEach((u: any) => { newSnapshot[u.id] = u.globalRank; });
+                localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(newSnapshot));
+
+                setUserRankings(annotated);
                 setUserTotal(result.total);
                 setUserPage(result.page);
                 setUserTotalPages(result.totalPages);
