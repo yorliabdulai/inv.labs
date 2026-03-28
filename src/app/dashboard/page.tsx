@@ -16,10 +16,15 @@ import {
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
-import { AllocationChart } from "@/components/portfolio/AllocationChart";
+import dynamic from "next/dynamic";
 import { CreateChallengeModal } from "@/components/dashboard/gamification/CreateChallengeModal";
 import { getDashboardData, type DashboardData } from "@/app/actions/dashboard";
 import { formatCurrency } from "@/lib/mutual-funds-data";
+
+const AllocationChart = dynamic(
+    () => import("@/components/portfolio/AllocationChart").then((mod) => mod.AllocationChart),
+    { ssr: false, loading: () => <div className="h-full flex items-center justify-center text-muted-foreground animate-pulse text-xs tracking-wider">Loading allocation...</div> }
+);
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);

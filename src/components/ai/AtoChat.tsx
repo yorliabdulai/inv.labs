@@ -251,8 +251,11 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                     <p className="text-[10px] text-muted-foreground font-medium">
                         <span className="font-bold text-primary">{usage.remaining}</span> queries remaining today
                     </p>
-                    <button className="text-[9px] font-bold uppercase tracking-widest text-primary hover:text-white transition-colors bg-primary/10 hover:bg-primary px-3 py-1.5 rounded-lg">
-                        Upgrade to Premium
+                    <button 
+                        onClick={() => alert("Premium tier completely unlocked coming soon! We've automatically noted your interest.")}
+                        className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-primary hover:text-white transition-colors bg-primary/10 hover:bg-primary px-2.5 py-1.5 rounded-lg border border-primary/20 hover:border-transparent whitespace-nowrap active:scale-95"
+                    >
+                        Upgrade
                     </button>
                 </div>
 

@@ -28,7 +28,7 @@ export function AtoChatBubble({ role, content, timestamp }: AtoChatBubbleProps) 
             </div>
 
             {/* Message bubble */}
-            <div className={`flex flex-col max-w-[85%] ${isUser ? "items-end" : "items-start"}`}>
+            <div className={`flex flex-col max-w-[calc(100%-44px)] ${isUser ? "items-end" : "items-start"}`}>
                 <div className={`px-4 py-3 rounded-2xl shadow-premium transition-all hover:scale-[1.01] ${isUser
                     ? "bg-primary text-white border border-primary/30"
                     : "bg-muted/10 text-foreground border border-border backdrop-blur-md"

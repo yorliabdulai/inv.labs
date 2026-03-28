@@ -103,7 +103,7 @@ export function OnboardingTour() {
     }, []);
 
     useEffect(() => {
-        if (profile && !profile.onboarding_completed) {
+        if (profile && !profile.onboarding_completed && !localStorage.getItem("inv_onboarding_done")) {
             // Delay slightly to ensure layout is ready
             const timer = setTimeout(() => setIsVisible(true), 1500);
             return () => clearTimeout(timer);
@@ -152,17 +152,15 @@ export function OnboardingTour() {
         }
     };
 
-    const handleComplete = async () => {
+    const markDone = async () => {
         setIsVisible(false);
+        localStorage.setItem("inv_onboarding_done", "true");
         await completeOnboarding();
         refetch();
     };
 
-    const handleSkip = async () => {
-        setIsVisible(false);
-        await completeOnboarding();
-        refetch();
-    };
+    const handleComplete = () => markDone();
+    const handleSkip = () => markDone();
 
     if (!isVisible || !targetRect) return null;
 

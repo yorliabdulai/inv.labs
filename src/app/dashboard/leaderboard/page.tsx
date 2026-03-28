@@ -181,9 +181,7 @@ export default function LeaderboardPage() {
                                     ) : (
                                         <tr className="bg-muted/10 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                             <th className="px-8 py-5 text-center w-24">Global Rank</th>
-                                            <th className="px-8 py-5">Trader Profile</th>
-                                            <th className="px-6 py-5 text-right">Accreditation Level</th>
-                                            <th className="px-8 py-5 text-right">Knowledge XP</th>
+                                            <th className="px-8 py-5 text-left w-full">Trader Profile & Stats</th>
                                         </tr>
                                     )}
                                 </thead>
@@ -264,35 +262,28 @@ export default function LeaderboardPage() {
                                                         {rank < 10 ? `0${rank}` : rank}
                                                     </span>
                                                 </td>
-                                                <td className="px-8 py-6">
-                                                    <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none shadow-premium group-hover:shadow-primary/10 relative overflow-hidden">
+                                                <td className="px-8 py-5 w-full">
+                                                    <div className="flex items-center gap-4 sm:gap-5">
+                                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-muted/30 flex items-center justify-center font-bold text-muted-foreground text-xs border border-border group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:text-primary transition-all uppercase tracking-widest leading-none shadow-premium group-hover:shadow-primary/10 relative overflow-hidden shrink-0">
                                                             {user.avatar_url ? (
                                                                 <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                                                             ) : (
                                                                 user.full_name ? user.full_name.charAt(0) : "T"
                                                             )}
                                                         </div>
-                                                        <div>
-                                                            <div className="text-sm font-bold text-foreground leading-tight flex items-center gap-2">
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="text-sm font-bold text-foreground leading-tight flex items-center gap-2 truncate">
                                                                 {user.full_name || "Anonymous Trader"}
-                                                                {rank === 1 && <Crown size={14} className="text-primary" />}
+                                                                {rank === 1 && <Crown size={14} className="text-primary shrink-0" />}
                                                             </div>
-                                                            <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mt-1">ID: {user.id.substring(0, 8)}</div>
+                                                            <div className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1.5 sm:gap-2 mt-1 truncate">
+                                                                <span className="uppercase tracking-widest whitespace-nowrap">Lvl {user.accreditation_level || 1}</span>
+                                                                <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+                                                                <span className="text-emerald-500 font-bold flex items-center gap-1 whitespace-nowrap">
+                                                                    <Zap size={10} className="shrink-0" /> {(user.knowledge_xp || 0).toLocaleString()} XP
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-6 text-right">
-                                                    <div className="text-sm font-bold text-foreground tabular-nums tracking-tight">
-                                                        Level {user.accreditation_level || 1}
-                                                    </div>
-                                                </td>
-                                                <td className="px-8 py-6 text-right">
-                                                    <div className="flex items-center justify-end gap-3">
-                                                        <div className="text-base font-bold text-emerald-500 tabular-nums tracking-tight">
-                                                            {(user.knowledge_xp || 0).toLocaleString()} XP
-                                                        </div>
-                                                        <Zap size={14} className="text-emerald-500 opacity-60" />
                                                     </div>
                                                 </td>
                                             </tr>
