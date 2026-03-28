@@ -159,12 +159,11 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
             />
 
             {/* Chat panel */}
-            <div 
-                className={`fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 md:w-[450px] h-[85vh] md:h-[700px] bg-card/95 backdrop-blur-2xl rounded-t-3xl md:rounded-2xl shadow-premium flex flex-col border border-border overflow-hidden transition-all duration-300 ease-out origin-bottom ${
-                    isOpen 
-                        ? "opacity-100 translate-y-0 scale-100" 
+            <div
+                className={`fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 md:w-[450px] h-[85vh] md:h-[700px] bg-card/95 backdrop-blur-2xl rounded-t-3xl md:rounded-2xl shadow-premium flex flex-col border border-border overflow-hidden transition-all duration-300 ease-out origin-bottom ${isOpen
+                        ? "opacity-100 translate-y-0 scale-100"
                         : "opacity-0 translate-y-8 scale-95 pointer-events-none"
-                }`}
+                    }`}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20 rounded-t-3xl md:rounded-t-2xl">
@@ -228,7 +227,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                                             <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
                                             <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
                                         </div>
-                                        <span className="text-[9px] text-primary font-bold uppercase tracking-widest">Ato is analyzing...</span>
+                                        <span className="text-[9px] text-primary font-bold uppercase tracking-widest">Ato is thinking...</span>
                                     </div>
                                 </div>
                             )}
