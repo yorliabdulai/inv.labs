@@ -79,49 +79,47 @@ export async function enrollInCourse(courseId: string) {
     return { success: true };
 }
 
-export async function getTopUsers() {
+// In-memory rank snapshot for change detection per server session
+const _prevRankMap = new Map<string, number>();
+
+export async function getTopUsers(page: number = 1, pageSize: number = 10): Promise<{
+    users: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+}> {
     const supabase = await createClient();
-    // Assuming profiles table has knowledge_xp and full_name
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url, knowledge_xp, accreditation_level')
-        .order('knowledge_xp', { ascending: false })
-        .limit(10);
+    const from = (page - 1) * pageSize;
 
-    if (error) {
-        console.error("Error fetching top users:", error);
-        return [];
+    // Use SECURITY DEFINER RPCs — bypasses RLS so real XP is visible for all users
+    const [{ data, error }, { data: countData, error: countError }] = await Promise.all([
+        supabase.rpc('get_leaderboard', { p_limit: pageSize, p_offset: from }),
+        supabase.rpc('get_leaderboard_count'),
+    ]);
+
+    if (error || countError) {
+        console.error("Error fetching leaderboard:", error || countError);
+        return { users: [], total: 0, page, pageSize, totalPages: 0 };
     }
 
-    const mockUsers = [
-        {
-            id: 'mock-1',
-            full_name: 'Ama Serwaa',
-            knowledge_xp: 1500,
-            accreditation_level: 3,
-            avatar_url: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop'
-        },
-        {
-            id: 'mock-2',
-            full_name: 'Kofi Mensah',
-            knowledge_xp: 1200,
-            accreditation_level: 2,
-            avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop'
-        },
-        {
-            id: 'mock-3',
-            full_name: 'Kwame Owusu',
-            knowledge_xp: 900,
-            accreditation_level: 1,
-            avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'
+    const total = Number(countData ?? 0);
+    const totalPages = Math.ceil(total / pageSize);
+
+    // Annotate with page-aware global rank + movement direction
+    const users = (data || []).map((user: any, idx: number) => {
+        const globalRank = from + idx + 1;
+        const prevRank = _prevRankMap.get(user.id);
+        let rankChange: 'up' | 'down' | 'same' = 'same';
+        if (prevRank !== undefined) {
+            if (globalRank < prevRank) rankChange = 'up';
+            else if (globalRank > prevRank) rankChange = 'down';
         }
-    ];
+        _prevRankMap.set(user.id, globalRank);
+        return { ...user, globalRank, rankChange };
+    });
 
-    const results = data || [];
-    if (results.length < 5) {
-        return [...results, ...mockUsers].sort((a, b) => (b.knowledge_xp || 0) - (a.knowledge_xp || 0)).slice(0, 10);
-    }
-    return results;
+    return { users, total, page, pageSize, totalPages };
 }
 
 export async function getCourseWithEnrollment(courseId: string) {

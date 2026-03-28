@@ -166,17 +166,17 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                     }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-border bg-muted/20 rounded-t-3xl md:rounded-t-2xl">
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                            <span className="text-white font-bold text-xl font-syne">A</span>
+                <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-muted/20 rounded-t-3xl md:rounded-t-2xl min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+                            <span className="text-white font-bold text-lg md:text-xl font-syne">A</span>
                         </div>
-                        <div>
-                            <h3 className="text-sm font-bold text-foreground uppercase tracking-widest">Ato</h3>
-                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Investment Intelligence 🇬🇭</p>
+                        <div className="min-w-0">
+                            <h3 className="text-sm font-bold text-foreground uppercase tracking-widest truncate">Ato</h3>
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest truncate">Investment Intelligence 🇬🇭</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 shrink-0">
                         {onMinimize && (
                             <button
                                 onClick={onMinimize}
@@ -197,7 +197,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 </div>
 
                 {/* Messages area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-2 bg-transparent">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 space-y-2 bg-transparent">
                     {messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center space-y-8">
                             <div className="text-center space-y-3">
@@ -247,7 +247,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 )}
 
                 {/* Usage/Disclaimer footer */}
-                <div className="px-6 py-3 bg-muted/5 border-t border-border flex justify-between items-center rounded-b-3xl md:rounded-b-none">
+                <div className="px-4 md:px-6 py-3 bg-muted/5 border-t border-border flex justify-between items-center gap-3 min-w-0">
                     <p className="text-[10px] text-muted-foreground font-medium">
                         <span className="font-bold text-primary">{usage.remaining}</span> queries remaining today
                     </p>
@@ -260,8 +260,8 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 </div>
 
                 {/* Input area */}
-                <div className="p-6 border-t border-border bg-muted/20 rounded-b-3xl md:rounded-b-2xl">
-                    <div className="flex gap-3">
+                <div className="p-3 md:p-6 border-t border-border bg-muted/20 rounded-b-3xl md:rounded-b-2xl">
+                    <div className="flex gap-2 md:gap-3 min-w-0">
                         <textarea
                             ref={inputRef}
                             value={input}

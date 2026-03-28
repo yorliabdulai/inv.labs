@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import {
     Award, Trophy, Medal, ArrowUp, Crown, TrendingUp, TrendingDown,
     Minus, Filter, BarChart3, Activity, Zap, Shield, Search,
-    ArrowUpRight, ArrowDownRight, Info, RefreshCcw, Users
+    ArrowUpRight, ArrowDownRight, Info, RefreshCcw, Users,
+    ChevronLeft, ChevronRight
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { getMarketRankings, type RankedAsset, type RankingCategory } from "@/app/actions/leaderboard";
@@ -16,6 +17,10 @@ export default function LeaderboardPage() {
     const [category, setCategory] = useState<RankingCategory>("gainers");
     const [rankings, setRankings] = useState<RankedAsset[]>([]);
     const [userRankings, setUserRankings] = useState<any[]>([]);
+    const [userTotal, setUserTotal] = useState(0);
+    const [userPage, setUserPage] = useState(1);
+    const [userTotalPages, setUserTotalPages] = useState(1);
+    const PAGE_SIZE = 10;
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +28,7 @@ export default function LeaderboardPage() {
     // Bolt Performance: Debounce search input to avoid expensive list filtering operations
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-    async function loadRankings(isRefresh = false) {
+    async function loadRankings(isRefresh = false, page = userPage) {
         if (isRefresh) setRefreshing(true);
         else setLoading(true);
 
@@ -32,8 +37,11 @@ export default function LeaderboardPage() {
                 const data = await getMarketRankings(category);
                 setRankings(data);
             } else {
-                const data = await getTopUsers();
-                setUserRankings(data);
+                const result = await getTopUsers(page, PAGE_SIZE);
+                setUserRankings(result.users);
+                setUserTotal(result.total);
+                setUserPage(result.page);
+                setUserTotalPages(result.totalPages);
             }
         } catch (err) {
             console.error("Failed to load rankings", err);
@@ -44,7 +52,8 @@ export default function LeaderboardPage() {
     }
 
     useEffect(() => {
-        loadRankings();
+        setUserPage(1); // reset page when switching mode/category
+        loadRankings(false, 1);
     }, [category, viewMode]);
 
     const filteredRankings = useMemo(() => {
@@ -58,6 +67,12 @@ export default function LeaderboardPage() {
             r.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
         );
     }, [rankings, userRankings, debouncedSearchQuery, viewMode]);
+
+    const handleUserPageChange = (newPage: number) => {
+        if (newPage < 1 || newPage > userTotalPages) return;
+        setUserPage(newPage);
+        loadRankings(false, newPage);
+    };
 
     const categories: { key: RankingCategory; label: string; icon: any; description: string }[] = [
         { key: 'gainers', label: 'Top Gainers', icon: TrendingUp, description: 'Highest price appreciation.' },
@@ -254,13 +269,26 @@ export default function LeaderboardPage() {
                                             </tr>
                                         );
                                     }) : filteredRankings.map((user, idx) => {
-                                        const rank = idx + 1;
+                                        const rank = user.globalRank ?? (((userPage - 1) * PAGE_SIZE) + idx + 1);
+                                        const isTopThree = rank <= 3;
                                         return (
                                             <tr key={user.id} className="group hover:bg-muted/20 transition-colors">
                                                 <td className="px-8 py-6 text-center">
-                                                    <span className={`text-xl font-bold tabular-nums tracking-tight ${rank <= 3 ? "text-primary" : "text-muted-foreground"}`}>
-                                                        {rank < 10 ? `0${rank}` : rank}
-                                                    </span>
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <span className={`text-xl font-bold tabular-nums tracking-tight ${isTopThree ? "text-primary" : "text-muted-foreground"}`}>
+                                                            {rank < 10 ? `0${rank}` : rank}
+                                                        </span>
+                                                        {user.rankChange === 'up' && (
+                                                            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-500">
+                                                                <ChevronRight className="rotate-[-90deg]" size={10} /> Up
+                                                            </span>
+                                                        )}
+                                                        {user.rankChange === 'down' && (
+                                                            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-red-500">
+                                                                <ChevronRight className="rotate-90" size={10} /> Down
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="px-8 py-5 w-full">
                                                     <div className="flex items-center gap-4 sm:gap-5">
@@ -291,6 +319,59 @@ export default function LeaderboardPage() {
                                     })}
                                 </tbody>
                             </table>
+                        </div>
+                    )}
+
+                    {/* Pagination footer — only for Users view */}
+                    {!loading && viewMode === "users" && userTotalPages > 0 && (
+                        <div className="px-6 md:px-8 py-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                <span className="text-foreground">{userTotal.toLocaleString()}</span> Traders in the Network
+                                &nbsp;·&nbsp;
+                                Page <span className="text-foreground">{userPage}</span> of <span className="text-foreground">{userTotalPages}</span>
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleUserPageChange(userPage - 1)}
+                                    disabled={userPage <= 1}
+                                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                    <ChevronLeft size={14} /> Prev
+                                </button>
+
+                                {/* Page number pills */}
+                                <div className="flex items-center gap-1">
+                                    {Array.from({ length: Math.min(userTotalPages, 5) }).map((_, i) => {
+                                        // Build a window of up to 5 pages centered on the current page
+                                        const half = 2;
+                                        let start = Math.max(1, userPage - half);
+                                        const end = Math.min(userTotalPages, start + 4);
+                                        start = Math.max(1, end - 4);
+                                        const p = start + i;
+                                        return (
+                                            <button
+                                                key={p}
+                                                onClick={() => handleUserPageChange(p)}
+                                                className={`w-8 h-8 rounded-lg text-[10px] font-bold transition-all ${
+                                                    p === userPage
+                                                        ? "bg-primary text-white shadow-md shadow-primary/20"
+                                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                                }`}
+                                            >
+                                                {p}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <button
+                                    onClick={() => handleUserPageChange(userPage + 1)}
+                                    disabled={userPage >= userTotalPages}
+                                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                    Next <ChevronRight size={14} />
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
