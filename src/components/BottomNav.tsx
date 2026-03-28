@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, PieChart, Layers, GraduationCap } from "lucide-react";
+import { Home, TrendingUp, PieChart, Layers, GraduationCap, Award, User } from "lucide-react";
 
 export function BottomNav() {
     const pathname = usePathname();
@@ -14,19 +14,21 @@ export function BottomNav() {
         { href: "/dashboard/market", label: "Stocks", icon: TrendingUp },
         { href: "/dashboard/mutual-funds", label: "Funds", icon: Layers },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: PieChart },
+        { href: "/dashboard/leaderboard", label: "Rankings", icon: Award },
         { href: "/dashboard/learn", label: "Learn", icon: GraduationCap },
+        { href: "/dashboard/profile", label: "Profile", icon: User },
     ];
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 safe-area-inset-bottom transition-colors duration-300">
-            <div className="flex justify-between items-center h-16 px-4 max-w-screen-xl mx-auto">
+            <div className="flex items-center h-16 px-4 overflow-x-auto scroll-smooth hide-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] gap-2 pb-1 pt-1">
                 {navItems.map(({ href, label, icon: Icon }) => {
                     const active = isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard";
                     return (
                         <Link
                             key={href}
                             href={href}
-                            className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] rounded-xl transition-all duration-200 touch-manipulation ${active
+                            className={`flex flex-col items-center justify-center min-w-[64px] h-full shrink-0 rounded-xl transition-all duration-200 touch-manipulation snap-center ${active
                                 ? "text-primary scale-105"
                                 : "text-zinc-500 active:scale-95"
                                 }`}

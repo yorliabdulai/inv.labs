@@ -3,7 +3,7 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 import { chatWithAto } from "@/lib/ai/ato-service";
 import { buildCompleteContext } from "@/lib/ai/ato-context";
 
-const RATE_LIMIT = 50; // messages per day
+const RATE_LIMIT = 15; // messages per day
 
 export async function POST(request: NextRequest) {
     try {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         if (currentUsage >= RATE_LIMIT) {
             return NextResponse.json(
                 {
-                    error: `Daily message limit reached (${RATE_LIMIT} messages/day). Resets at midnight.`,
+                    error: `Daily query limit reached (${RATE_LIMIT} queries/day). Upgrade to Premium for unlimited access!`,
                     limitReached: true,
                 },
                 { status: 429 }

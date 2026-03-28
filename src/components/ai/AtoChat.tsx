@@ -22,7 +22,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
-    const [usage, setUsage] = useState({ used: 0, remaining: 50, limit: 50 });
+    const [usage, setUsage] = useState({ used: 0, remaining: 15, limit: 15 });
     const [error, setError] = useState<string | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -222,13 +222,13 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 )}
 
                 {/* Usage/Disclaimer footer */}
-                <div className="px-6 py-2.5 bg-muted/5 border-t border-border">
-                    <p className="text-[8px] text-muted-foreground font-bold uppercase tracking-widest text-center">
-                        Institutional Grade Intelligence •{" "}
-                        <span className="text-primary">
-                            {usage.remaining}/{usage.limit} Queries Left
-                        </span>
+                <div className="px-6 py-3 bg-muted/5 border-t border-border flex justify-between items-center rounded-b-3xl md:rounded-b-none">
+                    <p className="text-[10px] text-muted-foreground font-medium">
+                        <span className="font-bold text-primary">{usage.remaining}</span> queries remaining today
                     </p>
+                    <button className="text-[9px] font-bold uppercase tracking-widest text-primary hover:text-white transition-colors bg-primary/10 hover:bg-primary px-3 py-1.5 rounded-lg">
+                        Upgrade to Premium
+                    </button>
                 </div>
 
                 {/* Input area */}
