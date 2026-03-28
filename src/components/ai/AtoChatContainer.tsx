@@ -13,7 +13,7 @@ export function AtoChatContainer() {
 
     return (
         <>
-            <AtoFloatingButton onClick={() => setIsChatOpen(true)} />
+            {!isChatOpen && <AtoFloatingButton onClick={() => setIsChatOpen(true)} />}
             <AtoChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
         </>
     );

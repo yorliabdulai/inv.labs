@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 import { getStocks } from "@/lib/market-data";
 import { getMutualFunds } from "@/app/actions/mutual-funds";
 import { formatCurrency, formatPercent } from "@/lib/mutual-funds-data";
@@ -43,6 +43,7 @@ export async function buildUserPortfolioContext(
     userId: string
 ): Promise<string> {
     try {
+        const supabase = await createClient();
         // Get user profile and cash balance
         const { data: profile } = await supabase
             .from("profiles")
