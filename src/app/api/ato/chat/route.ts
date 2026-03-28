@@ -134,6 +134,7 @@ export async function POST(request: NextRequest) {
         });
     } catch (error: any) {
         // Log the full error server-side
+        try { require('fs').writeFileSync('ato_error_log.txt', String(error?.message || error) + '\n' + String(error?.stack)); } catch(e){}
         console.error("[ATO API ERROR]:", error);
 
         // Check for specific HTTP status codes if provided, otherwise default to 500

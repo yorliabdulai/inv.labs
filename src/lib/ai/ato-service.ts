@@ -1,6 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
 
-// System prompt defining Ato's personality, knowledge, and boundaries
 export const SYSTEM_PROMPT = `You are Ato, an AI educational assistant in INV.LABS, a comprehensive investment simulator for learning about investing in Ghana. You are named after Ghana's respected Finance Minister, Ato Forson.
 
 CORE IDENTITY:
@@ -55,6 +55,7 @@ STRICT LIMITATIONS:
 - NEVER provide personalized investment recommendations
 - Always include disclaimers when discussing specific stocks or funds
 - If asked for advice, redirect to educational frameworks
+- OUT OF BOUNDS DISCIPLINE: If the user asks about topics completely unrelated to investing, the Ghana Stock Exchange, mutual funds in Ghana, or the INV.LABS simulator (for example, general programming, world facts, random trivia), you MUST refuse to answer. Reply exactly with: "I am an AI educational assistant specifically tailored for INV.LABS. My knowledge is currently limited purely to investments, the Ghana Stock Exchange, and mutual funds. I cannot assist with other topics."
 
 RESPONSE GUIDELINES:
 - Keep responses conversational and concise (2-4 paragraphs typically)
@@ -72,11 +73,6 @@ DISCLAIMER USAGE:
 
 USER CONTEXT:
 You will receive information about the user's portfolio, including both stock holdings and mutual fund holdings, recent transactions, and current performance. Use this to provide personalized educational insights.`;
-
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || "",
-});
 
 export interface AtoMessage {
     role: "user" | "assistant";
@@ -103,8 +99,10 @@ export async function chatWithAto(
     context: string,
     conversationHistory: AtoMessage[] = []
 ): Promise<AtoResponse> {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+
     // Check if API key is missing
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!apiKey) {
         console.warn("ANTHROPIC_API_KEY is missing. Returning mock response.");
         return {
             content: "👋 Hello! I'm Ato. It looks like my API key hasn't been set up yet in the `.env.local` file. Once the `ANTHROPIC_API_KEY` is added, I'll be able to help you analyze your portfolio and learn about investing in Ghana! \n\nIn the meantime, feel free to explore the simulator!",
@@ -114,40 +112,73 @@ export async function chatWithAto(
 
     try {
         // Build messages array
-        const messages: Anthropic.MessageParam[] = [
+        const messages = [
+            {
+                role: "system",
+                content: `${SYSTEM_PROMPT}\n\nUSER CONTEXT:\n${context}`,
+            },
             ...conversationHistory.map((msg) => ({
-                role: msg.role,
+                role: msg.role === "assistant" ? "assistant" : "user",
                 content: msg.content,
             })),
             {
-                role: "user" as const,
+                role: "user",
                 content: userMessage,
             },
         ];
 
-        // Call Claude API
-        const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
-            max_tokens: 800,
-            temperature: 0.7,
-            system: `${SYSTEM_PROMPT}\n\n${context}`,
-            messages,
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+
+        // Call OpenRouter API
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "HTTP-Referer": "https://invlabs.com",
+                "X-Title": "INV.LABS",
+                "Content-Type": "application/json"
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+                model: "openrouter/free", // Reliable, fast free tier model
+                temperature: 0.7,
+                max_tokens: 1500,
+                messages: messages,
+            })
         });
 
-        // Extract text content
-        const textContent = response.content.find((block) => block.type === "text");
-        const content = textContent && textContent.type === "text" ? textContent.text : "";
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error from OpenRouter API:", errorText);
+            throw new Error(`Failed to get response: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        
+        let content = "I'm having trouble retrieving an answer right now. Please try again later.";
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+             content = data.choices[0].message.content;
+        }
 
         return {
             content,
             usage: {
-                input_tokens: response.usage.input_tokens,
-                output_tokens: response.usage.output_tokens,
+                input_tokens: data.usage?.prompt_tokens || 0,
+                output_tokens: data.usage?.completion_tokens || 0,
             },
         };
     } catch (error: any) {
-        console.error("Error calling Anthropic API:", error);
-        throw new Error(`Failed to get response from Ato: ${error.message || "Unknown error"}`);
+        console.error("Error calling OpenRouter API:", error);
+        
+        let errorMessage = error.message || "Unknown error";
+        if (errorMessage.includes("aborted")) {
+             errorMessage = "Request timed out because OpenRouter free tier is heavily loaded right now. Please try again.";
+        }
+        
+        throw new Error(`Failed to get response from Ato: ${errorMessage}`);
     }
 }
 
@@ -170,22 +201,56 @@ export async function generateQuickInsight(
             "Provide a brief 2-3 sentence insight about the user's portfolio performance. Highlight what's working well and any areas of concern.",
     };
 
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) return "Unable to generate insight at this time. Please try again later.";
+
     try {
-        const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
-            max_tokens: 200,
-            temperature: 0.7,
-            system: `${SYSTEM_PROMPT}\n\n${context}`,
-            messages: [
-                {
-                    role: "user",
-                    content: prompts[insightType],
-                },
-            ],
+        const messages = [
+            {
+                role: "system",
+                content: `${SYSTEM_PROMPT}\n\nUSER CONTEXT:\n${context}`,
+            },
+            {
+                role: "user",
+                content: prompts[insightType],
+            }
+        ];
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "HTTP-Referer": "https://invlabs.com",
+                "X-Title": "INV.LABS",
+                "Content-Type": "application/json"
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+                model: "openrouter/free", // Reliable, fast free tier model
+                temperature: 0.7,
+                max_tokens: 200,
+                messages: messages,
+            })
         });
 
-        const textContent = response.content.find((block) => block.type === "text");
-        return textContent && textContent.type === "text" ? textContent.text : "";
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error generated insight: API status", response.status, errorText);
+            return "Unable to generate insight at this time. Please try again later.";
+        }
+
+        const data = await response.json();
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+            return data.choices[0].message.content;
+        }
+        
+        return "Unable to generate insight at this time. Please try again later.";
+        
     } catch (error) {
         console.error("Error generating insight:", error);
         return "Unable to generate insight at this time. Please try again later.";
