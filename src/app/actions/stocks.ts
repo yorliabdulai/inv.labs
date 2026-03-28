@@ -1,29 +1,23 @@
 "use server";
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { fetchStockBySymbol } from "@/lib/market-data";
 import { revalidatePath } from "next/cache";
 
 interface TradeParams {
     symbol: string;
-    name: string;       // pass stock metadata from client (already fetched for UI display)
-    sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent } = params;
+    const { symbol, type, quantity } = params;
 
     // Security: Validate inputs
-    if (!quantity || quantity <= 0) {
+    if (!quantity || quantity <= 0 || !Number.isFinite(quantity)) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
-    if (!symbol || !name) {
+    if (!symbol) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
     }
 
@@ -38,6 +32,17 @@ export async function executeStockTrade(params: TradeParams) {
         }
         if (!user) {
             throw new Error("Authentication required");
+        }
+
+        // Step 1.5: Securely fetch live market data server-side to prevent parameter tampering
+        const stock = await fetchStockBySymbol(symbol);
+        if (!stock) {
+            throw new Error(`Stock symbol "${symbol}" not found.`);
+        }
+        const { price, name, sector, changePercent } = stock;
+
+        if (!price || price <= 0 || !Number.isFinite(price) || Number.isNaN(price)) {
+            throw new Error("Invalid stock price received from market data. Please try again later.");
         }
 
         // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
