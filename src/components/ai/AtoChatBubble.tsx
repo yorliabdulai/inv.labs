@@ -28,13 +28,13 @@ export function AtoChatBubble({ role, content, timestamp }: AtoChatBubbleProps) 
             </div>
 
             {/* Message bubble */}
-            <div className={`flex flex-col max-w-[calc(100%-44px)] ${isUser ? "items-end" : "items-start"}`}>
-                <div className={`px-4 py-3 rounded-2xl shadow-premium transition-all hover:scale-[1.01] ${isUser
+            <div className={`flex flex-col min-w-0 max-w-[calc(100%-44px)] ${isUser ? "items-end" : "items-start"}`}>
+                <div className={`px-4 py-3 rounded-2xl shadow-premium overflow-hidden w-full ${isUser
                     ? "bg-primary text-white border border-primary/30"
                     : "bg-muted/10 text-foreground border border-border backdrop-blur-md"
                     }`}>
                     {/* Render content with bespoke markdown support */}
-                    <div className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap break-words font-sans">
+                    <div className="text-xs md:text-sm leading-relaxed break-words word-break-all overflow-x-hidden font-sans w-full">
                         <ReactMarkdown 
                             remarkPlugins={[remarkGfm]}
                             components={{
