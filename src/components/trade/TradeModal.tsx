@@ -74,12 +74,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
 
             const result = await executeStockTrade({
                 symbol: stock.symbol,
-                name: stock.name,
-                sector: stock.sector,
                 type,
                 quantity,
-                price: stock.price,
-                changePercent: stock.changePercent,
             });
 
             if (!result.success) throw new Error(result.message);
@@ -90,8 +86,9 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 onClose();
             }, 2500);
 
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            setError(message);
         } finally {
             setIsSubmitting(false);
         }
