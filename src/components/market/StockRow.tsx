@@ -82,7 +82,11 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
                     </div>
                     <button
                         className="ml-4 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 active:scale-95 transition-all text-xs flex-shrink-0 min-h-[36px] shadow-sm shadow-primary/20"
-                        onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
+                        onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setIsModalOpen(true); 
+                            import("@/app/actions/xp").then(mod => mod.recordExploreStock(stock.symbol));
+                        }}
                     >
                         Trade
                     </button>
@@ -103,7 +107,10 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
             <div
                 className={`bg-card rounded-2xl p-6 transition-all duration-300 cursor-pointer group border flex flex-col h-full hover:bg-muted/10 shadow-sm ${isOwned ? "border-primary/30" : "border-border hover:border-border/80"
                     }`}
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                    setIsModalOpen(true);
+                    import("@/app/actions/xp").then(mod => mod.recordExploreStock(stock.symbol));
+                }}
             >
                 {/* Ownership Label */}
                 {isOwned && (
@@ -179,7 +186,11 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
                 <div className="flex gap-2 mt-auto">
                     <button
                         className="flex-1 py-3 bg-primary text-white font-semibold rounded-xl transition-all text-xs border border-transparent hover:bg-primary/90 active:scale-[0.98] min-h-[44px] shadow-sm shadow-primary/20"
-                        onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
+                        onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setIsModalOpen(true);
+                            import("@/app/actions/xp").then(mod => mod.recordExploreStock(stock.symbol));
+                        }}
                     >
                         Trade Asset
                     </button>

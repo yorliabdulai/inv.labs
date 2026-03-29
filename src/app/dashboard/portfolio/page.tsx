@@ -197,6 +197,9 @@ export default function PortfolioPage() {
     useEffect(() => {
         if (!profileLoading) {
             fetchData(false, user?.id);
+            if (user?.id) {
+                import("@/app/actions/xp").then(mod => mod.recordPortfolioReview());
+            }
         }
     }, [user, profileLoading]);
 

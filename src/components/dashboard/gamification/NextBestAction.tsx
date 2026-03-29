@@ -24,43 +24,68 @@ interface ActionSuggestion {
     color: string;
 }
 
-export function NextBestAction() {
-    // In a real app, this would be computed based on user state (missions left, streak status, etc.)
-    const suggestions: ActionSuggestion[] = [
-        {
+interface NextBestActionProps {
+    streak: number;
+    level: number;
+    lastActiveDate: string | null;
+    missions?: any[];
+}
+
+export function NextBestAction({ streak, level, lastActiveDate, missions = [] }: NextBestActionProps) {
+    const today = new Date().toISOString().split('T')[0];
+    const isStreakDoneToday = lastActiveDate === today;
+
+    // Filter out missions already done
+    const pendingMissions = missions.filter(m => !m.completed);
+    
+    let action: ActionSuggestion;
+
+    if (isStreakDoneToday && pendingMissions.length === 0) {
+        action = {
+            id: "done",
+            title: "Day Complete! 🎉",
+            description: "You've finished all your missions and kept your streak alive. Rest up and come back tomorrow for new challenges!",
+            icon: <Zap className="text-yellow-500" size={20} />,
+            href: "/dashboard/portfolio",
+            buttonText: "View Portfolio",
+            xpReward: 0,
+            color: "from-yellow-500/10 to-transparent"
+        };
+    } else if (isStreakDoneToday && pendingMissions.length > 0) {
+        const nextMission = pendingMissions[0];
+        const missionInfoMap: Record<string, { title: string; desc: string; icon: React.ReactNode; href: string }> = {
+            'ask_ato': { title: "Ask Ato a question", desc: "Need help? Ato is available 24/7 to explain complex financial terms.", icon: <MessageSquare className="text-primary" size={20} />, href: "/dashboard?showAto=true" },
+            'watch_video': { title: "Watch a Video", desc: "Level up your visual learning by watching a quick market breakdown.", icon: <Zap className="text-blue-500" size={20} />, href: "/dashboard/learn" },
+            'review_portfolio': { title: "Review Portfolio", desc: "Check your weightings and sector allocation to stay balanced.", icon: <Target className="text-emerald-500" size={20} />, href: "/dashboard/portfolio" },
+            'explore_stock': { title: "Explore a Stock", desc: "Research a new symbol to find your next major move.", icon: <ArrowRight className="text-amber-500" size={20} />, href: "/dashboard/market" },
+            'complete_lesson': { title: "Finish a Lesson", desc: "Consistent learning is the key to institutional-grade trading.", icon: <BookOpen className="text-purple-500" size={20} />, href: "/dashboard/learn" },
+        };
+        
+        const missionInfo = missionInfoMap[nextMission.mission_key] || { title: "Complete Mission", desc: "Finish your daily goals to earn bonus XP.", icon: <Zap className="text-primary" size={20} />, href: "/dashboard" };
+
+        action = {
+            id: nextMission.mission_key,
+            title: missionInfo.title,
+            description: missionInfo.desc,
+            icon: missionInfo.icon,
+            href: missionInfo.href,
+            buttonText: "Go to Task",
+            xpReward: nextMission.xp_reward,
+            color: "from-primary/10 to-transparent"
+        };
+    } else {
+        // Streak not done yet
+        action = {
             id: "streak",
             title: "Keep the streak alive",
-            description: "You're 1 day away from a 3-day flame! Log in tomorrow to claim 50 bonus XP.",
+            description: `You're currently on a ${streak} day streak! Complete any action today to keep it going.`,
             icon: <Flame className="text-orange-500" size={20} />,
-            href: "/dashboard/learn",
-            buttonText: "Go to Academy",
-            xpReward: 50,
+            href: "/dashboard/market",
+            buttonText: "Start Daily Session",
+            xpReward: 10,
             color: "from-orange-500/10 to-transparent"
-        },
-        {
-            id: "ato",
-            title: "Ask Ato a question",
-            description: "Need help understanding P/E ratios? Ato can explain it in seconds.",
-            icon: <MessageSquare className="text-primary" size={20} />,
-            href: "/dashboard?showAto=true",
-            buttonText: "Ask Ato",
-            xpReward: 15,
-            color: "from-primary/10 to-transparent"
-        },
-        {
-            id: "lesson",
-            title: "Master the Basics",
-            description: "Complete 'Intro to Stock Markets' to unlock the Explorer badge.",
-            icon: <BookOpen className="text-emerald-500" size={20} />,
-            href: "/dashboard/learn",
-            buttonText: "Continue Learning",
-            xpReward: 100,
-            color: "from-emerald-500/10 to-transparent"
-        }
-    ];
-
-    // Pick one random suggestion or based on logic
-    const action = suggestions[Math.floor(Math.random() * suggestions.length)];
+        };
+    }
 
     return (
         <motion.div 

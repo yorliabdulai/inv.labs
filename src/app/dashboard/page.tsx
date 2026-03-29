@@ -36,6 +36,7 @@ const AllocationChart = dynamic(
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
+    const [missions, setMissions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeRange, setActiveRange] = useState('1M');
     const [chartType, setChartType] = useState<'area' | 'bar' | 'candle'>('area');
@@ -46,6 +47,14 @@ export default function DashboardPage() {
             try {
                 const result = await getDashboardData();
                 setData(result);
+                
+                // Fetch today's missions
+                const { data: missionData } = await supabase
+                    .from('user_daily_missions')
+                    .select('*')
+                    .eq('assigned_date', new Date().toISOString().split('T')[0]);
+                setMissions(missionData || []);
+
                 // Record daily login
                 await recordDailyLogin();
             } finally {
@@ -103,7 +112,12 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <NextBestAction />
+            <NextBestAction 
+                streak={data?.streak_count || 0} 
+                level={data?.level || 1} 
+                lastActiveDate={data?.last_active_date || null}
+                missions={missions}
+            />
 
             {/* Top Metrics Row */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

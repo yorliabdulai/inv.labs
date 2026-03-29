@@ -26,6 +26,8 @@ export default function CourseLearningPage() {
             if (data?.course) {
                 setCourse(data.course);
                 setEnrollment(data.enrollment);
+                // Award XP for watching the video/starting module
+                import("@/app/actions/xp").then(mod => mod.awardXP('VIDEO_WATCHED'));
             } else {
                 toast({
                     title: "Course Unavailable",

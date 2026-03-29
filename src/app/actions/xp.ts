@@ -57,7 +57,36 @@ export async function awardXP(eventType: XPEventType, metadata: any = {}) {
 
         if (updateError) throw updateError;
 
-        // 4. Check for new achievements
+        // 4. Check for relevant daily missions to mark as complete
+        const today = new Date().toISOString().split('T')[0];
+        const missionMapping: Record<XPEventType, string> = {
+            'ATO_QUESTION': 'ask_ato',
+            'VIDEO_WATCHED': 'watch_video',
+            'PORTFOLIO_REVIEW': 'review_portfolio',
+            'EXPLORE_STOCK': 'explore_stock',
+            'LESSON_COMPLETED': 'complete_lesson',
+            'STOCK_TRADE_BUY': '',
+            'STOCK_TRADE_SELL': '',
+            'MF_INVESTMENT': '',
+            'DAILY_LOGIN': '',
+            'COURSE_COMPLETED': '',
+            'STREAK_3_DAY': '',
+            'STREAK_7_DAY': '',
+            'STREAK_30_DAY': ''
+        };
+
+        const missionKey = missionMapping[eventType];
+        if (missionKey && !metadata.isMission) {
+            await supabase
+                .from('user_daily_missions')
+                .update({ completed: true, completed_at: new Date().toISOString() })
+                .eq('user_id', user.id)
+                .eq('mission_key', missionKey)
+                .eq('assigned_date', today)
+                .eq('completed', false);
+        }
+
+        // 5. Check for new achievements
         await checkAchievements(user.id);
 
         revalidatePath('/dashboard');
