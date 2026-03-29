@@ -49,7 +49,19 @@ export async function POST(request: NextRequest) {
         // Get or create conversation
         let activeConversationId = conversationId;
 
-        if (!activeConversationId) {
+        if (activeConversationId) {
+            // Verify ownership to prevent IDOR
+            const { data: conversation, error: checkError } = await supabase
+                .from("ato_conversations")
+                .select("user_id")
+                .eq("id", activeConversationId)
+                .single();
+
+            if (checkError || !conversation || conversation.user_id !== user.id) {
+                // Return 404 to prevent resource enumeration
+                return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+            }
+        } else {
             // Create new conversation
             const title =
                 message.length > 50 ? message.substring(0, 50) + "..." : message;
@@ -82,7 +94,7 @@ export async function POST(request: NextRequest) {
             .order("created_at", { ascending: true });
 
         const conversationHistory =
-            messages?.map((m: any) => ({
+            messages?.map((m: { role: string; content: string }) => ({
                 role: m.role as "user" | "assistant",
                 content: m.content,
             })) || [];
@@ -132,18 +144,23 @@ export async function POST(request: NextRequest) {
                 limit: RATE_LIMIT,
             },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Log the full error server-side
-        try { require('fs').writeFileSync('ato_error_log.txt', String(error?.message || error) + '\n' + String(error?.stack)); } catch(e){}
-        console.error("[ATO API ERROR]:", error);
+        const errMessage = error instanceof Error ? error.message : String(error);
+        const errStack = error instanceof Error ? error.stack : '';
+        const status = (error as { status?: number })?.status || 500;
 
-        // Check for specific HTTP status codes if provided, otherwise default to 500
-        const status = error.status || 500;
+        try {
+            const fs = await import('fs');
+            fs.writeFileSync('ato_error_log.txt', String(errMessage) + '\n' + String(errStack));
+        } catch(_){}
+
+        console.error("[ATO API ERROR]:", error);
 
         // Return a generic, safe error message to the client
         return NextResponse.json(
             {
-                error: status >= 500 ? "An unexpected error occurred while processing your request." : error.message,
+                error: status >= 500 ? "An unexpected error occurred while processing your request." : errMessage,
             },
             { status }
         );
