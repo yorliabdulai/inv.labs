@@ -202,7 +202,7 @@ export default function DashboardPage() {
                                 <Activity size={16} className="text-muted-foreground" />
                                 Ledger
                             </h3>
-                            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+                            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors" aria-label="Search ledger activity">
                                 <Search size={14} />
                             </button>
                         </div>
