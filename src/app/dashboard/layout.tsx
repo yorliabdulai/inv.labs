@@ -34,6 +34,11 @@ export default async function DashboardLayout({
         onboarding_completed: !!profile.onboarding_completed,
         role: (profile as any).role || "user",
         created_at: profile.created_at,
+        knowledge_xp: profile.knowledge_xp || 0,
+        level: profile.level || 1,
+        is_founding_member: !!profile.is_founding_member,
+        streak_count: profile.streak_count || 0,
+        last_active_date: profile.last_active_date || null,
     } : {
         id: user.id,
         full_name: user.user_metadata?.full_name || "Trader",
@@ -43,6 +48,11 @@ export default async function DashboardLayout({
         onboarding_completed: false,
         role: "user",
         created_at: new Date().toISOString(),
+        knowledge_xp: 0,
+        level: 1,
+        is_founding_member: false,
+        streak_count: 0,
+        last_active_date: null,
     };
 
     return (
