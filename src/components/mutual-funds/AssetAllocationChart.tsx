@@ -16,26 +16,26 @@ const COLORS = {
     cash: "#F59E0B", // Amber
 };
 
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-card border border-border rounded-xl p-4 shadow-premium backdrop-blur-md">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{payload[0].name}</p>
+                <p className="text-xl font-bold tabular-nums" style={{ color: payload[0].payload.color }}>
+                    {payload[0].value}%
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
+
 export function AssetAllocationChart({ allocation }: AssetAllocationChartProps) {
     const data = [
         { name: "Stocks", value: allocation.stocks, color: COLORS.stocks },
         { name: "Bonds", value: allocation.bonds, color: COLORS.bonds },
         { name: "Cash", value: allocation.cash, color: COLORS.cash },
     ].filter((item) => item.value > 0);
-
-    const CustomTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-card border border-border rounded-xl p-4 shadow-premium backdrop-blur-md">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{payload[0].name}</p>
-                    <p className="text-xl font-bold tabular-nums" style={{ color: payload[0].payload.color }}>
-                        {payload[0].value}%
-                    </p>
-                </div>
-            );
-        }
-        return null;
-    };
 
     return (
         <div className="h-64 sm:h-72 pb-6">
