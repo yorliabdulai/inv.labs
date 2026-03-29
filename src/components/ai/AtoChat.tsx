@@ -130,6 +130,14 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                     limit: data.usage.limit,
                 });
             }
+
+            // Award XP for asking Ato a question
+            try {
+                const { awardXP } = await import("@/app/actions/xp");
+                await awardXP('ATO_QUESTION');
+            } catch (xpErr) {
+                console.error("Failed to award XP for Ato question", xpErr);
+            }
         } catch (err: any) {
             console.error("Error sending message:", err);
             setError(err.message || "Failed to send message. Please try again.");

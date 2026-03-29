@@ -95,7 +95,7 @@ export async function getTopUsers(page: number = 1, pageSize: number = 10): Prom
     // Profiles are publicly readable (policy set in leaderboard_bookmarks migration)
     const { data, error, count } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url, knowledge_xp, accreditation_level', { count: 'exact' })
+        .select('id, full_name, avatar_url, knowledge_xp, accreditation_level, level, is_founding_member', { count: 'exact' })
         .order('knowledge_xp', { ascending: false })
         .range(from, from + pageSize - 1);
 
@@ -187,11 +187,12 @@ export async function advanceCourseProgress(courseId: string) {
         .eq('id', enrollment.id);
 
     if (isCompleted) {
-        const { data: profile } = await supabase.from('profiles').select('knowledge_xp').eq('id', user.id).single();
-        if (profile) {
-            await supabase.from('profiles').update({
-                knowledge_xp: (profile.knowledge_xp || 0) + staticCourse.xpReward
-            }).eq('id', user.id);
+        const { awardXP } = await import("./xp");
+        await awardXP('LESSON_COMPLETED', { courseId });
+        
+        // Also check if course is completed for bonus
+        if (newCompleted === totalLessons) {
+            await awardXP('COURSE_COMPLETED', { courseId });
         }
     }
 

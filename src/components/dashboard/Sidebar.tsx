@@ -79,6 +79,28 @@ export function Sidebar() {
 
                 {/* Navigation */}
                 <nav className="flex-1 px-3 py-5 space-y-6 overflow-y-auto">
+                    {profile && (
+                        <div className="px-3 mb-8">
+                            <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 shadow-inner">
+                                <div className="flex items-center justify-between mb-3">
+                                    <h4 className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Rank & Potential</h4>
+                                    <div className="px-1.5 py-0.5 rounded bg-primary text-white text-[8px] font-bold">Lvl {profile.level || 1}</div>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center text-[10px] font-bold tabular-nums">
+                                        <span className="text-foreground">{profile.knowledge_xp || 0} XP</span>
+                                        <span className="text-muted-foreground uppercase tracking-tighter opacity-70">to Next</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden border border-border/20">
+                                        <div 
+                                            className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.3)]"
+                                            style={{ width: `${Math.min(100, ((profile.knowledge_xp % 1000) / 1000) * 100)}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <div>
                         <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Navigation</p>
                         <div className="space-y-0.5">

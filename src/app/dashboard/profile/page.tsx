@@ -10,10 +10,25 @@ import {
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
+import { LevelBadge } from "@/components/dashboard/gamification/LevelBadge";
+import { AchievementsPanel } from "@/components/dashboard/gamification/AchievementsPanel";
+import { InvestorJourneyMap } from "@/components/dashboard/gamification/InvestorJourneyMap";
+import { FoundingMemberBadge } from "@/components/dashboard/gamification/FoundingMemberBanner";
+import { useState, useEffect } from "react";
 
 export default function ProfilePage() {
     const { user, profile, loading: profileLoading, displayName, displayInitial } = useUserProfile();
+    const [earnedAchievements, setEarnedAchievements] = useState<string[]>([]);
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            supabase.from('user_achievements').select('achievement_key').eq('user_id', user.id)
+                .then(({ data }) => {
+                    if (data) setEarnedAchievements(data.map(a => a.achievement_key));
+                });
+        }
+    }, [user]);
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
@@ -49,33 +64,46 @@ export default function ProfilePage() {
                 <div className="lg:col-span-1 space-y-8">
                     <div className="bg-card border border-border rounded-2xl p-8 shadow-premium backdrop-blur-md relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
-
+                        
                         <div className="relative z-10 flex flex-col items-center text-center">
-                            <div className="w-24 h-24 rounded-2xl bg-muted/30 border border-border flex items-center justify-center font-bold text-3xl text-primary mb-6 shadow-premium transition-transform group-hover:scale-105 overflow-hidden">
-                                {profile?.avatar_url ? (
-                                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                                ) : (
-                                    displayInitial
-                                )}
+                            <div className="relative mb-6">
+                                <div className="w-24 h-24 rounded-2xl bg-muted/30 border border-border flex items-center justify-center font-bold text-3xl text-primary shadow-premium transition-transform group-hover:scale-105 overflow-hidden">
+                                    {profile?.avatar_url ? (
+                                        <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        displayInitial
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-2 -right-2 z-20">
+                                    <LevelBadge level={profile?.level || 1} className="scale-110" />
+                                </div>
                             </div>
-                            <h3 className="text-2xl font-bold text-foreground mb-1 font-syne tracking-tight">{displayName}</h3>
-                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">Professional Accreditation ID: GH-7742</p>
+                            
+                            <div className="flex flex-col items-center">
+                                <h3 className="text-2xl font-bold text-foreground mb-1 font-syne tracking-tight flex items-center gap-2">
+                                    {displayName}
+                                    {profile?.is_founding_member && <FoundingMemberBadge className="mt-1" />}
+                                </h3>
+                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8 truncate max-w-full px-4">
+                                    Professional ID: GH-{profile?.id.substring(0, 8)}
+                                </p>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-4 w-full">
                                 <div className="p-4 bg-muted/20 border border-border rounded-xl">
-                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Accreditation</div>
-                                    <div className="text-lg font-bold text-foreground">Level 1</div>
+                                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Status</div>
+                                    <div className="text-lg font-bold text-foreground">Level {profile?.level || 1}</div>
                                 </div>
                                 <div className="p-4 bg-muted/20 border border-border rounded-xl">
                                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">XP Points</div>
-                                    <div className="text-lg font-bold text-foreground">1,240</div>
+                                    <div className="text-lg font-bold text-foreground tabular-nums tracking-tight">{profile?.knowledge_xp || 0}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="bg-card border border-border rounded-2xl p-8 shadow-premium">
-                        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-8 flex items-center gap-3">
+                        <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-8 flex items-center gap-3">
                             <ShieldCheck size={14} className="text-primary" /> Security Baseline
                         </h4>
                         <div className="space-y-6">
@@ -100,7 +128,7 @@ export default function ProfilePage() {
 
                 {/* Right Col: Analytics & Identity Details */}
                 <div className="lg:col-span-2 space-y-8">
-                    {/* ── Institutional Identity Detail ── */}
+                    {/* ── Intelligence Factor ── */}
                     <div className="bg-card border border-border rounded-2xl p-8 shadow-premium overflow-hidden relative group">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
                             <div>
@@ -119,43 +147,26 @@ export default function ProfilePage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="bg-muted/10 border border-border rounded-2xl p-8 shadow-sm">
-                                <div className="flex items-center gap-3 mb-8">
-                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                                        <Trophy size={18} />
-                                    </div>
-                                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Achievements</h4>
+                        <div className="space-y-10">
+                            {/* ── Investor Evolution Track ── */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between px-1">
+                                    <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+                                        <TrendingUp size={14} className="text-primary" /> Investor Evolution Track
+                                    </h4>
                                 </div>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {[1, 2, 3].map(i => (
-                                        <div key={i} className="aspect-square rounded-xl bg-muted/30 border border-border flex items-center justify-center grayscale hover:grayscale-0 transition-all cursor-pointer hover:border-primary/40 group">
-                                            <Trophy size={18} className="text-muted-foreground group-hover:text-primary" />
-                                        </div>
-                                    ))}
-                                </div>
+                                <InvestorJourneyMap currentLevel={profile?.level || 1} />
                             </div>
 
-                            <div className="bg-muted/10 border border-border rounded-2xl p-8 shadow-sm">
-                                <div className="flex items-center gap-3 mb-8">
-                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                                        <Mail size={18} />
-                                    </div>
-                                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Contact Info</h4>
+                            {/* ── Achievements & Milestones ── */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between px-1">
+                                    <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+                                        <Trophy size={14} className="text-primary" /> Achievements & Milestones
+                                    </h4>
+                                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">{earnedAchievements.length} Unlocked</span>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="space-y-1">
-                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Registered Email</div>
-                                        <div className="text-xs font-semibold text-foreground">{user?.email}</div>
-                                    </div>
-                                    <div className="space-y-1 pt-4 border-t border-border">
-                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Account Status</div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-xs font-bold text-emerald-500 uppercase">Verified Professional</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <AchievementsPanel earnedAchievementKeys={earnedAchievements} />
                             </div>
                         </div>
                     </div>
@@ -163,7 +174,7 @@ export default function ProfilePage() {
                     {/* Activity Feed Strip */}
                     <div className="bg-card border border-border rounded-2xl p-8 shadow-premium">
                         <div className="flex items-center justify-between mb-8">
-                            <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-3">
+                            <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-3">
                                 <Activity size={14} className="text-primary" /> Active Terminal Sessions
                             </h4>
                             <span className="text-[9px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-1 rounded-md">Live Stream</span>
@@ -186,7 +197,7 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* ── Professional Milestones ── */}
+            {/* ── Professional Badges ── */}
             <div className="bg-card border border-border rounded-2xl p-10 space-y-12 shadow-premium backdrop-blur-md">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -272,7 +283,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-center gap-3">
                     <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                        Last Session Sync: 22 Feb 2026 16:05 GMT
+                        Last Session Sync: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </p>
                 </div>
             </div>

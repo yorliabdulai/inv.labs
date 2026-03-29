@@ -26,6 +26,12 @@ export interface DashboardData {
         changePercent: number;
     }[];
     activePositions: number;
+    knowledge_xp: number;
+    level: number;
+    streak_count: number;
+    is_founding_member: boolean;
+    founding_member_notified: boolean;
+    profileId: string;
 }
 
 export interface TransactionRecord {
@@ -87,7 +93,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
                 .eq("user_id", user.id)
                 .order("transaction_date", { ascending: false })
                 .limit(20),
-            supabase.from("profiles").select("cash_balance").eq("id", user.id).single()
+            supabase.from("profiles").select("cash_balance, knowledge_xp, level, streak_count, is_founding_member, founding_member_notified, id").eq("id", user.id).single()
         ]);
 
         const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
@@ -234,6 +240,12 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             recentActivity,
             holdings: processedHoldings,
             activePositions: dbHoldings.length + mfHoldings.length,
+            knowledge_xp: profile?.knowledge_xp ?? 0,
+            level: profile?.level ?? 1,
+            streak_count: profile?.streak_count ?? 0,
+            is_founding_member: profile?.is_founding_member ?? false,
+            founding_member_notified: profile?.founding_member_notified ?? false,
+            profileId: profile?.id ?? user.id
         };
 
     } catch (error) {

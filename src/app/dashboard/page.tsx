@@ -11,11 +11,19 @@ import {
     ChevronRight,
     Search,
     PieChart,
-    Wallet
+    Wallet,
+    Award
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioUniversalChart } from "@/components/dashboard/PortfolioUniversalChart";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { XPProgressBar } from "@/components/dashboard/gamification/XPProgressBar";
+import { DailyMissionsWidget } from "@/components/dashboard/gamification/DailyMissionsWidget";
+import { StreakWidget } from "@/components/dashboard/gamification/StreakWidget";
+import { FoundingMemberBanner, FoundingMemberBadge } from "@/components/dashboard/gamification/FoundingMemberBanner";
+import { NextBestAction } from "@/components/dashboard/gamification/NextBestAction";
+import { recordDailyLogin } from "@/app/actions/xp";
+import { supabase } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 import { CreateChallengeModal } from "@/components/dashboard/gamification/CreateChallengeModal";
 import { getDashboardData, type DashboardData } from "@/app/actions/dashboard";
@@ -38,6 +46,8 @@ export default function DashboardPage() {
             try {
                 const result = await getDashboardData();
                 setData(result);
+                // Record daily login
+                await recordDailyLogin();
             } finally {
                 setLoading(false);
             }
@@ -60,8 +70,40 @@ export default function DashboardPage() {
     const isPositive = (data?.dailyChange ?? 0) >= 0;
 
     return (
-        <div className="max-w-[1440px] mx-auto space-y-8 animate-in fade-in duration-700 text-foreground">
+        <div className="max-w-[1440px] mx-auto space-y-8 animate-in fade-in duration-700 text-foreground pb-12">
             <DashboardHeader />
+
+            {/* Founding Member Toast/Banner */}
+            {data?.is_founding_member && !data?.founding_member_notified && (
+                <FoundingMemberBanner 
+                    isFoundingMember={true} 
+                    alreadyNotified={false}
+                    onDismiss={async () => {
+                        await supabase.from('profiles').update({ founding_member_notified: true }).eq('id', data.profileId);
+                    }}
+                />
+            )}
+
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl md:text-5xl font-bold font-syne tracking-tight text-foreground">
+                            Welcome back
+                        </h1>
+                        {data?.is_founding_member && <FoundingMemberBadge />}
+                    </div>
+                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                        Your Investing Journey • <span className="text-primary font-bold">In Progress</span>
+                    </p>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-4">
+                    <StreakWidget streak={data?.streak_count || 0} />
+                    <XPProgressBar currentXP={data?.knowledge_xp || 0} level={data?.level || 1} variant="compact" />
+                </div>
+            </div>
+
+            <NextBestAction />
 
             {/* Top Metrics Row */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -122,6 +164,7 @@ export default function DashboardPage() {
 
                 {/* Main Content Column */}
                 <div className="lg:col-span-8 space-y-6">
+                    <XPProgressBar currentXP={data?.knowledge_xp || 0} level={data?.level || 1} variant="full" />
 
                     {/* Chart Panel */}
                     <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm">
@@ -194,6 +237,7 @@ export default function DashboardPage() {
 
                 {/* Sidebar Column */}
                 <div className="lg:col-span-4 space-y-6">
+                    <DailyMissionsWidget />
 
                     {/* Activity Feed */}
                     <div className="bg-card border border-border rounded-2xl p-5 flex flex-col h-[400px] shadow-sm">

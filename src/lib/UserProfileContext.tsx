@@ -21,6 +21,11 @@ export interface UserProfile {
     username: string | null;
     onboarding_completed: boolean;
     created_at: string | null;
+    knowledge_xp: number;
+    level: number;
+    is_founding_member: boolean;
+    streak_count: number;
+    last_active_date: string | null;
 }
 
 export interface UserProfileContextValue {
