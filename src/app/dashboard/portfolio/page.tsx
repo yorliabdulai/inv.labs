@@ -150,6 +150,7 @@ type Period = typeof PERIODS[number];
 export default function PortfolioPage() {
     const { user, loading: profileLoading } = useUserProfile();
     const [holdings, setHoldings] = useState<Holding[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [mutualFundHoldings, setMutualFundHoldings] = useState<any[]>([]);
     const [allTransactions, setAllTransactions] = useState<RawTransaction[]>([]);
     const [priceMapState, setPriceMapState] = useState<Map<string, number>>(new Map());
@@ -240,17 +241,46 @@ export default function PortfolioPage() {
     const numAssetClasses = [totalValue > 0, mutualFundsValue > 0, cashBalance > 0].filter(Boolean).length;
     const numSectors = new Set(holdings.map(h => h.sector)).size;
     const diversificationScore = Math.min(100, (numSectors * 20) + (numAssetClasses * 15));
-    const winRate = holdings.length > 0 ? Math.round((holdings.filter(h => h.gain > 0).length / holdings.length) * 100) : 0;
 
     // Key metrics (real)
     // ⚡ BOLT OPTIMIZATION: Memoize O(n) array reduction computations to prevent running
     // them synchronously on every re-render (e.g. tab switches, hover states).
-    const { bestPosition, worstPosition, totalInvested, avgPositionSize } = useMemo(() => {
+    const {
+        bestPosition,
+        worstPosition,
+        totalInvested,
+        avgPositionSize,
+        positiveHoldingsCount,
+        negativeHoldingsCount,
+        winRate
+    } = useMemo(() => {
         const best = holdings.length > 0 ? holdings.reduce((b, h) => h.gainPercent > b.gainPercent ? h : b, holdings[0]) : null;
         const worst = holdings.length > 0 ? holdings.reduce((w, h) => h.gainPercent < w.gainPercent ? h : w, holdings[0]) : null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const invested = holdings.reduce((s, h) => s + h.totalCost, 0) + mutualFundHoldings.reduce((s: number, h: any) => s + (h.total_invested ?? 0), 0);
         const avgSize = holdings.length > 0 ? totalValue / holdings.length : 0;
-        return { bestPosition: best, worstPosition: worst, totalInvested: invested, avgPositionSize: avgSize };
+
+        const positiveStocks = holdings.filter(h => h.gain > 0).length;
+        const negativeStocks = holdings.filter(h => h.gain < 0).length;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const positiveFunds = mutualFundHoldings.filter((h: any) => (h.current_value ?? 0) > (h.total_invested ?? 0)).length;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const negativeFunds = mutualFundHoldings.filter((h: any) => (h.current_value ?? 0) < (h.total_invested ?? 0)).length;
+
+        const posCount = positiveStocks + positiveFunds;
+        const negCount = negativeStocks + negativeFunds;
+
+        const computedWinRate = holdings.length > 0 ? Math.round((positiveStocks / holdings.length) * 100) : 0;
+
+        return {
+            bestPosition: best,
+            worstPosition: worst,
+            totalInvested: invested,
+            avgPositionSize: avgSize,
+            positiveHoldingsCount: posCount,
+            negativeHoldingsCount: negCount,
+            winRate: computedWinRate
+        };
     }, [holdings, mutualFundHoldings, totalValue]);
 
     // Sector performance (real)
@@ -263,6 +293,7 @@ export default function PortfolioPage() {
             map.set(h.sector, ex);
         });
         if (mutualFundsValue > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mfInvested = mutualFundHoldings.reduce((s: number, h: any) => s + (h.total_invested ?? 0), 0);
             map.set("Mutual Funds", { invested: mfInvested, current: mutualFundsValue });
         }
@@ -535,7 +566,7 @@ export default function PortfolioPage() {
                         {[
                             {
                                 label: "Accuracy Ratio", value: `${winRate}%`,
-                                sub: `${holdings.filter(h => h.gain > 0).length + mutualFundHoldings.filter((h: any) => (h.current_value ?? 0) > (h.total_invested ?? 0)).length} POSITIVE ASSETS`,
+                                sub: `${positiveHoldingsCount} POSITIVE ASSETS`,
                                 color: "text-emerald-500", bgColor: "bg-emerald-500/5 border-emerald-500/10"
                             },
                             {
@@ -798,6 +829,7 @@ export default function PortfolioPage() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-white/[0.06]">
+                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                             {mutualFundHoldings.map((h: any) => {
                                                 const gain = (h.current_value ?? 0) - (h.total_invested ?? 0);
                                                 const gainPct = h.total_invested > 0 ? (gain / h.total_invested) * 100 : 0;
@@ -841,6 +873,7 @@ export default function PortfolioPage() {
                                 </div>
                                 {/* Mobile */}
                                 <div className="md:hidden space-y-4 p-6">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {mutualFundHoldings.map((h: any) => {
                                         const gain = (h.current_value ?? 0) - (h.total_invested ?? 0);
                                         const gainPct = h.total_invested > 0 ? (gain / h.total_invested) * 100 : 0;
@@ -892,8 +925,8 @@ export default function PortfolioPage() {
                             <div className="flex flex-wrap gap-8 md:gap-16">
                                 {[
                                     { label: "Total Assets", val: String(holdings.length + mutualFundHoldings.length), color: "text-blue-500" },
-                                    { label: "Positive Holdings", val: String(holdings.filter(h => h.gain > 0).length + mutualFundHoldings.filter((h: any) => (h.current_value ?? 0) > (h.total_invested ?? 0)).length), color: "text-emerald-500" },
-                                    { label: "Negative Holdings", val: String(holdings.filter(h => h.gain < 0).length + mutualFundHoldings.filter((h: any) => (h.current_value ?? 0) < (h.total_invested ?? 0)).length), color: "text-red-500" },
+                                    { label: "Positive Holdings", val: String(positiveHoldingsCount), color: "text-emerald-500" },
+                                    { label: "Negative Holdings", val: String(negativeHoldingsCount), color: "text-red-500" },
                                     { label: "Total Invested", val: `GH₵${totalInvested.toFixed(2)}`, color: "text-white" },
                                 ].map(({ label, val, color }) => (
                                     <div key={label} className="flex flex-col">

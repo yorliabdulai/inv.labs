@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-30 - Move Array Reductions Out Of JSX
+**Learning:** React JSX should not contain expensive operations like `.filter().length` duplicated multiple times. Doing so causes `O(N)` arrays to be evaluated on every re-render (e.g. tooltips hover, tab switches).
+**Action:** Always extract duplicate or expensive array operations into a `useMemo` block that triggers only when dependencies change and use the memoized result inside the render body instead.
