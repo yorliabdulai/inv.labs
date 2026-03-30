@@ -158,6 +158,7 @@ export default function PortfolioPage() {
     const [totalValue, setTotalValue] = useState(0);
     const [mutualFundsValue, setMutualFundsValue] = useState(0);
     const [cashBalance, setCashBalance] = useState(10000);
+    const [totalInvested, setTotalInvested] = useState(0);
     const [selectedPeriod, setSelectedPeriod] = useState<Period>("1M");
     const [chartType, setChartType] = useState<'area' | 'bar' | 'candle'>('area');
     const [holdingsTab, setHoldingsTab] = useState<"all" | "stocks" | "funds">("all");
@@ -176,6 +177,7 @@ export default function PortfolioPage() {
                 setCashBalance(data.cashBalance);
                 setTotalValue(data.totalValue);
                 setMutualFundsValue(data.mutualFundsValue);
+                setTotalInvested(data.totalInvested);
 
                 // Fetch transactions for the chart
                 const { data: txData } = await supabase
@@ -204,10 +206,14 @@ export default function PortfolioPage() {
     }, [user, profileLoading]);
 
     // ─── Derived Metrics ──────────────────────────────────────────────────────
-    const totalEquity = totalValue + mutualFundsValue + cashBalance;
-    const totalGain = totalEquity - STARTING_BALANCE;
-    const totalGainPercent = (totalGain / STARTING_BALANCE) * 100;
-    const isPositive = totalGain >= 0;
+    // We now compare purely Invested Capital vs Assets Value (excluding pure cash)
+    const assetsValue = totalValue + mutualFundsValue;
+    const assetsGain = assetsValue - totalInvested;
+    const assetsGainPercent = totalInvested > 0 ? (assetsGain / totalInvested) * 100 : 0;
+    const isPositive = assetsGain >= 0;
+    
+    // totalEquity remains for the timeline chart and some allocation displays
+    const totalEquity = assetsValue + cashBalance;
 
     // Allocation data for donut chart
     const sectorData = useMemo(() => {
@@ -245,13 +251,12 @@ export default function PortfolioPage() {
     // Key metrics (real)
     // ⚡ BOLT OPTIMIZATION: Memoize O(n) array reduction computations to prevent running
     // them synchronously on every re-render (e.g. tab switches, hover states).
-    const { bestPosition, worstPosition, totalInvested, avgPositionSize } = useMemo(() => {
+    const { bestPosition, worstPosition, avgPositionSize } = useMemo(() => {
         const best = holdings.length > 0 ? holdings.reduce((b, h) => h.gainPercent > b.gainPercent ? h : b, holdings[0]) : null;
         const worst = holdings.length > 0 ? holdings.reduce((w, h) => h.gainPercent < w.gainPercent ? h : w, holdings[0]) : null;
-        const invested = holdings.reduce((s, h) => s + h.totalCost, 0) + mutualFundHoldings.reduce((s: number, h: any) => s + (h.total_invested ?? 0), 0);
         const avgSize = holdings.length > 0 ? totalValue / holdings.length : 0;
-        return { bestPosition: best, worstPosition: worst, totalInvested: invested, avgPositionSize: avgSize };
-    }, [holdings, mutualFundHoldings, totalValue]);
+        return { bestPosition: best, worstPosition: worst, avgPositionSize: avgSize };
+    }, [holdings, totalValue]);
 
     // Sector performance (real)
     const sectorPerformance = useMemo(() => {
@@ -321,29 +326,29 @@ export default function PortfolioPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div className="bg-muted/30 border border-border rounded-xl p-6">
                                 <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
-                                    GH₵{totalEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    GH₵{assetsValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
-                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Active Equity Value</div>
+                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Active Portfolio Value</div>
                                 <div className={`text-xs font-semibold mt-3 flex items-center gap-2 ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
-                                    {isPositive ? "▲" : "▼"} {totalGain >= 0 ? "+" : ""}GH₵{Math.abs(totalGain).toFixed(2)} All-Time
+                                    {isPositive ? "▲" : "▼"} {assetsGain >= 0 ? "+" : ""}GH₵{Math.abs(assetsGain).toFixed(2)} All-Time
                                 </div>
                             </div>
                             <div className="bg-muted/30 border border-border rounded-xl p-6">
                                 <div className={`text-2xl font-bold tabular-nums tracking-tight ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
-                                    {totalGain >= 0 ? "+" : ""}{totalGainPercent.toFixed(2)}%
+                                    {assetsGain >= 0 ? "+" : ""}{assetsGainPercent.toFixed(2)}%
                                 </div>
-                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Composite Return</div>
+                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Asset Performance</div>
                                 <div className="text-[11px] font-semibold text-muted-foreground mt-3 uppercase tracking-widest">
-                                    Base: GH₵{STARTING_BALANCE.toLocaleString()}
+                                    Invested: GH₵{totalInvested.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
                             </div>
                             <div className="bg-muted/30 border border-border rounded-xl p-6">
                                 <div className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
                                     GH₵{cashBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
-                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Available Liquidity</div>
+                                <div className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mt-2">Available Cash</div>
                                 <div className="text-[11px] font-bold text-muted-foreground mt-3 uppercase tracking-widest">
-                                    {totalEquity > 0 ? ((cashBalance / totalEquity) * 100).toFixed(1) : 0}% Liquid Ratio
+                                    Total Equity: GH₵{totalEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
                             </div>
                         </div>
