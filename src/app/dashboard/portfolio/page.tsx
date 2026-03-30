@@ -15,144 +15,24 @@ import { PortfolioChart, type PortfolioDataPoint } from "@/components/dashboard/
 import Link from "next/link";
 import { getPortfolioData, type PortfolioData, type Holding } from "@/app/actions/portfolio";
 
-// Local types moved to actions/portfolio.ts or reused
-interface RawTransaction {
-    id: string;
-    type: "BUY" | "SELL";
-    symbol: string;
-    quantity: number;
-    price_per_share: number;
-    total_amount: number;
-    created_at: string;
-}
+import { generatePortfolioHistory, TransactionRecord } from "@/lib/portfolio-utils";
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Component ───────────────────────────────────────────────────────────────
+const PERIODS = ["1W", "1M", "3M", "1Y", "ALL"] as const;
+type Period = typeof PERIODS[number];
+
 const SECTOR_COLORS: Record<string, string> = {
     Finance: "#C05E42", Telecom: "#2B59FF", Mining: "#F59E0B",
     Energy: "#EF4444", Consumer: "#EC4899", Agriculture: "#10B981",
     Technology: "#06B6D4", "Mutual Funds": "#8B5CF6", Cash: "#94A3B8", Other: "#475569",
 };
 
-function hhi(weights: number[]): number {
-    return weights.reduce((s, w) => s + w * w, 0);
-}
-
-/** Compute a 0-100 risk score from sector concentration + cash drag + asset mix */
-function computeRiskScore(
-    sectorWeights: number[],   // fraction per sector (stocks only)
-    cashFraction: number,
-    mfFraction: number,
-    stockFraction: number,
-): { score: number; label: string; color: string } {
-    const concentration = hhi(sectorWeights);         // 0-1; 1 = one sector
-    const concentrationScore = concentration * 60;    // up to 60 pts
-    const cashScore = Math.max(0, 10 - cashFraction * 100);   // low cash = lower risk buffer
-    const mixScore = stockFraction > 0.85 ? 20 : stockFraction > 0.6 ? 12 : 6; // asset mix
-    const raw = Math.min(100, concentrationScore + cashScore + mixScore);
-    const score = Math.round(raw);
-    const label = score < 30 ? "Conservative" : score < 55 ? "Moderate" : score < 75 ? "Aggressive" : "Very High";
-    const color = score < 30 ? "#10B981" : score < 55 ? "#F59E0B" : score < 75 ? "#F97316" : "#EF4444";
-    return { score, label, color };
-}
-
-/** Build portfolio value timeline from sorted transactions */
-function buildTimeline(
-    transactions: RawTransaction[],
-    priceMap: Map<string, number>,
-    startBalance: number,
-): PortfolioDataPoint[] {
-    const sorted = [...transactions].sort(
-        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    );
-    if (sorted.length === 0) return [];
-
-    let cash = startBalance;
-    const holdingQty = new Map<string, number>();
-    const holdingCost = new Map<string, number>();
-    const points: PortfolioDataPoint[] = [];
-
-    // Opening snapshot
-    const firstDate = new Date(sorted[0].created_at);
-    points.push({
-        label: firstDate.toLocaleDateString("en-GH", { month: "short", day: "numeric" }),
-        value: startBalance,
-        date: sorted[0].created_at,
-        open: startBalance,
-        high: startBalance,
-        low: startBalance,
-        close: startBalance
-    });
-
-    sorted.forEach((tx, i) => {
-        const qty = holdingQty.get(tx.symbol) ?? 0;
-        const cost = holdingCost.get(tx.symbol) ?? 0;
-        if (tx.type === "BUY") {
-            holdingQty.set(tx.symbol, qty + tx.quantity);
-            holdingCost.set(tx.symbol, cost + tx.total_amount);
-            cash -= tx.total_amount;
-        } else {
-            holdingQty.set(tx.symbol, Math.max(0, qty - tx.quantity));
-            const avgCost = qty > 0 ? cost / qty : 0;
-            holdingCost.set(tx.symbol, Math.max(0, cost - avgCost * tx.quantity));
-            cash += tx.total_amount;
-        }
-
-        let stocksValue = 0;
-        holdingQty.forEach((q, sym) => {
-            stocksValue += q * (priceMap.get(sym) ?? 0);
-        });
-
-        const currentValue = Math.max(0, cash + stocksValue);
-        const date = new Date(tx.created_at);
-        const label = date.toLocaleDateString("en-GH", { month: "short", day: "numeric" });
-
-        // Generate simulated OHLC based on the current value and a bit of noise
-        const lastValue = points.length > 0 ? points[points.length - 1].value : startBalance;
-        const range = Math.max(currentValue, lastValue) * 0.02; // 2% range for simulation
-        const open = lastValue;
-        const close = currentValue;
-        const high = Math.max(open, close) + (Math.random() * range);
-        const low = Math.max(0, Math.min(open, close) - (Math.random() * range));
-
-        points.push({
-            label,
-            value: currentValue,
-            date: tx.created_at,
-            open,
-            high,
-            low,
-            close
-        });
-    });
-
-    return points;
-}
-
-/** Slice timeline by period */
-function sliceByPeriod(points: PortfolioDataPoint[], period: string): PortfolioDataPoint[] {
-    if (period === "ALL" || points.length === 0) return points;
-    const now = Date.now();
-    const dayMs = 86_400_000;
-    const cutoffs: Record<string, number> = {
-        "1W": 7, "1M": 30, "3M": 90, "1Y": 365,
-    };
-    const days = cutoffs[period];
-    if (!days) return points;
-    const cutoff = now - days * dayMs;
-    const filtered = points.filter(p => new Date(p.date).getTime() >= cutoff);
-    return filtered.length > 1 ? filtered : points.slice(-2);
-}
-
-// ─── Component ───────────────────────────────────────────────────────────────
-const PERIODS = ["1W", "1M", "3M", "1Y", "ALL"] as const;
-type Period = typeof PERIODS[number];
-
 export default function PortfolioPage() {
     const { user, loading: profileLoading } = useUserProfile();
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [mutualFundHoldings, setMutualFundHoldings] = useState<any[]>([]);
-    const [allTransactions, setAllTransactions] = useState<RawTransaction[]>([]);
-    const [priceMapState, setPriceMapState] = useState<Map<string, number>>(new Map());
+    const [historicalTransactions, setHistoricalTransactions] = useState<TransactionRecord[]>([]);
+    const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [totalValue, setTotalValue] = useState(0);
@@ -179,14 +59,8 @@ export default function PortfolioPage() {
                 setMutualFundsValue(data.mutualFundsValue);
                 setTotalInvested(data.totalInvested);
 
-                // Fetch transactions for the chart
-                const { data: txData } = await supabase
-                    .from("transactions").select("*").eq("user_id", userId);
-                setAllTransactions(txData ?? []);
-
-                // Set price map for the chart logic if needed
-                const priceMap = new Map(data.holdings.map(h => [h.symbol, h.currentPrice]));
-                setPriceMapState(priceMap);
+                setHistoricalTransactions(data.historicalTransactions || []);
+                setCurrentPrices(data.currentPrices || {});
             }
         } catch (error) {
             console.error("Error fetching portfolio data:", error);
@@ -239,7 +113,18 @@ export default function PortfolioPage() {
         const cashFraction = cashBalance / (grand || 1);
         const mfFraction = mutualFundsValue / (grand || 1);
         const stockFraction = totalValue / (grand || 1);
-        return computeRiskScore(sectorWeights, cashFraction, mfFraction, stockFraction);
+        
+        // inline logic for computeRiskScore
+        const hhi = sectorWeights.reduce((s, w) => s + w * w, 0);
+        const concentrationScore = hhi * 60;
+        const cashScore = Math.max(0, 10 - cashFraction * 100);
+        const mixScore = stockFraction > 0.85 ? 20 : stockFraction > 0.6 ? 12 : 6;
+        const raw = Math.min(100, concentrationScore + cashScore + mixScore);
+        const score = Math.round(raw);
+        const label = score < 30 ? "Conservative" : score < 55 ? "Moderate" : score < 75 ? "Aggressive" : "Very High";
+        const color = score < 30 ? "#10B981" : score < 55 ? "#F59E0B" : score < 75 ? "#F97316" : "#EF4444";
+        
+        return { score, label, color };
     }, [sectorData, totalValue, mutualFundsValue, cashBalance, totalEquity]);
 
     // Portfolio health indicators
@@ -282,15 +167,12 @@ export default function PortfolioPage() {
             .sort((a, b) => b.gainPct - a.gainPct);
     }, [holdings, mutualFundHoldings, mutualFundsValue, totalEquity]);
 
-    // Performance timeline
-    const fullTimeline = useMemo(() =>
-        buildTimeline(allTransactions, priceMapState, STARTING_BALANCE),
-        [allTransactions, priceMapState]
-    );
-    const chartData = useMemo(() =>
-        sliceByPeriod(fullTimeline, selectedPeriod),
-        [fullTimeline, selectedPeriod]
-    );
+    // Performance timeline using authentic interpolation
+    const chartData = useMemo(() => {
+        const history = generatePortfolioHistory(historicalTransactions, currentPrices, selectedPeriod, totalEquity);
+        // Map ChartData to PortfolioDataPoint format expected by PortfolioChart
+        return history.map(p => ({ ...p, label: p.time, date: p.time }));
+    }, [historicalTransactions, currentPrices, selectedPeriod, totalEquity]);
 
     // ─── Loading ──────────────────────────────────────────────────────────────
     if (loading) return (

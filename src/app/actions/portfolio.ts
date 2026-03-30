@@ -3,6 +3,8 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { getUserMutualFundHoldings } from "@/app/actions/mutual-funds";
 
+import { TransactionRecord } from "@/lib/portfolio-utils";
+
 export interface PortfolioData {
     holdings: Holding[];
     mutualFundHoldings: any[];
@@ -25,6 +27,8 @@ export interface PortfolioData {
         allocation: number;
         color: string;
     }[];
+    historicalTransactions: TransactionRecord[];
+    currentPrices: Record<string, number>;
 }
 
 export interface Holding {
@@ -52,46 +56,52 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
 
-        // Fetch: DB holdings (source of truth), live stocks prices, MF holdings, profile
+        // Fetch: DB holdings (source of truth), live stocks prices, MF holdings, profile, and all transactions
         const [
             holdingsResult,
             stocksDbResult,
+            stockTxResult,
             mfHoldingsResult,
             mfTxResult,
             profileResult
         ] = await Promise.allSettled([
-            // holdings table — always accurate, written atomically by execute_stock_trade
             supabase
                 .from("holdings")
                 .select("symbol, quantity, average_cost")
                 .eq("user_id", user.id)
                 .gt("quantity", 0),
-            // stocks table — has latest price, sector, name from last trade upsert
             supabase
                 .from("stocks")
                 .select("symbol, name, sector, current_price"),
+            supabase
+                .from("transactions")
+                .select("*")
+                .eq("user_id", user.id)
+                .order("created_at", { ascending: true }),
             getUserMutualFundHoldings(user.id),
-            supabase.from("mutual_fund_transactions").select("net_amount, transaction_type").eq("user_id", user.id),
+            supabase
+                .from("mutual_fund_transactions")
+                .select("*, mutual_funds(fund_name)")
+                .eq("user_id", user.id)
+                .order("transaction_date", { ascending: true }),
             supabase.from("profiles").select("cash_balance").eq("id", user.id).single()
         ]);
 
         const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
         const dbStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value.data ?? [] : [];
+        const stockTransactions = stockTxResult.status === 'fulfilled' ? stockTxResult.value.data ?? [] : [];
         const mfHoldings = mfHoldingsResult.status === 'fulfilled' ? mfHoldingsResult.value : [];
         const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data ?? [] : [];
         const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
 
-        // Build lookup maps from the stocks table (already in DB from last trade)
         const stockPriceMap = new Map(dbStocks.map(s => [s.symbol, s.current_price]));
         const stockSectorMap = new Map(dbStocks.map(s => [s.symbol, s.sector ?? "Other"]));
         const stockNameMap = new Map(dbStocks.map(s => [s.symbol, s.name ?? s.symbol]));
 
-        // Build holdings from the DB holdings table — no API needed
         const holdings: Holding[] = [];
         let stockMarketValue = 0;
 
         for (const row of dbHoldings) {
-            // Use last-known price from stocks table; fall back to average cost if not found
             const currentPrice = stockPriceMap.get(row.symbol) ?? row.average_cost;
             const quantity = row.quantity;
             const totalCost = row.average_cost * quantity;
@@ -119,12 +129,10 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         const totalInvested = holdings.reduce((s, h) => s + h.totalCost, 0)
             + mfHoldings.reduce((s, h) => s + (h.total_invested ?? 0), 0);
 
-        // Metrics
         const winners = holdings.filter(h => h.gain > 0).length;
         const winRate = holdings.length > 0 ? Math.round((winners / holdings.length) * 100) : 0;
         const sortedByGain = [...holdings].sort((a, b) => b.gainPercent - a.gainPercent);
 
-        // Sector Performance
         const sectorDataMap = new Map<string, { gain: number; cost: number; mv: number }>();
         holdings.forEach(h => {
             const cur = sectorDataMap.get(h.sector) ?? { gain: 0, cost: 0, mv: 0 };
@@ -144,6 +152,44 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
 
         const numAssetClasses = [stockMarketValue > 0, mutualFundsValue > 0, cashBalance > 0].filter(Boolean).length;
 
+        // Process unified historical transactions
+        const stockActivity: TransactionRecord[] = stockTransactions.map(tx => ({
+            id: tx.id,
+            type: tx.type as 'BUY' | 'SELL',
+            symbol: tx.symbol,
+            name: stockNameMap.get(tx.symbol) ?? tx.symbol,
+            amount: tx.total_amount,
+            units: tx.quantity,
+            price: tx.price_per_share,
+            date: tx.created_at,
+            status: 'Completed',
+        }));
+
+        const mfActivity: TransactionRecord[] = mfTransactions.map(tx => {
+            const fundData = tx.mutual_funds as any;
+            const fundName = Array.isArray(fundData) ? fundData[0]?.fund_name : fundData?.fund_name;
+            return {
+                id: tx.id,
+                type: tx.transaction_type === 'buy' ? 'FUND_BUY' : 'FUND_REDEEM',
+                symbol: tx.fund_id || 'UNKNOWN',
+                name: fundName || 'Mutual Fund',
+                amount: tx.net_amount || 0,
+                units: tx.units || 0,
+                price: tx.nav_at_transaction || 0,
+                date: tx.transaction_date || new Date().toISOString(),
+                status: tx.status || 'Completed',
+            };
+        });
+
+        const unifiedTransactions = [...stockActivity, ...mfActivity]
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        const currentPrices: Record<string, number> = {};
+        dbStocks.forEach(s => { currentPrices[s.symbol] = s.current_price; });
+        mfHoldings.forEach(h => {
+             currentPrices[h.fund_id] = h.current_nav || ((h.current_value || 0) / 1);
+        });
+
         return {
             holdings,
             mutualFundHoldings: mfHoldings,
@@ -160,6 +206,8 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
                 numSectors: sectorPerformance.length,
             },
             sectorPerformance,
+            historicalTransactions: unifiedTransactions,
+            currentPrices,
         };
     } catch (error) {
         console.error("Portfolio action error:", error);

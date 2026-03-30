@@ -33,6 +33,8 @@ export interface DashboardData {
     is_founding_member: boolean;
     founding_member_notified: boolean;
     profileId: string;
+    historicalTransactions: TransactionRecord[];
+    currentPrices: Record<string, number>;
 }
 
 export interface TransactionRecord {
@@ -201,7 +203,10 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             };
         });
 
-        const recentActivity = [...stockActivity, ...mfActivity]
+        const unifiedTransactions = [...stockActivity, ...mfActivity]
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        const recentActivity = [...unifiedTransactions]
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .slice(0, 10);
 
@@ -223,6 +228,16 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             else { riskLabel = "Conservative"; riskColor = "text-emerald-500"; }
         }
 
+        const currentPrices: Record<string, number> = {};
+        dbStocks.forEach(s => { currentPrices[s.symbol] = s.current_price; });
+        mfHoldings.forEach(h => {
+             // For mutual funds, we approximate current price as current_nav or using value/units
+             // We'll just pass current_value / units if possible. 
+             // Without exact unit counts easily accessible here, we'll try to fallback 
+             // but mfTransactions give us total amounts which we use for valuation in generating history.
+             currentPrices[h.fund_id] = h.current_nav || ((h.current_value || 0) / 1); // fallback since units missing on UserMutualFundHolding
+        });
+
         return {
             totalEquity,
             cashBalance,
@@ -239,6 +254,8 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             riskColor,
             allocation,
             recentActivity,
+            historicalTransactions: unifiedTransactions, // <--- Passing all transactions here
+            currentPrices,
             holdings: processedHoldings,
             activePositions: dbHoldings.length + mfHoldings.length,
             knowledge_xp: profile?.knowledge_xp ?? 0,

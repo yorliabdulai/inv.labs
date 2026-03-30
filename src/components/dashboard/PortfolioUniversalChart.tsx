@@ -15,23 +15,25 @@ import {
     Cell
 } from "recharts";
 import { formatCurrency } from "@/lib/mutual-funds-data";
-import { generatePortfolioHistory, ChartData } from "@/lib/portfolio-utils";
+import { generatePortfolioHistory, ChartData, TransactionRecord } from "@/lib/portfolio-utils";
 
 interface PortfolioUniversalChartProps {
     period: string;
     chartType: 'area' | 'bar' | 'candle';
     currentTotal: number;
+    transactions: TransactionRecord[];
+    currentPrices: Record<string, number>;
 }
 
-export function PortfolioUniversalChart({ period, chartType, currentTotal }: PortfolioUniversalChartProps) {
+export function PortfolioUniversalChart({ period, chartType, currentTotal, transactions, currentPrices }: PortfolioUniversalChartProps) {
     const [mounted, setMounted] = useState(false);
 
     // ⚡ BOLT OPTIMIZATION: Replaced multiple useEffect/useState re-renders
     // with useMemo for synchronous data generation. Eliminates ~3 render
     // passes when the period changes.
     const data = useMemo(() => {
-        return generatePortfolioHistory(currentTotal, period);
-    }, [period, currentTotal]);
+        return generatePortfolioHistory(transactions, currentPrices, period, currentTotal);
+    }, [period, currentTotal, transactions, currentPrices]);
 
     useEffect(() => {
         setMounted(true);

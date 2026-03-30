@@ -208,7 +208,13 @@ export default function DashboardPage() {
 
                         <div className="flex-1 w-full relative p-6 min-h-[400px]">
                             {/* Pass minimal props as before, UI chart library handles drawing */}
-                            <PortfolioUniversalChart period={activeRange} chartType={chartType} currentTotal={data?.totalEquity ?? 10000} />
+                            <PortfolioUniversalChart 
+                                period={activeRange} 
+                                chartType={chartType} 
+                                currentTotal={data?.totalEquity ?? 10000} 
+                                transactions={data?.historicalTransactions || []}
+                                currentPrices={data?.currentPrices || {}}
+                            />
                         </div>
                     </div>
 
