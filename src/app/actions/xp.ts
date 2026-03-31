@@ -1,8 +1,15 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { XP_VALUES, XPEventType, getLevelForXP } from "@/lib/gamification-config";
+import { XP_VALUES, XPEventType, getLevelForXP, LEVELS } from "@/lib/gamification-config";
 import { revalidatePath } from "next/cache";
+import {
+    notifyLevelUp,
+    notifyAchievementUnlocked,
+    notifyStreakMilestone,
+    checkLeaderboardRank,
+} from "@/app/actions/notifications";
+import { syncChallengeXP } from "@/app/actions/challenges";
 
 export async function awardXP(eventType: XPEventType, metadata: any = {}) {
     const supabase = await createClient();
@@ -52,10 +59,25 @@ export async function awardXP(eventType: XPEventType, metadata: any = {}) {
 
         const { error: updateError } = await supabase
             .from('profiles')
-            .update(updateData)
+            .update({
+                ...updateData,
+                last_active_at: new Date().toISOString(),
+            })
             .eq('id', user.id);
 
         if (updateError) throw updateError;
+
+        // Sync challenge participant XP (fire & forget)
+        syncChallengeXP(user.id, newXP).catch(() => {});
+
+        // Check leaderboard rank (fire & forget — non-blocking)
+        checkLeaderboardRank(user.id, newXP).catch(() => {});
+
+        // Notify on level-up
+        if (levelUp) {
+            const levelInfo = LEVELS.find(l => l.level === newLevelData.level);
+            await notifyLevelUp(user.id, newLevelData.level, levelInfo?.name ?? `Level ${newLevelData.level}`);
+        }
 
         // 4. Check for relevant daily missions to mark as complete
         const today = new Date().toISOString().split('T')[0];
@@ -146,6 +168,15 @@ async function checkAchievements(userId: string) {
 
     if (newAchievements.length > 0) {
         await supabase.from('user_achievements').insert(newAchievements);
+
+        // Notify on each newly earned achievement
+        const { ACHIEVEMENTS } = await import('@/lib/gamification-config');
+        for (const a of newAchievements) {
+            const def = ACHIEVEMENTS.find(x => x.key === a.achievement_key);
+            if (def) {
+                await notifyAchievementUnlocked(userId, def.name, def.key).catch(() => {});
+            }
+        }
     }
 }
 
@@ -210,10 +241,10 @@ export async function recordDailyLogin() {
     // Award XP for login
     await awardXP('DAILY_LOGIN');
 
-    // Check streak milestones
-    if (newStreak === 3) await awardXP('STREAK_3_DAY');
-    if (newStreak === 7) await awardXP('STREAK_7_DAY');
-    if (newStreak === 30) await awardXP('STREAK_30_DAY');
+    // Check streak milestones and notify
+    if (newStreak === 3)  { await awardXP('STREAK_3_DAY');  await notifyStreakMilestone(user.id, 3).catch(() => {}); }
+    if (newStreak === 7)  { await awardXP('STREAK_7_DAY');  await notifyStreakMilestone(user.id, 7).catch(() => {}); }
+    if (newStreak === 30) { await awardXP('STREAK_30_DAY'); await notifyStreakMilestone(user.id, 30).catch(() => {}); }
 
     return { success: true, newStreak };
 }

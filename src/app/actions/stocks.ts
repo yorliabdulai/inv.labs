@@ -2,6 +2,7 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { awardXP } from "@/app/actions/xp";
 
 interface TradeParams {
     symbol: string;
@@ -94,6 +95,12 @@ export async function executeStockTrade(params: TradeParams) {
         // Step 4: Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
+
+        // Step 5: Award XP for the trade (fire & forget — non-blocking)
+        const xpEvent = type === 'BUY' ? 'STOCK_TRADE_BUY' : 'STOCK_TRADE_SELL';
+        awardXP(xpEvent, { symbol, quantity, total: totalCost }).catch(err =>
+            console.warn('[executeStockTrade] XP award failed:', err)
+        );
 
         console.log(`[executeStockTrade] ✓ Success: ${type} ${quantity}x ${symbol} for user ${user.id}`);
         return { success: true, message: `Successfully ${type.toLowerCase()}ed ${quantity} shares of ${symbol}` };

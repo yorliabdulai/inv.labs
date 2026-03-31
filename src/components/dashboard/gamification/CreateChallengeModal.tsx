@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { X, Target, CalendarDays, KeyRound, Copy, Check } from "lucide-react";
+import { X, Target, CalendarDays, KeyRound, Copy, Check, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/lib/supabase/client";
+import { createChallenge } from "@/app/actions/challenges";
 
 export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: boolean, onClose: () => void, onSuccess: () => void }) {
     const { toast } = useToast();
@@ -23,36 +23,23 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
         setLoading(true);
 
         try {
-            const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
+            const result = await createChallenge(
+                formData.title,
+                formData.description,
+                parseInt(formData.days),
+                100 // default XP reward
+            );
 
-            if (!user) {
-                toast({ title: "Auth Required", description: "You must be logged in to create a challenge", variant: "destructive" });
-                return;
+            if (!result.success || !result.inviteCode) {
+                throw new Error(result.error || 'Failed to create challenge');
             }
-
-            const endDate = new Date();
-            endDate.setDate(endDate.getDate() + parseInt(formData.days));
-
-            const randomCode = Math.random().toString(36).substring(2, 10).toUpperCase();
-
-            const { data, error } = await supabase.from('challenges').insert({
-                creator_id: user.id,
-                title: formData.title,
-                description: formData.description,
-                end_date: endDate.toISOString(),
-                invite_code: randomCode,
-            }).select().single();
-
-            if (error) throw error;
 
             toast({
                 title: "Challenge Created!",
-                description: "Share the code with your friends to start competing.",
+                description: "Share the link with your friends to start competing.",
             });
 
-            // Generate link based on current origin
-            setInviteLink(`${window.location.origin}/dashboard/challenges/join?code=${data.invite_code}`);
+            setInviteLink(`${window.location.origin}/challenges/join?code=${result.inviteCode}`);
             onSuccess();
 
         } catch (error: any) {

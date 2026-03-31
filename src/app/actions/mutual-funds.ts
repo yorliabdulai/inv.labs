@@ -12,6 +12,7 @@ import {
     calculateRedemptionFromUnits,
     calculateHoldingGainLoss,
 } from "@/lib/mutual-funds-data";
+import { awardXP } from "@/app/actions/xp";
 
 // ============================================================================
 // FETCH OPERATIONS
@@ -371,6 +372,9 @@ export async function buyMutualFundUnits(
         revalidatePath("/dashboard/portfolio");
         revalidatePath("/dashboard/mutual-funds");
 
+        // Award XP for mutual fund investment (fire & forget)
+        awardXP('MF_INVESTMENT', { fundId, amount: investmentAmount }).catch(() => {});
+
         return {
             success: true,
             message: `Successfully purchased ${units.toFixed(4)} units of ${fund.fund_name}`,
@@ -504,6 +508,9 @@ export async function redeemMutualFundUnits(
 
             if (deleteError) throw deleteError;
         }
+
+        // Award XP for redeeming a mutual fund position (fire & forget)
+        awardXP('MF_INVESTMENT', { fundId, action: 'redeem' }).catch(() => {});
 
         return {
             success: true,

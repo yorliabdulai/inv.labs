@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { ACADEMY_COURSES, CourseData } from "@/data/academy";
+import { notifyLessonCompleted, notifyCourseCompleted } from "@/app/actions/notifications";
 
 export interface Lesson {
     id: string;
@@ -189,10 +190,12 @@ export async function advanceCourseProgress(courseId: string) {
     if (isCompleted) {
         const { awardXP } = await import("./xp");
         await awardXP('LESSON_COMPLETED', { courseId });
+        await notifyLessonCompleted(user.id, staticCourse.title).catch(() => {});
         
         // Also check if course is completed for bonus
         if (newCompleted === totalLessons) {
             await awardXP('COURSE_COMPLETED', { courseId });
+            await notifyCourseCompleted(user.id, staticCourse.title, staticCourse.xpReward).catch(() => {});
         }
     }
 

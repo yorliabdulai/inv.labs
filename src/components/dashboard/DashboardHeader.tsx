@@ -1,9 +1,10 @@
 "use client";
 
-import { Bell, Search, Sun, Moon, Sunset } from "lucide-react";
+import { Search, Sun, Moon, Sunset } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { useTheme } from "next-themes";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -91,14 +92,8 @@ export function DashboardHeader() {
                     {/* Theme Toggle */}
                     <ThemeToggle />
 
-                    {/* Notification bell */}
-                    <button
-                        className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
-                        aria-label="View notifications"
-                    >
-                        <Bell size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
-                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background" />
-                    </button>
+                    {/* Notification Bell */}
+                    <NotificationBell />
 
                     {/* Avatar */}
                     <button
