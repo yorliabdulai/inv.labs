@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendEmail, getInactivitySubject, type EmailTemplate, type EmailPayload } from '@/lib/email';
 
+export const dynamic = 'force-dynamic';
+
 // ─── Supabase service client (bypasses RLS) ────────────────────────────────
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabaseAdmin() {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+}
 
 // ─── Inactivity thresholds ─────────────────────────────────────────────────
 const THRESHOLDS = [
@@ -35,6 +39,7 @@ async function estimatePortfolioDrift(
     userId: string,
     daysSinceActive: number
 ): Promise<number | null> {
+    const supabase = getSupabaseAdmin();
     try {
         // Get user's holdings with current prices
         const { data: holdings } = await supabase
@@ -82,6 +87,7 @@ async function estimatePortfolioDrift(
 
 // ─── Route handler ─────────────────────────────────────────────────────────
 export async function GET(request: NextRequest) {
+    const supabase = getSupabaseAdmin();
     try {
         // Verify cron secret
         const authHeader = request.headers.get('authorization');
