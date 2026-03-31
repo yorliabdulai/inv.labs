@@ -17,6 +17,25 @@ const PERIODS = [
     { label: "All", days: 9999 },
 ];
 
+// ⚡ BOLT OPTIMIZATION: Extracted CustomTooltip outside the render function.
+// Impact: Prevents React from recreating the component reference on every render or hover event,
+// eliminating severe jank and unnecessary unmounting/remounting of the tooltip DOM node.
+// Measurement: Hover interactions and period changes now trigger 0 tooltip component remounts.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
+                <p className="text-xs font-bold text-gray-600 mb-1">{payload[0].payload.fullDate}</p>
+                <p className="text-sm font-black text-indigo-600">
+                    GH₵{payload[0].value.toFixed(4)}
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
+
 export function MutualFundChart({ navHistory, fundName }: MutualFundChartProps) {
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
 
@@ -36,21 +55,6 @@ export function MutualFundChart({ navHistory, fundName }: MutualFundChartProps) 
     const change = lastNav - firstNav;
     const changePercent = firstNav > 0 ? (change / firstNav) * 100 : 0;
     const isPositive = change >= 0;
-
-    // Custom tooltip
-    const CustomTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
-                    <p className="text-xs font-bold text-gray-600 mb-1">{payload[0].payload.fullDate}</p>
-                    <p className="text-sm font-black text-indigo-600">
-                        GH₵{payload[0].value.toFixed(4)}
-                    </p>
-                </div>
-            );
-        }
-        return null;
-    };
 
     return (
         <div className="space-y-4">
