@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, X, CheckCheck, BookOpen, TrendingUp, Zap, Target, Award, Trophy, Loader2 } from "lucide-react";
+import { Bell, X, CheckCheck, BookOpen, TrendingUp, Zap, Target, Award, Trophy, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,6 +8,7 @@ import {
     getUnreadCount,
     markNotificationRead,
     markAllNotificationsRead,
+    deleteNotification,
     type Notification,
     type NotificationType,
 } from "@/app/actions/notifications";
@@ -74,9 +75,11 @@ function groupByDate(notifications: Notification[]) {
 function NotificationItem({
     notification,
     onRead,
+    onDelete,
 }: {
     notification: Notification;
     onRead: (id: string) => void;
+    onDelete: (id: string) => void;
 }) {
     const cfg = TYPE_CONFIG[notification.type] ?? TYPE_CONFIG.gamification;
     const { Icon } = cfg;
@@ -87,7 +90,7 @@ function NotificationItem({
             layout
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, x: 20 }}
+            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
             className={`relative flex gap-3 p-3 rounded-xl border transition-all cursor-pointer group
                 ${notification.is_read
                     ? "bg-transparent border-transparent hover:bg-muted/30"
@@ -106,7 +109,7 @@ function NotificationItem({
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 pr-6">
                 <p className={`text-xs font-semibold leading-snug ${notification.is_read ? "text-muted-foreground" : "text-foreground"}`}>
                     {notification.title}
                 </p>
@@ -117,6 +120,18 @@ function NotificationItem({
                     {timeText}
                 </p>
             </div>
+
+            {/* Delete button (visible on hover) */}
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(notification.id);
+                }}
+                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                title="Delete notification"
+            >
+                <Trash2 size={12} />
+            </button>
         </motion.div>
     );
 }
@@ -192,6 +207,16 @@ export function NotificationBell() {
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
         setUnreadCount(prev => Math.max(0, prev - 1));
         await markNotificationRead(id);
+    };
+
+    // Delete notification
+    const handleDelete = async (id: string) => {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+        // Recalculate unread count if we deleted an unread notif
+        const wasUnread = notifications.find(n => n.id === id && !n.is_read);
+        if (wasUnread) setUnreadCount(prev => Math.max(0, prev - 1));
+        
+        await deleteNotification(id);
     };
 
     // Mark all read
@@ -305,6 +330,7 @@ export function NotificationBell() {
                                                             key={n.id}
                                                             notification={n}
                                                             onRead={handleRead}
+                                                            onDelete={handleDelete}
                                                         />
                                                     ))}
                                                 </AnimatePresence>

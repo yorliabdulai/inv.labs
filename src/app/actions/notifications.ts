@@ -14,6 +14,11 @@ export type NotificationType =
     | 'founding_member'
     | 'challenge';
 
+export interface DeleteNotificationResponse {
+    success: boolean;
+    message: string;
+}
+
 export type NotificationPriority = 'low' | 'medium' | 'high';
 
 export interface Notification {
@@ -203,6 +208,29 @@ export async function markAllNotificationsRead(): Promise<void> {
         .eq('is_read', false);
 }
 
+/**
+ * deleteNotification — permanently removes a notification record.
+ */
+export async function deleteNotification(id: string): Promise<DeleteNotificationResponse> {
+    try {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Authentication required");
+
+        const { error } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', user.id);
+
+        if (error) throw error;
+        return { success: true, message: "Notification deleted" };
+    } catch (err: any) {
+        console.error('[notifications] deleteNotification error:', err.message);
+        return { success: false, message: err.message };
+    }
+}
+
 // ─── Trigger helpers (called from XP / gamification actions) ──────────────────
 
 export async function notifyLevelUp(userId: string, level: number, levelName: string) {
@@ -328,6 +356,23 @@ export async function checkLeaderboardRank(userId: string, currentXP: number) {
             .gt('knowledge_xp', currentXP);
 
         const rank = (aboveCount ?? 0) + 1;
+
+        // --- Rank Redundancy Guard ---
+        // If the current rank is the same as the last notified rank, skip.
+        // This prevents spamming "You're #1" every time further XP is earned.
+        const { data: lastNotif } = await supabase
+            .from('notifications')
+            .select('metadata')
+            .eq('user_id', userId)
+            .eq('type', 'gamification')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (lastNotif?.metadata?.rank === rank) {
+            return; // Already notified of this rank position
+        }
+        // ----------------------------
 
         // Check top-3 milestones
         const milestones = [
