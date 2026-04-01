@@ -18,6 +18,84 @@ import { cancelLimitOrder } from "@/app/actions/orders";
 import { toast } from "sonner";
 
 import { generatePortfolioHistory, TransactionRecord } from "@/lib/portfolio-utils";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ─── Skeletons ───────────────────────────────────────────────────────────────
+function Skeleton({ className }: { className?: string }) {
+    return (
+        <div className={`animate-pulse bg-muted rounded-xl ${className}`} />
+    );
+}
+
+function PortfolioSkeleton() {
+    return (
+        <div className="pb-24 space-y-8 md:space-y-12 font-sans opacity-60">
+            <DashboardHeader />
+            
+            {/* Header Cards Skeleton */}
+            <div className="relative rounded-2xl p-8 md:p-12 bg-card border border-border overflow-hidden">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-8">
+                            <Skeleton className="w-14 h-14" />
+                            <div className="space-y-2">
+                                <Skeleton className="w-48 h-8" />
+                                <Skeleton className="w-32 h-4" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            {[1, 2, 3].map(i => (
+                                <Skeleton key={i} className="h-32" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-8">
+                    <Skeleton className="h-[540px] w-full" />
+                </div>
+                <div className="lg:col-span-4 space-y-8">
+                    <Skeleton className="h-[280px] w-full" />
+                    <Skeleton className="h-[240px] w-full" />
+                </div>
+            </div>
+
+            {/* Table Skeleton */}
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                <div className="p-8 border-b border-border flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="w-12 h-12" />
+                        <div className="space-y-2">
+                            <Skeleton className="w-32 h-4" />
+                            <Skeleton className="w-24 h-3" />
+                        </div>
+                    </div>
+                    <Skeleton className="w-48 h-10" />
+                </div>
+                <div className="p-8 space-y-4">
+                    {[1, 2, 3, 4, 5].map(i => (
+                        <div key={i} className="flex justify-between items-center py-4 border-b border-border/50">
+                            <div className="flex items-center gap-4">
+                                <Skeleton className="w-10 h-10" />
+                                <div className="space-y-2">
+                                    <Skeleton className="w-24 h-4" />
+                                    <Skeleton className="w-16 h-3" />
+                                </div>
+                            </div>
+                            <div className="flex gap-12">
+                                <Skeleton className="w-16 h-4" />
+                                <Skeleton className="w-16 h-4" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 const PERIODS = ["1W", "1M", "3M", "1Y", "ALL"] as const;
@@ -179,18 +257,18 @@ export default function PortfolioPage() {
     }, [historicalTransactions, currentPrices, selectedPeriod, totalEquity]);
 
     // ─── Loading ──────────────────────────────────────────────────────────────
-    if (loading) return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-white/20 font-sans">
-            <RefreshCcw size={40} className="animate-spin mb-6 text-primary opacity-50" />
-            <p className="text-xs font-semibold uppercase tracking-widest">Aggregating Asset Data...</p>
-        </div>
-    );
+    if (loading) return <PortfolioSkeleton />;
 
     const hasAnyAssets = holdings.length > 0 || mutualFundHoldings.length > 0;
 
     // ─── Render ───────────────────────────────────────────────────────────────
     return (
-        <div className="pb-24 space-y-8 md:space-y-12 font-sans">
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="pb-24 space-y-8 md:space-y-12 font-sans"
+        >
             <DashboardHeader />
 
             {/* ── Header ── */}
@@ -540,18 +618,18 @@ export default function PortfolioPage() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mt-2 sm:mt-0">
-                        {/* Holdings tabs - wrapped on mobile for full visibility */}
-                        <div className="flex flex-wrap gap-1 p-1 bg-muted/30 border border-border rounded-xl w-full sm:w-auto">
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 w-full md:w-auto mt-2 md:mt-0">
+                        {/* Holdings tabs - scrollable on mobile to prevent colapse */}
+                        <div className="flex items-center gap-1 p-1 bg-muted/30 border border-border rounded-xl w-full md:w-auto overflow-x-auto no-scrollbar whitespace-nowrap">
                             {([["all", "ALL"], ["stocks", "EQUITIES"], ["funds", "FUNDS"], ["pending", "PENDING"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}
                                     onClick={() => setHoldingsTab(key as any)}
-                                    className={`flex-1 sm:flex-none px-3 sm:px-4 py-2.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest text-center ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+                                    className={`flex-none px-4 py-2.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest text-center min-w-[max-content] ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
                                 >{label}</button>
                             ))}
                         </div>
-                        <Link href="/dashboard/market" className="w-full sm:w-auto px-6 py-3 bg-primary sm:bg-muted text-primary-foreground sm:text-foreground border border-transparent sm:border-border rounded-xl text-[10px] font-bold hover:opacity-90 transition-all uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm sm:shadow-none">
+                        <Link href="/dashboard/market" className="flex-none px-6 py-3 bg-primary md:bg-muted text-primary-foreground md:text-foreground border border-transparent md:border-border rounded-xl text-[10px] font-bold hover:opacity-90 transition-all uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm md:shadow-none">
                             <Plus size={14} /> ACQUIRE
                         </Link>
                     </div>
@@ -887,6 +965,6 @@ export default function PortfolioPage() {
                     </>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 }
