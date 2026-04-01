@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Target, CalendarDays, KeyRound, Copy, Check, Zap } from "lucide-react";
+import { X, Target, CalendarDays, KeyRound, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createChallenge } from "@/app/actions/challenges";
 
@@ -42,10 +42,10 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
             setInviteLink(`${window.location.origin}/challenges/join?code=${result.inviteCode}`);
             onSuccess();
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast({
                 title: "Failed To Create",
-                description: error.message || "Something went wrong.",
+                description: error instanceof Error ? error.message : "Something went wrong.",
                 variant: "destructive"
             });
         } finally {
@@ -116,10 +116,11 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-8">
                             <div className="space-y-4">
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <label htmlFor="challenge-title" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2 cursor-pointer">
                                     <Target size={14} className="text-primary" /> Challenge Identity
                                 </label>
                                 <input
+                                    id="challenge-title"
                                     required
                                     type="text"
                                     value={formData.title}
@@ -130,11 +131,12 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <label htmlFor="challenge-duration" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2 cursor-pointer">
                                     <CalendarDays size={14} className="text-primary" /> Timeline Duration
                                 </label>
                                 <div className="relative">
                                     <select
+                                        id="challenge-duration"
                                         value={formData.days}
                                         onChange={(e) => setFormData({ ...formData, days: e.target.value })}
                                         className="w-full px-6 py-4 bg-muted border border-border rounded-2xl text-xs font-bold text-foreground outline-none focus:border-primary/50 transition-all uppercase tracking-widest appearance-none shadow-inner"
@@ -151,8 +153,9 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Strategic Objective (Optional)</label>
+                                <label htmlFor="challenge-description" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 cursor-pointer">Strategic Objective (Optional)</label>
                                 <textarea
+                                    id="challenge-description"
                                     rows={3}
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
