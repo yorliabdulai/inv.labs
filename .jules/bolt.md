@@ -21,3 +21,6 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+## 2026-04-01 - React Recharts CustomTooltip Optimization
+**Learning:** Nested React components (like Recharts `CustomTooltip`) defined inside a parent's render function cause severe performance jank because React unmounts and remounts the component on every render cycle (e.g., hover events).
+**Action:** Always extract nested components outside the parent and pass required scoped variables as explicit props (e.g., `<Tooltip content={<CustomTooltip chartType={chartType} />} />`), allowing React/Recharts to clone and inject default props.
