@@ -20,7 +20,7 @@ import { MutualFundCard } from "@/components/mutual-funds/MutualFundCard";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import {
     Search, PieChart, TrendingUp, RefreshCw,
-    Filter, Zap, ShieldCheck, Wallet, ArrowUpRight
+    Filter, Zap, ShieldCheck, Wallet, ArrowUpRight, AlertCircle
 } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -37,20 +37,31 @@ export default function MutualFundsPage() {
     const [filterType, setFilterType] = useState("All");
     const [filterRisk, setFilterRisk] = useState(0);
     const [cashBalance, setCashBalance] = useState(0);
+    const [error, setError] = useState<string | null>(null);
 
     // Bolt Performance: Debounce search input to prevent expensive filtering on every keystroke
     const debouncedSearch = useDebounce(search, 300);
 
     const fetchData = async (showLoader = false, userId?: string) => {
         if (showLoader) setLoading(true);
+        setError(null);
         try {
-            // Parallel fetches
-            const [fundsData, perfData, navData, userHoldings] = await Promise.all([
+            // Parallel fetches with 8-second timeout
+            const fetchPromise = Promise.all([
                 getMutualFunds(),
                 getAllMutualFundsPerformance(),
                 getAllMutualFundsLatestNAV(),
                 userId ? getUserMutualFundHoldings(userId) : Promise.resolve([])
             ]);
+
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("Timeout")), 8000)
+            );
+
+            const [fundsData, perfData, navData, userHoldings] = await Promise.race([
+                fetchPromise,
+                timeoutPromise
+            ]) as any;
 
             setFunds(fundsData);
             setPerformance(perfData);
@@ -58,21 +69,24 @@ export default function MutualFundsPage() {
 
             // Map NAVs for quick lookup
             const navMap: Record<string, number> = {};
-            navData.forEach(n => {
+            navData.forEach((n: any) => {
                 navMap[n.fund_id] = n.daily_change_percent;
             });
             setLatestNavs(navMap);
 
             if (user) {
-                const { data: profile } = await supabase
+                const { data: profile, error: profileErr } = await supabase
                     .from("profiles")
                     .select("cash_balance")
                     .eq("id", user.id)
                     .single();
-                if (profile) setCashBalance(profile.cash_balance);
+                if (profile && !profileErr) setCashBalance(profile.cash_balance);
             }
-        } catch (err) {
-            console.error("Failed to load mutual funds data", err);
+        } catch (err: any) {
+            console.error("Failed to load mutual funds data:", err);
+            setError(err.message === "Timeout" 
+                ? "Data request timed out. Please verify your connection." 
+                : "Failed to establish a reliable connection to the market data provider.");
         } finally {
             setLoading(false);
         }
@@ -299,6 +313,20 @@ export default function MutualFundsPage() {
                     {Array.from({ length: 6 }).map((_, i) => (
                         <div key={i} className="bg-card rounded-2xl border border-border h-[400px] animate-pulse" />
                     ))}
+                </div>
+            ) : error ? (
+                <div className="bg-card rounded-2xl border border-red-500/20 p-20 text-center mx-4 md:mx-0 shadow-premium">
+                    <div className="w-20 h-20 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-8 border border-red-500/20">
+                        <AlertCircle size={32} className="text-red-500" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight mb-4 uppercase font-syne">Data Access Failed</h3>
+                    <p className="text-red-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 max-w-sm mx-auto">{error}</p>
+                    <button
+                        onClick={() => fetchData(true, user?.id)}
+                        className="px-10 py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-all shadow-xl shadow-red-500/20 text-[10px] uppercase tracking-widest active:scale-95"
+                    >
+                        Retry Connection
+                    </button>
                 </div>
             ) : filteredFunds.length === 0 ? (
                 <div className="bg-card rounded-2xl border border-border p-20 text-center mx-4 md:mx-0 shadow-premium">

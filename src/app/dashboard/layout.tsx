@@ -13,17 +13,17 @@ export default async function DashboardLayout({
 }) {
     const supabase = await createClient();
 
-    const [
-        { data: { user }, error: authError },
-        { data: profile }
-    ] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase.from("profiles").select("*").single()
-    ]);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (!user || authError) {
         redirect("/login");
     }
+
+    const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
     const hydratedProfile = profile ? {
         id: profile.id,

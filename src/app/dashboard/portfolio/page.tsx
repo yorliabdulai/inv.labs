@@ -588,8 +588,10 @@ export default function PortfolioPage() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-border">
-                                            {holdings.map(h => (
-                                                <tr key={h.symbol} className="hover:bg-muted/20 transition-colors group">
+                                            {holdings.map(h => {
+                                                const isSyncing = h.currentPrice === 0 && h.marketValue === 0 && h.averageCost > 0;
+                                                return (
+                                                <tr key={h.symbol} className="hover:bg-muted/20 transition-colors group relative">
                                                     <td className="px-8 py-6">
                                                         <div className="flex items-center gap-4">
                                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs border transition-all tracking-widest ${h.gain >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
@@ -620,15 +622,26 @@ export default function PortfolioPage() {
                                                             {h.gainPercent >= 0 ? "+" : ""}{h.gainPercent.toFixed(2)}%
                                                         </div>
                                                     </td>
+                                                    {isSyncing && (
+                                                        <td colSpan={6} className="absolute inset-0 bg-card/80 backdrop-blur-sm flex items-center justify-center border-b border-border z-10 w-full h-full">
+                                                            <div className="flex items-center gap-3 px-6 py-3 bg-muted/80 rounded-xl border border-border shadow-sm">
+                                                                <RefreshCcw size={14} className="animate-spin text-primary" />
+                                                                <span className="text-[11px] font-bold text-foreground uppercase tracking-widest">Position syncing, check back shortly</span>
+                                                            </div>
+                                                        </td>
+                                                    )}
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
                                 {/* Mobile */}
                                 <div className="md:hidden space-y-4 p-6">
-                                    {holdings.map(h => (
-                                        <div key={h.symbol} className="bg-muted/10 rounded-xl p-6 border border-border">
+                                    {holdings.map(h => {
+                                        const isSyncing = h.currentPrice === 0 && h.marketValue === 0 && h.averageCost > 0;
+                                        return (
+                                        <div key={h.symbol} className="bg-muted/10 rounded-xl p-6 border border-border relative overflow-hidden">
                                             <div className="flex items-start justify-between mb-6">
                                                 <div className="flex items-center gap-4 min-w-0 flex-1">
                                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs border flex-shrink-0 ${h.gain >= 0 ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}>
@@ -657,8 +670,17 @@ export default function PortfolioPage() {
                                                     </div>
                                                 ))}
                                             </div>
+                                            {isSyncing && (
+                                                <div className="absolute inset-0 bg-card/90 backdrop-blur-sm flex items-center justify-center z-10 border border-border rounded-xl">
+                                                    <div className="flex items-center gap-3 px-6 py-3 bg-muted/80 rounded-xl border border-border shadow-sm">
+                                                        <RefreshCcw size={14} className="animate-spin text-primary" />
+                                                        <span className="text-[11px] font-bold text-foreground uppercase tracking-widest text-center">Position syncing...</span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </>
                         )}
@@ -688,8 +710,9 @@ export default function PortfolioPage() {
                                             {mutualFundHoldings.map((h: any) => {
                                                 const gain = (h.current_value ?? 0) - (h.total_invested ?? 0);
                                                 const gainPct = h.total_invested > 0 ? (gain / h.total_invested) * 100 : 0;
+                                                const isSyncing = (h.current_nav ?? 0) === 0 && (h.current_value ?? 0) === 0 && (h.total_invested ?? 0) > 0;
                                                 return (
-                                                    <tr key={h.fund_id} className="hover:bg-muted/10 transition-colors group">
+                                                    <tr key={h.fund_id} className="hover:bg-muted/10 transition-colors group relative">
                                                         <td className="px-8 py-6">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500 font-bold text-xs tracking-widest">
@@ -720,6 +743,14 @@ export default function PortfolioPage() {
                                                                 {gainPct >= 0 ? "+" : ""}{gainPct.toFixed(2)}%
                                                             </div>
                                                         </td>
+                                                        {isSyncing && (
+                                                            <td colSpan={6} className="absolute inset-0 bg-card/80 backdrop-blur-sm flex items-center justify-center border-b border-border z-10 w-full h-full">
+                                                                <div className="flex items-center gap-3 px-6 py-3 bg-muted/80 rounded-xl border border-border shadow-sm">
+                                                                    <RefreshCcw size={14} className="animate-spin text-primary" />
+                                                                    <span className="text-[11px] font-bold text-foreground uppercase tracking-widest">Position syncing, check back shortly</span>
+                                                                </div>
+                                                            </td>
+                                                        )}
                                                     </tr>
                                                 );
                                             })}

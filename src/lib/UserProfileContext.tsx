@@ -141,6 +141,33 @@ export function UserProfileProvider({
         };
     }, [fetchProfile, supabase]);
 
+    // Realtime Sync for Profile (e.g., XP updates from Leaderboard or trades)
+    useEffect(() => {
+        if (!user) return;
+
+        const channel = supabase
+            .channel(`public:profiles:${user.id}`)
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: "profiles",
+                    filter: `id=eq.${user.id}`,
+                },
+                (payload) => {
+                    setProfile((prev) => 
+                        prev ? { ...prev, ...payload.new as Partial<UserProfile> } : payload.new as UserProfile
+                    );
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user, supabase]);
+
     const refetch = useCallback(() => {
         if (user) fetchProfile(user);
     }, [user, fetchProfile]);

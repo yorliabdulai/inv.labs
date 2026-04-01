@@ -236,7 +236,7 @@ export function NotificationBell() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.97 }}
                         transition={{ duration: 0.18, ease: "easeOut" }}
-                        className="absolute top-[calc(100%+10px)] right-0 w-[340px] max-h-[520px] flex flex-col bg-card border border-border rounded-2xl shadow-[0_24px_48px_-8px_rgba(0,0,0,0.25)] z-50 overflow-hidden"
+                        className="absolute top-[calc(100%+10px)] right-0 w-[340px] max-h-[520px] flex flex-col bg-card border border-border rounded-2xl shadow-[0_24px_48px_-8px_rgba(0,0,0,0.25)] z-[999] overflow-hidden"
                         aria-label="Notification center"
                     >
                         {/* Header */}

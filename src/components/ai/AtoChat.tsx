@@ -205,7 +205,7 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                 </div>
 
                 {/* Messages area */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 space-y-2 bg-transparent">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain p-4 md:p-6 space-y-2 bg-transparent">
                     {messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center space-y-8">
                             <div className="text-center space-y-3">
@@ -293,6 +293,12 @@ export function AtoChat({ isOpen, onClose, onMinimize }: AtoChatProps) {
                                 <Send size={18} />
                             )}
                         </button>
+                    </div>
+                    <div className="mt-4 flex items-center justify-center gap-1.5 opacity-60">
+                        <AlertCircle size={10} className="text-muted-foreground" />
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold font-sans">
+                            Ato AI provides educational guidance, not financial advice
+                        </span>
                     </div>
                 </div>
             </div>

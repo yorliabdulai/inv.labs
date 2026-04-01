@@ -42,6 +42,7 @@ import {
     DollarSign,
     RefreshCw,
     Zap,
+    AlertCircle,
 } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 
@@ -60,6 +61,7 @@ export default function MutualFundDetailPage() {
     const [showBuyModal, setShowBuyModal] = useState(false);
     const [showRedeemModal, setShowRedeemModal] = useState(false);
     const [cashBalance, setCashBalance] = useState(10000);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (profileLoading) return;
@@ -67,9 +69,16 @@ export default function MutualFundDetailPage() {
         async function fetchData() {
             try {
                 setLoading(true);
+                setError(null);
 
-                if (user) {
-                    // Get cash balance
+                const fetchCalls: any[] = [
+                    getMutualFund(fundId),
+                    getMutualFundNAVHistory(fundId, 365),
+                    getMutualFundPerformance(fundId),
+                ];
+
+                const userSpecificPromise = async () => {
+                    if (!user) return null;
                     const { data: profile } = await supabase
                         .from("profiles")
                         .select("cash_balance")
@@ -80,35 +89,34 @@ export default function MutualFundDetailPage() {
                         setCashBalance(profile.cash_balance);
                     }
 
-                    // Get user holding
                     const holdings = await getUserMutualFundHoldings(user.id);
                     const holding = holdings.find((h) => h.fund_id === fundId);
                     if (holding) {
                         setUserHolding(holding);
                     }
-                }
+                    return true;
+                };
 
-                // Get fund details
-                const fundData = await getMutualFund(fundId);
+                fetchCalls.push(userSpecificPromise());
+
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 8000));
+
+                const [fundData, navData, perfData] = await Promise.race([Promise.all(fetchCalls), timeoutPromise]) as any;
+
                 if (fundData) {
                     setFund(fundData);
                 }
-
-                // Get NAV history
-                const navData = await getMutualFundNAVHistory(fundId, 365);
                 setNavHistory(navData);
-
-                // Get performance
-                const perfData = await getMutualFundPerformance(fundId);
                 setPerformance(perfData);
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Failed to load fund details", err);
+                setError(err.message === "Timeout" ? "Data request timed out." : "Failed to load fund details.");
             } finally {
                 setLoading(false);
             }
         }
         fetchData();
-    }, [fundId]);
+    }, [fundId, user, profileLoading]);
 
     const refreshData = async () => {
         if (user) {
@@ -133,8 +141,29 @@ export default function MutualFundDetailPage() {
             <div className="pb-20 space-y-4 md:space-y-8">
                 <DashboardHeader />
                 <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
-                    <RefreshCw size={32} className="animate-spin mb-4 text-indigo-600" />
-                    <p className="text-sm font-bold uppercase tracking-widest">Loading Fund Details...</p>
+                    <RefreshCw size={32} className="animate-spin mb-4 text-primary" />
+                    <p className="text-sm font-bold uppercase tracking-widest text-foreground">Loading Fund Details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="pb-20 space-y-4 md:space-y-8">
+                <DashboardHeader />
+                <div className="glass-card p-16 text-center border-red-500/20 bg-card rounded-2xl mx-4">
+                    <div className="w-20 h-20 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-8 border border-red-500/20">
+                        <AlertCircle size={32} className="text-red-500" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight mb-4 uppercase font-syne">Data Access Failed</h3>
+                    <p className="text-red-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 max-w-sm mx-auto">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-10 py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-all shadow-xl shadow-red-500/20 text-[10px] uppercase tracking-widest active:scale-95"
+                    >
+                        Retry Connection
+                    </button>
                 </div>
             </div>
         );
@@ -237,7 +266,7 @@ export default function MutualFundDetailPage() {
                     </div>
 
                     {/* Trade Control Panel */}
-                    <div className="flex flex-col gap-5 lg:w-80">
+                    <div className="flex flex-col gap-5 lg:w-80 relative z-50">
                         <button
                             onClick={() => setShowBuyModal(true)}
                             className="w-full py-5 bg-primary text-primary-foreground font-bold rounded-xl text-[11px] uppercase tracking-[0.2em] hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 active:scale-95 flex items-center justify-center gap-3 group/btn"

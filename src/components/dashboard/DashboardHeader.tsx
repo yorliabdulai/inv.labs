@@ -49,7 +49,7 @@ export function DashboardHeader() {
     const showSkeleton = loading && name === "Trader";
 
     return (
-        <header className="relative z-10 mb-8 w-full">
+        <header className="relative z-50 mb-8 w-full">
             {/*
              * Premium Layout: Single row on all devices.
              * On mobile, we hide the greeting to make room for the large action buttons.

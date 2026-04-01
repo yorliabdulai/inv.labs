@@ -19,13 +19,33 @@ import { useState, useEffect } from "react";
 export default function ProfilePage() {
     const { user, profile, loading: profileLoading, displayName, displayInitial } = useUserProfile();
     const [earnedAchievements, setEarnedAchievements] = useState<string[]>([]);
+    const [timeoutError, setTimeoutError] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (profileLoading) {
+            timer = setTimeout(() => {
+                setTimeoutError(true);
+            }, 8000);
+        } else {
+            setTimeoutError(false);
+        }
+        return () => clearTimeout(timer);
+    }, [profileLoading]);
+
+    useEffect(() => {
         if (user) {
-            supabase.from('user_achievements').select('achievement_key').eq('user_id', user.id)
-                .then(({ data }) => {
-                    if (data) setEarnedAchievements(data.map(a => a.achievement_key));
+            const fetchPromise = supabase.from('user_achievements').select('achievement_key').eq('user_id', user.id);
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000));
+            
+            Promise.race([fetchPromise, timeoutPromise])
+                .then((result: any) => {
+                    const data = result.data;
+                    if (data) setEarnedAchievements(data.map((a: any) => a.achievement_key));
+                })
+                .catch(err => {
+                    console.error("Failed to load achievements", err);
                 });
         }
     }, [user]);
@@ -34,6 +54,24 @@ export default function ProfilePage() {
         await supabase.auth.signOut();
         router.push("/login");
     };
+
+    if (timeoutError) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+                <div className="w-20 h-20 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                    <ShieldCheck size={32} className="text-red-500" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground tracking-tight mb-2 uppercase font-syne">Data Access Failed</h3>
+                <p className="text-red-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-6">Profile synchronization timed out.</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="px-8 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-all shadow-xl shadow-red-500/20 text-[10px] uppercase tracking-widest active:scale-95"
+                >
+                    Retry Connection
+                </button>
+            </div>
+        );
+    }
 
     if (profileLoading) {
         return (
