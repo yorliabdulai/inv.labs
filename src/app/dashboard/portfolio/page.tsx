@@ -44,7 +44,7 @@ export default function PortfolioPage() {
     const [totalInvested, setTotalInvested] = useState(0);
     const [selectedPeriod, setSelectedPeriod] = useState<Period>("1M");
     const [chartType, setChartType] = useState<'area' | 'bar' | 'candle'>('area');
-    const [holdingsTab, setHoldingsTab] = useState<"all" | "stocks" | "funds">("all");
+    const [holdingsTab, setHoldingsTab] = useState<"all" | "stocks" | "funds" | "pending">("all");
 
     const STARTING_BALANCE = 10000;
 
