@@ -2,6 +2,7 @@
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { getUserMutualFundHoldings } from "@/app/actions/mutual-funds";
+import { getStocks } from "@/lib/market-data";
 
 import { TransactionRecord } from "@/lib/portfolio-utils";
 
@@ -70,9 +71,7 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
                 .select("symbol, quantity, average_cost")
                 .eq("user_id", user.id)
                 .gt("quantity", 0),
-            supabase
-                .from("stocks")
-                .select("symbol, name, sector, current_price"),
+            getStocks(),
             supabase
                 .from("transactions")
                 .select("*")
@@ -88,15 +87,15 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         ]);
 
         const dbHoldings = holdingsResult.status === 'fulfilled' ? holdingsResult.value.data ?? [] : [];
-        const dbStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value.data ?? [] : [];
+        const liveStocks = stocksDbResult.status === 'fulfilled' ? stocksDbResult.value || [] : [];
         const stockTransactions = stockTxResult.status === 'fulfilled' ? stockTxResult.value.data ?? [] : [];
         const mfHoldings = mfHoldingsResult.status === 'fulfilled' ? mfHoldingsResult.value : [];
         const mfTransactions = mfTxResult.status === 'fulfilled' ? mfTxResult.value.data ?? [] : [];
         const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
 
-        const stockPriceMap = new Map(dbStocks.map(s => [s.symbol, s.current_price]));
-        const stockSectorMap = new Map(dbStocks.map(s => [s.symbol, s.sector ?? "Other"]));
-        const stockNameMap = new Map(dbStocks.map(s => [s.symbol, s.name ?? s.symbol]));
+        const stockPriceMap = new Map(liveStocks.map((s: any) => [s.symbol, s.price]));
+        const stockSectorMap = new Map(liveStocks.map((s: any) => [s.symbol, s.sector ?? "Other"]));
+        const stockNameMap = new Map(liveStocks.map((s: any) => [s.symbol, s.name ?? s.symbol]));
 
         const holdings: Holding[] = [];
         let stockMarketValue = 0;
@@ -185,7 +184,7 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         const currentPrices: Record<string, number> = {};
-        dbStocks.forEach(s => { currentPrices[s.symbol] = s.current_price; });
+        liveStocks.forEach((s: any) => { currentPrices[s.symbol] = s.price; });
         mfHoldings.forEach(h => {
              currentPrices[h.fund_id] = h.current_nav || ((h.current_value || 0) / 1);
         });
