@@ -6,7 +6,7 @@ import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
 import {
     TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus,
     Wallet, ShieldCheck, ArrowUpRight, BarChart3, PieChart,
-    Activity, Eye, Layers, Target, Zap, AlertTriangle, CheckCircle2
+    Activity, Eye, Layers, Target, Zap, AlertTriangle, CheckCircle2, Clock
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useUserProfile } from "@/lib/useUserProfile";
@@ -14,6 +14,8 @@ import { AllocationChart } from "@/components/portfolio/AllocationChart";
 import { PortfolioChart, type PortfolioDataPoint } from "@/components/dashboard/PortfolioChart";
 import Link from "next/link";
 import { getPortfolioData, type PortfolioData, type Holding } from "@/app/actions/portfolio";
+import { cancelLimitOrder } from "@/app/actions/orders";
+import { toast } from "sonner";
 
 import { generatePortfolioHistory, TransactionRecord } from "@/lib/portfolio-utils";
 
@@ -32,6 +34,7 @@ export default function PortfolioPage() {
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [mutualFundHoldings, setMutualFundHoldings] = useState<any[]>([]);
     const [historicalTransactions, setHistoricalTransactions] = useState<TransactionRecord[]>([]);
+    const [pendingOrders, setPendingOrders] = useState<any[]>([]);
     const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -60,6 +63,7 @@ export default function PortfolioPage() {
                 setTotalInvested(data.totalInvested);
 
                 setHistoricalTransactions(data.historicalTransactions || []);
+                setPendingOrders(data.pendingOrders || []);
                 setCurrentPrices(data.currentPrices || {});
             }
         } catch (error) {
@@ -539,10 +543,10 @@ export default function PortfolioPage() {
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mt-2 sm:mt-0">
                         {/* Holdings tabs - wrapped on mobile for full visibility */}
                         <div className="flex flex-wrap gap-1 p-1 bg-muted/30 border border-border rounded-xl w-full sm:w-auto">
-                            {([["all", "ALL"], ["stocks", "EQUITIES"], ["funds", "FUNDS"]] as const).map(([key, label]) => (
+                            {([["all", "ALL"], ["stocks", "EQUITIES"], ["funds", "FUNDS"], ["pending", "PENDING"]] as const).map(([key, label]) => (
                                 <button
                                     key={key}
-                                    onClick={() => setHoldingsTab(key)}
+                                    onClick={() => setHoldingsTab(key as any)}
                                     className={`flex-1 sm:flex-none px-3 sm:px-4 py-2.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest text-center ${holdingsTab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
                                 >{label}</button>
                             ))}
@@ -795,6 +799,65 @@ export default function PortfolioPage() {
                                     })}
                                 </div>
                             </>
+                        )}
+
+                         {/* Pending Orders */}
+                        {holdingsTab === "pending" && (
+                            <div className="overflow-x-auto">
+                                {pendingOrders.length > 0 ? (
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="bg-muted/30 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                <th className="px-8 py-5">Order</th>
+                                                <th className="px-6 py-5">Symbol</th>
+                                                <th className="px-6 py-5 text-right">Qty</th>
+                                                <th className="px-6 py-5 text-right">Limit Price</th>
+                                                <th className="px-6 py-5 text-right">Total Est.</th>
+                                                <th className="px-8 py-5 text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-border">
+                                            {pendingOrders.map(order => (
+                                                <tr key={order.id} className="hover:bg-muted/20 transition-colors">
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[10px] border ${order.type === 'BUY' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+                                                                {order.type}
+                                                            </div>
+                                                            <span className="text-xs font-bold text-foreground">LIMIT ORDER</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-6 font-bold text-foreground uppercase tracking-widest text-xs">{order.symbol}</td>
+                                                    <td className="px-6 py-6 text-right font-bold text-foreground tabular-nums text-xs">{order.quantity}</td>
+                                                    <td className="px-6 py-6 text-right font-semibold text-foreground tabular-nums text-xs">GH₵{order.limit_price.toFixed(2)}</td>
+                                                    <td className="px-6 py-6 text-right font-bold text-foreground tabular-nums text-xs">GH₵{order.total_amount.toFixed(2)}</td>
+                                                    <td className="px-8 py-6 text-right">
+                                                        <button 
+                                                            onClick={async () => {
+                                                                const res = await cancelLimitOrder(order.id);
+                                                                if (res.success) {
+                                                                    toast.success(res.message);
+                                                                    fetchData(true, user?.id);
+                                                                } else {
+                                                                    toast.error(res.message);
+                                                                }
+                                                            }}
+                                                            className="text-[10px] font-bold text-red-500 hover:text-red-600 uppercase tracking-widest p-2 bg-red-500/5 rounded-lg border border-red-500/10 transition-all active:scale-95"
+                                                        >
+                                                            Cancel Order
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="py-24 text-center px-8 text-muted-foreground/40 italic">
+                                        <Clock className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                                        <p className="text-[10px] font-bold uppercase tracking-widest">No Active Pending Orders</p>
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         {/* Empty state for filtered tab */}

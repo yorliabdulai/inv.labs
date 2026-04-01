@@ -11,7 +11,9 @@ CREATE OR REPLACE FUNCTION public.execute_stock_trade(
   p_type TEXT,
   p_quantity INT,
   p_total_cost DECIMAL,
-  p_fees DECIMAL
+  p_fees DECIMAL,
+  p_order_type TEXT DEFAULT 'market',
+  p_status TEXT DEFAULT 'completed'
 ) RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -66,8 +68,9 @@ BEGIN
   END IF;
 
   -- 3. Insert Transaction
-  INSERT INTO public.transactions (user_id, symbol, type, quantity, price_per_share, total_amount, fees)
-  VALUES (p_user_id, p_symbol, p_type, p_quantity, p_current_price, p_total_cost, p_fees);
+  INSERT INTO public.transactions (user_id, symbol, type, quantity, price_per_share, total_amount, fees, order_type, status, limit_price)
+  VALUES (p_user_id, p_symbol, p_type, p_quantity, p_current_price, p_total_cost, p_fees, p_order_type, p_status, 
+    CASE WHEN p_order_type = 'limit' THEN p_current_price ELSE NULL END);
 
   -- 4. Update Balance
   UPDATE public.profiles

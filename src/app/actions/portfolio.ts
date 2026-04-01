@@ -29,6 +29,7 @@ export interface PortfolioData {
         color: string;
     }[];
     historicalTransactions: TransactionRecord[];
+    pendingOrders: any[];
     currentPrices: Record<string, number>;
 }
 
@@ -183,6 +184,20 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         const unifiedTransactions = [...stockActivity, ...mfActivity]
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+        // Extract pending orders
+        const pendingOrders = stockTransactions
+            .filter(tx => tx.status === 'pending')
+            .map(tx => ({
+                id: tx.id,
+                symbol: tx.symbol,
+                name: stockNameMap.get(tx.symbol) ?? tx.symbol,
+                type: tx.type,
+                quantity: tx.quantity,
+                limit_price: tx.limit_price,
+                created_at: tx.created_at,
+                total_amount: tx.total_amount
+            }));
+
         const currentPrices: Record<string, number> = {};
         liveStocks.forEach((s: any) => { currentPrices[s.symbol] = s.price; });
         mfHoldings.forEach(h => {
@@ -205,7 +220,8 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
                 numSectors: sectorPerformance.length,
             },
             sectorPerformance,
-            historicalTransactions: unifiedTransactions,
+            historicalTransactions: unifiedTransactions.filter(tx => tx.status !== 'pending'), // Only show completed/cancelled in history
+            pendingOrders,
             currentPrices,
         };
     } catch (error) {

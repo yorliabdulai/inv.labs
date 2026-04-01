@@ -12,10 +12,12 @@ interface TradeParams {
     quantity: number;
     price: number;      // current price from live feed (already shown in UI)
     changePercent: number;
+    orderType?: "MARKET" | "LIMIT";
+    limitPrice?: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent } = params;
+    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
@@ -56,40 +58,75 @@ export async function executeStockTrade(params: TradeParams) {
 
         console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
-        // Step 3: Execute atomic trade via Postgres RPC to prevent race conditions (TOCTOU).
-        // The function handles: upserting stock, validating balance/holdings, creating
-        // transaction record, updating balance, and updating holdings — all in one DB transaction.
-        const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
-            p_user_id: user.id,
-            p_symbol: symbol,
-            p_stock_name: name,
-            p_stock_sector: sector,
-            p_current_price: price,
-            p_change_percent: changePercent,
-            p_type: type,
-            p_quantity: quantity,
-            p_total_cost: totalCost,
-            p_fees: fees
-        });
+        // Step 3: Execution Logic
+        // Determine if this order should execute immediately or be placed as pending
+        const isLimit = orderType === "LIMIT" && limitPrice !== undefined;
+        let shouldExecuteImmediately = true;
 
-        if (rpcError) {
-            console.error(`[executeStockTrade] RPC error for ${type} ${symbol}:`, rpcError.message, '| code:', rpcError.code, '| details:', rpcError.details);
+        if (isLimit) {
+            if (type === "BUY" && price > limitPrice) {
+                shouldExecuteImmediately = false;
+            } else if (type === "SELL" && price < limitPrice) {
+                shouldExecuteImmediately = false;
+            }
+        }
 
-            // Handle expected business logic errors — surface them directly
-            if (
-                rpcError.message.includes('Insufficient funds') ||
-                rpcError.message.includes('Insufficient shares')
-            ) {
-                return { success: false, message: rpcError.message };
+        if (shouldExecuteImmediately) {
+            // Execute atomic trade via Postgres RPC
+            const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
+                p_user_id: user.id,
+                p_symbol: symbol,
+                p_stock_name: name,
+                p_stock_sector: sector,
+                p_current_price: price,
+                p_change_percent: changePercent,
+                p_type: type,
+                p_quantity: quantity,
+                p_total_cost: totalCost,
+                p_fees: fees,
+                p_order_type: orderType.toLowerCase(),
+                p_status: 'completed'
+            });
+
+            if (rpcError) {
+                console.error(`[executeStockTrade] RPC error:`, rpcError.message);
+                if (rpcError.message.includes('funds') || rpcError.message.includes('shares')) {
+                    return { success: false, message: rpcError.message };
+                }
+                throw new Error(`Execution failed: ${rpcError.message}`);
             }
 
-            // Handle missing RPC function (migration not yet applied to Supabase)
-            if (rpcError.code === 'PGRST202' || rpcError.message.includes('does not exist')) {
-                console.error('[executeStockTrade] The execute_stock_trade DB function is not deployed. Run supabase/migrations/20260301_atomic_stock_trades.sql in the Supabase SQL Editor.');
-                return { success: false, message: "Database not configured. Please contact support." };
+            // XP and revalidation logic handled below...
+        } else {
+            // Place as pending order
+            const { error: insertError } = await supabase
+                .from('transactions')
+                .insert({
+                    user_id: user.id,
+                    symbol,
+                    type,
+                    quantity,
+                    price_per_share: 0, // Not executed yet
+                    total_amount: totalCost,
+                    fees,
+                    order_type: 'limit',
+                    status: 'pending',
+                    limit_price: limitPrice
+                });
+
+            if (insertError) {
+                console.error(`[executeStockTrade] Insert error:`, insertError.message);
+                throw new Error(`Failed to place pending order: ${insertError.message}`);
             }
 
-            throw new Error(`Database transaction failed: ${rpcError.message}`);
+            revalidatePath("/dashboard", "page");
+            revalidatePath("/dashboard/portfolio", "page");
+
+            return { 
+                success: true, 
+                message: "Limit order placed successfully. It will execute when the market price hits your target.",
+                isPending: true
+            };
         }
 
         // Step 4: Revalidate cache for affected views

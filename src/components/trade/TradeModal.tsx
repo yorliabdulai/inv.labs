@@ -80,6 +80,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 quantity,
                 price: stock.price,
                 changePercent: stock.changePercent,
+                orderType,
+                limitPrice: parseFloat(limitPrice),
             });
 
             if (!result.success) throw new Error(result.message);
