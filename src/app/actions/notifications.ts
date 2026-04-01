@@ -85,11 +85,14 @@ export async function createNotification(
     priority: NotificationPriority = 'low',
     metadata?: Record<string, any>
 ): Promise<Notification | null> {
-    // Use service client so server actions can create notifications for any user
-    const supabase = createServiceClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // Use service client if available, otherwise fall back to the authenticated server client
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    let supabase;
+    if (serviceKey) {
+        supabase = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey);
+    } else {
+        supabase = await createClient(); // Will use the signed-in user's context
+    }
 
     // Anti-spam: daily cap (not for high priority)
     if (priority !== 'high') {
@@ -310,10 +313,13 @@ export async function notifyChallengeCompleted(userId: string, challengeTitle: s
  */
 export async function checkLeaderboardRank(userId: string, currentXP: number) {
     try {
-        const supabase = createServiceClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        let supabase;
+        if (serviceKey) {
+            supabase = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey);
+        } else {
+            supabase = await createClient(); // Uses the signed-in user's context
+        }
 
         // Count users with MORE XP than current user
         const { count: aboveCount } = await supabase
