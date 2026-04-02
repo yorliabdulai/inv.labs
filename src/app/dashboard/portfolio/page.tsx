@@ -6,7 +6,7 @@ import { getStocks, GSE_API_BASE, type Stock } from "@/lib/market-data";
 import {
     TrendingUp, TrendingDown, RefreshCcw, Briefcase, Plus,
     Wallet, ShieldCheck, ArrowUpRight, BarChart3, PieChart,
-    Activity, Eye, Layers, Target, Zap, AlertTriangle, CheckCircle2, Clock
+    Activity, Eye, Layers, Target, Zap, AlertTriangle, CheckCircle2, Clock, Loader2
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useUserProfile } from "@/lib/useUserProfile";
@@ -116,6 +116,7 @@ export default function PortfolioPage() {
     const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [syncLoading, setSyncLoading] = useState(false);
     const [totalValue, setTotalValue] = useState(0);
     const [mutualFundsValue, setMutualFundsValue] = useState(0);
     const [cashBalance, setCashBalance] = useState(10000);
@@ -149,6 +150,26 @@ export default function PortfolioPage() {
         } finally {
             setLoading(false);
             setRefreshing(false);
+        }
+    }
+
+    async function handleSyncOrders() {
+        setSyncLoading(true);
+        try {
+            const res = await fetch('/api/cron/process-limit-orders');
+            const data = await res.json();
+            
+            if (data.executed > 0) {
+                toast.success(`Matched and executed ${data.executed} orders!`);
+                fetchData(true, user?.id);
+            } else {
+                toast.info("No orders matched current market prices.");
+            }
+        } catch (error) {
+            console.error("Sync error:", error);
+            toast.error("Failed to sync orders. Please try again.");
+        } finally {
+            setSyncLoading(false);
         }
     }
 
@@ -891,7 +912,16 @@ export default function PortfolioPage() {
                                                 <th className="px-6 py-5 text-right">Qty</th>
                                                 <th className="px-6 py-5 text-right">Limit Price</th>
                                                 <th className="px-6 py-5 text-right">Total Est.</th>
-                                                <th className="px-8 py-5 text-right">Action</th>
+                                                <th className="px-8 py-5 text-right">
+                                                    <button 
+                                                        onClick={handleSyncOrders}
+                                                        disabled={syncLoading}
+                                                        className="flex items-center gap-2 ml-auto px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all border border-primary/20 group"
+                                                    >
+                                                        {syncLoading ? <Loader2 size={12} className="animate-spin" /> : <RefreshCcw size={12} className="group-hover:rotate-180 transition-transform duration-500" />}
+                                                        <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Sync Orders</span>
+                                                    </button>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-border">

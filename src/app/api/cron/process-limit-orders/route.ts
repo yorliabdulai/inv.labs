@@ -30,22 +30,32 @@ export async function GET(req: NextRequest) {
 
         // 2. Fetch live market prices
         const liveStocks = await getStocks();
-        const priceMap = new Map(liveStocks.map(s => [s.symbol, s]));
+        // Create a normalized price map (trimmed, uppercase symbols)
+        const priceMap = new Map(liveStocks.map(s => [s.symbol.trim().toUpperCase(), s]));
+
+        console.log(`[Cron] Checking ${pendingOrders.length} pending orders against ${liveStocks.length} live stock prices.`);
 
         const results = [];
 
         // 3. Process each order
         for (const order of pendingOrders) {
-            const stock = priceMap.get(order.symbol);
-            if (!stock) continue;
+            const normalizedSymbol = order.symbol.trim().toUpperCase();
+            const stock = priceMap.get(normalizedSymbol);
+            
+            if (!stock) {
+                console.warn(`[Cron] Stock data not found for symbol: ${order.symbol}. Skipping.`);
+                continue;
+            }
 
             const currentPrice = stock.price;
             const limitPrice = order.limit_price;
             let shouldExecute = false;
 
             if (order.type === 'BUY' && currentPrice <= limitPrice) {
+                console.log(`[Cron] Match found for ${order.symbol} BUY order ${order.id}: Price ${currentPrice} <= Limit ${limitPrice}`);
                 shouldExecute = true;
             } else if (order.type === 'SELL' && currentPrice >= limitPrice) {
+                console.log(`[Cron] Match found for ${order.symbol} SELL order ${order.id}: Price ${currentPrice} >= Limit ${limitPrice}`);
                 shouldExecute = true;
             }
 
