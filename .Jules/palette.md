@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-03-10 - Add Focus States to Sidebar Interactive Elements
+**Learning:** Custom interactive elements (like `Link` and `button` components) often lack built-in focus states in this app, especially in navigation areas like the Sidebar. Without these, keyboard users cannot track their position.
+**Action:** Always apply explicit semantic Tailwind utility classes (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`) to `Link` and `button` elements to ensure keyboard navigation visibility while supporting both light and dark themes.
