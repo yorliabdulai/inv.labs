@@ -71,10 +71,8 @@ export async function GET(req: NextRequest) {
                     p_change_percent: stock.changePercent,
                     p_type: order.type,
                     p_quantity: order.quantity,
-                    p_total_cost: order.total_amount, // We keep the originally calculated cost for simplicity in this MVP
+                    p_total_cost: order.total_amount,
                     p_fees: order.fees,
-                    p_order_type: 'limit',
-                    p_status: 'completed'
                 });
 
                 if (rpcError) {

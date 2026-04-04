@@ -84,8 +84,6 @@ export async function executeStockTrade(params: TradeParams) {
                 p_quantity: quantity,
                 p_total_cost: totalCost,
                 p_fees: fees,
-                p_order_type: orderType.toLowerCase(),
-                p_status: 'completed'
             });
 
             if (rpcError) {
