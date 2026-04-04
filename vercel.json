@@ -1,16 +1,13 @@
 {
   "crons": [
     {
-      "path": "/api/cron/update-mutual-funds",
-      "schedule": "0 0 * * 0"
-    },
-    {
       "path": "/api/cron/re-engagement",
       "schedule": "0 8 * * *"
     },
     {
       "path": "/api/cron/process-limit-orders",
-      "schedule": "* * * * *"
+      "schedule": "0 12 * * *"
     }
   ]
 }
+
