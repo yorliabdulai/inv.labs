@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     ChevronRight, ChevronLeft, X, CheckCircle2, 
@@ -86,12 +86,18 @@ const STEPS: Step[] = [
     }
 ];
 
+const CARD_HEIGHT = 240; // conservative height estimate for clamping
+const CARD_WIDTH = 320;
+const CARD_GAP = 24;
+const VIEWPORT_PADDING = 16;
+
 export function OnboardingTour() {
     const { profile, refetch } = useUserProfile();
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const cardRef = useRef<HTMLDivElement>(null);
 
     const currentStep = STEPS[currentStepIndex];
 
@@ -202,24 +208,42 @@ export function OnboardingTour() {
                     }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute z-[101] pointer-events-auto"
-                    style={
-                        isMobile
-                            ? {
-                                top: 80, // Hang near the top of the mobile screen
+                    style={(() => {
+                        if (isMobile) {
+                            return {
+                                top: VIEWPORT_PADDING + 64, // below any top-bar
                                 left: "50%",
-                                marginLeft: -160 // Center standard 320px width card
-                            }
-                            : {
-                                top: currentStep.position === "bottom" ? targetRect.bottom + 20 : 
-                                     currentStep.position === "top" ? targetRect.top - 200 : 
-                                     targetRect.top,
-                                left: currentStep.position === "right" ? targetRect.right + 24 : 
-                                      currentStep.position === "left" ? targetRect.left - 344 : 
-                                      targetRect.left,
-                            }
-                    }
+                                transform: "translateX(-50%)",
+                            };
+                        }
+                        const vh = window.innerHeight;
+                        const vw = window.innerWidth;
+                        const cardH = cardRef.current?.offsetHeight ?? CARD_HEIGHT;
+
+                        let rawTop = targetRect.top;
+                        if (currentStep.position === "bottom") rawTop = targetRect.bottom + CARD_GAP;
+                        else if (currentStep.position === "top") rawTop = targetRect.top - cardH - CARD_GAP;
+
+                        // Clamp vertically so card never goes off-screen
+                        const clampedTop = Math.min(
+                            Math.max(rawTop, VIEWPORT_PADDING),
+                            vh - cardH - VIEWPORT_PADDING
+                        );
+
+                        let rawLeft = targetRect.right + CARD_GAP;
+                        if (currentStep.position === "left") rawLeft = targetRect.left - CARD_WIDTH - CARD_GAP;
+                        else if (currentStep.position === "center") rawLeft = targetRect.left;
+
+                        // Clamp horizontally
+                        const clampedLeft = Math.min(
+                            Math.max(rawLeft, VIEWPORT_PADDING),
+                            vw - CARD_WIDTH - VIEWPORT_PADDING
+                        );
+
+                        return { top: clampedTop, left: clampedLeft };
+                    })()}
                 >
-                    <div className="w-[320px] bg-card border border-border rounded-2xl shadow-2xl p-6 overflow-hidden relative group">
+                    <div ref={cardRef} className="w-[320px] bg-card border border-border rounded-2xl shadow-2xl p-6 overflow-hidden relative group">
                         {/* Progress Bar */}
                         <div className="absolute top-0 left-0 h-1 bg-primary/20 w-full">
                             <motion.div 
