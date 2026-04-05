@@ -79,15 +79,18 @@ export default function LeaderboardPage() {
         loadRankings(false, 1);
     }, [category, viewMode]);
 
+    // ⚡ BOLT OPTIMIZATION: Hoisted debouncedSearchQuery.toLowerCase() outside the filter loops
+    // to prevent redundant string transformations on every iteration.
     const filteredRankings = useMemo(() => {
+        const searchLower = debouncedSearchQuery.toLowerCase();
         if (viewMode === "users") {
             return userRankings.filter(u =>
-                (u.full_name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+                (u.full_name || "").toLowerCase().includes(searchLower)
             );
         }
         return rankings.filter(r =>
-            r.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-            r.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+            r.symbol.toLowerCase().includes(searchLower) ||
+            r.name.toLowerCase().includes(searchLower)
         );
     }, [rankings, userRankings, debouncedSearchQuery, viewMode]);
 
