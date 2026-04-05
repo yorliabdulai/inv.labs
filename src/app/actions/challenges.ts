@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import { awardXP } from "@/app/actions/xp";
 import {
     notifyChallengeInviteAccepted,
     notifyChallengeCompleted,
@@ -119,9 +118,9 @@ export async function createChallenge(
 
         revalidatePath('/dashboard');
         return { success: true, challenge, inviteCode };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[challenges] createChallenge error:', error);
-        return { success: false, error: error.message || "Failed to create challenge" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to create challenge" };
     }
 }
 
@@ -214,9 +213,9 @@ export async function joinChallenge(
         revalidatePath(`/challenges/join`);
 
         return { success: true, challengeId: challenge.id };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[challenges] joinChallenge error:', error);
-        return { success: false, error: error.message || "Failed to join challenge" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to join challenge" };
     }
 }
 
@@ -285,7 +284,12 @@ export async function syncChallengeXP(userId: string, newXP: number) {
 
 // ─── Complete a challenge (mark as done, award XP) ────────────────────────────
 
-export async function completeChallengeForUser(challengeId: string, userId: string) {
+export async function completeChallengeForUser(challengeId: string) {
+    const supabaseClient = await createClient();
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return;
+
+    const userId = user.id;
     const supabase = getServiceClient();
 
     const { data: participation } = await supabase
