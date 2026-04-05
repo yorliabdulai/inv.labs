@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - O(n) String Reductions Inside React Component Render Cycle
+**Learning:** Found string transformations like `debouncedSearch.toLowerCase()` inside iterative array loops (like `.filter()`) within React `useMemo` hooks. This triggers an O(N) penalty (where N is the number of array items) on every recalculation.
+**Action:** Always hoist invariant transformations (like case formatting for search terms) outside of the loop to perform the calculation exactly once before the loop begins.

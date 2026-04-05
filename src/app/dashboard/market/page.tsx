@@ -151,10 +151,13 @@ export default function StocksPage() {
         return ["All", ...Array.from(s).sort()];
     }, [stocks]);
 
+    // ⚡ BOLT OPTIMIZATION: Hoisted debouncedSearch.toLowerCase() outside the filter loop
+    // to prevent redundant string transformations on every iteration.
     const sorted = useMemo(() => {
+        const searchLower = debouncedSearch.toLowerCase();
         const filtered = stocks.filter((s) => {
-            const matchSearch = s.symbol.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                s.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+            const matchSearch = s.symbol.toLowerCase().includes(searchLower) ||
+                s.name.toLowerCase().includes(searchLower);
             const matchSector = sectorFilter === "All" || s.sector === sectorFilter;
             return matchSearch && matchSector;
         });
