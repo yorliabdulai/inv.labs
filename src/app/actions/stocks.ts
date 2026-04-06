@@ -3,31 +3,25 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { awardXP } from "@/app/actions/xp";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
-    name: string;       // pass stock metadata from client (already fetched for UI display)
-    sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
     orderType?: "MARKET" | "LIMIT";
     limitPrice?: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
+    const { symbol, type, quantity, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
-    if (!symbol || !name) {
-        return { success: false, message: "Invalid stock data. Please refresh and try again." };
+    if (!symbol) {
+        return { success: false, message: "Invalid stock symbol. Please refresh and try again." };
     }
 
     try {
@@ -43,8 +37,19 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
-        // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
+        // Step 2: Fetch current live price and metadata securely server-side
+        const stockData = await fetchStockBySymbol(symbol);
+
+        if (!stockData || !stockData.price || stockData.price <= 0) {
+             return { success: false, message: "Could not fetch valid stock data. Please try again." };
+        }
+
+        const price = stockData.price;
+        const name = stockData.name;
+        const sector = stockData.sector;
+        const changePercent = stockData.changePercent;
+
+        // Step 3: Calculate costs server-side (Ghana Stock Exchange fee structure)
         // This is a simulator — no real money is at stake.
         const subtotal = price * quantity;
 
@@ -58,7 +63,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
-        // Step 3: Execution Logic
+        // Step 4: Execution Logic
         // Determine if this order should execute immediately or be placed as pending
         const isLimit = orderType === "LIMIT" && limitPrice !== undefined;
         let shouldExecuteImmediately = true;
@@ -127,11 +132,11 @@ export async function executeStockTrade(params: TradeParams) {
             };
         }
 
-        // Step 4: Revalidate cache for affected views
+        // Step 5: Revalidate cache for affected views
         revalidatePath("/dashboard", "page");
         revalidatePath("/dashboard/portfolio", "page");
 
-        // Step 5: Award XP for the trade (fire & forget — non-blocking)
+        // Step 6: Award XP for the trade (fire & forget — non-blocking)
         const xpEvent = type === 'BUY' ? 'STOCK_TRADE_BUY' : 'STOCK_TRADE_SELL';
         awardXP(xpEvent, { symbol, quantity, total: totalCost }).catch(err =>
             console.warn('[executeStockTrade] XP award failed:', err)
