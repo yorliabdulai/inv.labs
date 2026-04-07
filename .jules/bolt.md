@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - Hoist Invariant String Operations Out of Loops
+**Learning:** Performing invariant string transformations, such as `.toLowerCase()`, inside tight iteration loops like `.filter()` or `.map()` forces the engine to redundantly recalculate the same value on every iteration. For large arrays, this results in significant O(N) overhead.
+**Action:** Always hoist invariant transformations (like converting a search query to lowercase) outside of loops to a single variable, executing the operation once in O(1) time before the traversal begins.
