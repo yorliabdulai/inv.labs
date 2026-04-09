@@ -80,14 +80,17 @@ export default function LeaderboardPage() {
     }, [category, viewMode]);
 
     const filteredRankings = useMemo(() => {
+        // ⚡ Bolt Performance Optimization:
+        // Hoisted .toLowerCase() outside the .filter() loop to prevent O(N) redundant string computations.
+        const queryLower = debouncedSearchQuery.toLowerCase();
         if (viewMode === "users") {
             return userRankings.filter(u =>
-                (u.full_name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+                (u.full_name || "").toLowerCase().includes(queryLower)
             );
         }
         return rankings.filter(r =>
-            r.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-            r.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+            r.symbol.toLowerCase().includes(queryLower) ||
+            r.name.toLowerCase().includes(queryLower)
         );
     }, [rankings, userRankings, debouncedSearchQuery, viewMode]);
 
