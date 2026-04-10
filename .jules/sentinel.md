@@ -3,6 +3,11 @@
 **Learning:** Next.js Server Actions act as open API endpoints. Accepting sensitive IDs or calculation results from the client without server-side re-verification creates critical security bypasses.
 **Prevention:** Always authenticate the caller securely via `supabase.auth.getUser()` inside the server action. Recalculate all financial amounts, fees, and real-time prices server-side instead of relying on client-side calculations.
 
+## 2026-03-10 - Insecure Randomness in Invite Codes
+**Vulnerability:** The `createChallenge` server action used `Math.random().toString(36)` to generate 8-character invite codes for challenges. `Math.random()` is not cryptographically secure and produces predictable outputs, allowing attackers to potentially guess other users' invite codes and join restricted challenges.
+**Learning:** Security-sensitive tokens (such as invite codes, session IDs, or password reset tokens) must never be generated using `Math.random()`. Predictable randomness is a common vulnerability that undermines access control systems that rely on the secrecy of these tokens.
+**Prevention:** Always use a Cryptographically Secure Pseudo-Random Number Generator (CSPRNG), such as the Node.js `crypto.randomBytes` or `crypto.randomInt` functions, when generating unpredictable tokens. Reserve `Math.random()` strictly for non-critical tasks like simulation noise or UI shuffling.
+
 ## 2026-03-02 - Mutual Funds Actions IDOR
 **Vulnerability:** Similar to the stock trading vulnerability, multiple mutual fund Server Actions (`buyMutualFundUnits`, `redeemMutualFundUnits`, `getUserMutualFundHoldings`, `getUserMutualFundTransactions`) accepted a client-provided `userId` parameter and executed queries or mutations on behalf of that user. This is an Insecure Direct Object Reference (IDOR) vulnerability that allowed any user to view or modify another user's mutual fund data.
 **Learning:** The IDOR vulnerability pattern observed in stock trading extends to mutual fund actions. All Server Actions acting on behalf of a user need robust server-side authentication.
