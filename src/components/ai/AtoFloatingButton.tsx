@@ -43,7 +43,12 @@ export function AtoFloatingButton({ onClick, hasUnread = false }: AtoFloatingBut
             {/* Tooltip */}
             <div className={`absolute bottom-full right-0 mb-3 px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-lg whitespace-nowrap transition-all duration-200 ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
                 }`}>
-                Ask Ato 🇬🇭
+                <div className="flex items-center gap-2">
+                    <span>Ask Ato 🇬🇭</span>
+                    <span className="hidden md:flex items-center justify-center px-1.5 py-0.5 bg-gray-800 text-gray-300 text-[10px] font-mono rounded border border-gray-700">
+                        <kbd className="font-sans">⌘</kbd>K
+                    </span>
+                </div>
                 <div className="absolute top-full right-6 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
             </div>
 
