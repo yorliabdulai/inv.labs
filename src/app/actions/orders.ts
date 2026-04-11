@@ -21,13 +21,13 @@ export async function cancelLimitOrder(orderId: string) {
 
         if (error) {
             console.error("[cancelLimitOrder] error:", error.message);
-            throw new Error(`Failed to cancel order: ${error.message}`);
+            return { success: false, message: "Failed to cancel order. Please try again." };
         }
 
         revalidatePath("/dashboard/portfolio", "page");
         return { success: true, message: "Order cancelled successfully." };
 
-    } catch (error: any) {
-        return { success: false, message: error.message };
+    } catch (error: unknown) {
+        return { success: false, message: "Failed to cancel order. Please try again." };
     }
 }
