@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2026-04-15 - Parallelizing DB Queries
+**Learning:** Using Promise.all for independent DB checks in server actions minimizes N+1 round trips and latency.
+**Action:** Always parallelize independent queries on the happy path.
