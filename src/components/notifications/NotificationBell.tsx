@@ -121,14 +121,15 @@ function NotificationItem({
                 </p>
             </div>
 
-            {/* Delete button (visible on hover) */}
+            {/* Delete button (visible on hover or focus) */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();
                     onDelete(notification.id);
                 }}
-                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:outline-none transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
                 title="Delete notification"
+                aria-label="Delete notification"
             >
                 <Trash2 size={12} />
             </button>
