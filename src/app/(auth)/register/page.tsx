@@ -38,10 +38,19 @@ export default function RegisterPage() {
         setLoading(true);
         setError(null);
 
+        // Extract referral_code from cookie if present
+        let referralCode = undefined;
+        try {
+            const cookieRow = document.cookie.split('; ').find(row => row.startsWith('inv_referral='));
+            if (cookieRow) {
+                referralCode = decodeURIComponent(cookieRow.split('=')[1]);
+            }
+        } catch (err) {}
+
         const { error: signUpError } = await supabase.auth.signUp({
             email,
             password,
-            options: { data: { full_name: fullName } },
+            options: { data: { full_name: fullName, referral_code: referralCode } },
         });
 
         if (signUpError) {
