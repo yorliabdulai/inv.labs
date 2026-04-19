@@ -5,11 +5,12 @@ import {
     Award, Trophy, Medal, ArrowUp, Crown, TrendingUp, TrendingDown,
     Minus, Filter, BarChart3, Activity, Zap, Shield, Search,
     ArrowUpRight, ArrowDownRight, Info, RefreshCcw, Users,
-    ChevronLeft, ChevronRight
+    ChevronLeft, ChevronRight, Share2
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { getMarketRankings, type RankedAsset, type RankingCategory } from "@/app/actions/leaderboard";
 import { getTopUsers } from "@/app/actions/gamification";
+import { useUserProfile } from "@/lib/useUserProfile";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export default function LeaderboardPage() {
@@ -24,6 +25,7 @@ export default function LeaderboardPage() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const { partnerCode } = useUserProfile();
 
     // Bolt Performance: Debounce search input to avoid expensive list filtering operations
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -97,6 +99,27 @@ export default function LeaderboardPage() {
         loadRankings(false, newPage);
     };
 
+    const handleShareLeaderboard = async () => {
+        const referralLink = `${window.location.origin}/register${partnerCode ? `?ref=${partnerCode}` : ""}`;
+        const message = `The competition on InvLab is heating up! 📈 Check out this week's top traders building wealth on the GSE Investment Simulator. 🇬🇭 Join our community and see if you can make the top 10! \n\n🚀 Join here: ${referralLink}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "InvLab Leaderboard",
+                    text: message,
+                    url: referralLink,
+                });
+            } catch (err) {
+                console.error("Share failed", err);
+            }
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, "_blank");
+        }
+    };
+
     const categories: { key: RankingCategory; label: string; icon: any; description: string }[] = [
         { key: 'gainers', label: 'Top Gainers', icon: TrendingUp, description: 'Highest price appreciation.' },
         { key: 'momentum', label: 'Momentum', icon: Zap, description: 'High-speed movers based on price/volume velocity.' },
@@ -123,14 +146,24 @@ export default function LeaderboardPage() {
                         </p>
                     </div>
 
-                    <button
-                        onClick={() => loadRankings(true)}
-                        disabled={refreshing}
-                        className="group flex items-center gap-4 px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-primary/20"
-                    >
-                        <RefreshCcw size={16} className={refreshing ? "animate-spin" : "transition-transform duration-700 group-hover:rotate-180"} />
-                        {refreshing ? "SYNCING..." : "Refresh Feed"}
-                    </button>
+                    <div className="flex flex-wrap items-center gap-4">
+                        <button
+                            onClick={handleShareLeaderboard}
+                            className="group flex items-center gap-3 px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
+                        >
+                            <Share2 size={16} className="transition-transform group-hover:scale-110" />
+                            Invite & Share
+                        </button>
+                        
+                        <button
+                            onClick={() => loadRankings(true)}
+                            disabled={refreshing}
+                            className="group flex items-center gap-4 px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-primary/20"
+                        >
+                            <RefreshCcw size={16} className={refreshing ? "animate-spin" : "transition-transform duration-700 group-hover:rotate-180"} />
+                            {refreshing ? "SYNCING..." : "Refresh Feed"}
+                        </button>
+                    </div>
                 </div>
             </div>
 
