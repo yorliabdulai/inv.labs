@@ -150,29 +150,24 @@ export default function LeaderboardPage() {
                 </button>
             </div>
 
+            {/* ── Strategy Filters (formerly cards) ── */}
             {viewMode === "market" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex items-center gap-4 px-2 overflow-x-auto no-scrollbar pb-2">
+                    <div className="flex items-center gap-2 bg-muted/30 px-3 py-2 rounded-xl border border-border flex-shrink-0">
+                        <Filter size={14} className="text-primary" />
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-1">Filters</span>
+                    </div>
                     {categories.map((cat) => (
                         <button
                             key={cat.key}
                             onClick={() => setCategory(cat.key)}
-                            className={`p-6 rounded-2xl border transition-all text-left group relative flex flex-col h-full backdrop-blur-md ${category === cat.key
-                                ? "bg-card border-primary/40 shadow-premium"
-                                : "bg-card/50 border-border hover:border-primary/30 hover:bg-card"
+                            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border whitespace-nowrap active:scale-95 ${category === cat.key
+                                ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                                : "bg-card/50 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-card"
                                 }`}
                         >
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 border ${category === cat.key
-                                ? "bg-primary/10 text-primary border-primary/20 shadow-lg shadow-primary/10"
-                                : "bg-muted/30 text-muted-foreground border-border group-hover:text-foreground"
-                                }`}>
-                                <cat.icon size={20} />
-                            </div>
-                            <h3 className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${category === cat.key ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
-                                {cat.label}
-                            </h3>
-                            <p className="text-muted-foreground text-[10px] font-medium leading-relaxed line-clamp-2">
-                                {cat.description}
-                            </p>
+                            <cat.icon size={14} />
+                            {cat.label}
                         </button>
                     ))}
                 </div>
