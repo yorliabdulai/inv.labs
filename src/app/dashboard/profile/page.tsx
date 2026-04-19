@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import {
     LogOut, User, Award, Shield, Settings, CreditCard,
-    ChevronRight, Mail, Calendar, TrendingUp, Edit2,
+    ChevronRight, Mail, Calendar, TrendingUp, Edit2, Share2,
     Bell, Lock, Globe, BadgeCheck,
     Fingerprint, Activity, Zap, ShieldCheck, Trophy
 } from "lucide-react";
@@ -38,7 +38,7 @@ export default function ProfilePage() {
         if (user) {
             const fetchPromise = supabase.from('user_achievements').select('achievement_key').eq('user_id', user.id);
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000));
-            
+
             Promise.race([fetchPromise, timeoutPromise])
                 .then((result: any) => {
                     const data = result.data;
@@ -102,7 +102,7 @@ export default function ProfilePage() {
                 <div className="lg:col-span-1 space-y-8">
                     <div className="bg-card border border-border rounded-2xl p-8 shadow-premium backdrop-blur-md relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
-                        
+
                         <div className="relative z-10 flex flex-col items-center text-center">
                             <div className="relative mb-6">
                                 <div className="w-24 h-24 rounded-2xl bg-muted/30 border border-border flex items-center justify-center font-bold text-3xl text-primary shadow-premium transition-transform group-hover:scale-105 overflow-hidden">
@@ -116,7 +116,7 @@ export default function ProfilePage() {
                                     <LevelBadge level={profile?.level || 1} className="scale-110" />
                                 </div>
                             </div>
-                            
+
                             <div className="flex flex-col items-center">
                                 <h3 className="text-2xl font-bold text-foreground mb-1 font-syne tracking-tight flex items-center gap-2">
                                     {displayName}
@@ -283,7 +283,7 @@ export default function ProfilePage() {
                             <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-4">Elevated Privileges</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {isAdmin && (
-                                    <button 
+                                    <button
                                         onClick={() => router.push("/admin/partners")}
                                         className="flex items-center justify-between p-4 bg-background border border-primary/20 rounded-xl hover:border-primary/40 transition-all group"
                                     >
@@ -295,7 +295,7 @@ export default function ProfilePage() {
                                     </button>
                                 )}
                                 {isPartner && (
-                                    <button 
+                                    <button
                                         onClick={() => router.push("/dashboard/partner")}
                                         className="flex items-center justify-between p-4 bg-background border border-emerald-500/20 rounded-xl hover:border-emerald-500/40 transition-all group"
                                     >
