@@ -13,25 +13,35 @@ import {
     AlertCircle,
     Loader2
 } from "lucide-react";
-import { getPartnerStats, type PartnerStats } from "@/app/actions/partner";
+import { getPartnerStats, getPartnerReports, type PartnerStats } from "@/app/actions/partner";
 import { formatCurrency } from "@/lib/mutual-funds-data";
 import { toast } from "sonner";
+import { FileText, TrendingUp as TrendingIcon, Calendar } from "lucide-react";
 
 export default function PartnerDashboardPage() {
     const [stats, setStats] = useState<PartnerStats | null>(null);
+    const [reports, setReports] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [copiedLink, setCopiedLink] = useState(false);
     const [copiedCode, setCopiedCode] = useState(false);
 
     useEffect(() => {
-        async function fetchStats() {
-            const res = await getPartnerStats();
-            if (res.success && res.stats) {
-                setStats(res.stats);
+        async function fetchData() {
+            setLoading(true);
+            const [statsRes, reportsRes] = await Promise.all([
+                getPartnerStats(),
+                getPartnerReports()
+            ]);
+
+            if (statsRes.success && statsRes.stats) {
+                setStats(statsRes.stats);
+            }
+            if (reportsRes.success && reportsRes.reports) {
+                setReports(reportsRes.reports);
             }
             setLoading(false);
         }
-        fetchStats();
+        fetchData();
     }, []);
 
     const appUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -230,6 +240,58 @@ export default function PartnerDashboardPage() {
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Monthly Earnings History */}
+            <div className="space-y-6">
+                <div className="flex items-center gap-3 px-2">
+                    <FileText className="text-primary" size={24} />
+                    <h3 className="text-xl font-bold font-syne tracking-tight">Earnings History</h3>
+                </div>
+
+                <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
+                    {reports.length === 0 ? (
+                        <div className="p-16 text-center text-muted-foreground">
+                            <Calendar size={48} className="mx-auto mb-4 opacity-10" />
+                            <p className="text-sm font-medium">No historical reports found yet.</p>
+                            <p className="text-xs mt-1">Reports are usually shared by the 10th of each month.</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-muted/10 border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                    <tr>
+                                        <th className="px-8 py-5">Period</th>
+                                        <th className="px-8 py-5">Conversions</th>
+                                        <th className="px-8 py-5">Value Generated</th>
+                                        <th className="px-8 py-5 text-right">Commission Earned</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {reports.map((report) => (
+                                        <tr key={report.id} className="group hover:bg-muted/5 transition-colors">
+                                            <td className="px-8 py-6 font-bold text-sm">
+                                                {new Date(report.year, report.month - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <span className="text-sm font-bold">{report.conversions_count}</span>
+                                                <span className="text-[10px] text-muted-foreground uppercase ml-2 font-bold opacity-60 italic">Verified</span>
+                                            </td>
+                                            <td className="px-8 py-6 font-medium text-sm text-foreground/80">
+                                                {formatCurrency(report.total_revenue)}
+                                            </td>
+                                            <td className="px-8 py-6 text-right">
+                                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-600 rounded-xl font-black text-sm tabular-nums">
+                                                    {formatCurrency(report.commission_earned)}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

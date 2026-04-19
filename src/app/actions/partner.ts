@@ -48,3 +48,32 @@ export async function getPartnerStats() {
 
     return { success: true, stats };
 }
+
+export async function getPartnerReports() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return { success: false, error: "Not authenticated" };
+
+    // Fetch partner info
+    const { data: partner } = await supabase
+        .from("partners")
+        .select("id")
+        .eq("email", user.email)
+        .eq("status", "active")
+        .single();
+
+    if (!partner) return { success: false, error: "Partner not found" };
+
+    const { data: reports, error } = await supabase
+        .from("partner_earnings_reports")
+        .select("*")
+        .eq("partner_id", partner.id)
+        .eq("status", "published")
+        .order("year", { ascending: false })
+        .order("month", { ascending: false });
+
+    if (error) return { success: false, error: error.message };
+
+    return { success: true, reports };
+}

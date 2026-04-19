@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { CreatePartnerForm, AddRevenueForm } from "./components";
+import { CreatePartnerForm, AddRevenueForm, MonthlyReportModal } from "./components";
 
 export const dynamic = "force-dynamic";
 
@@ -59,8 +59,14 @@ export default async function AdminPartnersPage() {
                                             <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-500 bg-emerald-500/10 px-2 rounded-full">{partner.status}</span>
                                         </div>
                                     </div>
-                                    <div className="shrink-0 bg-muted/30 p-2 rounded-xl border border-border/50">
+                                    <div className="shrink-0 flex items-center gap-3 bg-muted/30 p-2 rounded-xl border border-border/50">
                                         <AddRevenueForm partnerId={partner.id} referralId={partnerRefs[0]?.id || null} />
+                                        <div className="h-8 w-[1px] bg-border mx-1" />
+                                        <MonthlyReportModal 
+                                            partnerId={partner.id} 
+                                            partnerName={partner.name} 
+                                            commissionRate={Number(partner.commission_rate) || 0.10} 
+                                        />
                                     </div>
                                 </div>
 
