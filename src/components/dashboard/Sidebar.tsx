@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, X, Menu, Briefcase } from "lucide-react";
+import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, X, Menu, Briefcase, ShieldCheck, Share2 } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
 
@@ -11,7 +11,7 @@ export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const { displayName, displayInitial, profile, loading } = useUserProfile();
+    const { displayName, displayInitial, profile, loading, isAdmin, isPartner } = useUserProfile();
 
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
@@ -115,6 +115,20 @@ export function Sidebar() {
                             <NavItem href="/dashboard/settings" label="Settings" icon={Settings} id="tour-nav-settings" />
                         </div>
                     </div>
+
+                    {(isAdmin || isPartner) && (
+                        <div>
+                            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Special Access</p>
+                            <div className="space-y-0.5">
+                                {isAdmin && (
+                                    <NavItem href="/admin/partners" label="Admin Console" icon={ShieldCheck} />
+                                )}
+                                {isPartner && (
+                                    <NavItem href="/dashboard/partner" label="Partner Zone" icon={Share2} />
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </nav>
 
                 {/* Desktop Footer */}

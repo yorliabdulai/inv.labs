@@ -26,6 +26,7 @@ export interface UserProfile {
     is_founding_member: boolean;
     streak_count: number;
     last_active_date: string | null;
+    role: string;
 }
 
 export interface UserProfileContextValue {
@@ -35,6 +36,9 @@ export interface UserProfileContextValue {
     displayName: string;
     displayInitial: string;
     firstName: string;
+    isAdmin: boolean;
+    isPartner: boolean;
+    partnerCode: string | null;
     refetch: () => void;
 }
 
@@ -50,6 +54,9 @@ interface UserProfileProviderProps {
     children: React.ReactNode;
     initialUser: User | null;
     initialProfile: UserProfile | null;
+    initialIsAdmin?: boolean;
+    initialIsPartner?: boolean;
+    initialPartnerCode?: string | null;
 }
 
 /**
@@ -62,10 +69,17 @@ interface UserProfileProviderProps {
 export function UserProfileProvider({
     children,
     initialUser,
-    initialProfile
+    initialProfile,
+    initialIsAdmin = false,
+    initialIsPartner = false,
+    initialPartnerCode = null
 }: UserProfileProviderProps) {
     const [user, setUser] = useState<User | null>(initialUser);
     const [profile, setProfile] = useState<UserProfile | null>(initialProfile);
+    const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
+    const [isPartner, setIsPartner] = useState(initialIsPartner);
+    const [partnerCode, setPartnerCode] = useState<string | null>(initialPartnerCode);
+    
     const [loading, setLoading] = useState(false);
     const [initializing, setInitializing] = useState(!initialUser);
     const mountedRef = useRef(true);
@@ -188,6 +202,9 @@ export function UserProfileProvider({
         displayName: rawName || "Trader",
         displayInitial: (firstName.charAt(0) || "T").toUpperCase(),
         firstName: firstName || "Trader",
+        isAdmin,
+        isPartner,
+        partnerCode,
         refetch,
     };
 

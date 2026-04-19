@@ -55,8 +55,25 @@ export default async function DashboardLayout({
         last_active_date: null,
     };
 
+    const { data: partner } = await supabase
+        .from("partners")
+        .select("referral_code")
+        .eq("email", user.email)
+        .eq("status", "active")
+        .maybeSingle();
+
+    const isAdmin = hydratedProfile.role === "admin";
+    const isPartner = !!partner;
+    const partnerCode = partner?.referral_code || null;
+
     return (
-        <UserProfileProvider initialUser={user} initialProfile={hydratedProfile}>
+        <UserProfileProvider 
+            initialUser={user} 
+            initialProfile={hydratedProfile}
+            initialIsAdmin={isAdmin}
+            initialIsPartner={isPartner}
+            initialPartnerCode={partnerCode}
+        >
             <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white transition-colors duration-300">
                 <Sidebar />
 
