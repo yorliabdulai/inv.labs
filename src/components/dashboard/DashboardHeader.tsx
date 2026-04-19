@@ -25,13 +25,13 @@ function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+            className="w-12 h-12 rounded-xl border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-white/50 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 backdrop-blur-md shadow-sm"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
-                <Sun size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
+                <Sun size={24} className="text-zinc-700 dark:text-zinc-200" />
             ) : (
-                <Moon size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
+                <Moon size={24} className="text-zinc-700 dark:text-zinc-200" />
             )}
         </button>
     );
@@ -67,10 +67,10 @@ export function DashboardHeader() {
                                 <span className="inline-block w-32 h-6 md:h-8 bg-muted animate-pulse rounded" />
                             ) : (
                                 <>
-                                    <GreetIcon className="text-primary flex-shrink-0 w-5 h-5 md:w-6 md:h-6" />
+                                    <GreetIcon className="text-primary flex-shrink-0 w-6 h-6 md:w-7 md:h-7" />
                                     <span className="truncate max-w-[180px] xs:max-w-[250px] sm:max-w-none">
                                         <span className="hidden sm:inline">{greeting.text}, </span>
-                                        <span className="sm:hidden">Hi, </span>
+                                        <span className="sm:hidden font-syne uppercase">Hi, </span>
                                         {name.split(' ')[0]}
                                     </span>
                                 </>
@@ -83,12 +83,12 @@ export function DashboardHeader() {
                 <div className="flex items-center gap-3 flex-shrink-0">
                     {/* Search — desktop only */}
                     <div className="relative hidden lg:flex">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Search markets..."
                             aria-label="Search markets"
-                            className="bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:bg-muted outline-none transition-all shadow-sm"
+                            className="bg-card/50 backdrop-blur-md border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm w-56 text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:bg-muted outline-none transition-all shadow-sm"
                         />
                     </div>
 
