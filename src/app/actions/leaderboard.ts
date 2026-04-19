@@ -17,7 +17,7 @@ export async function getMarketRankings(categories: RankingCategory[] = ['gainer
         const stocks = await getStocks();
         if (stocks.length === 0) return [];
 
-        const activeCategories = categories.length > 0 ? categories : ['gainers'];
+        const activeCategories = (categories.length > 0 ? categories : ['gainers']) as RankingCategory[];
         const sorted = [...stocks];
 
         // Scoring logic
