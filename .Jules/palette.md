@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-04-19 - Added ARIA labels to close buttons
+**Learning:** Found multiple instances where UI components (banners, modals, tooltips) were using an `<X />` icon within a button but lacked an `aria-label` attribute, creating accessibility issues for screen readers. This pattern is common in "dismissible" components.
+**Action:** Always verify that buttons containing only an icon (especially close/dismiss actions) include an `aria-label` to clearly communicate their purpose (e.g., `aria-label="Close"` or `aria-label="Skip tour"`) to assistive technologies.
