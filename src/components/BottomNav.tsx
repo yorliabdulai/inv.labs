@@ -21,7 +21,7 @@ export function BottomNav() {
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-background/90 backdrop-blur-xl border-t border-border shadow-[0_-8px_30px_rgba(0,0,0,0.12)] z-50 safe-area-inset-bottom">
+        <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-background/90 backdrop-blur-xl border-t border-border shadow-[0_-8px_30px_rgba(0,0,0,0.12)] z-[100] safe-area-inset-bottom transform-gpu translate-z-0">
             <div className="flex items-center justify-around h-20 px-4">
                 {navItems.map(({ href, label, icon: Icon, id, isAction }) => {
                     const active = isAction ? false : (isActive(href) && href !== "/dashboard" ? true : href === "/dashboard" && pathname === "/dashboard");

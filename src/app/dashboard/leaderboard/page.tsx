@@ -103,10 +103,12 @@ export default function LeaderboardPage() {
                 (u.full_name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase())
             );
         }
-        return rankings.filter(r =>
-            r.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-            r.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-        );
+        return (rankings || []).filter(r => {
+            const sym = r?.symbol?.toLowerCase() || "";
+            const name = r?.name?.toLowerCase() || "";
+            const query = debouncedSearchQuery?.toLowerCase() || "";
+            return sym.includes(query) || name.includes(query);
+        });
     }, [rankings, userRankings, debouncedSearchQuery, viewMode]);
 
     const handleUserPageChange = (newPage: number) => {
