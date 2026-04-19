@@ -14,17 +14,30 @@ export type RankingCategory = 'gainers' | 'momentum' | 'stability' | 'volume';
 
 export async function getMarketRankings(categories: RankingCategory[] = ['gainers']): Promise<RankedAsset[]> {
     try {
-        const stocks = await getStocks();
-        if (stocks.length === 0) return [];
+        // Direct fetch for server action to bypass any potential stale cache issues
+        const res = await fetch("https://dev.kwayisi.org/apis/gse/live", {
+            cache: 'no-store',
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json"
+            }
+        });
+        
+        if (!res.ok) {
+            console.error(`[getMarketRankings] API Error: ${res.status}`);
+            return [];
+        }
+
+        const stocks: Stock[] = await res.json();
+        if (!stocks || stocks.length === 0) {
+            console.warn("[getMarketRankings] No stocks returned from API");
+            return [];
+        }
 
         const activeCategories = (categories.length > 0 ? categories : ['gainers']) as RankingCategory[];
-        console.log(`[getMarketRankings] Categories:`, activeCategories);
+        console.log(`[getMarketRankings] Processing ${stocks.length} stocks for categories:`, activeCategories);
 
-        const sorted = [...stocks];
-        console.log(`[getMarketRankings] Total stocks fetched:`, stocks.length);
-
-        // Scoring logic
-        const scored = sorted.map(s => {
+        const scored = stocks.map(s => {
             const momentumScore = (Math.abs(s.changePercent) * 0.7) + (Math.log10(s.volume + 1) * 0.3);
             const stabilityScore = 100 - Math.min(100, Math.abs(s.changePercent) * 10);
 
@@ -36,11 +49,6 @@ export async function getMarketRankings(categories: RankingCategory[] = ['gainer
             } as RankedAsset;
         });
 
-        // Multiple category logic: calculate aggregate score if needed
-        // For simplicity, we just sort by the "most important" if multiple are picked,
-        // or we could calculate a composite rank.
-        // Composite Rank: Average of ranks across all selected categories.
-        
         const getRankingsForCategory = (cat: RankingCategory) => {
             const list = [...scored];
             if (cat === 'gainers') list.sort((a, b) => b.changePercent - a.changePercent);
@@ -57,7 +65,6 @@ export async function getMarketRankings(categories: RankingCategory[] = ['gainer
             else if (cat === 'stability') scored.sort((a, b) => b.stabilityScore - a.stabilityScore);
             else if (cat === 'volume') scored.sort((a, b) => b.volume - a.volume);
         } else {
-            // Composite Rank
             const categoryRanks = activeCategories.map(cat => getRankingsForCategory(cat));
             const compositeMap: Record<string, number> = {};
             
@@ -76,11 +83,10 @@ export async function getMarketRankings(categories: RankingCategory[] = ['gainer
         return scored.map((s, idx) => ({
             ...s,
             rank: idx + 1,
-            // Simulate previous rank for visual movement
             prevRank: idx + 1 + (Math.random() > 0.7 ? (Math.random() > 0.5 ? 1 : -1) : 0)
         }));
     } catch (error) {
-        console.error("Failed to fetch market rankings:", error);
+        console.error("[getMarketRankings] Fatal error:", error);
         return [];
     }
 }
