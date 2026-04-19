@@ -20,8 +20,9 @@ import { MutualFundCard } from "@/components/mutual-funds/MutualFundCard";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import {
     Search, PieChart, TrendingUp, RefreshCw,
-    Filter, Zap, ShieldCheck, Wallet, ArrowUpRight, AlertCircle
+    Filter, Zap, ShieldCheck, Wallet, ArrowUpRight, AlertCircle, LayoutGrid
 } from "lucide-react";
+import Link from "next/link";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { useDebounce } from "@/hooks/use-debounce";
 
@@ -149,6 +150,20 @@ export default function MutualFundsPage() {
                         <p className="text-muted-foreground text-sm md:text-base font-medium leading-relaxed max-w-2xl uppercase tracking-wider">
                             Explore professionally managed portfolios tailored for risk management and strong returns.
                         </p>
+                    </div>
+
+                    {/* Market Asset Toggle */}
+                    <div className="flex bg-muted/30 p-1 rounded-xl border border-border w-fit">
+                        <Link 
+                            href="/dashboard/market"
+                            className="px-6 py-2 text-muted-foreground hover:text-foreground text-xs font-bold transition-all flex items-center gap-2"
+                        >
+                            <LayoutGrid size={14} />
+                            Stocks
+                        </Link>
+                        <button className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-sm">
+                            Mutual Funds
+                        </button>
                     </div>
 
                     <div className="flex flex-wrap gap-4">

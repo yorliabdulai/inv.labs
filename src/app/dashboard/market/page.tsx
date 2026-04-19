@@ -7,8 +7,9 @@ import { StockRow, type StockHolding } from "@/components/market/StockRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import {
     Search, RefreshCw, Grid3X3, List, TrendingUp, TrendingDown,
-    Activity, ArrowUpRight, ArrowDownRight, Zap
+    Activity, ArrowUpRight, ArrowDownRight, Zap, Layers
 } from "lucide-react";
+import Link from "next/link";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -207,6 +208,21 @@ export default function StocksPage() {
                         )}
                     </p>
                 </div>
+                
+                {/* Market Asset Toggle */}
+                <div className="flex bg-muted/30 p-1 rounded-xl border border-border">
+                    <button className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-sm">
+                        Stocks
+                    </button>
+                    <Link 
+                        href="/dashboard/mutual-funds"
+                        className="px-6 py-2 text-muted-foreground hover:text-foreground text-xs font-bold transition-all flex items-center gap-2"
+                    >
+                        <Layers size={14} />
+                        Mutual Funds
+                    </Link>
+                </div>
+
                 <div className="flex items-center gap-3">
                     {ownedCount > 0 && (
                         <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20">

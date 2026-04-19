@@ -17,7 +17,7 @@ import { FoundingMemberBadge } from "@/components/dashboard/gamification/Foundin
 import { useState, useEffect } from "react";
 
 export default function ProfilePage() {
-    const { user, profile, loading: profileLoading, displayName, displayInitial } = useUserProfile();
+    const { user, profile, loading: profileLoading, displayName, displayInitial, isAdmin, isPartner } = useUserProfile();
     const [earnedAchievements, setEarnedAchievements] = useState<string[]>([]);
     const [timeoutError, setTimeoutError] = useState(false);
     const router = useRouter();
@@ -267,16 +267,49 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* ── System Configurations ── */}
+            {/* ── System Configurations & Special Access ── */}
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-premium">
                 <div className="px-8 py-5 bg-muted/30 border-b border-border flex items-center justify-between">
-                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">General Settings</h3>
+                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Strategic Access & Settings</h3>
                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-2">
                         <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                         GSE Terminal v2.4
                     </span>
                 </div>
                 <div className="divide-y divide-border">
+                    {/* Special Access Section */}
+                    {(isAdmin || isPartner) && (
+                        <div className="p-8 bg-primary/5 border-b border-primary/10">
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-4">Elevated Privileges</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {isAdmin && (
+                                    <button 
+                                        onClick={() => router.push("/admin/partners")}
+                                        className="flex items-center justify-between p-4 bg-background border border-primary/20 rounded-xl hover:border-primary/40 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <ShieldCheck size={18} className="text-primary" />
+                                            <span className="text-xs font-bold uppercase tracking-tight">Admin Console</span>
+                                        </div>
+                                        <ChevronRight size={14} className="text-muted-foreground group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                )}
+                                {isPartner && (
+                                    <button 
+                                        onClick={() => router.push("/dashboard/partner")}
+                                        className="flex items-center justify-between p-4 bg-background border border-emerald-500/20 rounded-xl hover:border-emerald-500/40 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Share2 size={18} className="text-emerald-500" />
+                                            <span className="text-xs font-bold uppercase tracking-tight">Partner Zone</span>
+                                        </div>
+                                        <ChevronRight size={14} className="text-muted-foreground group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {[
                         { icon: Settings, label: "Interface Preferences", desc: "System localization and visual parameters", href: "/dashboard/settings" },
                         { icon: Bell, label: "Signal Notifications", desc: "Configure real-time market alert thresholds", href: "/dashboard/settings" },
