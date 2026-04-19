@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, X, Menu, Briefcase, ShieldCheck, Share2 } from "lucide-react";
+import { Home, TrendingUp, PieChart, GraduationCap, User, LogOut, Settings, Award, X, Menu, Briefcase, ShieldCheck, Share2, LayoutGrid, Sparkles } from "lucide-react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { supabase } from "@/lib/supabase/client";
 
@@ -16,12 +16,10 @@ export function Sidebar() {
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
     const navItems = [
-        { href: "/dashboard", label: "Dashboard", icon: Home, id: "tour-nav-dashboard" },
-        { href: "/dashboard/market", label: "Stocks", icon: TrendingUp, id: "tour-nav-stocks" },
-        { href: "/dashboard/mutual-funds", label: "Mutual Funds", icon: PieChart, id: "tour-nav-mutual-funds" },
+        { href: "/dashboard", label: "Home", icon: Home, id: "tour-nav-dashboard" },
+        { href: "/dashboard/market", label: "Markets", icon: LayoutGrid, id: "tour-nav-market" },
         { href: "/dashboard/portfolio", label: "Portfolio", icon: Briefcase, id: "tour-nav-portfolio" },
-        { href: "/dashboard/leaderboard", label: "Rankings", icon: Award, id: "tour-nav-rankings" },
-        { href: "/dashboard/learn", label: "Education", icon: GraduationCap, id: "tour-nav-education" },
+        { href: "/dashboard/grow", label: "Mastery Hub", icon: Sparkles, id: "tour-nav-grow" },
     ];
 
     useEffect(() => { setIsMobileOpen(false); }, [pathname]);
@@ -109,10 +107,13 @@ export function Sidebar() {
                     </div>
 
                     <div>
-                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Account</p>
+                        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-3 mb-2">Account & Social</p>
                         <div className="space-y-0.5">
-                            <NavItem href="/dashboard/profile" label="Profile" icon={User} id="tour-nav-profile" />
-                            <NavItem href="/dashboard/settings" label="Settings" icon={Settings} id="tour-nav-settings" />
+                            <NavItem href="/dashboard/profile" label="My Profile" icon={User} id="tour-nav-profile" />
+                            {isPartner && (
+                                <NavItem href="/dashboard/partner" label="Partner Zone" icon={Share2} />
+                            )}
+                            <NavItem href="/dashboard/settings" label="App Settings" icon={Settings} id="tour-nav-settings" />
                         </div>
                     </div>
 

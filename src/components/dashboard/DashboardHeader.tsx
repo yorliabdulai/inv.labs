@@ -1,10 +1,12 @@
 "use client";
 
-import { Search, Sun, Moon, Sunset } from "lucide-react";
+import { Search, Sun, Moon, Sunset, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { useTheme } from "next-themes";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function getGreeting(hour: number): { text: string; icon: React.ElementType } {
     if (hour < 12) return { text: "Good morning", icon: Sun };
@@ -36,6 +38,7 @@ function ThemeToggle() {
 }
 
 export function DashboardHeader() {
+    const router = useRouter();
     const { displayName, displayInitial, firstName, profile, loading } = useUserProfile();
     const [greeting, setGreeting] = useState<{ text: string; icon: React.ElementType }>({ text: "Good morning", icon: Sun });
 
@@ -95,8 +98,9 @@ export function DashboardHeader() {
                     {/* Notification Bell */}
                     <NotificationBell />
 
-                    {/* Avatar */}
-                    <button
+                    {/* Profile Avatar Button */}
+                    <Link
+                        href="/dashboard/profile"
                         className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden"
                         aria-label="User profile"
                     >
@@ -105,7 +109,7 @@ export function DashboardHeader() {
                         ) : (
                             initial
                         )}
-                    </button>
+                    </Link>
                 </div>
             </div>
         </header>
