@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useUserProfile } from "@/lib/useUserProfile";
-import { User, Bell, Lock, Shield, Settings2, MonitorSmartphone, Palette, Globe, HelpCircle } from "lucide-react";
+import { User, Bell, Lock, Shield, Settings2, MonitorSmartphone, Palette, Globe } from "lucide-react";
 
 export default function SettingsPage() {
     const { displayName, displayInitial, user } = useUserProfile();
@@ -90,12 +90,12 @@ export default function SettingsPage() {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold uppercase tracking-widest text-primary">Display Identifier</label>
-                                            <input type="text" defaultValue={displayName} className="w-full bg-muted/20 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-all focus:bg-muted/40" />
+                                            <label htmlFor="display-identifier" className="text-[10px] font-bold uppercase tracking-widest text-primary cursor-pointer">Display Identifier</label>
+                                            <input id="display-identifier" type="text" defaultValue={displayName} className="w-full bg-muted/20 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-all focus:bg-muted/40" />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-bold uppercase tracking-widest text-primary">Comms Address</label>
-                                            <input type="email" defaultValue={user?.email || ""} disabled className="w-full bg-muted/10 border border-border rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed" />
+                                            <label htmlFor="comms-address" className="text-[10px] font-bold uppercase tracking-widest text-primary cursor-pointer">Comms Address</label>
+                                            <input id="comms-address" type="email" defaultValue={user?.email || ""} disabled className="w-full bg-muted/10 border border-border rounded-xl px-4 py-3 text-sm text-muted-foreground cursor-not-allowed" />
                                         </div>
                                     </div>
 
