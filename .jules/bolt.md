@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - Avoid Passing PWA Build Artifacts in PRs
+**Learning:** During frontend verification, build artifacts for the Service Worker (e.g., `public/sw.js`, `public/workbox-*.js`) might get modified or created if a full production build is triggered. Committing these pollutes the PR with noisy auto-generated code.
+**Action:** Always verify `git status` before committing and exclude or restore auto-generated PWA service-worker files unless explicitly modifying the PWA configuration.
