@@ -61,14 +61,13 @@ export async function GET(request: Request) {
             });
         }
 
-        // Apply updates
-        for (const update of updates) {
+        // Apply updates in a single bulk upsert
+        if (updates.length > 0) {
             const { error: updateError } = await supabase
                 .from('mutual_funds')
-                .update({ current_nav: update.current_nav, updated_at: update.updated_at })
-                .eq('fund_id', update.fund_id);
+                .upsert(updates);
                 
-            if (updateError) console.error(`Failed to update fund ${update.fund_id}`, updateError);
+            if (updateError) console.error('Failed to bulk update funds', updateError);
         }
 
         // Insert history
@@ -86,8 +85,9 @@ export async function GET(request: Request) {
             updates 
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Mutual fund cron error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
