@@ -173,7 +173,7 @@ export default function LeaderboardPage() {
                 )}
                 <div className="relative w-full lg:max-w-md">
                     <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-14 pr-6 py-4 bg-card border border-border rounded-xl text-xs font-bold uppercase tracking-widest focus:border-primary/50 outline-none transition-all" />
+                    <input type="text" placeholder="Search..." aria-label="Search rankings" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-14 pr-6 py-4 bg-card border border-border rounded-xl text-xs font-bold uppercase tracking-widest focus:border-primary/50 outline-none transition-all" />
                 </div>
             </div>
 
