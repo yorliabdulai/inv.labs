@@ -14,11 +14,11 @@ function getSupabaseAdmin() {
 export async function GET(request: Request) {
     const supabase = getSupabaseAdmin();
     try {
-        // Verify Cron Secret if provided in env
+        // Verify Cron Secret
         const authHeader = request.headers.get('authorization');
         const cronSecret = process.env.CRON_SECRET;
         
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+        if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
