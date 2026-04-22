@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-04-22 - Add ARIA Labels to Notification Bell Delete Button
+**Learning:** Discovered that the delete notification button in `NotificationBell.tsx` relied only on the `title` attribute, lacking a proper `aria-label`. While `title` provides a tooltip, `aria-label` is crucial for robust screen reader support on icon-only interactive elements within dynamic lists.
+**Action:** Ensure all icon-only buttons, especially those that appear dynamically like delete actions, have an explicit `aria-label` alongside any visual tooltips.
