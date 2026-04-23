@@ -1,5 +1,6 @@
 "use server";
 
+import crypto from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { awardXP } from "@/app/actions/xp";
@@ -75,8 +76,8 @@ export async function createChallenge(
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + durationDays);
 
-        // Unique invite code
-        const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        // Unique invite code using CSPRNG
+        const inviteCode = crypto.randomBytes(4).toString("hex").toUpperCase();
 
         // Create challenge
         const { data: challenge, error: challengeError } = await supabase
@@ -119,9 +120,10 @@ export async function createChallenge(
 
         revalidatePath('/dashboard');
         return { success: true, challenge, inviteCode };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.error('[challenges] createChallenge error:', error);
-        return { success: false, error: error.message || "Failed to create challenge" };
+        return { success: false, error: errorMessage || "Failed to create challenge" };
     }
 }
 
@@ -214,9 +216,10 @@ export async function joinChallenge(
         revalidatePath(`/challenges/join`);
 
         return { success: true, challengeId: challenge.id };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.error('[challenges] joinChallenge error:', error);
-        return { success: false, error: error.message || "Failed to join challenge" };
+        return { success: false, error: errorMessage || "Failed to join challenge" };
     }
 }
 
