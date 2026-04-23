@@ -97,9 +97,16 @@ export function OnboardingTour() {
     const [isVisible, setIsVisible] = useState(false);
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [cardH, setCardH] = useState(CARD_HEIGHT);
     const cardRef = useRef<HTMLDivElement>(null);
 
     const currentStep = STEPS[currentStepIndex];
+
+    useEffect(() => {
+        if (cardRef.current) {
+            setCardH(cardRef.current.offsetHeight);
+        }
+    }, [currentStepIndex, isVisible, isMobile]);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -135,10 +142,14 @@ export function OnboardingTour() {
     }, [isVisible, currentStep.targetId]);
 
     useEffect(() => {
-        updateTargetRect();
+        // Use timeout to bypass synchronous update warning
+        const timer = setTimeout(() => {
+            updateTargetRect();
+        }, 0);
         window.addEventListener("resize", updateTargetRect);
         window.addEventListener("scroll", updateTargetRect, true);
         return () => {
+            clearTimeout(timer);
             window.removeEventListener("resize", updateTargetRect);
             window.removeEventListener("scroll", updateTargetRect, true);
         };
@@ -218,7 +229,6 @@ export function OnboardingTour() {
                         }
                         const vh = window.innerHeight;
                         const vw = window.innerWidth;
-                        const cardH = cardRef.current?.offsetHeight ?? CARD_HEIGHT;
 
                         let rawTop = targetRect.top;
                         if (currentStep.position === "bottom") rawTop = targetRect.bottom + CARD_GAP;
@@ -260,6 +270,7 @@ export function OnboardingTour() {
                             <button 
                                 onClick={handleSkip}
                                 className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                aria-label="Skip tour"
                             >
                                 <X size={16} />
                             </button>
@@ -279,6 +290,7 @@ export function OnboardingTour() {
                                     <button
                                         onClick={handleBack}
                                         className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                        aria-label="Previous step"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>

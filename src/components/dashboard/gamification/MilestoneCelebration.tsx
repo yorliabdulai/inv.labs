@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PartyPopper, CheckCircle2, TrendingUp, Award, X, Zap } from 'lucide-react';
+import { PartyPopper, TrendingUp, Award, X, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MilestoneCelebrationProps {
@@ -16,7 +16,21 @@ interface MilestoneCelebrationProps {
 export function MilestoneCelebration({ type, title, description, value, onClose }: MilestoneCelebrationProps) {
     const [isVisible, setIsVisible] = useState(true);
 
+    const [confettiConfig, setConfettiConfig] = useState<Array<{ yOffset: number; xOffset: number; duration: number; delay: number }>>([]);
+
     useEffect(() => {
+        // Run once on mount to avoid hydration mismatch
+        setTimeout(() => {
+            setConfettiConfig(
+                [...Array(20)].map(() => ({
+                    yOffset: Math.random() * 800,
+                    xOffset: (Math.random() - 0.5) * 400,
+                    duration: 3 + Math.random() * 2,
+                    delay: Math.random() * 2,
+                }))
+            );
+        }, 0);
+
         const timer = setTimeout(() => {
             setIsVisible(false);
             setTimeout(onClose, 500);
@@ -39,17 +53,17 @@ export function MilestoneCelebration({ type, title, description, value, onClose 
                 <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4 md:p-8">
                     {/* Confetti-like effect */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        {[...Array(20)].map((_, i) => (
+                        {confettiConfig.map((config, i) => (
                             <motion.div
                                 key={i}
                                 initial={{ y: -20, opacity: 0, scale: 0 }}
                                 animate={{ 
-                                    y: [null, Math.random() * 800], 
+                                    y: [null, config.yOffset],
                                     opacity: [0, 1, 0],
                                     scale: [0, 1, 0.5],
-                                    x: [null, (Math.random() - 0.5) * 400]
+                                    x: [null, config.xOffset]
                                 }}
-                                transition={{ duration: 3 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 2 }}
+                                transition={{ duration: config.duration, repeat: Infinity, delay: config.delay }}
                                 className={`absolute left-1/2 top-0 w-2 h-2 rounded-full ${colorClasses} opacity-50`}
                             />
                         ))}
@@ -125,6 +139,7 @@ export function MilestoneCelebration({ type, title, description, value, onClose 
                                 setTimeout(onClose, 500);
                             }}
                             className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Close"
                         >
                             <X size={20} />
                         </button>
