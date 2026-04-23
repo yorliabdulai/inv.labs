@@ -6,32 +6,35 @@ import { awardXP } from "@/app/actions/xp";
 
 interface TradeParams {
     symbol: string;
-    name: string;       // pass stock metadata from client (already fetched for UI display)
-    sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
     orderType?: "MARKET" | "LIMIT";
     limitPrice?: number;
 }
 
+import { fetchStockBySymbol } from "@/lib/market-data";
+
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
+    const { symbol, type, quantity, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
-    if (!symbol || !name) {
-        return { success: false, message: "Invalid stock data. Please refresh and try again." };
+    if (!symbol) {
+        return { success: false, message: "Invalid stock symbol." };
     }
 
     try {
-        // Step 1: Authenticate user
+        // Step 1: Fetch live market data securely on the server
+        const stockData = await fetchStockBySymbol(symbol);
+        if (!stockData || !stockData.price || stockData.price <= 0) {
+            throw new Error(`Unable to verify current market price for ${symbol}.`);
+        }
+
+        const { price, name, sector, changePercent } = stockData;
+
+        // Step 2: Authenticate user
         const supabase = await createServerClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
