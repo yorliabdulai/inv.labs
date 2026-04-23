@@ -100,6 +100,9 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
 
         const holdings: Holding[] = [];
         let stockMarketValue = 0;
+        let stockTotalCost = 0;
+        let winners = 0;
+        const sectorDataMap = new Map<string, { gain: number; cost: number; mv: number }>();
 
         for (const row of dbHoldings) {
             const currentPrice = stockPriceMap.get(row.symbol) ?? row.average_cost;
@@ -107,6 +110,7 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             const totalCost = row.average_cost * quantity;
             const marketValue = currentPrice * quantity;
             const gain = marketValue - totalCost;
+            const sector = stockSectorMap.get(row.symbol) ?? "Other";
 
             holdings.push({
                 symbol: row.symbol,
@@ -117,30 +121,27 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
                 marketValue,
                 gain,
                 gainPercent: totalCost > 0 ? (gain / totalCost) * 100 : 0,
-                sector: stockSectorMap.get(row.symbol) ?? "Other",
+                sector,
             });
             stockMarketValue += marketValue;
+            stockTotalCost += totalCost;
+            if (gain > 0) winners++;
+
+            const cur = sectorDataMap.get(sector) ?? { gain: 0, cost: 0, mv: 0 };
+            cur.gain += gain;
+            cur.cost += totalCost;
+            cur.mv += marketValue;
+            sectorDataMap.set(sector, cur);
         }
 
         const mutualFundsValue = mfHoldings.reduce((s, h) => s + (h.current_value ?? 0), 0);
         const cashBalance = profile?.cash_balance ?? STARTING_BALANCE;
         const totalPortfolioValue = stockMarketValue + mutualFundsValue + cashBalance;
 
-        const totalInvested = holdings.reduce((s, h) => s + h.totalCost, 0)
-            + mfHoldings.reduce((s, h) => s + (h.total_invested ?? 0), 0);
+        const totalInvested = stockTotalCost + mfHoldings.reduce((s, h) => s + (h.total_invested ?? 0), 0);
 
-        const winners = holdings.filter(h => h.gain > 0).length;
         const winRate = holdings.length > 0 ? Math.round((winners / holdings.length) * 100) : 0;
         const sortedByGain = [...holdings].sort((a, b) => b.gainPercent - a.gainPercent);
-
-        const sectorDataMap = new Map<string, { gain: number; cost: number; mv: number }>();
-        holdings.forEach(h => {
-            const cur = sectorDataMap.get(h.sector) ?? { gain: 0, cost: 0, mv: 0 };
-            cur.gain += h.gain;
-            cur.cost += h.totalCost;
-            cur.mv += h.marketValue;
-            sectorDataMap.set(h.sector, cur);
-        });
 
         const sectorPerformance = Array.from(sectorDataMap.entries()).map(([name, d]) => ({
             name,

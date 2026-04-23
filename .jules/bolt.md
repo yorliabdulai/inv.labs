@@ -21,3 +21,6 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+## 2026-04-08 - O(N) Loop Consolidation for Map Population
+**Learning:** In `src/app/actions/portfolio.ts`, the original implementation performed a single database query and mapping, but then used multiple subsequent array iterations (`reduce`, `filter`, `forEach`) over the constructed `holdings` array to aggregate metrics like total cost, win rates, and sector performance. When a mapping requires tracking subsets or aggregates, it's inefficient to decouple the computation into separate array iterations.
+**Action:** Consolidate aggregate calculations (like sums, counts, and hash map updates) directly into the primary `for...of` or mapping loop that builds the source array. This converts an O(k*N) operation into an O(N) operation and reduces intermediate allocations.
