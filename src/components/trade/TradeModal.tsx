@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Stock } from "@/lib/market-data";
-import { X, TrendingUp, TrendingDown, DollarSign, Calculator, AlertTriangle, CheckCircle, Clock, Info, ShieldCheck, ArrowRightLeft, Loader2 } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
+import { X, DollarSign, Calculator, AlertTriangle, CheckCircle, Info, ShieldCheck, ArrowRightLeft, Loader2 } from "lucide-react";
 import { executeStockTrade } from "@/app/actions/stocks";
 import { formatCurrency } from "@/lib/mutual-funds-data";
 import { useUserProfile } from "@/lib/useUserProfile";
@@ -92,8 +91,8 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 onClose();
             }, 2500);
 
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : String(err));
         } finally {
             setIsSubmitting(false);
         }
@@ -204,9 +203,10 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                                 {/* Inputs */}
                                 <div className="grid grid-cols-1 gap-10">
                                     <div className="space-y-4">
-                                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Order Quantity</label>
+                                        <label htmlFor="order-quantity" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 cursor-pointer">Order Quantity</label>
                                         <div className="relative group">
                                             <input
+                                                id="order-quantity"
                                                 type="number"
                                                 min="1"
                                                 value={quantity}
@@ -230,8 +230,9 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
 
                                     {orderType === "LIMIT" && (
                                         <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Threshold Price (GH₵)</label>
+                                            <label htmlFor="limit-price" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 cursor-pointer">Threshold Price (GH₵)</label>
                                             <input
+                                                id="limit-price"
                                                 type="number"
                                                 step="0.01"
                                                 value={limitPrice}
