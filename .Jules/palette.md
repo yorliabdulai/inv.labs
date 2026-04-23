@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2025-03-09 - Keyboard Shortcut Hints Visibility
+**Learning:** For keyboard shortcuts on actions (like '⌘K' for the Ato chat or floating button), adding visual hints inline within the UI component enhances discoverability. Even subtle additions like a tooltip or a small pill next to the button text guide users and encourage shortcut usage, making navigation faster.
+**Action:** When an interactive element has a global keyboard shortcut associated with it, implement a visually pleasing and unobtrusive hint (like a `<kbd>` tag within a pill design) visible on hover or permanently to inform users.
