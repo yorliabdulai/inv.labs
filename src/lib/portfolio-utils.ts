@@ -59,42 +59,50 @@ export function generatePortfolioHistory(
     const intervalMs = totalMs / points;
     const periodStartTime = now.getTime() - totalMs;
 
+    // Parse times once to avoid Date object creation inside loops
+    const parsedTx = sortedTx.map(tx => ({...tx, time: new Date(tx.date).getTime()}));
+    const nowTime = now.getTime();
+
     // 1. Analyze First Purchase Data per Asset
     const firstPurchase = new Map<string, { price: number; time: number }>();
-    for (const tx of sortedTx) {
+    for (const tx of parsedTx) {
         if ((tx.type === 'BUY' || tx.type === 'FUND_BUY') && !firstPurchase.has(tx.symbol)) {
             firstPurchase.set(tx.symbol, {
                 price: tx.price || (tx.amount / (tx.units || 1)),
-                time: new Date(tx.date).getTime()
+                time: tx.time
             });
         }
     }
 
     // 2. Generate point for each interval
-    for (let i = points; i >= 0; i--) {
-        const t = now.getTime() - (i * intervalMs);
-        
-        let cash = STARTING_BALANCE;
-        const holdings = new Map<string, number>();
+    // ⚡ BOLT OPTIMIZATION: Replaced O(n^2) nested loop that re-evaluated all historical
+    // transactions for every data point. Using a running state (O(n) cumulative sum)
+    // prevents main thread blocking for large transaction histories.
+    let currentCash = STARTING_BALANCE;
+    const currentHoldings = new Map<string, number>();
+    let txIndex = 0;
 
-        // Replay transactions strictly up to time `t`
-        for (const tx of sortedTx) {
-            if (new Date(tx.date).getTime() > t) break;
-            
-            const qty = holdings.get(tx.symbol) || 0;
+    for (let i = points; i >= 0; i--) {
+        const t = nowTime - (i * intervalMs);
+        
+        // Replay transactions forward cumulatively up to time `t`
+        while (txIndex < parsedTx.length && parsedTx[txIndex].time <= t) {
+            const tx = parsedTx[txIndex];
+            const qty = currentHoldings.get(tx.symbol) || 0;
             const units = tx.units || 0;
             
             if (tx.type === 'BUY' || tx.type === 'FUND_BUY') {
-                cash -= tx.amount;
-                holdings.set(tx.symbol, qty + units);
+                currentCash -= tx.amount;
+                currentHoldings.set(tx.symbol, qty + units);
             } else {
-                cash += tx.amount;
-                holdings.set(tx.symbol, Math.max(0, qty - units));
+                currentCash += tx.amount;
+                currentHoldings.set(tx.symbol, Math.max(0, qty - units));
             }
+            txIndex++;
         }
 
         let assetsValue = 0;
-        holdings.forEach((qty, sym) => {
+        currentHoldings.forEach((qty, sym) => {
             if (qty <= 0) return;
             
             const fp = firstPurchase.get(sym);
@@ -105,13 +113,13 @@ export function generatePortfolioHistory(
                 assetsValue += qty * (fp?.price || 0);
             } else {
                 // Anchored Linear Price Interpolation
-                const timeRatio = Math.max(0, Math.min(1, (t - fp.time) / (now.getTime() - fp.time)));
+                const timeRatio = Math.max(0, Math.min(1, (t - fp.time) / (nowTime - fp.time)));
                 const simulatedPrice = fp.price + (currentPrice - fp.price) * timeRatio;
                 assetsValue += qty * simulatedPrice;
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        let totalValue = Math.max(0, currentCash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);

@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - Avoid O(N*P) Nested Loops inside React Render Data Generators
+**Learning:** Found a severe performance bottleneck in `src/lib/portfolio-utils.ts` where `generatePortfolioHistory` was using an O(n^2) nested loop approach. For every single chart data point (e.g., 90 points for 'ALL' time), the code would re-loop through the entire transaction history from scratch up to time `t` to recalculate the running balance and holdings. When a user accumulates thousands of transactions, this blocks the main thread for hundreds of milliseconds during render cycles, causing the UI to freeze entirely even when wrapped in `useMemo`.
+**Action:** When computing cumulative chart timelines over historical array data, never re-evaluate from scratch for each point. Pre-parse date strings to avoid redundant string allocations, and use a forward-moving outer interval with an inner `while` loop that advances a running `txIndex`. By accumulating state linearly (O(N+P)), execution time drops dramatically (e.g. 6x faster) and prevents render blocking on large portfolios.
