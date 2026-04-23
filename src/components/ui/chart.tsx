@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
-import { cn } from "@/lib/utils";
+import { cn, isValidCssColor } from "@/lib/utils";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
@@ -65,17 +65,20 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null;
   }
 
+  const safeId = id.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/<\/style>/gi, "");
+
   return (
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart="${safeId}"] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    const safeKey = key.replace(/[^a-zA-Z0-9-_\.]/g, "");
+    return color && isValidCssColor(color) ? `  --color-${safeKey}: ${color};` : null;
   })
   .join("\n")}
 }
