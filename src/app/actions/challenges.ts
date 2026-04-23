@@ -8,6 +8,7 @@ import {
     notifyChallengeCompleted,
 } from "@/app/actions/notifications";
 import { revalidatePath } from "next/cache";
+import { generateSecureCode } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -76,7 +77,7 @@ export async function createChallenge(
         endDate.setDate(endDate.getDate() + durationDays);
 
         // Unique invite code
-        const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const inviteCode = generateSecureCode(8);
 
         // Create challenge
         const { data: challenge, error: challengeError } = await supabase
