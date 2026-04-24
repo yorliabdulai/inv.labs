@@ -73,6 +73,7 @@ export function FoundingMemberBanner({ isFoundingMember, alreadyNotified, onDism
                             onDismiss();
                         }}
                         className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition-colors"
+                        aria-label="Close banner"
                     >
                         <X size={20} />
                     </button>
