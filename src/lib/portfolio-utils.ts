@@ -33,8 +33,14 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
-    const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    // Pre-parse dates to avoid redundant string parsing inside loops
+    const parsedTx = transactions.map(tx => ({
+        ...tx,
+        parsedTime: new Date(tx.date).getTime()
+    }));
+
+    const sortedTx = [...parsedTx].sort(
+        (a, b) => a.parsedTime - b.parsedTime
     );
 
     const now = new Date();
@@ -65,22 +71,27 @@ export function generatePortfolioHistory(
         if ((tx.type === 'BUY' || tx.type === 'FUND_BUY') && !firstPurchase.has(tx.symbol)) {
             firstPurchase.set(tx.symbol, {
                 price: tx.price || (tx.amount / (tx.units || 1)),
-                time: new Date(tx.date).getTime()
+                time: tx.parsedTime
             });
         }
     }
 
+    // ⚡ BOLT OPTIMIZATION: Linear O(N+P) timeline generation instead of O(N*P).
+    // Maintain a running state and a single index instead of re-evaluating
+    // the entire transaction history from scratch for every interval point.
+    let txIndex = 0;
+    let cash = STARTING_BALANCE;
+    const holdings = new Map<string, number>();
+
     // 2. Generate point for each interval
+    // We iterate forward in time (from oldest interval to newest)
+    // to naturally accumulate state.
     for (let i = points; i >= 0; i--) {
         const t = now.getTime() - (i * intervalMs);
         
-        let cash = STARTING_BALANCE;
-        const holdings = new Map<string, number>();
-
         // Replay transactions strictly up to time `t`
-        for (const tx of sortedTx) {
-            if (new Date(tx.date).getTime() > t) break;
-            
+        while (txIndex < sortedTx.length && sortedTx[txIndex].parsedTime <= t) {
+            const tx = sortedTx[txIndex];
             const qty = holdings.get(tx.symbol) || 0;
             const units = tx.units || 0;
             
@@ -91,6 +102,7 @@ export function generatePortfolioHistory(
                 cash += tx.amount;
                 holdings.set(tx.symbol, Math.max(0, qty - units));
             }
+            txIndex++;
         }
 
         let assetsValue = 0;
@@ -111,7 +123,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, cash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);
