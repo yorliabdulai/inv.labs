@@ -153,9 +153,10 @@ export default function StocksPage() {
     }, [stocks]);
 
     const sorted = useMemo(() => {
+        const query = debouncedSearch.toLowerCase();
         const filtered = stocks.filter((s) => {
-            const matchSearch = s.symbol.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                s.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+            const matchSearch = query === "" || s.symbol.toLowerCase().includes(query) ||
+                s.name.toLowerCase().includes(query);
             const matchSector = sectorFilter === "All" || s.sector === sectorFilter;
             return matchSearch && matchSector;
         });

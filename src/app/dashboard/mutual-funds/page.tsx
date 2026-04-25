@@ -112,10 +112,11 @@ export default function MutualFundsPage() {
     }, [performance]);
 
     const filteredFunds = useMemo(() => {
+        const query = debouncedSearch.toLowerCase();
         return funds.filter((fund) => {
-            const matchesSearch =
-                fund.fund_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                fund.fund_manager.toLowerCase().includes(debouncedSearch.toLowerCase());
+            const matchesSearch = query === "" ||
+                fund.fund_name.toLowerCase().includes(query) ||
+                fund.fund_manager.toLowerCase().includes(query);
             const matchesType = filterType === "All" || fund.fund_type === filterType;
             const matchesRisk = filterRisk === 0 || fund.risk_rating === filterRisk;
             return matchesSearch && matchesType && matchesRisk;
