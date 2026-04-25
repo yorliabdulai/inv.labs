@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         const authHeader = request.headers.get('authorization');
         const cronSecret = process.env.CRON_SECRET;
         
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+        if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -88,6 +88,6 @@ export async function GET(request: Request) {
 
     } catch (error: any) {
         console.error('Mutual fund cron error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'An unexpected error occurred updating mutual funds' }, { status: 500 });
     }
 }
