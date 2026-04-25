@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-04-25 - Add ARIA Labels to Icon-Only Buttons
+**Learning:** Found that some icon-only action buttons in gamification components (MilestoneCelebration, FoundingMemberBanner) and notification components (NotificationBell delete button) lacked `aria-label` attributes, rendering them inaccessible to screen readers.
+**Action:** Always ensure icon-only interactive elements have descriptive `aria-label` attributes that convey their purpose to assistive technologies.
