@@ -274,6 +274,12 @@ export async function getUserChallenges(): Promise<(Challenge & { xp_earned: num
 // Called from xp.ts after awarding XP
 
 export async function syncChallengeXP(userId: string, newXP: number) {
+    const userClient = await createClient();
+    const { data: { user } } = await userClient.auth.getUser();
+
+    // Security check: ensure the caller is authenticated and matches the requested userId
+    if (!user || user.id !== userId) return;
+
     const supabase = getServiceClient();
 
     // Update all active challenge participations for this user
@@ -286,6 +292,12 @@ export async function syncChallengeXP(userId: string, newXP: number) {
 // ─── Complete a challenge (mark as done, award XP) ────────────────────────────
 
 export async function completeChallengeForUser(challengeId: string, userId: string) {
+    const userClient = await createClient();
+    const { data: { user } } = await userClient.auth.getUser();
+
+    // Security check: ensure the caller is authenticated and matches the requested userId
+    if (!user || user.id !== userId) return;
+
     const supabase = getServiceClient();
 
     const { data: participation } = await supabase
