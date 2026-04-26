@@ -1,0 +1,30 @@
+
+> investmentsimulator@0.1.0 dev /app
+> next dev --webpack
+
+▲ Next.js 16.1.4 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ○ (pwa) PWA support is disabled.
+✓ Ready in 2.8s
+○ Compiling /login ...
+ GET /login 200 in 18.1s (compile: 17.6s, proxy.ts: 12ms, render: 466ms)
+ GET /login 200 in 158ms (compile: 10ms, proxy.ts: 10ms, render: 137ms)
+○ Compiling /verify-component ...
+ GET /verify-component 200 in 4.7s (compile: 4.3s, proxy.ts: 20ms, render: 400ms)
+ POST /verify-component 200 in 197ms (compile: 7ms, proxy.ts: 15ms, render: 175ms)
+ POST /verify-component 200 in 27ms (compile: 6ms, proxy.ts: 10ms, render: 12ms)
+ POST /verify-component 200 in 27ms (compile: 5ms, proxy.ts: 10ms, render: 12ms)
+ POST /verify-component 200 in 41ms (compile: 8ms, proxy.ts: 17ms, render: 16ms)
+ GET /verify-component 404 in 1041ms (compile: 695ms, proxy.ts: 28ms, render: 317ms)
+ GET /verify-component 404 in 68ms (compile: 11ms, proxy.ts: 9ms, render: 48ms)
+ GET /login 200 in 200ms (compile: 53ms, proxy.ts: 12ms, render: 135ms)
+ GET /verify-component 404 in 78ms (compile: 12ms, proxy.ts: 8ms, render: 59ms)
+ GET /login 200 in 71ms (compile: 6ms, proxy.ts: 9ms, render: 57ms)

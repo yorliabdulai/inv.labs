@@ -91,12 +91,21 @@ function NotificationItem({
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
-            className={`relative flex gap-3 p-3 rounded-xl border transition-all cursor-pointer group
+            className={`relative flex gap-3 p-3 rounded-xl border transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
                 ${notification.is_read
                     ? "bg-transparent border-transparent hover:bg-muted/30"
                     : "bg-card border-border hover:border-primary/20 shadow-sm"
                 }`}
             onClick={() => !notification.is_read && onRead(notification.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return;
+                if ((e.key === "Enter" || e.key === " ") && !notification.is_read) {
+                    e.preventDefault();
+                    onRead(notification.id);
+                }
+            }}
         >
             {/* Unread dot */}
             {!notification.is_read && (
@@ -127,8 +136,9 @@ function NotificationItem({
                     e.stopPropagation();
                     onDelete(notification.id);
                 }}
-                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
                 title="Delete notification"
+                aria-label="Delete notification"
             >
                 <Trash2 size={12} />
             </button>
@@ -157,7 +167,9 @@ export function NotificationBell() {
     }, []);
 
     // Initial load
-    useEffect(() => { refresh(); }, [refresh]);
+    useEffect(() => {
+        setTimeout(() => refresh(), 0);
+    }, [refresh]);
 
     // Poll every 60s as a lightweight realtime fallback
     useEffect(() => {

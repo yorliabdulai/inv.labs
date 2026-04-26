@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-04-02 - Prevent event bubbling on custom accessible buttons
+**Learning:** When making a non-interactive element like a div accessible with `role="button"` and an `onKeyDown` handler, keyboard events from nested interactive elements (like a native button inside the div) will bubble up and trigger the parent's handler unless guarded against.
+**Action:** Always include `if (e.target !== e.currentTarget) return;` in custom keyboard event handlers on container elements to ensure events intended for child elements don't inadvertently trigger the parent's action.
