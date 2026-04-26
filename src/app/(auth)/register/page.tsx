@@ -152,10 +152,11 @@ export default function RegisterPage() {
                         <form onSubmit={handleRegister} className="flex flex-col gap-5">
                             {/* Full Name */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Full name</label>
+                                <label htmlFor="fullName" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1 cursor-pointer">Full name</label>
                                 <div className="relative">
                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
+                                        id="fullName"
                                         type="text"
                                         placeholder="Your full name"
                                         value={fullName}
@@ -168,10 +169,11 @@ export default function RegisterPage() {
 
                             {/* Email */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Email address</label>
+                                <label htmlFor="email" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1 cursor-pointer">Email address</label>
                                 <div className="relative">
                                     <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
+                                        id="email"
                                         type="email"
                                         placeholder="your@email.com"
                                         value={email}
@@ -184,10 +186,11 @@ export default function RegisterPage() {
 
                             {/* Password */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Password</label>
+                                <label htmlFor="password" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1 cursor-pointer">Password</label>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
+                                        id="password"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Create a secure password"
                                         value={password}
