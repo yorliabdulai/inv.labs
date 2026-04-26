@@ -41,7 +41,7 @@ export function Sidebar() {
                 href={href}
                 onClick={onClick}
                 id={id}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] ${active
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${active
                     ? "bg-primary/10 text-primary dark:bg-white/[0.08] dark:text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
@@ -134,7 +134,7 @@ export function Sidebar() {
 
                 {/* Desktop Footer */}
                 <div className="p-3 border-t border-border">
-                    <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors mb-1">
+                    <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors mb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                         <div className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-xs flex-shrink-0 relative overflow-hidden">
                             {profile?.avatar_url ? (
                                 <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
@@ -149,7 +149,7 @@ export function Sidebar() {
                     </Link>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-xl transition-all"
+                        className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                         <LogOut size={16} />
                         Sign out
