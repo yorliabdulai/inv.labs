@@ -1,5 +1,6 @@
 "use server";
 
+import crypto from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { awardXP } from "@/app/actions/xp";
@@ -76,7 +77,7 @@ export async function createChallenge(
         endDate.setDate(endDate.getDate() + durationDays);
 
         // Unique invite code
-        const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const inviteCode = crypto.randomBytes(4).toString('hex').toUpperCase();
 
         // Create challenge
         const { data: challenge, error: challengeError } = await supabase
