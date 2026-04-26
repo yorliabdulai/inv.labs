@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2026-04-19 - O(N*P) Cumulative Timeseries Overhead
+**Learning:** In `portfolio-utils.ts`, the `generatePortfolioHistory` function was recalculating cumulative state by iterating over historical transactions from scratch inside a loop for each data point, leading to O(N*P) time complexity. This causes severe lag for users with high transaction volume when rendering charts.
+**Action:** When computing cumulative timeseries data over historical arrays, avoid nested loops that re-evaluate history from scratch. Pre-parse expensive objects like Dates outside the loop, and use a single forward-moving index to advance state, achieving linear O(N+P) time complexity.
