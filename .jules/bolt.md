@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-03-05 - Sequential Independent Database Queries Create Network Latency
+**Learning:** Found sequential independent database queries in `src/app/actions/notifications.ts` (`await getTodayCount(...)` followed by `await recentOfType(...)`). Since these queries don't depend on each other's results, waiting for the first query to finish before starting the second introduces unnecessary sequential N+1 network latency overhead in Next.js Server Actions.
+**Action:** Always parallelize independent database queries using `Promise.all` or `Promise.allSettled` to execute them concurrently, significantly reducing response times.
