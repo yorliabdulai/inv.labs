@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-04-16 - Hover-Only Actions Block Keyboard Navigation
+**Learning:** Interactive elements hidden behind `opacity-0 group-hover:opacity-100` are completely invisible to keyboard-only users who navigate via the Tab key.
+**Action:** Always pair `group-hover:opacity-100` with `focus-visible:opacity-100` and explicit focus rings (e.g., `focus-visible:ring-2`) for secondary actions (like delete buttons) inside list items or cards.
