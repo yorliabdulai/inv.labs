@@ -99,15 +99,14 @@ export async function createNotification(
         supabase = await createClient(); // Will use the signed-in user's context
     }
 
-    // Anti-spam: daily cap (not for high priority)
+    // Anti-spam: daily cap and no duplicate type within 48h (not for high priority)
     if (priority !== 'high') {
-        const todayCount = await getTodayCount(supabase, userId);
+        // Parallelize independent DB queries to reduce execution latency
+        const [todayCount, isDuplicate] = await Promise.all([
+            getTodayCount(supabase, userId),
+            recentOfType(supabase, userId, type, 48)
+        ]);
         if (todayCount >= 3) return null;
-    }
-
-    // Anti-spam: no duplicate type within 48h (not for high priority)
-    if (priority !== 'high') {
-        const isDuplicate = await recentOfType(supabase, userId, type, 48);
         if (isDuplicate) return null;
     }
 
