@@ -260,6 +260,7 @@ export function OnboardingTour() {
                             <button 
                                 onClick={handleSkip}
                                 className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                aria-label="Skip tour"
                             >
                                 <X size={16} />
                             </button>

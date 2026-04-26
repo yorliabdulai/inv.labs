@@ -40,6 +40,7 @@ const LifetimeBanner = () => {
                     <button
                         onClick={() => setIsVisible(false)}
                         className="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500"
+                        aria-label="Close"
                     >
                         <X className="w-4 h-4" />
                     </button>
