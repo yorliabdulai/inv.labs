@@ -59,42 +59,50 @@ export function generatePortfolioHistory(
     const intervalMs = totalMs / points;
     const periodStartTime = now.getTime() - totalMs;
 
+    // Pre-parse timestamps to avoid repetitive Date parsing and array allocations inside loop
+    const parsedTx = sortedTx.map(tx => ({
+        ...tx,
+        timestamp: new Date(tx.date).getTime()
+    }));
+
     // 1. Analyze First Purchase Data per Asset
     const firstPurchase = new Map<string, { price: number; time: number }>();
-    for (const tx of sortedTx) {
+    for (const tx of parsedTx) {
         if ((tx.type === 'BUY' || tx.type === 'FUND_BUY') && !firstPurchase.has(tx.symbol)) {
             firstPurchase.set(tx.symbol, {
                 price: tx.price || (tx.amount / (tx.units || 1)),
-                time: new Date(tx.date).getTime()
+                time: tx.timestamp
             });
         }
     }
+
+    let currentTxIndex = 0;
+    let runningCash = STARTING_BALANCE;
+    const runningHoldings = new Map<string, number>();
 
     // 2. Generate point for each interval
     for (let i = points; i >= 0; i--) {
         const t = now.getTime() - (i * intervalMs);
         
-        let cash = STARTING_BALANCE;
-        const holdings = new Map<string, number>();
-
-        // Replay transactions strictly up to time `t`
-        for (const tx of sortedTx) {
-            if (new Date(tx.date).getTime() > t) break;
-            
-            const qty = holdings.get(tx.symbol) || 0;
+        // Advance the single forward-moving index to process transactions up to time `t`
+        // This makes the overall time complexity O(N+P) instead of O(N*P)
+        while (currentTxIndex < parsedTx.length && parsedTx[currentTxIndex].timestamp <= t) {
+            const tx = parsedTx[currentTxIndex];
+            const qty = runningHoldings.get(tx.symbol) || 0;
             const units = tx.units || 0;
             
             if (tx.type === 'BUY' || tx.type === 'FUND_BUY') {
-                cash -= tx.amount;
-                holdings.set(tx.symbol, qty + units);
+                runningCash -= tx.amount;
+                runningHoldings.set(tx.symbol, qty + units);
             } else {
-                cash += tx.amount;
-                holdings.set(tx.symbol, Math.max(0, qty - units));
+                runningCash += tx.amount;
+                runningHoldings.set(tx.symbol, Math.max(0, qty - units));
             }
+            currentTxIndex++;
         }
 
         let assetsValue = 0;
-        holdings.forEach((qty, sym) => {
+        runningHoldings.forEach((qty, sym) => {
             if (qty <= 0) return;
             
             const fp = firstPurchase.get(sym);
@@ -111,7 +119,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, runningCash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);
