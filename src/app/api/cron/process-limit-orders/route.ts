@@ -3,10 +3,11 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { getStocks } from "@/lib/market-data";
 import { createNotification } from "@/app/actions/notifications";
 
-// This route should be protected by a CRON_SECRET in production
+// This route must be protected by a CRON_SECRET
 export async function GET(req: NextRequest) {
     const authHeader = req.headers.get('authorization');
-    if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
         return new NextResponse('Unauthorized', { status: 401 });
     }
 
