@@ -260,6 +260,7 @@ export function OnboardingTour() {
                             <button 
                                 onClick={handleSkip}
                                 className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                aria-label="Skip tour"
                             >
                                 <X size={16} />
                             </button>
@@ -279,6 +280,7 @@ export function OnboardingTour() {
                                     <button
                                         onClick={handleBack}
                                         className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                        aria-label="Previous step"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
