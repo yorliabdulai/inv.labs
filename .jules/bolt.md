@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2026-04-29 - Optimizing Loop Date Parsing
+**Learning:** Instantiating `new Date(string)` inside large loops is a hidden performance bottleneck due to object creation and parsing overhead. Using `Date.parse(string)` directly yields numeric timestamps that are significantly faster to compare, and boundary timestamps should be hoisted outside the loop.
+**Action:** Avoid `new Date(string)` in loops processing datasets with dates. Prefer pre-calculating boundaries and using `Date.parse()` for numeric timestamp comparisons.
