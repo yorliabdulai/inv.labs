@@ -91,25 +91,29 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         if (!referrals) return { success: true, stats: { conversions: 0, revenue: 0, earnings: 0 } };
 
         // 3. Define Month Boundaries
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0, 23, 59, 59);
+        // ⚡ Bolt: Pre-calculate boundary timestamps to avoid repeated Object instantiations in O(n) loop
+        const startDateTime = new Date(year, month - 1, 1).getTime();
+        const endDateTime = new Date(year, month, 0, 23, 59, 59).getTime();
 
         let qualifyingCount = 0;
         let totalRevenue = 0;
+        const thirtyDaysMs = 1000 * 3600 * 24 * 30;
 
         // 4. Calculate Qualifying Conversions in that month
         // A conversion qualifies if activation_date is in this month AND it happened within 30 days of registration
         for (const ref of referrals) {
             if (ref.activation_status && ref.activation_date) {
-                const actDate = new Date(ref.activation_date);
-                const regDate = new Date(ref.registration_date);
+                // ⚡ Bolt: Use Date.parse to get numeric timestamps directly instead of full Date objects
+                const actTime = Date.parse(ref.activation_date);
                 
                 // Is activation in the requested month?
-                if (actDate >= startDate && actDate <= endDate) {
+                if (actTime >= startDateTime && actTime <= endDateTime) {
+                    const regTime = Date.parse(ref.registration_date);
+
                     // Was it within 30 days of registration?
-                    const diffDays = (actDate.getTime() - regDate.getTime()) / (1000 * 3600 * 24);
+                    const diffMs = actTime - regTime;
                     
-                    if (diffDays <= 30) {
+                    if (diffMs <= thirtyDaysMs) {
                         qualifyingCount++;
                         // Assume a flat revenue value of GH₵200 per activated trader for commission purpose
                         totalRevenue += 200; 
