@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
         const authHeader = request.headers.get('authorization');
         const cronSecret = process.env.CRON_SECRET;
 
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+        if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -197,6 +197,6 @@ export async function GET(request: NextRequest) {
 
     } catch (error: any) {
         console.error('[re-engagement cron] Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
     }
 }
