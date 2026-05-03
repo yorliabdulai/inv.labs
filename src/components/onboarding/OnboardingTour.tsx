@@ -259,7 +259,8 @@ export function OnboardingTour() {
                             </div>
                             <button 
                                 onClick={handleSkip}
-                                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                            className="text-muted-foreground hover:text-foreground transition-colors p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
+                            aria-label="Skip tour"
                             >
                                 <X size={16} />
                             </button>
@@ -278,14 +279,15 @@ export function OnboardingTour() {
                                 {currentStepIndex > 0 && (
                                     <button
                                         onClick={handleBack}
-                                        className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                    className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    aria-label="Previous step"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
                                 )}
                                 <button
                                     onClick={handleNext}
-                                    className="px-4 py-2 bg-primary text-white rounded-lg flex items-center gap-2 text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                                className="px-4 py-2 bg-primary text-white rounded-lg flex items-center gap-2 text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
                                     {currentStepIndex === STEPS.length - 1 ? (
                                         <>Complete <CheckCircle2 size={16} /></>

@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-05-03 - Missing ARIA Labels on Modals/Tours
+**Learning:** Overlay components like onboarding tours and gamification milestone celebrations often have icon-only dismiss or back buttons that lack `aria-label` attributes and visible keyboard focus states (focus-visible). These elements are highly critical because users are completely trapped in the overlay if they cannot interact with them via screen reader or keyboard.
+**Action:** When reviewing or creating modal/overlay components, always prioritize adding `aria-label` attributes to icon-only buttons and ensure strong `focus-visible:ring-2 focus-visible:ring-offset-2` styles are present.
