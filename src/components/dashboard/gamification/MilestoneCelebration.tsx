@@ -113,7 +113,7 @@ export function MilestoneCelebration({ type, title, description, value, onClose 
                                     setIsVisible(false);
                                     setTimeout(onClose, 500);
                                 }}
-                                className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95 text-sm uppercase tracking-widest"
+                                className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95 text-sm uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             >
                                 Continue Journey
                             </motion.button>
@@ -124,7 +124,8 @@ export function MilestoneCelebration({ type, title, description, value, onClose 
                                 setIsVisible(false);
                                 setTimeout(onClose, 500);
                             }}
-                            className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors"
+                            className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                            aria-label="Close celebration"
                         >
                             <X size={20} />
                         </button>
