@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2026-05-04 - Pre-parsing and Pointer Optimization for Time-Series
+**Learning:** When computing cumulative time-series data from historical arrays (like portfolio charts), nested loops that re-evaluate history from scratch for each point (O(N*P)) and re-parse dates cause significant bottlenecks.
+**Action:** Pre-parse dates into numeric timestamps outside the loop using Date.parse() and use a single forward-moving index with a running state to achieve linear O(N+P) time complexity.
