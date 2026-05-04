@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-05-04 - Missing ARIA Labels on Onboarding Controls
+**Learning:** Found that interactive icon-only control buttons within dynamic, absolute-positioned onboarding components (e.g., skip, previous step buttons in OnboardingTour) were missing `aria-label` attributes. Without these, screen reader users navigating the tour could not identify the purpose of the controls.
+**Action:** Always ensure that all icon-only control buttons, even those within temporary or onboarding flows, include descriptive `aria-label` attributes to maintain full keyboard and screen reader accessibility.
