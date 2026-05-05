@@ -259,7 +259,8 @@ export function OnboardingTour() {
                             </div>
                             <button 
                                 onClick={handleSkip}
-                                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                aria-label="Skip onboarding tour"
+                                className="text-muted-foreground hover:text-foreground transition-colors p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
                             >
                                 <X size={16} />
                             </button>
@@ -278,7 +279,8 @@ export function OnboardingTour() {
                                 {currentStepIndex > 0 && (
                                     <button
                                         onClick={handleBack}
-                                        className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                        aria-label="Previous step"
+                                        className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
