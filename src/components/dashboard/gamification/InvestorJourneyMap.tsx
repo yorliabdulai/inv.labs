@@ -90,7 +90,7 @@ export function InvestorJourneyMap({ currentLevel }: InvestorJourneyMapProps) {
                         Your Current Status: <span className="text-foreground ml-1">Stage {INVESTOR_JOURNEY_STAGES.findIndex(s => currentLevel >= s.minLevel && (currentLevel < (INVESTOR_JOURNEY_STAGES[INVESTOR_JOURNEY_STAGES.indexOf(s)+1]?.minLevel || 999))) + 1} Reached</span>
                     </div>
                 </div>
-                <button className="text-[9px] font-bold text-primary uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                <button className="text-[9px] font-bold text-primary uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all" aria-label="View full roadmap">
                     Full Roadmap <ChevronRight size={12} />
                 </button>
             </div>

@@ -106,6 +106,7 @@ export function CreateChallengeModal({ isOpen, onClose, onSuccess }: { isOpen: b
                                     <button
                                         onClick={copyToClipboard}
                                         className="h-12 px-6 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-primary/20 active:scale-95"
+                                        aria-label={copied ? "Link copied" : "Copy share link"}
                                     >
                                         {copied ? <Check size={14} className="text-white" /> : <Copy size={14} />}
                                         {copied ? "Copied" : "Copy Link"}
