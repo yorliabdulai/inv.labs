@@ -148,7 +148,10 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
             {/* Footer Actions */}
             <div className="p-4 border-t border-gray-100 bg-gray-50">
                 <div className="flex gap-2">
-                    <button className="flex-1 py-3 bg-primary text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
+                    <button
+                        className="flex-1 py-3 bg-primary text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                        aria-label="Open Market Scanner"
+                    >
                         <Eye size={16} />
                         Market Scanner
                     </button>

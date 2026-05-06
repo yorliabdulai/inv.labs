@@ -276,11 +276,17 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
             {/* Footer */}
             <div className="p-4 border-t border-gray-100 bg-gray-50">
                 <div className="grid grid-cols-2 gap-3">
-                    <button className="py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
+                    <button
+                        className="py-3 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                        aria-label="Create Alert"
+                    >
                         <Bell size={16} />
                         Create Alert
                     </button>
-                    <button className="py-3 bg-white text-indigo-600 font-black rounded-xl border border-indigo-200 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2">
+                    <button
+                        className="py-3 bg-white text-indigo-600 font-black rounded-xl border border-indigo-200 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                        aria-label="Manage Alerts"
+                    >
                         <Settings size={16} />
                         Manage
                     </button>

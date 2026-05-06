@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2026-03-10 - Dynamic ARIA Labels for Feedback States
+**Learning:** When adding `aria-label` to buttons that have dynamic text (e.g., changing from "Copy Link" to "Copied"), a static `aria-label` will mask the dynamic text from screen readers, causing them to miss the state change feedback.
+**Action:** Always use dynamic `aria-label` attributes (e.g., `aria-label={copied ? "Link copied" : "Copy share link"}`) on buttons with dynamic state feedback to ensure screen reader users receive the updated context.

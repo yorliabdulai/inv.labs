@@ -129,6 +129,7 @@ function NotificationItem({
                 }}
                 className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
                 title="Delete notification"
+                aria-label="Delete notification"
             >
                 <Trash2 size={12} />
             </button>
@@ -283,6 +284,7 @@ export function NotificationBell() {
                                         onClick={handleMarkAllRead}
                                         className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-muted"
                                         title="Mark all read"
+                                        aria-label="Mark all read"
                                     >
                                         <CheckCheck size={12} />
                                         All read
