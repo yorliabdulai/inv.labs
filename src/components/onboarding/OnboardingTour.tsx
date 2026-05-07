@@ -97,6 +97,7 @@ export function OnboardingTour() {
     const [isVisible, setIsVisible] = useState(false);
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [cardHeight, setCardHeight] = useState(CARD_HEIGHT);
     const cardRef = useRef<HTMLDivElement>(null);
 
     const currentStep = STEPS[currentStepIndex];
@@ -143,6 +144,12 @@ export function OnboardingTour() {
             window.removeEventListener("scroll", updateTargetRect, true);
         };
     }, [updateTargetRect]);
+
+    useEffect(() => {
+        if (cardRef.current) {
+            setCardHeight(cardRef.current.offsetHeight);
+        }
+    }, [currentStepIndex, isVisible]);
 
     const handleNext = () => {
         if (currentStepIndex < STEPS.length - 1) {
@@ -218,16 +225,15 @@ export function OnboardingTour() {
                         }
                         const vh = window.innerHeight;
                         const vw = window.innerWidth;
-                        const cardH = cardRef.current?.offsetHeight ?? CARD_HEIGHT;
 
                         let rawTop = targetRect.top;
                         if (currentStep.position === "bottom") rawTop = targetRect.bottom + CARD_GAP;
-                        else if (currentStep.position === "top") rawTop = targetRect.top - cardH - CARD_GAP;
+                        else if (currentStep.position === "top") rawTop = targetRect.top - cardHeight - CARD_GAP;
 
                         // Clamp vertically so card never goes off-screen
                         const clampedTop = Math.min(
                             Math.max(rawTop, VIEWPORT_PADDING),
-                            vh - cardH - VIEWPORT_PADDING
+                            vh - cardHeight - VIEWPORT_PADDING
                         );
 
                         let rawLeft = targetRect.right + CARD_GAP;
@@ -259,7 +265,8 @@ export function OnboardingTour() {
                             </div>
                             <button 
                                 onClick={handleSkip}
-                                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                className="text-muted-foreground hover:text-foreground transition-colors p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
+                                aria-label="Close tour"
                             >
                                 <X size={16} />
                             </button>
@@ -278,7 +285,8 @@ export function OnboardingTour() {
                                 {currentStepIndex > 0 && (
                                     <button
                                         onClick={handleBack}
-                                        className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                        className="p-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        aria-label="Previous step"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
