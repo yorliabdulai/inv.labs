@@ -273,26 +273,30 @@ export async function getUserChallenges(): Promise<(Challenge & { xp_earned: num
 // ─── Sync participant XP after an XP event ───────────────────────────────────
 // Called from xp.ts after awarding XP
 
-export async function syncChallengeXP(userId: string, newXP: number) {
-    const supabase = getServiceClient();
+export async function syncChallengeXP(newXP: number) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
     // Update all active challenge participations for this user
     await supabase
         .from('challenge_participants')
         .update({ current_xp: newXP })
-        .eq('user_id', userId);
+        .eq('user_id', user.id);
 }
 
 // ─── Complete a challenge (mark as done, award XP) ────────────────────────────
 
-export async function completeChallengeForUser(challengeId: string, userId: string) {
-    const supabase = getServiceClient();
+export async function completeChallengeForUser(challengeId: string) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
     const { data: participation } = await supabase
         .from('challenge_participants')
         .select('completed, challenge:challenges(title, xp_reward)')
         .eq('challenge_id', challengeId)
-        .eq('user_id', userId)
+        .eq('user_id', user.id)
         .single();
 
     if (!participation || participation.completed) return;
@@ -301,8 +305,8 @@ export async function completeChallengeForUser(challengeId: string, userId: stri
         .from('challenge_participants')
         .update({ completed: true })
         .eq('challenge_id', challengeId)
-        .eq('user_id', userId);
+        .eq('user_id', user.id);
 
     const challenge = participation.challenge as unknown as { title: string; xp_reward: number };
-    await notifyChallengeCompleted(userId, challenge.title, challenge.xp_reward);
+    await notifyChallengeCompleted(user.id, challenge.title, challenge.xp_reward);
 }
