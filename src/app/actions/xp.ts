@@ -68,7 +68,7 @@ export async function awardXP(eventType: XPEventType, metadata: any = {}) {
         if (updateError) throw updateError;
 
         // Sync challenge participant XP (fire & forget)
-        syncChallengeXP(user.id, newXP).catch(() => {});
+        syncChallengeXP(newXP).catch(() => {});
 
         // Check leaderboard rank (fire & forget — non-blocking)
         checkLeaderboardRank(user.id, newXP).catch(() => {});
