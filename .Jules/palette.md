@@ -16,3 +16,7 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+
+## 2024-05-08 - Accessible Icon Buttons in Dynamic Flows
+**Learning:** Temporary or dynamic flows (like onboarding tours) often contain icon-only navigation controls (like X or Chevron buttons) that are easily overlooked for accessibility. Without `aria-label` and explicit keyboard focus states (`focus-visible:ring-2` etc.), screen reader and keyboard users can become trapped or confused in these overlays.
+**Action:** Always ensure interactive icon-only elements in dynamic components, overlays, or popups have explicit `aria-label`s and standard `focus-visible` utility classes for keyboard accessibility.
