@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2026-05-09 - Pre-parse Dates and Avoid Nested Loops in Cumulative Time-Series
+**Learning:** When computing cumulative time-series data from historical arrays (like portfolio timelines), nesting a transaction replay loop inside a time point loop that continually calls `new Date(string)` creates massive O(N*P) overhead.
+**Action:** Pre-parse expensive objects like Dates outside the loop and use a single forward-moving index with a running state to achieve linear O(N+P) time complexity.
