@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2024-05-10 - O(N*P) Nested Loops in Cumulative Time-Series Processing
+**Learning:** In `generatePortfolioHistory`, computing cumulative historical data for chart points using a nested loop (`O(N*P)`) where it iterates over the entire transaction history from scratch for every point is extremely slow. It was taking ~70ms per call. Combined with `new Date(string)` inside the inner loop, this caused massive overhead.
+**Action:** When computing cumulative time-series data from historical arrays, pre-parse expensive objects like Dates outside the loop using `Date.parse(string)` and filter invalid dates. Use a single forward-moving index with a running state to achieve linear `O(N+P)` time complexity.
