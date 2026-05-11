@@ -94,6 +94,10 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0, 23, 59, 59);
 
+        // ⚡ Bolt: Pre-calculate boundary timestamps outside the loop to avoid repeated Date object creation
+        const startTimestamp = startDate.getTime();
+        const endTimestamp = endDate.getTime();
+
         let qualifyingCount = 0;
         let totalRevenue = 0;
 
@@ -101,18 +105,22 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         // A conversion qualifies if activation_date is in this month AND it happened within 30 days of registration
         for (const ref of referrals) {
             if (ref.activation_status && ref.activation_date) {
-                const actDate = new Date(ref.activation_date);
-                const regDate = new Date(ref.registration_date);
+                // ⚡ Bolt: Use Date.parse for faster timestamp extraction without object instantiation
+                const actTime = Date.parse(ref.activation_date);
                 
-                // Is activation in the requested month?
-                if (actDate >= startDate && actDate <= endDate) {
-                    // Was it within 30 days of registration?
-                    const diffDays = (actDate.getTime() - regDate.getTime()) / (1000 * 3600 * 24);
+                // Is activation valid and in the requested month?
+                if (!isNaN(actTime) && actTime >= startTimestamp && actTime <= endTimestamp) {
+                    const regTime = Date.parse(ref.registration_date);
                     
-                    if (diffDays <= 30) {
-                        qualifyingCount++;
-                        // Assume a flat revenue value of GH₵200 per activated trader for commission purpose
-                        totalRevenue += 200; 
+                    // Was it within 30 days of registration?
+                    if (!isNaN(regTime)) {
+                        const diffDays = (actTime - regTime) / (1000 * 3600 * 24);
+
+                        if (diffDays <= 30) {
+                            qualifyingCount++;
+                            // Assume a flat revenue value of GH₵200 per activated trader for commission purpose
+                            totalRevenue += 200;
+                        }
                     }
                 }
             }
