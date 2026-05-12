@@ -25,7 +25,7 @@ function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-12 h-12 rounded-xl border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-white/50 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 backdrop-blur-md shadow-sm"
+            className="w-12 h-12 rounded-xl border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-white/50 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 backdrop-blur-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             aria-label="Toggle theme"
         >
             {theme === "dark" ? (
@@ -101,7 +101,7 @@ export function DashboardHeader() {
                     {/* Profile Avatar Button */}
                     <Link
                         href="/dashboard/profile"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex-shrink-0 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         aria-label="User profile"
                     >
                         {profile?.avatar_url ? (

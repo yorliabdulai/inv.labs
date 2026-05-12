@@ -235,7 +235,7 @@ export function NotificationBell() {
                 id="notification-bell"
                 onClick={handleOpen}
                 aria-label={`${unreadCount} unread notifications`}
-                className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+                className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
                 <Bell size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
                 <AnimatePresence>
