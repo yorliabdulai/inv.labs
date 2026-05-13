@@ -1,0 +1,3 @@
+## 2026-05-13 - Interactive Element Accessibility Context
+**Learning:** The OnboardingTour component utilizes dynamic screen-overlay layouts that detach interactive elements from standard semantic flows, making standard keyboard focus indicators and screen-reader announcements (ARIA labels) even more critical for navigational elements like 'Skip' and 'Previous/Next' icon buttons.
+**Action:** Always verify that interactive elements mapped to temporary, absolute, or dynamic layouts explicitly define `aria-label` attributes for icon-only buttons and employ consistent focus utilities (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`) to ensure robust accessibility coverage regardless of the visual layout.
