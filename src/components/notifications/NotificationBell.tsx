@@ -129,6 +129,7 @@ function NotificationItem({
                 }}
                 className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
                 title="Delete notification"
+                aria-label="Delete notification"
             >
                 <Trash2 size={12} />
             </button>
