@@ -6,8 +6,16 @@ import { createNotification } from "@/app/actions/notifications";
 // This route should be protected by a CRON_SECRET in production
 export async function GET(req: NextRequest) {
     const authHeader = req.headers.get('authorization');
-    if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', { status: 401 });
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (process.env.NODE_ENV === 'production') {
+        if (!cronSecret) {
+            console.error('[Cron] CRON_SECRET is not configured');
+            return NextResponse.json({ error: 'Internal Server Configuration Error' }, { status: 500 });
+        }
+        if (authHeader !== `Bearer ${cronSecret}`) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
     }
 
     try {

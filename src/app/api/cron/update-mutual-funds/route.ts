@@ -18,7 +18,15 @@ export async function GET(request: Request) {
         const authHeader = request.headers.get('authorization');
         const cronSecret = process.env.CRON_SECRET;
         
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+        if (process.env.NODE_ENV === 'production') {
+            if (!cronSecret) {
+                console.error('[Cron] CRON_SECRET is not configured');
+                return NextResponse.json({ error: 'Internal Server Configuration Error' }, { status: 500 });
+            }
+            if (authHeader !== `Bearer ${cronSecret}`) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+        } else if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
