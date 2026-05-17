@@ -127,8 +127,9 @@ function NotificationItem({
                     e.stopPropagation();
                     onDelete(notification.id);
                 }}
-                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                className="absolute right-2 bottom-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity bg-red-500/10 text-red-500 hover:bg-red-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 title="Delete notification"
+                aria-label={`Delete notification: ${notification.title}`}
             >
                 <Trash2 size={12} />
             </button>
@@ -235,7 +236,7 @@ export function NotificationBell() {
                 id="notification-bell"
                 onClick={handleOpen}
                 aria-label={`${unreadCount} unread notifications`}
-                className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm"
+                className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center transition-all active:scale-95 flex-shrink-0 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
                 <Bell size={20} className="text-zinc-700 dark:text-zinc-200 md:w-7 md:h-7" />
                 <AnimatePresence>
@@ -290,7 +291,7 @@ export function NotificationBell() {
                                 )}
                                 <button
                                     onClick={() => setOpen(false)}
-                                    className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                                    className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                     aria-label="Close notifications"
                                 >
                                     <X size={14} />
