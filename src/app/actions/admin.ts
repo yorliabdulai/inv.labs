@@ -91,8 +91,9 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         if (!referrals) return { success: true, stats: { conversions: 0, revenue: 0, earnings: 0 } };
 
         // 3. Define Month Boundaries
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0, 23, 59, 59);
+        // ⚡ Bolt: Pre-calculate boundary timestamps outside loop for O(N) evaluation
+        const startTimestamp = new Date(year, month - 1, 1).getTime();
+        const endTimestamp = new Date(year, month, 0, 23, 59, 59).getTime();
 
         let qualifyingCount = 0;
         let totalRevenue = 0;
@@ -101,13 +102,19 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         // A conversion qualifies if activation_date is in this month AND it happened within 30 days of registration
         for (const ref of referrals) {
             if (ref.activation_status && ref.activation_date) {
-                const actDate = new Date(ref.activation_date);
-                const regDate = new Date(ref.registration_date);
+                // ⚡ Bolt: Use Date.parse() instead of new Date() instantiation
+                const actTime = Date.parse(ref.activation_date);
+
+                // ⚡ Bolt: Skip invalid dates to prevent NaN bugs
+                if (isNaN(actTime)) continue;
                 
                 // Is activation in the requested month?
-                if (actDate >= startDate && actDate <= endDate) {
+                if (actTime >= startTimestamp && actTime <= endTimestamp) {
+                    const regTime = Date.parse(ref.registration_date);
+                    if (isNaN(regTime)) continue;
+
                     // Was it within 30 days of registration?
-                    const diffDays = (actDate.getTime() - regDate.getTime()) / (1000 * 3600 * 24);
+                    const diffDays = (actTime - regTime) / 86400000; // 1000 * 3600 * 24
                     
                     if (diffDays <= 30) {
                         qualifyingCount++;
