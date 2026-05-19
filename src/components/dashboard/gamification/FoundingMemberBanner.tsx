@@ -72,7 +72,8 @@ export function FoundingMemberBanner({ isFoundingMember, alreadyNotified, onDism
                             setIsVisible(false);
                             onDismiss();
                         }}
-                        className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition-colors"
+                        className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-md"
+                        aria-label="Dismiss banner"
                     >
                         <X size={20} />
                     </button>

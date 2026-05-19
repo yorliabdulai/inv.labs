@@ -124,7 +124,8 @@ export function MilestoneCelebration({ type, title, description, value, onClose 
                                 setIsVisible(false);
                                 setTimeout(onClose, 500);
                             }}
-                            className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors"
+                            className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+                            aria-label="Close celebration"
                         >
                             <X size={20} />
                         </button>
