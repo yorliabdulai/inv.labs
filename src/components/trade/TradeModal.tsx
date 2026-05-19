@@ -140,7 +140,7 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                             <p className="text-[9px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1.5 md:mt-2">{stock.name}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2.5 md:p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border transition-all group" aria-label="Close">
+                    <button onClick={onClose} className="p-2.5 md:p-3 bg-muted hover:bg-muted/80 rounded-xl border border-border transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label="Close order terminal">
                         <X size={18} className="text-muted-foreground group-hover:text-foreground" />
                     </button>
                 </div>

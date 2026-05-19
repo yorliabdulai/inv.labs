@@ -67,7 +67,7 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
                 </div>
                 <button
                     onClick={onClose}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="Close"
                 >
                     <X size={20} className="text-gray-400" />
@@ -118,7 +118,7 @@ export function WatchlistPanel({ isOpen, onClose }: WatchlistPanelProps) {
                                     </div>
                                     <button
                                         onClick={() => removeFromWatchlist(stock.symbol)}
-                                        className="p-1 hover:bg-red-50 hover:text-red-500 rounded transition-colors text-gray-400"
+                                        className="p-1 hover:bg-red-50 hover:text-red-500 rounded transition-colors text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                                         aria-label={`Remove ${stock.symbol} from watchlist`}
                                     >
                                         <X size={14} />

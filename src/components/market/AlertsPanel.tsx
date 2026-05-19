@@ -122,14 +122,14 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
                 </div>
                 <div className="flex items-center gap-2">
                     <button
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         aria-label="Alert settings"
                     >
                         <Settings size={18} className="text-gray-400" />
                     </button>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         aria-label="Close"
                     >
                         <X size={20} className="text-gray-400" />
@@ -219,15 +219,16 @@ export function AlertsPanel({ isOpen, onClose }: AlertsPanelProps) {
                                             {alert.active && !alert.triggered && (
                                                 <button
                                                     onClick={() => toggleAlert(alert.id)}
-                                                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                                                    className="p-1 hover:bg-gray-100 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                                     title="Disable alert"
+                                                    aria-label={`Disable alert for ${alert.symbol}`}
                                                 >
                                                     <BellOff size={14} className="text-gray-400" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => dismissAlert(alert.id)}
-                                                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                                                className="p-1 hover:bg-gray-100 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                                 title="Dismiss"
                                                 aria-label={`Dismiss alert for ${alert.symbol}`}
                                             >
