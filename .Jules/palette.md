@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-05-21 - Add ARIA labels and Focus States to Onboarding Tour
+**Learning:** Found that custom, absolute-positioned onboarding tooltips often lack accessible names for their interactive controls. Because they dynamically highlight interface elements, they draw visual attention, but without proper `aria-label`s and focus states, screen reader and keyboard users are effectively locked out of interacting with the tour itself.
+**Action:** Always verify that interactive elements in custom, temporary, or absolute-positioned flows (like tooltips or popovers) include explicit `aria-label` attributes and keyboard focus indicator classes (`focus-visible:`), as they are easily overlooked during visual development.
