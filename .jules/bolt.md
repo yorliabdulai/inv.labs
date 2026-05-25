@@ -21,3 +21,7 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+
+## 2025-05-25 - Time-Series O(N*P) to O(N+P) Forward Processing
+**Learning:** In `generatePortfolioHistory`, the portfolio timeline generated P visual points. For each point, it re-evaluated N transactions from the beginning to recreate the state at time T, resulting in O(N*P) complexity and massive `new Date(string)` overhead.
+**Action:** When pre-parsing dates into numerical timestamps for linear time-series processing, filter out invalid dates (!isNaN). Then, replace the N*P loop with an O(N+P) forward-moving loop. Maintain running state (like `cash` and `holdings`) and advance a single transaction index forward across the visual points.
