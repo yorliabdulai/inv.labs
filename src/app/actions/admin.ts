@@ -33,13 +33,15 @@ export async function createPartner(formData: FormData) {
         });
 
         if (error) {
-            return { success: false, error: error.message };
+            console.error("createPartner error:", error.message);
+            return { success: false, error: "An unexpected error occurred." };
         }
 
         revalidatePath("/admin/partners");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message || "Unknown error" };
+        console.error("createPartner catch error:", err.message);
+        return { success: false, error: "Unknown error" };
     }
 }
 
@@ -60,12 +62,16 @@ export async function addRevenue(referralId: string, additionalAmount: number) {
 
         const { error } = await supabase.from('referrals').update({ revenue_attributed: newAmount }).eq('id', referralId);
         
-        if (error) return { success: false, error: error.message };
+        if (error) {
+            console.error("addRevenue error:", error.message);
+            return { success: false, error: "An unexpected error occurred." };
+        }
 
         revalidatePath("/admin/partners");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message || "Unknown error" };
+        console.error("addRevenue catch error:", err.message);
+        return { success: false, error: "Unknown error" };
     }
 }
 
@@ -130,7 +136,8 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
 
         return { success: true, stats };
     } catch (err: any) {
-        return { success: false, error: err.message };
+        console.error("getPartnerMonthlyReport catch error:", err.message);
+        return { success: false, error: "An unexpected error occurred." };
     }
 }
 
@@ -159,6 +166,7 @@ export async function publishMonthlyReport(partnerId: string, month: number, yea
         revalidatePath("/dashboard/partner");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message };
+        console.error("publishMonthlyReport catch error:", err.message);
+        return { success: false, error: "An unexpected error occurred." };
     }
 }

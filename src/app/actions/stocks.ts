@@ -89,9 +89,9 @@ export async function executeStockTrade(params: TradeParams) {
             if (rpcError) {
                 console.error(`[executeStockTrade] RPC error:`, rpcError.message);
                 if (rpcError.message.includes('funds') || rpcError.message.includes('shares')) {
-                    return { success: false, message: rpcError.message };
+                    return { success: false, message: "Insufficient funds or shares." };
                 }
-                throw new Error(`Execution failed: ${rpcError.message}`);
+                throw new Error(`Execution failed due to an internal error.`);
             }
 
             // XP and revalidation logic handled below...
@@ -114,7 +114,7 @@ export async function executeStockTrade(params: TradeParams) {
 
             if (insertError) {
                 console.error(`[executeStockTrade] Insert error:`, insertError.message);
-                throw new Error(`Failed to place pending order: ${insertError.message}`);
+                throw new Error(`Failed to place pending order.`);
             }
 
             revalidatePath("/dashboard", "page");
