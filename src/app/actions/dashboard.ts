@@ -204,10 +204,12 @@ export async function getDashboardData(): Promise<DashboardData | null> {
         });
 
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            // ⚡ Bolt: Fast ISO date string comparison avoids expensive new Date() in O(N log N) sort
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            // ⚡ Bolt: Fast ISO date string comparison (descending)
+            .sort((a, b) => b.date < a.date ? -1 : (b.date > a.date ? 1 : 0))
             .slice(0, 10);
 
         // Risk Score
