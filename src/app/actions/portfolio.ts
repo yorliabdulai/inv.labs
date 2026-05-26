@@ -182,7 +182,8 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
         });
 
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            // ⚡ Bolt: Fast ISO date string comparison avoids expensive new Date() in O(N log N) sort
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         // Extract pending orders
         const pendingOrders = stockTransactions
