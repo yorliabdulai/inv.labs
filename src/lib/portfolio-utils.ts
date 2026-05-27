@@ -33,8 +33,9 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
+    // ⚡ Bolt: Avoid O(N log N) string-to-date conversion overheads by using string comparisons for ISO dates
     const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0)
     );
 
     const now = new Date();
