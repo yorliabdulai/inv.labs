@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { awardXP } from "@/app/actions/xp";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -43,10 +44,15 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
+        // 🛡️ Sentinel: Fetch authoritative live market data to prevent client-side price tampering
+        const liveStock = await fetchStockBySymbol(symbol);
+        const authPrice = liveStock.price;
+        const authName = liveStock.name;
+        const authSector = liveStock.sector;
+        const authChangePercent = liveStock.changePercent;
+
         // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
-        // This is a simulator — no real money is at stake.
-        const subtotal = price * quantity;
+        const subtotal = authPrice * quantity;
 
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
@@ -56,7 +62,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
+        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${authPrice} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
         // Step 3: Execution Logic
         // Determine if this order should execute immediately or be placed as pending
@@ -64,9 +70,9 @@ export async function executeStockTrade(params: TradeParams) {
         let shouldExecuteImmediately = true;
 
         if (isLimit) {
-            if (type === "BUY" && price > limitPrice) {
+            if (type === "BUY" && authPrice > limitPrice) {
                 shouldExecuteImmediately = false;
-            } else if (type === "SELL" && price < limitPrice) {
+            } else if (type === "SELL" && authPrice < limitPrice) {
                 shouldExecuteImmediately = false;
             }
         }
@@ -76,10 +82,10 @@ export async function executeStockTrade(params: TradeParams) {
             const { error: rpcError } = await supabase.rpc('execute_stock_trade', {
                 p_user_id: user.id,
                 p_symbol: symbol,
-                p_stock_name: name,
-                p_stock_sector: sector,
-                p_current_price: price,
-                p_change_percent: changePercent,
+                p_stock_name: authName,
+                p_stock_sector: authSector,
+                p_current_price: authPrice,
+                p_change_percent: authChangePercent,
                 p_type: type,
                 p_quantity: quantity,
                 p_total_cost: totalCost,
