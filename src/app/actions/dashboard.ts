@@ -203,11 +203,13 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             };
         });
 
+        // ⚡ Bolt: Fast lexicographical sort of ISO dates, skipping heavy Date parsing
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
+        // ⚡ Bolt: Use .reverse() on sorted array instead of a redundant second .sort()
         const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .reverse()
             .slice(0, 10);
 
         // Risk Score
