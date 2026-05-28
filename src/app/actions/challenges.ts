@@ -120,8 +120,8 @@ export async function createChallenge(
         revalidatePath('/dashboard');
         return { success: true, challenge, inviteCode };
     } catch (error: any) {
-        console.error('[challenges] createChallenge error:', error);
-        return { success: false, error: error.message || "Failed to create challenge" };
+        console.error('[challenges] createChallenge error:', error.message || error);
+        return { success: false, error: "Failed to create challenge. Please try again." };
     }
 }
 
@@ -215,8 +215,8 @@ export async function joinChallenge(
 
         return { success: true, challengeId: challenge.id };
     } catch (error: any) {
-        console.error('[challenges] joinChallenge error:', error);
-        return { success: false, error: error.message || "Failed to join challenge" };
+        console.error('[challenges] joinChallenge error:', error.message || error);
+        return { success: false, error: "Failed to join challenge. Please try again." };
     }
 }
 

@@ -33,13 +33,15 @@ export async function createPartner(formData: FormData) {
         });
 
         if (error) {
-            return { success: false, error: error.message };
+            console.error("[createPartner] Supabase error:", error.message);
+            return { success: false, error: "Failed to create partner." };
         }
 
         revalidatePath("/admin/partners");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message || "Unknown error" };
+        console.error("[createPartner] Unhandled error:", err.message || err);
+        return { success: false, error: "Failed to create partner. Please try again." };
     }
 }
 
@@ -60,12 +62,16 @@ export async function addRevenue(referralId: string, additionalAmount: number) {
 
         const { error } = await supabase.from('referrals').update({ revenue_attributed: newAmount }).eq('id', referralId);
         
-        if (error) return { success: false, error: error.message };
+        if (error) {
+            console.error("[addRevenue] Supabase error:", error.message);
+            return { success: false, error: "Failed to update revenue." };
+        }
 
         revalidatePath("/admin/partners");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message || "Unknown error" };
+        console.error("[addRevenue] Unhandled error:", err.message || err);
+        return { success: false, error: "Failed to update revenue. Please try again." };
     }
 }
 
@@ -130,7 +136,8 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
 
         return { success: true, stats };
     } catch (err: any) {
-        return { success: false, error: err.message };
+        console.error("[getPartnerMonthlyReport] Unhandled error:", err.message || err);
+        return { success: false, error: "Failed to generate report. Please try again." };
     }
 }
 
@@ -159,6 +166,7 @@ export async function publishMonthlyReport(partnerId: string, month: number, yea
         revalidatePath("/dashboard/partner");
         return { success: true };
     } catch (err: any) {
-        return { success: false, error: err.message };
+        console.error("[publishMonthlyReport] Unhandled error:", err.message || err);
+        return { success: false, error: "Failed to publish report. Please try again." };
     }
 }
