@@ -204,11 +204,13 @@ export async function getDashboardData(): Promise<DashboardData | null> {
         });
 
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            // ⚡ Bolt: Use O(N) string comparison instead of O(N log N) Date instantiation inside sort for performance
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .slice(0, 10);
+            // ⚡ Bolt: Avoid re-sorting by reversing the already sorted array
+            .slice(-10)
+            .reverse();
 
         // Risk Score
         const totalInvested = stockMarketValue + mutualFundsValue;
