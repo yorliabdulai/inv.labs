@@ -153,10 +153,8 @@ export async function buildUserPortfolioContext(
                 price: t.nav_at_transaction,
             })) || []),
         ]
-            .sort(
-                (a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-            )
+            // ⚡ Bolt: Use O(N) string comparison instead of O(N log N) Date instantiation inside sort for performance
+            .sort((a, b) => b.date < a.date ? -1 : (b.date > a.date ? 1 : 0))
             .slice(0, 5);
 
         // Calculate totals
