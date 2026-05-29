@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { awardXP } from "@/app/actions/xp";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -17,15 +18,13 @@ interface TradeParams {
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
+    const { symbol, name, sector, type, quantity, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
     }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
-    }
+    // Note: We ignore client-provided price, we will fetch the real one.
     if (!symbol || !name) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
     }
@@ -43,10 +42,13 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
+        // Security: Fetch live authoritative price to prevent parameter tampering
+        const liveStock = await fetchStockBySymbol(symbol);
+        const serverPrice = liveStock.price;
+        const serverChangePercent = liveStock.changePercent;
+
         // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
-        // This is a simulator — no real money is at stake.
-        const subtotal = price * quantity;
+        const subtotal = serverPrice * quantity;
 
         const brokerFee = subtotal * 0.015;
         const secLevy = subtotal * 0.004;
@@ -56,7 +58,7 @@ export async function executeStockTrade(params: TradeParams) {
 
         const totalCost = type === "BUY" ? subtotal + fees : subtotal - fees;
 
-        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${price} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
+        console.log(`[executeStockTrade] ${type} ${quantity}x ${symbol} @ GH₵${serverPrice} | subtotal: ${subtotal.toFixed(2)} | fees: ${fees.toFixed(2)} | total: ${totalCost.toFixed(2)}`);
 
         // Step 3: Execution Logic
         // Determine if this order should execute immediately or be placed as pending
@@ -64,9 +66,9 @@ export async function executeStockTrade(params: TradeParams) {
         let shouldExecuteImmediately = true;
 
         if (isLimit) {
-            if (type === "BUY" && price > limitPrice) {
+            if (type === "BUY" && serverPrice > limitPrice) {
                 shouldExecuteImmediately = false;
-            } else if (type === "SELL" && price < limitPrice) {
+            } else if (type === "SELL" && serverPrice < limitPrice) {
                 shouldExecuteImmediately = false;
             }
         }
@@ -78,8 +80,8 @@ export async function executeStockTrade(params: TradeParams) {
                 p_symbol: symbol,
                 p_stock_name: name,
                 p_stock_sector: sector,
-                p_current_price: price,
-                p_change_percent: changePercent,
+                p_current_price: serverPrice,
+                p_change_percent: serverChangePercent,
                 p_type: type,
                 p_quantity: quantity,
                 p_total_cost: totalCost,
