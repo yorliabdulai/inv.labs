@@ -33,8 +33,9 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
+    // ⚡ Bolt: Use direct string comparison for O(N log N) sorting without expensive Date instantiations
     const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0)
     );
 
     const now = new Date();

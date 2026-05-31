@@ -203,12 +203,12 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             };
         });
 
+        // ⚡ Bolt: Use direct string comparison for O(N log N) sorting without expensive Date instantiations
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
-        const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .slice(0, 10);
+        // ⚡ Bolt: Instead of a redundant second sort, simply take the last 10 items of the already ascending sorted array
+        const recentActivity = unifiedTransactions.slice(-10).reverse();
 
         // Risk Score
         const totalInvested = stockMarketValue + mutualFundsValue;
