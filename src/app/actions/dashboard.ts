@@ -203,12 +203,14 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             };
         });
 
+        // ⚡ Bolt: Fast lexicographical string sorting of ISO dates instead of O(N log N) Date parsing
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
+        // ⚡ Bolt: Extract top 10 recent items directly without second sort operation
         const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .slice(0, 10);
+            .slice(-10)
+            .reverse();
 
         // Risk Score
         const totalInvested = stockMarketValue + mutualFundsValue;
