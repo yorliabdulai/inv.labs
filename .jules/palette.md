@@ -1,0 +1,3 @@
+## 2026-06-02 - Interactive Onboarding Elements Missing Accessible Labels
+**Learning:** The onboarding tour component utilizes icon-only buttons (like X for skip, ChevronLeft for back) that lack descriptive `aria-label` attributes and explicit keyboard focus states. Since these temporary, dynamic flows appear over other content, they are critical to make keyboard-accessible and screen-reader friendly to prevent users from getting stuck.
+**Action:** Ensure all interactive icon-only control elements in dynamic or overlay flows include descriptive `aria-label` attributes and use standard utility classes (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`) for consistent keyboard focus states.
