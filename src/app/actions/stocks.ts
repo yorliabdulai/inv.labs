@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { awardXP } from "@/app/actions/xp";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -10,27 +11,32 @@ interface TradeParams {
     sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
     orderType?: "MARKET" | "LIMIT";
     limitPrice?: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
+    const { symbol, name, sector, type, quantity, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
-    }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
     }
     if (!symbol || !name) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
     }
 
     try {
+        // 🛡️ Sentinel: Security Enhancement - Never trust client-provided financial data.
+        // Fetch authoritative live market data server-side to prevent parameter tampering.
+        const liveStock = await fetchStockBySymbol(symbol);
+        const price = liveStock.price;
+        const changePercent = liveStock.changePercent;
+
+        if (!price || price <= 0) {
+            return { success: false, message: "Invalid price feed. Please try again." };
+        }
+
         // Step 1: Authenticate user
         const supabase = await createServerClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -143,6 +149,7 @@ export async function executeStockTrade(params: TradeParams) {
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         console.error("[executeStockTrade] Unhandled error:", message, error instanceof Error ? error.stack : '');
-        return { success: false, message: message || "Trade execution failed. Please try again." };
+        // 🛡️ Sentinel: Fail securely - do not leak internal error messages to the client
+        return { success: false, message: "Trade execution failed. Please try again." };
     }
 }
