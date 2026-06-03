@@ -94,6 +94,11 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0, 23, 59, 59);
 
+        // ⚡ Bolt: Pre-calculate boundary timestamps for performance to avoid object creation in loop
+        const startMs = startDate.getTime();
+        const endMs = endDate.getTime();
+        const thirtyDaysMs = 30 * 24 * 3600 * 1000;
+
         let qualifyingCount = 0;
         let totalRevenue = 0;
 
@@ -101,15 +106,14 @@ export async function getPartnerMonthlyReport(partnerId: string, month: number, 
         // A conversion qualifies if activation_date is in this month AND it happened within 30 days of registration
         for (const ref of referrals) {
             if (ref.activation_status && ref.activation_date) {
-                const actDate = new Date(ref.activation_date);
-                const regDate = new Date(ref.registration_date);
+                // ⚡ Bolt: Use Date.parse for numeric timestamps instead of instantiating Date objects
+                const actMs = Date.parse(ref.activation_date);
+                const regMs = Date.parse(ref.registration_date);
                 
                 // Is activation in the requested month?
-                if (actDate >= startDate && actDate <= endDate) {
+                if (actMs >= startMs && actMs <= endMs) {
                     // Was it within 30 days of registration?
-                    const diffDays = (actDate.getTime() - regDate.getTime()) / (1000 * 3600 * 24);
-                    
-                    if (diffDays <= 30) {
+                    if (actMs - regMs <= thirtyDaysMs) {
                         qualifyingCount++;
                         // Assume a flat revenue value of GH₵200 per activated trader for commission purpose
                         totalRevenue += 200; 
