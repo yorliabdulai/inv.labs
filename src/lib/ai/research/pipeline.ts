@@ -10,6 +10,7 @@ import type {
   SerperSource,
   AtoCitation,
 } from "./types";
+import { buildMarkdownSummary, parseLlmJson } from "./parse-llm-json";
 
 function withTimeout(ms: number) {
   const controller = new AbortController();
@@ -17,16 +18,21 @@ function withTimeout(ms: number) {
   return { controller, clear: () => clearTimeout(timeoutId) };
 }
 
-function safeJsonParse<T>(raw: string): { ok: true; value: T } | { ok: false; error: string } {
-  try {
-    const start = raw.indexOf("{");
-    const end = raw.lastIndexOf("}");
-    const slice = start >= 0 && end >= 0 ? raw.slice(start, end + 1) : raw;
-    return { ok: true, value: JSON.parse(slice) as T };
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Failed to parse JSON.";
-    return { ok: false, error: msg };
-  }
+type LlmBriefPayload = {
+  subject: string;
+  whatItDoes: string;
+  latestFinancialSignal: string;
+  recommendation: AtoResearchBrief["recommendation"];
+  reasoning: string;
+  assetHint?: AtoResearchBrief["assetHint"];
+};
+
+function normalizeRecommendation(
+  value: unknown
+): AtoResearchBrief["recommendation"] {
+  const v = String(value ?? "hold").toLowerCase();
+  if (v === "buy" || v === "hold" || v === "pass") return v;
+  return "hold";
 }
 
 async function fetchGseQuote(symbol?: string): Promise<AtoResearchBrief["gseQuote"] | undefined> {
@@ -93,7 +99,7 @@ export async function synthesizeResearchBrief(args: {
     "You are Ato, a Ghana-focused investment research assistant for INV.LABS (simulated trading/education).",
     "Produce a structured brief using ONLY the provided sources and documents. Cite source numbers [1], [2] for every numeric claim.",
     "Social results are indexed web snippets, not live feeds.",
-    "Return STRICT JSON only.",
+    "Return a single JSON object only. No markdown fences.",
     "",
     "JSON SCHEMA:",
     "{",
@@ -102,12 +108,12 @@ export async function synthesizeResearchBrief(args: {
     '  "latestFinancialSignal": string,',
     '  "recommendation": "buy" | "hold" | "pass",',
     '  "reasoning": string,',
-    '  "markdownSummary": string (2-4 paragraphs with [n] citations),',
-    '  "assetHint": { "assetType": "stock"|"mutual_fund"|"unknown", "symbol"?: string, "name"?: string },',
+    '  "assetHint": { "assetType": "stock"|"mutual_fund"|"unknown", "symbol"?: string, "name"?: string }',
     "}",
     "",
     "RULES:",
-    "- markdownSummary must use inline [1] style citations matching SOURCE numbers.",
+    "- Keep every string value on ONE line (use spaces, not line breaks). Escape double quotes as \\\".",
+    "- Use [1], [2] style source citations inside string fields where relevant.",
     "- If filings insufficient, state that clearly in latestFinancialSignal.",
     "- recommendation is for SIMULATED education only.",
   ].join("\n");
@@ -129,66 +135,91 @@ export async function synthesizeResearchBrief(args: {
     .filter(Boolean)
     .join("\n");
 
-  const { controller, clear } = withTimeout(60_000);
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://invlabs.com",
-        "X-Title": "INV.LABS",
-        "Content-Type": "application/json",
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model: "openrouter/free",
-        temperature: 0.35,
-        max_tokens: 1200,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-      }),
+  const buildRequestBody = (opts: { extraSystem?: string; jsonMode: boolean }) =>
+    JSON.stringify({
+      model: "openrouter/free",
+      temperature: 0.3,
+      max_tokens: 2048,
+      ...(opts.jsonMode ? { response_format: { type: "json_object" } } : {}),
+      messages: [
+        {
+          role: "system",
+          content: opts.extraSystem ? `${system}\n\n${opts.extraSystem}` : system,
+        },
+        { role: "user", content: user },
+      ],
     });
 
-    if (!response.ok) {
-      const text = await response.text().catch(() => "");
-      throw new Error(`OpenRouter error ${response.status}: ${text}`);
+  const { controller, clear } = withTimeout(90_000);
+  try {
+    let lastParseError = "Invalid JSON";
+    let useJsonMode = true;
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://invlabs.com",
+          "X-Title": "INV.LABS",
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+        body: buildRequestBody({
+          jsonMode: useJsonMode,
+          extraSystem:
+            attempt === 1
+              ? "CRITICAL: Output must be valid JSON. Single-line strings only. Do not truncate."
+              : undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        if (useJsonMode && response.status === 400 && /response_format|json/i.test(text)) {
+          useJsonMode = false;
+          continue;
+        }
+        throw new Error(`OpenRouter error ${response.status}: ${text}`);
+      }
+
+      const data = await response.json();
+      const raw = data?.choices?.[0]?.message?.content;
+      if (typeof raw !== "string" || !raw.trim()) {
+        throw new Error("OpenRouter returned an empty response.");
+      }
+
+      const parsed = parseLlmJson<LlmBriefPayload>(raw);
+      if (parsed.ok) {
+        const value = parsed.value;
+        const recommendation = normalizeRecommendation(value.recommendation);
+
+        const citations = buildCitations(args.sources);
+        return {
+          subject: value.subject || "Research brief",
+          whatItDoes: value.whatItDoes || "",
+          latestFinancialSignal: value.latestFinancialSignal || "",
+          recommendation,
+          reasoning: value.reasoning || "",
+          markdownSummary: buildMarkdownSummary({
+            subject: value.subject || "Research brief",
+            whatItDoes: value.whatItDoes || "",
+            latestFinancialSignal: value.latestFinancialSignal || "",
+            recommendation,
+            reasoning: value.reasoning || "",
+          }),
+          assetHint: value.assetHint,
+          sources: args.sources.slice(0, 12),
+          citations,
+          macroContext: undefined,
+          gseQuote: args.gseQuote,
+        };
+      }
+
+      lastParseError = parsed.error;
     }
 
-    const data = await response.json();
-    const raw = data?.choices?.[0]?.message?.content;
-    if (typeof raw !== "string" || !raw.trim()) {
-      throw new Error("OpenRouter returned an empty response.");
-    }
-
-    const parsed = safeJsonParse<{
-      subject: string;
-      whatItDoes: string;
-      latestFinancialSignal: string;
-      recommendation: AtoResearchBrief["recommendation"];
-      reasoning: string;
-      markdownSummary: string;
-      assetHint?: AtoResearchBrief["assetHint"];
-    }>(raw);
-
-    if (!parsed.ok) {
-      throw new Error(`Research brief JSON parse failed: ${parsed.error}`);
-    }
-
-    const citations = buildCitations(args.sources);
-    const value = parsed.value;
-
-    return {
-      ...value,
-      markdownSummary:
-        value.markdownSummary ||
-        [value.whatItDoes, value.latestFinancialSignal, value.reasoning].filter(Boolean).join("\n\n"),
-      sources: args.sources.slice(0, 12),
-      citations,
-      macroContext: undefined,
-      gseQuote: args.gseQuote,
-    };
+    throw new Error(`Research brief JSON parse failed: ${lastParseError}`);
   } finally {
     clear();
   }
