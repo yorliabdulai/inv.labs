@@ -33,10 +33,13 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
-    const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+    // ⚡ Bolt: Pre-calculate timestamps and filter invalid dates to avoid N*P Date instantiations during replay and O(N log N) during sort
+    const validTx = transactions
+        .map(tx => ({ ...tx, timestamp: new Date(tx.date).getTime() }))
+        .filter(tx => !isNaN(tx.timestamp))
+        .sort((a, b) => a.timestamp - b.timestamp);
 
+    const sortedTx = validTx;
     const now = new Date();
     const dataPoints: ChartData[] = [];
 
@@ -65,7 +68,7 @@ export function generatePortfolioHistory(
         if ((tx.type === 'BUY' || tx.type === 'FUND_BUY') && !firstPurchase.has(tx.symbol)) {
             firstPurchase.set(tx.symbol, {
                 price: tx.price || (tx.amount / (tx.units || 1)),
-                time: new Date(tx.date).getTime()
+                time: tx.timestamp
             });
         }
     }
@@ -79,7 +82,7 @@ export function generatePortfolioHistory(
 
         // Replay transactions strictly up to time `t`
         for (const tx of sortedTx) {
-            if (new Date(tx.date).getTime() > t) break;
+            if (tx.timestamp > t) break;
             
             const qty = holdings.get(tx.symbol) || 0;
             const units = tx.units || 0;
@@ -111,7 +114,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, cash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);

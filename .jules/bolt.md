@@ -21,3 +21,6 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+## 2026-06-03 - Optimize Date Operations in Loops/Sorts
+**Learning:** Instantiating `new Date().getTime()` inside O(N log N) array sorts or N*P forward-moving chart interval loops is a major bottleneck. Furthermore, `NaN` timestamps from invalid dates can silently break numerical interval comparisons (`timestamp <= t`).
+**Action:** Use direct string comparisons (`a < b ? -1 : 1`) for sorting ISO 8601 strings. For mathematical time-series replays, pre-parse timestamps into a mapped array once and use `.filter(tx => !isNaN(tx.timestamp))` before processing to guarantee reliable comparisons.
