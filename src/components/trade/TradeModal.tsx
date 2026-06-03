@@ -78,8 +78,6 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 sector: stock.sector,
                 type,
                 quantity,
-                price: stock.price,
-                changePercent: stock.changePercent,
                 orderType,
                 limitPrice: parseFloat(limitPrice),
             });
