@@ -3,7 +3,9 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { BottomNav } from "@/components/BottomNav";
 import { UserProfileProvider } from "@/lib/UserProfileContext";
 import { createClient } from "@/lib/supabase/server";
+import { Suspense } from "react";
 import { AtoChatContainer } from "@/components/ai/AtoChatContainer";
+import { AtoResearchProvider } from "@/components/ai/AtoResearchContext";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
 export default async function DashboardLayout({
@@ -86,8 +88,12 @@ export default async function DashboardLayout({
 
                 <BottomNav />
 
-                <AtoChatContainer />
-                
+                <AtoResearchProvider>
+                    <Suspense fallback={null}>
+                        <AtoChatContainer />
+                    </Suspense>
+                </AtoResearchProvider>
+
                 <OnboardingTour />
             </div>
         </UserProfileProvider>

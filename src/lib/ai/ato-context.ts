@@ -303,17 +303,31 @@ export async function buildMutualFundsContext(): Promise<string> {
     }
 }
 
+/** Bank of Ghana macro snapshot for chat context */
+export async function buildMacroContext(): Promise<string> {
+    try {
+        const { getLatestMacroSnapshot, formatMacroForPrompt } = await import(
+            "@/lib/ai/research/macro-data-service"
+        );
+        const macro = await getLatestMacroSnapshot();
+        return formatMacroForPrompt(macro);
+    } catch {
+        return "BANK OF GHANA MACRO: Unavailable at this time.";
+    }
+}
+
 /**
  * Build complete context for Ato
  * @param userId - User ID
  * @returns Complete formatted context
  */
 export async function buildCompleteContext(userId: string): Promise<string> {
-    const [portfolioContext, marketContext, mfContext] = await Promise.all([
+    const [portfolioContext, marketContext, mfContext, macroContext] = await Promise.all([
         buildUserPortfolioContext(userId),
         buildMarketContext(),
         buildMutualFundsContext(),
+        buildMacroContext(),
     ]);
 
-    return `${portfolioContext}\n\n${marketContext}\n\n${mfContext}`;
+    return `${portfolioContext}\n\n${marketContext}\n\n${mfContext}\n\n${macroContext}`;
 }

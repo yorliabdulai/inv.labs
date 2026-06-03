@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
-import { isAtoAgentModeEnabled } from "@/lib/config/feature-flags";
-import { runAtoResearchAgent } from "@/lib/ai/ato-agent-service";
+import { isAtoDeepResearchEnabled } from "@/lib/config/feature-flags";
+import { runDeepResearchPipeline } from "@/lib/ai/research/pipeline";
 
+/** Legacy alias — prefer POST /api/ato/research */
 export async function POST(request: NextRequest) {
   try {
-    if (!isAtoAgentModeEnabled()) {
+    if (!isAtoDeepResearchEnabled()) {
       return NextResponse.json(
-        { error: "Agent Mode is currently disabled." },
+        { error: "Deep research is currently disabled." },
         { status: 503 }
       );
     }
 
     const supabase = await createServerClient();
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -23,28 +23,23 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { query } = body ?? {};
+    const query = typeof body?.query === "string" ? body.query.trim() : "";
+    const symbol = typeof body?.symbol === "string" ? body.symbol.trim() : undefined;
 
-    if (!query || typeof query !== "string" || !query.trim()) {
+    if (!query) {
       return NextResponse.json(
         { error: "A non-empty research query is required." },
         { status: 400 }
       );
     }
 
-    const brief = await runAtoResearchAgent(query.trim());
+    const brief = await runDeepResearchPipeline({ userQuery: query, symbol });
 
     return NextResponse.json({ brief });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[ATO AGENT API ERROR]:", error);
-
-    const status = typeof error?.status === "number" ? error.status : 500;
     const message =
-      status >= 500
-        ? "An unexpected error occurred while running Agent Mode."
-        : error?.message || "Failed to run Agent Mode.";
-
-    return NextResponse.json({ error: message }, { status });
+      error instanceof Error ? error.message : "Failed to run research.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
-

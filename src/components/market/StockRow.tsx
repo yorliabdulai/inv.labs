@@ -4,6 +4,7 @@ import type { Stock } from "@/lib/market-data";
 import { TrendingUp, TrendingDown, Bookmark, CheckCircle2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { TradeModal } from "@/components/trade/TradeModal";
+import { StockResearchButton } from "@/components/ai/StockResearchButton";
 import { Sparkline } from "./Sparkline";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { toggleBookmark, getBookmarks } from "@/app/actions/market";
@@ -80,16 +81,19 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
                             {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
                         </div>
                     </div>
-                    <button
-                        className="ml-4 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 active:scale-95 transition-all text-xs flex-shrink-0 min-h-[36px] shadow-sm shadow-primary/20"
-                        onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setIsModalOpen(true); 
-                            import("@/app/actions/xp").then(mod => mod.recordExploreStock(stock.symbol));
-                        }}
-                    >
-                        Trade
-                    </button>
+                    <div className="ml-4 flex items-center gap-2 flex-shrink-0">
+                        <StockResearchButton symbol={stock.symbol} companyName={stock.name} variant="compact" />
+                        <button
+                            className="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 active:scale-95 transition-all text-xs min-h-[36px] shadow-sm shadow-primary/20"
+                            onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setIsModalOpen(true); 
+                                import("@/app/actions/xp").then(mod => mod.recordExploreStock(stock.symbol));
+                            }}
+                        >
+                            Trade
+                        </button>
+                    </div>
                 </div>
                 <TradeModal
                     stock={stock}
@@ -184,6 +188,7 @@ export function StockRow({ stock, holding, compact = false, initialIsBookmarked 
 
                 {/* Direct Action Interface */}
                 <div className="flex gap-2 mt-auto">
+                    <StockResearchButton symbol={stock.symbol} companyName={stock.name} className="flex-none" />
                     <button
                         className="flex-1 py-3 bg-primary text-white font-semibold rounded-xl transition-all text-xs border border-transparent hover:bg-primary/90 active:scale-[0.98] min-h-[44px] shadow-sm shadow-primary/20"
                         onClick={(e) => { 

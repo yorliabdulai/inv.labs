@@ -11,6 +11,8 @@ import {
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useUserProfile } from "@/lib/useUserProfile";
 import { AllocationChart } from "@/components/portfolio/AllocationChart";
+import { PortfolioInsightsPanel } from "@/components/portfolio/PortfolioInsightsPanel";
+import { StockResearchButton } from "@/components/ai/StockResearchButton";
 import { PortfolioChart, type PortfolioDataPoint } from "@/components/dashboard/PortfolioChart";
 import Link from "next/link";
 import { getPortfolioData, type PortfolioData, type Holding } from "@/app/actions/portfolio";
@@ -353,6 +355,8 @@ export default function PortfolioPage() {
                     </div>
                 </div>
             </div>
+
+            <PortfolioInsightsPanel />
 
             {/* ── Analytics Grid ── */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -703,6 +707,7 @@ export default function PortfolioPage() {
                                                             <div>
                                                                 <div className="font-bold text-foreground uppercase tracking-widest text-sm group-hover:text-primary transition-colors">{h.symbol}</div>
                                                                 <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mt-1">{h.sector}</div>
+                                                                <StockResearchButton symbol={h.symbol} variant="compact" className="mt-2" />
                                                             </div>
                                                         </div>
                                                     </td>
@@ -753,6 +758,7 @@ export default function PortfolioPage() {
                                                     <div className="min-w-0 flex-1 pr-2">
                                                         <div className="font-bold text-foreground uppercase tracking-widest truncate">{h.symbol}</div>
                                                         <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 truncate">{h.sector}</div>
+                                                        <StockResearchButton symbol={h.symbol} variant="compact" className="mt-2" />
                                                     </div>
                                                 </div>
                                                 <div className={`text-right flex-shrink-0 ${h.gain >= 0 ? "text-emerald-500" : "text-red-500"}`}>
