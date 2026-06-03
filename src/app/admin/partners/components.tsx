@@ -145,7 +145,11 @@ export function MonthlyReportModal({ partnerId, partnerName, commissionRate }: {
                                 <h3 className="text-2xl font-bold font-syne">Monthly Earnings</h3>
                                 <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Partner: {partnerName}</p>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground p-2">
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="text-muted-foreground hover:text-foreground p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                aria-label="Close"
+                            >
                                 <Plus className="rotate-45" size={24} />
                             </button>
                         </div>
