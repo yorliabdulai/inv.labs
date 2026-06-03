@@ -42,7 +42,13 @@ export type AtoResearchBrief = {
   citations: AtoCitation[];
   macroContext?: MacroContext;
   researchSteps?: ResearchStep[];
-  gseQuote?: { symbol: string; price: number; changePercent: number };
+  gseQuote?: {
+    symbol: string;
+    price: number;
+    change?: number;
+    changePercent: number;
+    fetchedAt: string;
+  };
 };
 
 export type ResearchUsagePayload = {

@@ -81,7 +81,10 @@ export function AtoResearchResult({ brief, onDeclineTrade }: Props) {
       )}
 
       {brief.gseQuote && (
-        <div className="p-3 rounded-xl border border-border bg-muted/10 text-sm">
+        <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 text-sm">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-1">
+            Live GSE price
+          </p>
           <span className="font-bold">{brief.gseQuote.symbol}</span>
           <span className="text-muted-foreground"> · </span>
           GH₵{brief.gseQuote.price.toFixed(2)}
@@ -91,8 +94,17 @@ export function AtoResearchResult({ brief, onDeclineTrade }: Props) {
             }
           >
             {brief.gseQuote.changePercent >= 0 ? "+" : ""}
-            {brief.gseQuote.changePercent.toFixed(2)}% today
+            {brief.gseQuote.changePercent.toFixed(2)}% vs prior close
           </span>
+          {brief.gseQuote.fetchedAt && (
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Updated{" "}
+              {new Date(brief.gseQuote.fetchedAt).toLocaleString("en-GB", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </p>
+          )}
         </div>
       )}
 

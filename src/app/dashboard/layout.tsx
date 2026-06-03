@@ -76,26 +76,26 @@ export default async function DashboardLayout({
             initialIsPartner={isPartner}
             initialPartnerCode={partnerCode}
         >
-            <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white transition-colors duration-300">
-                <Sidebar />
+            <AtoResearchProvider>
+                <div className="min-h-screen bg-background relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white transition-colors duration-300">
+                    <Sidebar />
 
-                <div className="flex flex-col min-h-[100dvh] md:pl-64 transition-all duration-300 ease-out z-10 relative">
-                    <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 py-4 md:px-8 md:py-8 pb-32 md:pb-12 safe-area-inset-bottom relative">
-                        <div className="h-2 md:hidden"></div>
-                        {children}
-                    </main>
-                </div>
+                    <div className="flex flex-col min-h-[100dvh] md:pl-64 transition-all duration-300 ease-out z-10 relative">
+                        <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 py-4 md:px-8 md:py-8 pb-32 md:pb-12 safe-area-inset-bottom relative">
+                            <div className="h-2 md:hidden"></div>
+                            {children}
+                        </main>
+                    </div>
 
-                <BottomNav />
+                    <BottomNav />
 
-                <AtoResearchProvider>
                     <Suspense fallback={null}>
                         <AtoChatContainer />
                     </Suspense>
-                </AtoResearchProvider>
 
-                <OnboardingTour />
-            </div>
+                    <OnboardingTour />
+                </div>
+            </AtoResearchProvider>
         </UserProfileProvider>
     );
 }

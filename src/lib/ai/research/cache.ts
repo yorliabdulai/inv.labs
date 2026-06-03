@@ -25,7 +25,8 @@ export async function getCachedResearch(
     if (!data?.brief_json) return null;
     const created = new Date(data.created_at).getTime();
     const ageHours = (Date.now() - created) / (1000 * 60 * 60);
-    if (ageHours > 24) return null;
+    // Narrative cache only — live GSE prices are re-fetched on every response
+    if (ageHours > 12) return null;
 
     return data.brief_json as AtoResearchBrief;
   } catch {

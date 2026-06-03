@@ -3,6 +3,8 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 import { isAtoDeepResearchEnabled } from "@/lib/config/feature-flags";
 import { runDeepResearchPipeline } from "@/lib/ai/research/pipeline";
 import { getCachedResearch, setCachedResearch } from "@/lib/ai/research/cache";
+import { resolveResearchEntity } from "@/lib/ai/research/entity-resolver";
+import { hydrateBriefWithLiveQuote } from "@/lib/ai/research/gse-live-quote";
 import type { ResearchProgressEvent } from "@/lib/ai/research/types";
 
 const RESEARCH_RATE_LIMIT = 5;
@@ -58,11 +60,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const cached = await getCachedResearch(query, symbol);
+  const entity = resolveResearchEntity(query, symbol);
+  const resolvedSymbol = entity.symbol ?? symbol;
+
+  const cached = await getCachedResearch(query, resolvedSymbol);
   if (cached) {
+    const hydrated = await hydrateBriefWithLiveQuote(cached, resolvedSymbol);
     if (!stream) {
       return Response.json({
-        brief: cached,
+        brief: hydrated,
         cached: true,
         usage: { used: currentUsage, remaining: RESEARCH_RATE_LIMIT - currentUsage, limit: RESEARCH_RATE_LIMIT },
       });
@@ -71,7 +77,7 @@ export async function POST(request: NextRequest) {
     const streamBody = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder();
-        controller.enqueue(encoder.encode(sseEncode({ type: "brief", brief: cached })));
+        controller.enqueue(encoder.encode(sseEncode({ type: "brief", brief: hydrated })));
         controller.close();
       },
     });
@@ -86,8 +92,8 @@ export async function POST(request: NextRequest) {
 
   if (!stream) {
     try {
-      const brief = await runDeepResearchPipeline({ userQuery: query, symbol });
-      await setCachedResearch(query, symbol, brief);
+      const brief = await runDeepResearchPipeline({ userQuery: query, symbol: resolvedSymbol });
+      await setCachedResearch(query, resolvedSymbol, brief);
       await supabase.rpc("increment_ato_research_usage", { p_user_id: user.id });
       const { data: newUsage } = await supabase.rpc("get_ato_research_usage", {
         p_user_id: user.id,
@@ -113,12 +119,12 @@ export async function POST(request: NextRequest) {
       try {
         const brief = await runDeepResearchPipeline({
           userQuery: query,
-          symbol,
+          symbol: resolvedSymbol,
           onProgress: (event) => {
             controller.enqueue(encoder.encode(sseEncode(event)));
           },
         });
-        await setCachedResearch(query, symbol, brief);
+        await setCachedResearch(query, resolvedSymbol, brief);
         await supabase.rpc("increment_ato_research_usage", { p_user_id: user.id });
         const { data: newUsage } = await supabase.rpc("get_ato_research_usage", {
           p_user_id: user.id,

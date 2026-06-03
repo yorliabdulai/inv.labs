@@ -1,4 +1,5 @@
-import { GSE_API_BASE, KNOWN_METADATA } from "@/lib/market-data";
+import { KNOWN_METADATA } from "@/lib/market-data";
+import { fetchLiveGseQuote, hydrateBriefWithLiveQuote } from "./gse-live-quote";
 import { planResearchQueries } from "./query-planner";
 import { resolveResearchEntity, formatEntityForSynthesis } from "./entity-resolver";
 import { serperSearch, dedupeSources, classifyCitationType } from "./serper";
@@ -35,25 +36,6 @@ function normalizeRecommendation(
   const v = String(value ?? "hold").toLowerCase();
   if (v === "buy" || v === "hold" || v === "pass") return v;
   return "hold";
-}
-
-async function fetchGseQuote(symbol?: string): Promise<AtoResearchBrief["gseQuote"] | undefined> {
-  if (!symbol) return undefined;
-  try {
-    const res = await fetch(`${GSE_API_BASE}/live`, { cache: "no-store" });
-    if (!res.ok) return undefined;
-    const raw = await res.json();
-    const q = raw.find((x: { name: string }) => x.name?.toUpperCase() === symbol.toUpperCase());
-    if (!q) return undefined;
-    const prev = q.price - q.change;
-    return {
-      symbol: q.name,
-      price: q.price,
-      changePercent: prev !== 0 ? (q.change / prev) * 100 : 0,
-    };
-  } catch {
-    return undefined;
-  }
 }
 
 function rankSourcesForEntity(sources: SerperSource[], entity: ReturnType<typeof resolveResearchEntity>): SerperSource[] {
@@ -117,7 +99,11 @@ export async function synthesizeResearchBrief(args: {
     .join("\n\n");
 
   const gseBlock = args.gseQuote
-    ? `LIVE GSE QUOTE: ${args.gseQuote.symbol} @ GH₵${args.gseQuote.price.toFixed(2)} (${args.gseQuote.changePercent.toFixed(2)}% today)`
+    ? [
+        "LIVE GSE QUOTE (authoritative for share price — ignore older prices in sources):",
+        `${args.gseQuote.symbol} @ GH₵${args.gseQuote.price.toFixed(2)} (${args.gseQuote.changePercent >= 0 ? "+" : ""}${args.gseQuote.changePercent.toFixed(2)}% vs prior close)`,
+        `Fetched: ${args.gseQuote.fetchedAt}`,
+      ].join("\n")
     : "";
 
   const system = [
@@ -142,6 +128,7 @@ export async function synthesizeResearchBrief(args: {
     "- If filings insufficient, state that clearly in latestFinancialSignal.",
     "- recommendation is for SIMULATED education only.",
     "- subject must be the resolved company name (or ticker + sector), never Bank of Ghana.",
+    "- For share price, use ONLY the LIVE GSE QUOTE block. Do not use IPO/listing prices from old articles.",
   ].join("\n");
 
   const entityBlock = formatEntityForSynthesis(args.entity);
@@ -251,7 +238,7 @@ export async function runDeepResearchPipeline(
   };
 
   emitStep({ id: "gse", label: "Checking live GSE price…", status: "running" });
-  const gseQuote = await fetchGseQuote(resolvedSymbol);
+  const gseQuote = await fetchLiveGseQuote(resolvedSymbol);
   emitStep({ id: "gse", label: "Checking live GSE price…", status: gseQuote ? "done" : "error" });
 
   emitStep({ id: "macro", label: "Pulling Bank of Ghana policy rate…", status: "running" });
@@ -331,10 +318,12 @@ export async function runDeepResearchPipeline(
       brief.whatItDoes?.replace(/bank of ghana/gi, entity.companyName) || brief.whatItDoes;
   }
 
-  emitStep({ id: "synth", label: "Synthesizing research brief…", status: "done" });
-  opts.onProgress?.({ type: "brief", brief });
+  const finalBrief = await hydrateBriefWithLiveQuote(brief, resolvedSymbol);
 
-  return brief;
+  emitStep({ id: "synth", label: "Synthesizing research brief…", status: "done" });
+  opts.onProgress?.({ type: "brief", brief: finalBrief });
+
+  return finalBrief;
 }
 
 export function buildResearchCacheKey(query: string, symbol?: string): string {
