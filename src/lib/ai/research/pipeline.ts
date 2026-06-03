@@ -11,6 +11,7 @@ import type {
   AtoCitation,
 } from "./types";
 import { buildMarkdownSummary, parseLlmJson } from "./parse-llm-json";
+import { completeOpenRouterChat } from "../openrouter-client";
 
 function withTimeout(ms: number) {
   const controller = new AbortController();
@@ -73,22 +74,21 @@ export async function synthesizeResearchBrief(args: {
   macroBlock: string;
   gseQuote?: AtoResearchBrief["gseQuote"];
 }): Promise<AtoResearchBrief> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error("ANTHROPIC_API_KEY is not configured for OpenRouter.");
-  }
-
   const sourcesBlock = args.sources
-    .slice(0, 12)
+    .slice(0, 8)
     .map((s, idx) => {
-      const snippet = s.snippet ? `\nSnippet: ${s.snippet}` : "";
+      const snippet = s.snippet ? `\nSnippet: ${s.snippet.slice(0, 280)}` : "";
       const date = s.date ? `\nDate: ${s.date}` : "";
       return `SOURCE ${idx + 1}\nTitle: ${s.title}\nURL: ${s.url}${date}${snippet}`;
     })
     .join("\n\n");
 
   const docsBlock = args.documents
-    .map((d, idx) => `DOCUMENT ${idx + 1}\nTitle: ${d.title}\nURL: ${d.url}\nExcerpt:\n${d.text.slice(0, 6000)}`)
+    .slice(0, 2)
+    .map(
+      (d, idx) =>
+        `DOCUMENT ${idx + 1}\nTitle: ${d.title}\nURL: ${d.url}\nExcerpt:\n${d.text.slice(0, 1200)}`
+    )
     .join("\n\n");
 
   const gseBlock = args.gseQuote
@@ -135,94 +135,59 @@ export async function synthesizeResearchBrief(args: {
     .filter(Boolean)
     .join("\n");
 
-  const buildRequestBody = (opts: { extraSystem?: string; jsonMode: boolean }) =>
-    JSON.stringify({
-      model: "openrouter/free",
-      temperature: 0.3,
-      max_tokens: 2048,
-      ...(opts.jsonMode ? { response_format: { type: "json_object" } } : {}),
+  let lastParseError = "Invalid JSON";
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const extraSystem =
+      attempt === 1
+        ? "CRITICAL: Reply with ONE valid JSON object only. Single-line strings. No markdown fences."
+        : undefined;
+
+    const { content: raw } = await completeOpenRouterChat({
+      temperature: 0.35,
+      maxTokens: 2048,
+      jsonMode: false,
+      timeoutMs: 90_000,
       messages: [
         {
           role: "system",
-          content: opts.extraSystem ? `${system}\n\n${opts.extraSystem}` : system,
+          content: extraSystem ? `${system}\n\n${extraSystem}` : system,
         },
         { role: "user", content: user },
       ],
     });
 
-  const { controller, clear } = withTimeout(90_000);
-  try {
-    let lastParseError = "Invalid JSON";
-    let useJsonMode = true;
+    const parsed = parseLlmJson<LlmBriefPayload>(raw);
+    if (parsed.ok) {
+      const value = parsed.value;
+      const recommendation = normalizeRecommendation(value.recommendation);
 
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://invlabs.com",
-          "X-Title": "INV.LABS",
-          "Content-Type": "application/json",
-        },
-        signal: controller.signal,
-        body: buildRequestBody({
-          jsonMode: useJsonMode,
-          extraSystem:
-            attempt === 1
-              ? "CRITICAL: Output must be valid JSON. Single-line strings only. Do not truncate."
-              : undefined,
-        }),
-      });
-
-      if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        if (useJsonMode && response.status === 400 && /response_format|json/i.test(text)) {
-          useJsonMode = false;
-          continue;
-        }
-        throw new Error(`OpenRouter error ${response.status}: ${text}`);
-      }
-
-      const data = await response.json();
-      const raw = data?.choices?.[0]?.message?.content;
-      if (typeof raw !== "string" || !raw.trim()) {
-        throw new Error("OpenRouter returned an empty response.");
-      }
-
-      const parsed = parseLlmJson<LlmBriefPayload>(raw);
-      if (parsed.ok) {
-        const value = parsed.value;
-        const recommendation = normalizeRecommendation(value.recommendation);
-
-        const citations = buildCitations(args.sources);
-        return {
+      const citations = buildCitations(args.sources);
+      return {
+        subject: value.subject || "Research brief",
+        whatItDoes: value.whatItDoes || "",
+        latestFinancialSignal: value.latestFinancialSignal || "",
+        recommendation,
+        reasoning: value.reasoning || "",
+        markdownSummary: buildMarkdownSummary({
           subject: value.subject || "Research brief",
           whatItDoes: value.whatItDoes || "",
           latestFinancialSignal: value.latestFinancialSignal || "",
           recommendation,
           reasoning: value.reasoning || "",
-          markdownSummary: buildMarkdownSummary({
-            subject: value.subject || "Research brief",
-            whatItDoes: value.whatItDoes || "",
-            latestFinancialSignal: value.latestFinancialSignal || "",
-            recommendation,
-            reasoning: value.reasoning || "",
-          }),
-          assetHint: value.assetHint,
-          sources: args.sources.slice(0, 12),
-          citations,
-          macroContext: undefined,
-          gseQuote: args.gseQuote,
-        };
-      }
-
-      lastParseError = parsed.error;
+        }),
+        assetHint: value.assetHint,
+        sources: args.sources.slice(0, 12),
+        citations,
+        macroContext: undefined,
+        gseQuote: args.gseQuote,
+      };
     }
 
-    throw new Error(`Research brief JSON parse failed: ${lastParseError}`);
-  } finally {
-    clear();
+    lastParseError = parsed.error;
   }
+
+  throw new Error(`Research brief JSON parse failed: ${lastParseError}`);
 }
 
 export type RunResearchOptions = {
