@@ -181,8 +181,9 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             };
         });
 
+        // ⚡ Bolt: Use direct string comparison for sorting ISO 8601 dates to avoid Date instantiation overhead
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         // Extract pending orders
         const pendingOrders = stockTransactions
