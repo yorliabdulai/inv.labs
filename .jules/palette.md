@@ -1,0 +1,3 @@
+## 2026-05-18 - Interactive Notification Item Accessibility
+**Learning:** Interactive list items (like notifications) implemented as `div` or `motion.div` elements lack native keyboard support. Furthermore, action buttons hidden by `opacity-0` on hover are inaccessible via keyboard unless focus states (e.g. `focus-visible:opacity-100`) are added.
+**Action:** When creating custom interactive items, always include `role="button"`, `tabIndex={0}`, and an `onKeyDown` handler for 'Enter'/'Space'. For elements hidden via `opacity-0`, always pair `group-hover:opacity-100` with `focus-visible:opacity-100` to ensure keyboard navigability.
