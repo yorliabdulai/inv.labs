@@ -16,22 +16,24 @@ function withTimeout(ms: number) {
   return { controller, clear: () => clearTimeout(timeoutId) };
 }
 
-export function ghanaScopedQuery(userQuery: string) {
+export function ghanaScopedQuery(userQuery: string, opts?: { scope?: "company" | "macro" }) {
   const q = userQuery.trim();
   const hasGhana = /\bghana\b/i.test(q);
   const hasGse = /\bGSE\b|\bghana stock exchange\b/i.test(q);
+  const isMacro = opts?.scope === "macro" || /\bbank of ghana\b/i.test(q);
 
-  const suffixParts = [
-    hasGhana ? null : "Ghana",
-    hasGse ? null : "Ghana Stock Exchange",
-  ].filter(Boolean);
+  if (isMacro) {
+    return hasGhana ? q : `${q} Ghana`;
+  }
+
+  const suffixParts = [hasGhana ? null : "Ghana", hasGse ? null : "GSE"].filter(Boolean);
 
   return suffixParts.length ? `${q} ${suffixParts.join(" ")}` : q;
 }
 
 export async function serperSearch(
   query: string,
-  opts?: { num?: number; type?: "search" | "news" }
+  opts?: { num?: number; type?: "search" | "news"; scope?: "company" | "macro" }
 ): Promise<SerperSource[]> {
   const apiKey = process.env.SERPER_API_KEY;
   if (!apiKey) {
@@ -53,7 +55,7 @@ export async function serperSearch(
       },
       signal: controller.signal,
       body: JSON.stringify({
-        q: ghanaScopedQuery(query),
+        q: ghanaScopedQuery(query, { scope: opts?.scope }),
         gl: "gh",
         hl: "en",
         num: Math.min(Math.max(opts?.num ?? 6, 3), 10),

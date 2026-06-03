@@ -1,5 +1,6 @@
 import { GSE_API_BASE, KNOWN_METADATA } from "@/lib/market-data";
 import { planResearchQueries } from "./query-planner";
+import { resolveResearchEntity, formatEntityForSynthesis } from "./entity-resolver";
 import { serperSearch, dedupeSources, classifyCitationType } from "./serper";
 import { getLatestMacroSnapshot, formatMacroForPrompt } from "./macro-data-service";
 import { fetchTopDocuments } from "./content-fetcher";
@@ -55,6 +56,30 @@ async function fetchGseQuote(symbol?: string): Promise<AtoResearchBrief["gseQuot
   }
 }
 
+function rankSourcesForEntity(sources: SerperSource[], entity: ReturnType<typeof resolveResearchEntity>): SerperSource[] {
+  const sym = entity.symbol?.toLowerCase();
+  const nameParts = entity.companyName
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
+
+  const score = (s: SerperSource): number => {
+    const blob = `${s.title} ${s.url} ${s.snippet || ""}`.toLowerCase();
+    let pts = 0;
+    if (sym && (blob.includes(sym) || blob.includes(`${sym}.gh`))) pts += 40;
+    for (const part of nameParts) {
+      if (blob.includes(part)) pts += 15;
+    }
+    if (/zenith|bank of ghana|bog\.gov/i.test(blob) && sym === "zen") pts -= 30;
+    if (/petroleum|zen\.gh|zen petroleum/i.test(blob)) pts += 25;
+    if (/gse\.com\.gh|african-markets\.com.*zen/i.test(blob)) pts += 20;
+    if (blob.includes("bank of ghana") && !/petroleum/i.test(blob)) pts -= 15;
+    return pts;
+  };
+
+  return [...sources].sort((a, b) => score(b) - score(a));
+}
+
 function buildCitations(sources: SerperSource[]): AtoCitation[] {
   return sources.map((s, i) => ({
     index: i + 1,
@@ -68,7 +93,7 @@ function buildCitations(sources: SerperSource[]): AtoCitation[] {
 
 export async function synthesizeResearchBrief(args: {
   userQuery: string;
-  symbol?: string;
+  entity: ReturnType<typeof resolveResearchEntity>;
   sources: SerperSource[];
   documents: { url: string; title: string; text: string }[];
   macroBlock: string;
@@ -116,13 +141,21 @@ export async function synthesizeResearchBrief(args: {
     "- Use [1], [2] style source citations inside string fields where relevant.",
     "- If filings insufficient, state that clearly in latestFinancialSignal.",
     "- recommendation is for SIMULATED education only.",
+    "- subject must be the resolved company name (or ticker + sector), never Bank of Ghana.",
   ].join("\n");
+
+  const entityBlock = formatEntityForSynthesis(args.entity);
 
   const user = [
     `User request: ${args.userQuery}`,
-    args.symbol ? `GSE symbol hint: ${args.symbol}` : "",
+    "",
+    entityBlock,
+    "",
     gseBlock,
+    "",
+    "=== MACRO CONTEXT (Bank of Ghana central bank — NOT the company) ===",
     args.macroBlock,
+    "=== END MACRO CONTEXT ===",
     "",
     "Sources:",
     sourcesBlock || "(none)",
@@ -176,7 +209,14 @@ export async function synthesizeResearchBrief(args: {
           recommendation,
           reasoning: value.reasoning || "",
         }),
-        assetHint: value.assetHint,
+        assetHint:
+          value.assetHint?.symbol || args.entity.symbol
+            ? {
+                assetType: "stock" as const,
+                symbol: value.assetHint?.symbol || args.entity.symbol,
+                name: value.assetHint?.name || args.entity.companyName,
+              }
+            : value.assetHint,
         sources: args.sources.slice(0, 12),
         citations,
         macroContext: undefined,
@@ -199,6 +239,9 @@ export type RunResearchOptions = {
 export async function runDeepResearchPipeline(
   opts: RunResearchOptions
 ): Promise<AtoResearchBrief> {
+  const entity = resolveResearchEntity(opts.userQuery, opts.symbol);
+  const resolvedSymbol = entity.symbol ?? opts.symbol;
+
   const steps: ResearchStep[] = [];
   const emitStep = (step: ResearchStep) => {
     const idx = steps.findIndex((s) => s.id === step.id);
@@ -208,7 +251,7 @@ export async function runDeepResearchPipeline(
   };
 
   emitStep({ id: "gse", label: "Checking live GSE price…", status: "running" });
-  const gseQuote = await fetchGseQuote(opts.symbol);
+  const gseQuote = await fetchGseQuote(resolvedSymbol);
   emitStep({ id: "gse", label: "Checking live GSE price…", status: gseQuote ? "done" : "error" });
 
   emitStep({ id: "macro", label: "Pulling Bank of Ghana policy rate…", status: "running" });
@@ -220,10 +263,7 @@ export async function runDeepResearchPipeline(
     status: macro ? "done" : "error",
   });
 
-  const planned = planResearchQueries({
-    userQuery: opts.userQuery,
-    symbol: opts.symbol,
-  });
+  const planned = planResearchQueries({ entity });
 
   let allSources: SerperSource[] = [];
 
@@ -234,6 +274,7 @@ export async function runDeepResearchPipeline(
         const results = await serperSearch(pq.query, {
           num: 6,
           type: pq.searchType,
+          scope: pq.scope,
         });
         allSources = dedupeSources([...allSources, ...results], 22);
         emitStep({ id: pq.id, label: pq.label, status: "done" });
@@ -242,6 +283,8 @@ export async function runDeepResearchPipeline(
       }
     })
   );
+
+  allSources = rankSourcesForEntity(allSources, entity);
 
   emitStep({ id: "fetch", label: "Reading annual reports & key pages…", status: "running" });
   const documents = await fetchTopDocuments(allSources, 4);
@@ -255,7 +298,7 @@ export async function runDeepResearchPipeline(
 
   const brief = await synthesizeResearchBrief({
     userQuery: opts.userQuery,
-    symbol: opts.symbol,
+    entity,
     sources: allSources,
     documents,
     macroBlock,
@@ -274,13 +317,18 @@ export async function runDeepResearchPipeline(
     };
   }
 
-  if (!brief.assetHint?.symbol && opts.symbol) {
-    const meta = KNOWN_METADATA[opts.symbol.toUpperCase()];
+  if (!brief.assetHint?.symbol && resolvedSymbol) {
     brief.assetHint = {
       assetType: "stock",
-      symbol: opts.symbol.toUpperCase(),
-      name: meta?.name,
+      symbol: resolvedSymbol.toUpperCase(),
+      name: entity.companyName,
     };
+  }
+
+  if (brief.subject && /bank of ghana/i.test(brief.subject) && !/petroleum/i.test(brief.subject)) {
+    brief.subject = entity.companyName + (resolvedSymbol ? ` (${resolvedSymbol})` : "");
+    brief.whatItDoes =
+      brief.whatItDoes?.replace(/bank of ghana/gi, entity.companyName) || brief.whatItDoes;
   }
 
   emitStep({ id: "synth", label: "Synthesizing research brief…", status: "done" });

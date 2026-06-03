@@ -31,6 +31,7 @@ export const KNOWN_METADATA: Record<string, { name: string; sector: string }> = 
     "ADB": { name: "Agricultural Development Bank", sector: "Finance" },
     "AGA": { name: "AngloGold Ashanti", sector: "Mining" },
     "ALW": { name: "Aluworks", sector: "Industrial" },
+    "ZEN": { name: "ZEN Petroleum Holdings", sector: "Energy" },
 };
 
 interface Quote {

@@ -1,68 +1,68 @@
-import { KNOWN_METADATA } from "@/lib/market-data";
+import type { ResearchEntity } from "./entity-resolver";
+import { BANK_OF_GHANA_LABEL } from "./entity-resolver";
 
 export type PlannedQuery = {
   id: string;
   label: string;
   query: string;
   searchType?: "search" | "news";
+  /** Macro-only queries skip Ghana/GSE suffix bias on Serper */
+  scope?: "company" | "macro";
 };
 
-export function resolveCompanyName(symbol?: string, userQuery?: string): string {
-  if (symbol) {
-    const meta = KNOWN_METADATA[symbol.toUpperCase()];
-    if (meta?.name) return meta.name;
-    return symbol;
-  }
-  const tickerMatch = userQuery?.match(/\b([A-Z]{2,6})\b/);
-  if (tickerMatch) {
-    const meta = KNOWN_METADATA[tickerMatch[1].toUpperCase()];
-    if (meta?.name) return meta.name;
-  }
-  return userQuery?.replace(/\b(research|analyze|tell me about)\b/gi, "").trim() || "Ghana company";
+function primarySearchLabel(entity: ResearchEntity): string {
+  return entity.searchPhrases[0]?.replace(/^"|"$/g, "") || entity.companyName;
 }
 
 export function planResearchQueries(args: {
-  userQuery: string;
-  symbol?: string;
+  entity: ResearchEntity;
   includeMacro?: boolean;
 }): PlannedQuery[] {
-  const company = resolveCompanyName(args.symbol, args.userQuery);
-  const ticker = args.symbol?.toUpperCase();
+  const { entity } = args;
+  const label = primarySearchLabel(entity);
+  const ticker = entity.symbol;
+  const companyQueries = entity.searchPhrases.slice(0, 2).join(" OR ");
 
   const queries: PlannedQuery[] = [
     {
       id: "overview",
-      label: "Searching company overview & investor relations",
-      query: `${company} Ghana Stock Exchange investor relations annual report`,
+      label: `Searching ${entity.companyName} overview & investor relations`,
+      scope: "company",
+      query: `${companyQueries} Ghana Stock Exchange investor relations`,
     },
     {
       id: "filings",
-      label: "Searching financial statements & PDF filings",
-      query: `${company} annual report OR financial statements filetype:pdf Ghana`,
+      label: `Searching ${entity.companyName} financial statements & filings`,
+      scope: "company",
+      query: `(${companyQueries}) annual report OR financial statements filetype:pdf Ghana`,
     },
     {
       id: "news",
-      label: "Searching recent news & earnings",
-      query: `${company} earnings dividend Ghana 2025 2026`,
+      label: `Searching ${entity.companyName} news & earnings`,
+      scope: "company",
       searchType: "news",
+      query: `${label} ${ticker ? ticker + " " : ""}earnings revenue IPO Ghana 2025 2026`,
     },
     {
       id: "social",
       label: "Searching indexed social & market discourse",
-      query: `site:facebook.com OR site:x.com OR site:twitter.com ${company} Ghana GSE ${ticker || ""}`,
+      scope: "company",
+      query: `site:facebook.com OR site:x.com OR site:twitter.com (${companyQueries}) Ghana GSE`,
     },
     {
       id: "gse",
       label: "Searching GSE & Ghana finance coverage",
-      query: `${company} ${ticker || ""} Ghana Stock Exchange share price analysis`,
+      scope: "company",
+      query: `${label} ${ticker || ""} Ghana Stock Exchange share price`,
     },
   ];
 
   if (args.includeMacro !== false) {
     queries.push({
       id: "macro",
-      label: "Pulling Bank of Ghana macro context",
-      query: "Bank of Ghana monetary policy rate inflation Ghana treasury bills",
+      label: `Pulling ${BANK_OF_GHANA_LABEL} macro context`,
+      scope: "macro",
+      query: "Bank of Ghana monetary policy rate inflation treasury bills Ghana",
     });
   }
 
