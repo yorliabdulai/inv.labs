@@ -73,7 +73,10 @@ export async function getPartnerReports() {
         .order("year", { ascending: false })
         .order("month", { ascending: false });
 
-    if (error) return { success: false, error: error.message };
+    if (error) {
+        console.error("[getPartnerReports] Error fetching partner reports:", error.message);
+        return { success: false, error: "Failed to fetch partner reports. Please try again." };
+    }
 
     return { success: true, reports };
 }
