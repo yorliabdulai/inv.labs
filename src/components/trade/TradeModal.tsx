@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Stock } from "@/lib/market-data";
-import { X, TrendingUp, TrendingDown, DollarSign, Calculator, AlertTriangle, CheckCircle, Clock, Info, ShieldCheck, ArrowRightLeft, Loader2 } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
+import { X, DollarSign, Calculator, AlertTriangle, CheckCircle, Info, ShieldCheck, ArrowRightLeft, Loader2 } from "lucide-react";
 import { executeStockTrade } from "@/app/actions/stocks";
 import { formatCurrency } from "@/lib/mutual-funds-data";
 import { useUserProfile } from "@/lib/useUserProfile";
@@ -78,8 +77,6 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 sector: stock.sector,
                 type,
                 quantity,
-                price: stock.price,
-                changePercent: stock.changePercent,
                 orderType,
                 limitPrice: parseFloat(limitPrice),
             });
@@ -92,8 +89,9 @@ export function TradeModal({ stock, isOpen, onClose, userBalance, onSuccess }: T
                 onClose();
             }, 2500);
 
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            setError(message);
         } finally {
             setIsSubmitting(false);
         }
