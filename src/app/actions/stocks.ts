@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { awardXP } from "@/app/actions/xp";
+import { fetchStockBySymbol } from "@/lib/market-data";
 
 interface TradeParams {
     symbol: string;
@@ -10,21 +11,16 @@ interface TradeParams {
     sector: string;
     type: "BUY" | "SELL";
     quantity: number;
-    price: number;      // current price from live feed (already shown in UI)
-    changePercent: number;
     orderType?: "MARKET" | "LIMIT";
     limitPrice?: number;
 }
 
 export async function executeStockTrade(params: TradeParams) {
-    const { symbol, name, sector, type, quantity, price, changePercent, orderType = "MARKET", limitPrice } = params;
+    const { symbol, name, sector, type, quantity, orderType = "MARKET", limitPrice } = params;
 
     // Security: Validate inputs
     if (!quantity || quantity <= 0) {
         return { success: false, message: "Invalid quantity. Must be greater than 0." };
-    }
-    if (!price || price <= 0) {
-        return { success: false, message: "Invalid price. Please refresh and try again." };
     }
     if (!symbol || !name) {
         return { success: false, message: "Invalid stock data. Please refresh and try again." };
@@ -43,9 +39,16 @@ export async function executeStockTrade(params: TradeParams) {
             throw new Error("Authentication required");
         }
 
+        // Step 1.5: Fetch authoritative live market data server-side
+        const liveStock = await fetchStockBySymbol(symbol);
+        const price = liveStock.price;
+        const changePercent = liveStock.changePercent;
+
+        if (!price || price <= 0) {
+            return { success: false, message: "Invalid live market price. Please try again." };
+        }
+
         // Step 2: Calculate costs server-side (Ghana Stock Exchange fee structure)
-        // Price comes from the client which already fetched it from the live GSE feed for display.
-        // This is a simulator — no real money is at stake.
         const subtotal = price * quantity;
 
         const brokerFee = subtotal * 0.015;
