@@ -124,10 +124,11 @@ export default function LoginPage() {
                         {/* Login Form */}
                         <form onSubmit={handleLogin} className="flex flex-col gap-5">
                             <div className="flex flex-col gap-2">
-                                <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Email address</label>
+                                <label htmlFor="email" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest ml-1 cursor-pointer">Email address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
+                                        id="email"
                                         type="email"
                                         placeholder="your@email.com"
                                         value={email}
@@ -140,7 +141,7 @@ export default function LoginPage() {
 
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between px-1">
-                                    <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Password</label>
+                                    <label htmlFor="password" className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest cursor-pointer">Password</label>
                                     <Link href="/forgot-password" title="sm" className="text-[10px] font-bold text-primary hover:text-primary-deep transition-colors uppercase tracking-wider">
                                         Forgot password?
                                     </Link>
@@ -148,6 +149,7 @@ export default function LoginPage() {
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                                     <input
+                                        id="password"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         value={password}
