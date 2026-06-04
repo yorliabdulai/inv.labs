@@ -1,0 +1,3 @@
+## 2026-06-04 - Keyboard Accessibility for Hidden Actions
+**Learning:** Actions hidden by `opacity-0 group-hover:opacity-100` are completely inaccessible to keyboard-only users because they remain invisible when focused via Tab. Furthermore, interactive `div` containers acting as clickable lists often lack native keyboard support, trapping or confusing screen readers and keyboard users.
+**Action:** Always include `focus-visible:opacity-100` alongside hover classes for hidden actions. For custom interactive items, always add `role="button"`, `tabIndex={0}`, and an `onKeyDown` handler for 'Enter'/'Space', and apply the standard `focus-visible` utility classes for clear focus states.
