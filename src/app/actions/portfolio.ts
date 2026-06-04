@@ -181,8 +181,9 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             };
         });
 
+        // ⚡ Bolt: Use O(N log N) string comparison to avoid expensive Date instantiations.
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
         // Extract pending orders
         const pendingOrders = stockTransactions

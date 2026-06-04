@@ -33,8 +33,9 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
+    // ⚡ Bolt: Use direct string comparison for ISO dates to bypass expensive Date object instantiation overhead
     const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
     );
 
     const now = new Date();
@@ -111,7 +112,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, cash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);
