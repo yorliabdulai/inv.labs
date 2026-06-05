@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for reviewing or contributing to **inv.labs**. This guide covers local setup, conventions, and how to submit changes.
+Thank you for reviewing or contributing to **InvLabs**. This guide covers local setup, conventions, and how to submit changes.
 
 ## Prerequisites
 

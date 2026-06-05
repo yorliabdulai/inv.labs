@@ -11,7 +11,7 @@ const metrics = [
 
 const testimonials = [
   {
-    quote: "I was always afraid of the stock market. I thought I'd lose everything. Practicing on inv.labs for two weeks gave me the confidence to finally open a real account with a broker. I'm already up 5%!",
+    quote: "I was always afraid of the stock market. I thought I'd lose everything. Practicing on InvLabs for two weeks gave me the confidence to finally open a real account with a broker. I'm already up 5%!",
     author: "Ama K.",
     location: "Accra"
   },
@@ -21,7 +21,7 @@ const testimonials = [
     location: "Kumasi"
   },
   {
-    quote: "The fee breakdown is eye-opening. I never knew how much brokers were taking. inv.labs taught me how to calculate my real returns.",
+    quote: "The fee breakdown is eye-opening. I never knew how much brokers were taking. InvLabs taught me how to calculate my real returns.",
     author: "Kofi A.",
     location: "Tema"
   }

@@ -1,5 +1,5 @@
 -- Mutual Funds Schema Migration
--- This adds mutual funds investment functionality to the INV.LABS simulator
+-- This adds mutual funds investment functionality to the InvLabs simulator
 
 -- ============================================================================
 -- MUTUAL FUNDS TABLE

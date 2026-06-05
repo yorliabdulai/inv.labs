@@ -165,13 +165,13 @@ export async function GET(request: NextRequest) {
 
             if (bucket.template === 'inactivity_7d' || bucket.template === 'inactivity_3d') {
                 payload.ctaLabel = 'Check My Portfolio';
-                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://inv.labs'}/dashboard/portfolio`;
+                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://InvLabs'}/dashboard/portfolio`;
             } else if (bucket.template === 'inactivity_14d') {
                 payload.ctaLabel = 'View Leaderboard';
-                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://inv.labs'}/dashboard/leaderboard`;
+                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://InvLabs'}/dashboard/leaderboard`;
             } else {
-                payload.ctaLabel = 'Return to inv.labs';
-                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://inv.labs'}/dashboard`;
+                payload.ctaLabel = 'Return to InvLabs';
+                payload.ctaUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://InvLabs'}/dashboard`;
             }
 
             // Send (currently logs to console)

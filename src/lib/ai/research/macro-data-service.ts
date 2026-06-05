@@ -50,11 +50,11 @@ export async function fetchMacroSnapshotFromWeb(): Promise<MacroSnapshot | null>
   try {
     const [policyRes, homeRes] = await Promise.all([
       fetch(BOG_POLICY_URL, {
-        headers: { "User-Agent": "INV.LABS/1.0 (educational simulator)" },
+        headers: { "User-Agent": "InvLabs/1.0 (educational simulator)" },
         next: { revalidate: 0 },
       }),
       fetch(BOG_HOME, {
-        headers: { "User-Agent": "INV.LABS/1.0 (educational simulator)" },
+        headers: { "User-Agent": "InvLabs/1.0 (educational simulator)" },
         next: { revalidate: 0 },
       }),
     ]);

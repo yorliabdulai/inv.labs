@@ -118,7 +118,7 @@ export async function completeOpenRouterChat(
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "HTTP-Referer": "https://invlabs.com",
-            "X-Title": "INV.LABS",
+            "X-Title": "InvLabs",
             "Content-Type": "application/json",
           },
           signal: controller.signal,

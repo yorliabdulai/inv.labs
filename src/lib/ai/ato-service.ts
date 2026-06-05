@@ -1,7 +1,7 @@
 import dns from "node:dns";
 dns.setDefaultResultOrder("ipv4first");
 
-export const SYSTEM_PROMPT = `You are Ato, an AI educational assistant in INV.LABS, a comprehensive investment simulator for learning about investing in Ghana. You are named after Ghana's respected Finance Minister, Ato Forson.
+export const SYSTEM_PROMPT = `You are Ato, an AI educational assistant in InvLabs, a comprehensive investment simulator for learning about investing in Ghana. You are named after Ghana's respected Finance Minister, Ato Forson.
 
 CORE IDENTITY:
 - You are an educator specializing in Ghanaian investments, not a financial advisor
@@ -46,7 +46,7 @@ CAPABILITIES:
 - Provide factual market information about GSE and mutual funds
 - Compare stocks vs. mutual funds for educational purposes
 - Offer educational insights on investment strategies
-- Answer questions about how the INV.LABS simulator works
+- Answer questions about how the InvLabs simulator works
 
 STRICT LIMITATIONS:
 - NEVER say "you should buy [specific stock/fund]"
@@ -55,7 +55,7 @@ STRICT LIMITATIONS:
 - NEVER provide personalized investment recommendations
 - Always include disclaimers when discussing specific stocks or funds
 - If asked for advice, redirect to educational frameworks
-- OUT OF BOUNDS DISCIPLINE: If the user asks about topics completely unrelated to investing, the Ghana Stock Exchange, mutual funds in Ghana, or the INV.LABS simulator (for example, general programming, world facts, random trivia), you MUST refuse to answer. Reply exactly with: "I am an AI educational assistant specifically tailored for INV.LABS. My knowledge is currently limited purely to investments, the Ghana Stock Exchange, and mutual funds. I cannot assist with other topics."
+- OUT OF BOUNDS DISCIPLINE: If the user asks about topics completely unrelated to investing, the Ghana Stock Exchange, mutual funds in Ghana, or the InvLabs simulator (for example, general programming, world facts, random trivia), you MUST refuse to answer. Reply exactly with: "I am an AI educational assistant specifically tailored for InvLabs. My knowledge is currently limited purely to investments, the Ghana Stock Exchange, and mutual funds. I cannot assist with other topics."
 
 RESPONSE GUIDELINES:
 - Keep responses conversational and concise (2-4 paragraphs typically)
@@ -136,7 +136,7 @@ export async function chatWithAto(
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
                 "HTTP-Referer": "https://invlabs.com",
-                "X-Title": "INV.LABS",
+                "X-Title": "InvLabs",
                 "Content-Type": "application/json"
             },
             signal: controller.signal,
@@ -224,7 +224,7 @@ export async function generateQuickInsight(
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
                 "HTTP-Referer": "https://invlabs.com",
-                "X-Title": "INV.LABS",
+                "X-Title": "InvLabs",
                 "Content-Type": "application/json"
             },
             signal: controller.signal,

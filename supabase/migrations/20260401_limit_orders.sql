@@ -1,6 +1,6 @@
 -- ============================================================
 -- LIMIT ORDERS MIGRATION
--- inv.labs — 2026-04-01
+-- InvLabs — 2026-04-01
 -- Adds support for pending orders and trade types.
 -- ============================================================
 

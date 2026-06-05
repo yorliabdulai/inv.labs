@@ -303,7 +303,7 @@ export async function notifyFoundingMember(userId: string) {
     return createNotification(
         userId,
         `Founding Member — Congratulations`,
-        `You are one of the first members of inv.labs. Your Founding Member badge is permanent.`,
+        `You are one of the first members of InvLabs. Your Founding Member badge is permanent.`,
         'founding_member',
         'high'
     );
@@ -389,7 +389,7 @@ export async function checkLeaderboardRank(userId: string, currentXP: number) {
             userId,
             rank === 1 ? `🥇 You're #1 on the leaderboard!` : `You climbed to ${milestone.label}`,
             rank === 1
-                ? `Your trading and learning have paid off. You're leading the entire inv.labs leaderboard with ${currentXP} XP.`
+                ? `Your trading and learning have paid off. You're leading the entire InvLabs leaderboard with ${currentXP} XP.`
                 : `Impressive progress! You've reached ${milestone.label} with ${currentXP} XP. Keep going.`,
             'gamification',
             milestone.priority,

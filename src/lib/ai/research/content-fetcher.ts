@@ -68,7 +68,7 @@ async function fetchWithTimeout(url: string): Promise<ArrayBuffer | null> {
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        "User-Agent": "INV.LABS/1.0 (educational research bot)",
+        "User-Agent": "InvLabs/1.0 (educational research bot)",
         Accept: "text/html,application/pdf,*/*",
       },
     });

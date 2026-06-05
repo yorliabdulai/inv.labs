@@ -16,7 +16,7 @@ export default function NotFound() {
                     <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
                         iL
                     </div>
-                    <span className="font-bold text-base tracking-tight text-white">inv.labs</span>
+                    <span className="font-bold text-base tracking-tight text-white">InvLabs</span>
                 </Link>
                 <Link
                     href="/dashboard"

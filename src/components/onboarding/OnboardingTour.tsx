@@ -23,7 +23,7 @@ const STEPS: Step[] = [
     {
         id: "welcome",
         targetId: "tour-nav-dashboard",
-        title: "Welcome to inv.labs!",
+        title: "Welcome to InvLabs!",
         description: "Let's take a quick tour to show you how to master the market. This is your Dashboard, where you see your overall performance at a glance.",
         icon: Home,
         position: "right"

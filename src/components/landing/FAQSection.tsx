@@ -7,7 +7,7 @@ import { Plus, Minus } from "lucide-react";
 const faqs = [
     {
         question: "Is this real money?",
-        answer: "No. inv.labs uses virtual money (GH₵10,000 to start) so you can practice trading real stocks without any financial risk."
+        answer: "No. InvLabs uses virtual money (GH₵10,000 to start) so you can practice trading real stocks without any financial risk."
     },
     {
         question: "Is the stock data real?",
@@ -15,11 +15,11 @@ const faqs = [
     },
     {
         question: "Why should I use this instead of just opening a brokerage account?",
-        answer: "Most people lose money when they first start because they don't understand fees, timing, or how to pick stocks. inv.labs lets you make those 'beginner mistakes' for free, so you're actually ready when you use real money."
+        answer: "Most people lose money when they first start because they don't understand fees, timing, or how to pick stocks. InvLabs lets you make those 'beginner mistakes' for free, so you're actually ready when you use real money."
     },
     {
         question: "What are the fees?",
-        answer: "inv.labs is 100% free to use. We even simulate the real fees (like SEC and GSE levies) so you learn exactly how much a real trade would cost you."
+        answer: "InvLabs is 100% free to use. We even simulate the real fees (like SEC and GSE levies) so you learn exactly how much a real trade would cost you."
     },
     {
         question: "Can I withdraw my virtual earnings?",
@@ -31,11 +31,11 @@ const faqs = [
     },
     {
         question: "Do I need to know about finance to start?",
-        answer: "Not at all. inv.labs is designed for absolute beginners. We have our AI guide, Ato, to explain everything in simple terms."
+        answer: "Not at all. InvLabs is designed for absolute beginners. We have our AI guide, Ato, to explain everything in simple terms."
     },
     {
         question: "How do I eventually invest for real?",
-        answer: "Once you've built your confidence on inv.labs, we'll help you connect with licensed Ghanaian brokers so you can start your real investment journey."
+        answer: "Once you've built your confidence on InvLabs, we'll help you connect with licensed Ghanaian brokers so you can start your real investment journey."
     }
 ];
 
@@ -55,7 +55,7 @@ const FAQSection = () => {
                         Common <span className="text-primary">Questions.</span>
                     </motion.h2>
                     <p className="text-lg text-muted-foreground font-medium tracking-tight">
-                        Everything you need to know about getting started with inv.labs.
+                        Everything you need to know about getting started with InvLabs.
                     </p>
                 </div>
 

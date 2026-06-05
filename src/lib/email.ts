@@ -2,7 +2,7 @@
  * Email Abstraction Layer — powered by Resend
  * ─────────────────────────────────────────────────────────────────────────────
  * Requires: RESEND_API_KEY in .env.local
- * From address: set RESEND_FROM_EMAIL (default: noreply@inv.labs)
+ * From address: set RESEND_FROM_EMAIL (default: noreply@InvLabs)
  *
  * If RESEND_API_KEY is not set, falls back to console.log so dev mode
  * works without a key configured.
@@ -14,8 +14,8 @@ const resend = process.env.RESEND_API_KEY
     ? new Resend(process.env.RESEND_API_KEY)
     : null;
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'inv.labs <noreply@inv.labs>';
-const APP_URL    = process.env.NEXT_PUBLIC_APP_URL  || 'https://inv.labs';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'InvLabs <noreply@InvLabs>';
+const APP_URL    = process.env.NEXT_PUBLIC_APP_URL  || 'https://InvLabs';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ function buildHtml(opts: {
 
         <!-- Header -->
         <tr><td style="padding:32px 40px 24px;border-bottom:1px solid #1f1f1f;">
-          <p style="margin:0;font-size:11px;font-weight:700;color:#6b7280;letter-spacing:0.15em;text-transform:uppercase;">inv.labs</p>
+          <p style="margin:0;font-size:11px;font-weight:700;color:#6b7280;letter-spacing:0.15em;text-transform:uppercase;">InvLabs</p>
         </td></tr>
 
         <!-- Badge -->
@@ -92,7 +92,7 @@ function buildHtml(opts: {
 
         <!-- Footer -->
         <tr><td style="padding:24px 40px;border-top:1px solid #1f1f1f;">
-          <p style="margin:0;font-size:11px;color:#4b5563;">You&apos;re receiving this because you&apos;re a member of inv.labs. <a href="${APP_URL}/dashboard/settings" style="color:#6366f1;text-decoration:none;">Manage notifications</a></p>
+          <p style="margin:0;font-size:11px;color:#4b5563;">You&apos;re receiving this because you&apos;re a member of InvLabs. <a href="${APP_URL}/dashboard/settings" style="color:#6366f1;text-decoration:none;">Manage notifications</a></p>
         </td></tr>
 
       </table>
@@ -127,7 +127,7 @@ function getTemplateContent(
                 badgeEmoji: '📈',
                 body: drift
                     ? `<p>Based on market movements, <strong>your portfolio would have changed by ${drift}</strong> since you last logged in.</p><p>Markets don't wait. Log in to see exactly where you stand and make your next move.</p>`
-                    : `<p>You haven't visited inv.labs in a few days. Your portfolio and daily missions are waiting for you.</p>`,
+                    : `<p>You haven't visited InvLabs in a few days. Your portfolio and daily missions are waiting for you.</p>`,
                 ctaLabel: 'Check My Portfolio',
                 ctaUrl: `${APP_URL}/dashboard/portfolio`,
             };
@@ -145,29 +145,29 @@ function getTemplateContent(
             return {
                 subject: `Can you catch up on the leaderboard? Here's where you stand.`,
                 badgeEmoji: '🏆',
-                body: `<p>It's been two weeks since we last saw you. Traders on the inv.labs leaderboard have been earning XP and climbing the ranks.</p><p>Log in to complete your daily missions and take back your position.</p>`,
+                body: `<p>It's been two weeks since we last saw you. Traders on the InvLabs leaderboard have been earning XP and climbing the ranks.</p><p>Log in to complete your daily missions and take back your position.</p>`,
                 ctaLabel: 'View Leaderboard',
                 ctaUrl: `${APP_URL}/dashboard/leaderboard`,
             };
         case 'inactivity_30d':
             return {
-                subject: `It's time to reactivate your inv.labs portfolio`,
+                subject: `It's time to reactivate your InvLabs portfolio`,
                 badgeEmoji: '⚡',
-                body: `<p>Your inv.labs account has been dormant for over a month. A lot has changed — new lessons, updated stock prices, and fresh daily missions are waiting.</p><p>Your virtual GH&#8373;10,000 portfolio is still intact. Pick up where you left off.</p>`,
-                ctaLabel: 'Return to inv.labs',
+                body: `<p>Your InvLabs account has been dormant for over a month. A lot has changed — new lessons, updated stock prices, and fresh daily missions are waiting.</p><p>Your virtual GH&#8373;10,000 portfolio is still intact. Pick up where you left off.</p>`,
+                ctaLabel: 'Return to InvLabs',
                 ctaUrl: `${APP_URL}/dashboard`,
             };
         case 'leaderboard_rank1':
             return {
                 subject: `🥇 You just reached #1 on the leaderboard!`,
                 badgeEmoji: '🥇',
-                body: `<p>You did it. You've climbed to the <strong>#1 spot on the inv.labs leaderboard</strong> with ${payload.xp || 0} XP.</p><p>This is a real milestone. Keep trading, learning, and building your edge — the top is yours to defend.</p>`,
+                body: `<p>You did it. You've climbed to the <strong>#1 spot on the InvLabs leaderboard</strong> with ${payload.xp || 0} XP.</p><p>This is a real milestone. Keep trading, learning, and building your edge — the top is yours to defend.</p>`,
                 ctaLabel: 'See Leaderboard',
                 ctaUrl: `${APP_URL}/dashboard/leaderboard`,
             };
         case 'weekly_digest':
             return {
-                subject: `Your inv.labs weekly digest`,
+                subject: `Your InvLabs weekly digest`,
                 badgeEmoji: '📊',
                 body: `<p>Here's your week at a glance:</p><ul style="padding-left:20px;color:#9ca3af;"><li>XP earned: <strong style="color:#d1d5db;">${payload.xp_this_week || 0}</strong></li><li>Lessons completed: <strong style="color:#d1d5db;">${payload.lessons_this_week || 0}</strong></li><li>Current rank: <strong style="color:#d1d5db;">#${payload.rank || '—'}</strong></li><li>Current level: <strong style="color:#d1d5db;">Level ${payload.level || 1}</strong></li></ul>`,
                 ctaLabel: 'Open Dashboard',
@@ -175,7 +175,7 @@ function getTemplateContent(
             };
         case 'account_created':
             return {
-                subject: `Welcome to inv.labs`,
+                subject: `Welcome to InvLabs`,
                 badgeEmoji: '🚀',
                 body: `<p>Your account is set up and your virtual portfolio of <strong>GH&#8373;10,000</strong> is ready to invest.</p><p>Start by exploring the GSE stocks, taking a lesson in the Academy, or asking Ato your first financial question.</p>`,
                 ctaLabel: 'Start Investing',
@@ -183,7 +183,7 @@ function getTemplateContent(
             };
         case 'first_trade':
             return {
-                subject: `You made your first trade on inv.labs!`,
+                subject: `You made your first trade on InvLabs!`,
                 badgeEmoji: '🎯',
                 body: `<p>Your first trade is on the books — ${payload.symbol ? `<strong>${payload.symbol}</strong>` : 'a GSE stock or fund'}.</p><p>Every great investor started with a first trade. Keep building your portfolio and learning as you go.</p>`,
                 ctaLabel: 'View Portfolio',
@@ -193,15 +193,15 @@ function getTemplateContent(
             return {
                 subject: `Level Up! You're now Level ${payload.level}`,
                 badgeEmoji: '⬆️',
-                body: `<p>Congratulations — you've reached <strong>Level ${payload.level}: ${payload.level_name || ''}</strong> on inv.labs.</p><p>Each level unlocks more depth in how you understand the market. Keep going.</p>`,
+                body: `<p>Congratulations — you've reached <strong>Level ${payload.level}: ${payload.level_name || ''}</strong> on InvLabs.</p><p>Each level unlocks more depth in how you understand the market. Keep going.</p>`,
                 ctaLabel: 'View My Profile',
                 ctaUrl: `${APP_URL}/dashboard/profile`,
             };
         case 'challenge_invite':
             return {
-                subject: `You've been invited to a challenge on inv.labs`,
+                subject: `You've been invited to a challenge on InvLabs`,
                 badgeEmoji: '🎯',
-                body: `<p><strong>${payload.inviter_name || 'A trader'}</strong> has invited you to join the <strong>"${payload.challenge_title}"</strong> challenge on inv.labs.</p><p>Compete for XP, climb the challenge leaderboard, and earn a bonus reward when it ends.</p>`,
+                body: `<p><strong>${payload.inviter_name || 'A trader'}</strong> has invited you to join the <strong>"${payload.challenge_title}"</strong> challenge on InvLabs.</p><p>Compete for XP, climb the challenge leaderboard, and earn a bonus reward when it ends.</p>`,
                 ctaLabel: 'Join Challenge',
                 ctaUrl: payload.invite_url || `${APP_URL}/challenges/join`,
             };
@@ -277,8 +277,8 @@ export function getInactivitySubject(
         case 'inactivity_14d':
             return `Can you catch up on the leaderboard? Here's where you stand.`;
         case 'inactivity_30d':
-            return `It's time to reactivate your inv.labs portfolio.`;
+            return `It's time to reactivate your InvLabs portfolio.`;
         default:
-            return `An update from inv.labs`;
+            return `An update from InvLabs`;
     }
 }

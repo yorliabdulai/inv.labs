@@ -1,6 +1,6 @@
 -- ============================================================
 -- GAMIFICATION FULL MIGRATION
--- inv.labs — 2026-03-29
+-- InvLabs — 2026-03-29
 -- Additive only. No existing tables, columns, or functions removed.
 -- ============================================================
 

@@ -148,7 +148,7 @@ const Hero = () => {
               </div>
               <div className="flex items-center gap-4 text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">
                 <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> Secure Terminal</span>
-                <span className="hidden sm:inline-block font-sans">inv.labs / system_kernel</span>
+                <span className="hidden sm:inline-block font-sans">InvLabs / system_kernel</span>
               </div>
             </div>
 

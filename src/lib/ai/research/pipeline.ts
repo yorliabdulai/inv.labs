@@ -107,7 +107,7 @@ export async function synthesizeResearchBrief(args: {
     : "";
 
   const system = [
-    "You are Ato, a Ghana-focused investment research assistant for INV.LABS (simulated trading/education).",
+    "You are Ato, a Ghana-focused investment research assistant for InvLabs (simulated trading/education).",
     "Produce a structured brief using ONLY the provided sources and documents. Cite source numbers [1], [2] for every numeric claim.",
     "Social results are indexed web snippets, not live feeds.",
     "Return a single JSON object only. No markdown fences.",

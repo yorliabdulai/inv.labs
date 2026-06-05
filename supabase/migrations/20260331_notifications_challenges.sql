@@ -1,6 +1,6 @@
 -- ============================================================
 -- NOTIFICATIONS + CHALLENGES MIGRATION
--- inv.labs — 2026-03-31
+-- InvLabs — 2026-03-31
 -- Additive only. No existing tables, columns, or functions removed.
 -- ============================================================
 

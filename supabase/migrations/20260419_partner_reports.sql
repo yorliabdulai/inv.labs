@@ -1,6 +1,6 @@
 -- ============================================================
 -- PARTNER EARNINGS REPORTS SYSTEM
--- inv.labs — 2026-04-19
+-- InvLabs — 2026-04-19
 -- ============================================================
 
 -- 1. Update Partners table with commission rate

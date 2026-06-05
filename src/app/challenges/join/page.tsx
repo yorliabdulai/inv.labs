@@ -118,7 +118,7 @@ function JoinPageContent() {
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors mb-8"
                 >
                     <ChevronLeft size={14} />
-                    inv.labs
+                    InvLabs
                 </Link>
 
                 <motion.div
@@ -239,7 +239,7 @@ function JoinPageContent() {
                     {/* Footer */}
                     <div className="text-center mt-6">
                         <p className="text-[11px] text-muted-foreground">
-                            Powered by <span className="font-bold text-primary">inv.labs</span> · Learn. Simulate. Invest.
+                            Powered by <span className="font-bold text-primary">InvLabs</span> · Learn. Simulate. Invest.
                         </p>
                     </div>
                 </motion.div>

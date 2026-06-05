@@ -24,7 +24,7 @@ export default function WaitlistPage() {
                             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner transition-transform group-hover:scale-110">
                                 iL
                             </div>
-                            <span className="font-bold text-lg tracking-tight text-foreground">inv.labs</span>
+                            <span className="font-bold text-lg tracking-tight text-foreground">InvLabs</span>
                         </Link>
                         
                         <Link href="/" className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-all group">

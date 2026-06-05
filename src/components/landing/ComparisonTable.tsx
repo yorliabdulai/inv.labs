@@ -18,7 +18,7 @@ const features = [
 const columns = [
   { name: "Workshops & Books", data: [false, false, false, false, true, false, false, false, false] },
   { name: "Foreign Simulators", data: [true, false, false, false, false, false, false, true, true] },
-  { name: "inv.labs", data: [true, true, true, true, true, true, true, true, true], highlight: true },
+  { name: "InvLabs", data: [true, true, true, true, true, true, true, true, true], highlight: true },
 ];
 
 const ComparisonTable = () => {

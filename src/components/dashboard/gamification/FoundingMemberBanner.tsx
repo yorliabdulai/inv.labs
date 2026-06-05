@@ -48,7 +48,7 @@ export function FoundingMemberBanner({ isFoundingMember, alreadyNotified, onDism
                                 <span className="text-xs bg-white/20 px-2 py-1 rounded-md uppercase tracking-widest font-bold border border-white/10">Founding Member</span>
                             </h3>
                             <p className="text-blue-100 text-sm md:text-base max-w-2xl leading-relaxed">
-                                You are one of the first 1,000 members of inv.labs. As a token of our appreciation, 
+                                You are one of the first 1,000 members of InvLabs. As a token of our appreciation, 
                                 you have been granted <strong>Lifetime Professional Access</strong> to the entire platform. 
                                 Thank you for building the future of financial education with us.
                             </p>

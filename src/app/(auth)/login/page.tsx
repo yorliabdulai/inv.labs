@@ -66,7 +66,7 @@ export default function LoginPage() {
                             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner transition-transform group-hover:scale-110">
                                 iL
                             </div>
-                            <span className="font-bold text-lg tracking-tight text-foreground underline decoration-primary/30 decoration-2 underline-offset-4">inv.labs</span>
+                            <span className="font-bold text-lg tracking-tight text-foreground underline decoration-primary/30 decoration-2 underline-offset-4">InvLabs</span>
                         </Link>
 
                         {/* Header */}

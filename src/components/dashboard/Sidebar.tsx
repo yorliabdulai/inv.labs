@@ -62,7 +62,7 @@ export function Sidebar() {
             <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-inner shadow-blue-500/30 flex-shrink-0">
                 iL
             </div>
-            <span className="font-bold text-base tracking-tight text-foreground dark:text-white">inv.labs</span>
+            <span className="font-bold text-base tracking-tight text-foreground dark:text-white">InvLabs</span>
         </div>
     );
 

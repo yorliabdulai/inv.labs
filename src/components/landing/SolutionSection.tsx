@@ -101,7 +101,7 @@ const SolutionSection = () => {
           >
             <div className="space-y-6">
               <p className="text-2xl text-foreground font-bold leading-tight">
-                inv.labs is like a <span className="text-primary">flight simulator</span>. <br />
+                InvLabs is like a <span className="text-primary">flight simulator</span>. <br />
                 But for investing.
               </p>
               <div className="space-y-4">

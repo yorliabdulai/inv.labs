@@ -26,7 +26,7 @@ const footerLinks = [
   {
     title: "Company",
     links: [
-      { name: "About inv.labs", href: "#" },
+      { name: "About InvLabs", href: "#" },
       { name: "Careers", href: "#" },
       { name: "Contact", href: "#" },
       { name: "Partners", href: "#" },
@@ -153,7 +153,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-muted-foreground text-sm font-medium">
-            © {new Date().getFullYear()} inv.labs. Built in Accra.
+            © {new Date().getFullYear()} InvLabs. Built in Accra.
           </p>
           <div className="flex items-center gap-8">
             {["Twitter", "LinkedIn", "GitHub"].map((social) => (

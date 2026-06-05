@@ -1,11 +1,11 @@
-# inv.labs — Ghana Investment Simulator
+# InvLabs — Ghana Investment Simulator
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-3ecf8e)](https://supabase.com/)
 
-**inv.labs** is an educational investment simulator for Ghana. Learners practice with **GH₵10,000 in virtual capital**, trade **Ghana Stock Exchange (GSE)** equities with realistic fees, explore **local mutual funds**, and learn with **Ato**—an AI coach focused on education, not financial advice.
+**InvLabs** is an educational investment simulator for Ghana. Learners practice with **GH₵10,000 in virtual capital**, trade **Ghana Stock Exchange (GSE)** equities with realistic fees, explore **local mutual funds**, and learn with **Ato**—an AI coach focused on education, not financial advice.
 
 > **Disclaimer:** This application is for learning only. It does not provide investment advice, execute real trades, or hold customer funds.
 

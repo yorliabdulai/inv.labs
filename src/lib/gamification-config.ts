@@ -108,7 +108,7 @@ export const ACHIEVEMENTS = [
     {
         key: 'founding_member',
         name: 'Founding Member',
-        description: 'One of the first 1,000 members of inv.labs.',
+        description: 'One of the first 1,000 members of InvLabs.',
         icon: 'Award',
         category: 'Special'
     }

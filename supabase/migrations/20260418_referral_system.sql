@@ -1,6 +1,6 @@
 -- ============================================================
 -- REFERRAL TRACKING SYSTEM
--- inv.labs — 2026-04-18
+-- InvLabs — 2026-04-18
 -- Adds partners and referrals tables, updates user registration,
 -- and hooks into stock & mutual fund trades for activation.
 -- ============================================================
