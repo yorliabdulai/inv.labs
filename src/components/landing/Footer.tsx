@@ -121,7 +121,7 @@ const Footer = () => {
           <div className="max-w-sm">
             <Link href="/" className="inline-block mb-6 group">
               <span className="text-3xl font-black tracking-tighter text-foreground transition-colors group-hover:text-primary">
-                inv.labs<span className="text-primary">.</span>
+                InvLabs
               </span>
             </Link>
             <p className="text-muted-foreground text-base font-medium leading-relaxed">

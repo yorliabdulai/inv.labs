@@ -4,7 +4,7 @@ Overview for security reviewers and maintainers.
 
 ## Scope
 
-inv.labs is an **educational simulator**. No real money, brokerage accounts, or securities settlement occur in this application.
+InvLabs is an **educational simulator**. No real money, brokerage accounts, or securities settlement occur in this application.
 
 ## Authentication
 

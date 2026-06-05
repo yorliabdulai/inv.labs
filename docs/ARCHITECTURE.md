@@ -1,40 +1,35 @@
 # Architecture
 
-This document describes how **inv.labs** (Investment Simulator) is structured for reviewers and maintainers.
+This document describes how **InvLabs** (Investment Simulator) is structured for reviewers and maintainers.
 
 ## System overview
 
-```mermaid
-flowchart TB
-  subgraph client [Browser / PWA]
-    UI[Next.js App Router + React 19]
-  end
-
-  subgraph next [Next.js Server]
-    SA[Server Actions]
-    API[Route Handlers /api]
-    CRON[Cron Jobs]
-  end
-
-  subgraph external [External Services]
-    SB[(Supabase Postgres + Auth)]
-    AI[Anthropic / OpenRouter]
-    SER[Serper Search]
-    RS[Resend Email]
-    GSE[GSE Market Data]
-  end
-
-  UI --> SA
-  UI --> API
-  SA --> SB
-  API --> SB
-  API --> AI
-  API --> SER
-  CRON --> SB
-  CRON --> RS
-  SA --> GSE
-  CRON --> GSE
 ```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         Browser (PWA)                                    │
+│              Next.js App Router · React 19 · Tailwind                    │
+└───────────────────────────────┬──────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         Next.js Server                                   │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────────┐  │
+│  │ Server Actions  │  │ API Route        │  │ Cron jobs           │  │
+│  │ trades, XP, …   │  │ Handlers         │  │ re-engagement, …    │  │
+│  └────────┬────────┘  └────────┬─────────┘  └──────────┬──────────┘  │
+└───────────┼─────────────────────┼────────────────────────┼─────────────┘
+            │                     │                        │
+            ▼                     ▼                        ▼
+┌───────────────────────────────────────────────────────────────────────────┐
+│                        External services                                  │
+│  Supabase (Postgres + Auth)   Anthropic / OpenRouter   Serper (search)    │
+│  Resend (email)               GSE market data feeds                       │
+└───────────────────────────────────────────────────────────────────────────┘
+```
+
+**Request flow (trading):** Dashboard UI → `executeStockTrade` server action → Supabase RPC `execute_stock_trade` → updated `profiles`, `holdings`, `transactions`.
+
+**Request flow (Ato chat):** Chat UI → `/api/ato/chat` → LLM + optional portfolio context from Supabase.
 
 ## Application layers
 

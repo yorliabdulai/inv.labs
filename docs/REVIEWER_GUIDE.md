@@ -4,7 +4,7 @@ A focused walkthrough for code review, technical assessment, or due diligence.
 
 ## What this project is
 
-**inv.labs** is a Ghana-focused investment **simulator**: virtual GH₵, real GSE-style market data, mutual funds, gamified learning, and an AI coach (**Ato**) that teaches without giving financial advice.
+**InvLabs** is a Ghana-focused investment **simulator**: virtual GH₵, real GSE-style market data, mutual funds, gamified learning, and an AI coach (**Ato**) that teaches without giving financial advice.
 
 ## Suggested review order (~30–45 minutes)
 
