@@ -33,8 +33,10 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
+    // ⚡ Bolt: Optimize transaction sorting by using lexicographical string comparison
+    // avoiding expensive Date object instantiations in O(N log N) sort callback
     const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0)
     );
 
     const now = new Date();

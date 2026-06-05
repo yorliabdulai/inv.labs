@@ -181,8 +181,10 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             };
         });
 
+        // ⚡ Bolt: Optimize transaction sorting by using lexicographical string comparison
+        // avoiding expensive Date object instantiations in O(N log N) sort callback
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         // Extract pending orders
         const pendingOrders = stockTransactions
