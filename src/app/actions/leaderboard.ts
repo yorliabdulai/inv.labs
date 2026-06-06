@@ -66,12 +66,23 @@ export async function getMarketRankings(categories: RankingCategory[] = ['gainer
             else if (cat === 'volume') scored.sort((a, b) => b.volume - a.volume);
         } else {
             const categoryRanks = activeCategories.map(cat => getRankingsForCategory(cat));
+
+            // ⚡ Bolt: Convert arrays to O(1) hash maps for faster lookup
+            const categoryRankMaps = categoryRanks.map(list => {
+                const map: Record<string, number> = {};
+                for (let i = 0; i < list.length; i++) {
+                    map[list[i].symbol] = list[i].rank;
+                }
+                return map;
+            });
+
             const compositeMap: Record<string, number> = {};
             
             scored.forEach(s => {
                 let totalRank = 0;
-                categoryRanks.forEach(list => {
-                    const r = list.find(l => l.symbol === s.symbol)?.rank || scored.length;
+                categoryRankMaps.forEach(rankMap => {
+                    // ⚡ Bolt: O(1) hash map lookup instead of O(n) Array.find()
+                    const r = rankMap[s.symbol] || scored.length;
                     totalRank += r;
                 });
                 compositeMap[s.symbol] = totalRank / activeCategories.length;

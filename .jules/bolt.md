@@ -21,3 +21,6 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+## 2026-06-06 - Avoid O(N^2) Array Searches in Aggregations
+**Learning:** Found an O(N^2) search bottleneck in leaderboard generation where `Array.find()` was used inside a nested loop across multiple ranking categories. As N (stock list) or C (categories) grows, this scales poorly.
+**Action:** Use O(1) hash map lookups (`Record<string, number>`) instead of array loops to store precomputed references, drastically dropping computation complexity down to O(N).
