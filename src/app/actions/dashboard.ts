@@ -203,12 +203,13 @@ export async function getDashboardData(): Promise<DashboardData | null> {
             };
         });
 
+        // OPTIMIZATION (Bolt): Replaced expensive Date instantiation during O(N log N) sort
+        // with direct lexicographical string comparison for ISO date strings.
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
-        const recentActivity = [...unifiedTransactions]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .slice(0, 10);
+        // Re-sorting the already sorted array is redundant. Instead, we can just take the last 10 items and reverse them.
+        const recentActivity = unifiedTransactions.slice(-10).reverse();
 
         // Risk Score
         const totalInvested = stockMarketValue + mutualFundsValue;
