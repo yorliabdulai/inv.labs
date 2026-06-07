@@ -33,8 +33,10 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
-    const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    // OPTIMIZATION (Bolt): Replaced expensive Date instantiation during O(N log N) sort
+    // with direct lexicographical string comparison for ISO date strings to prevent blocking the main thread.
+    const sortedTx = [...transactions].sort((a, b) =>
+        a.date < b.date ? -1 : a.date > b.date ? 1 : 0
     );
 
     const now = new Date();
@@ -111,7 +113,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, cash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);
