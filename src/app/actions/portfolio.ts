@@ -181,8 +181,9 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             };
         });
 
+        // Optimization: Lexicographical string comparison instead of new Date() in O(N log N) sort
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
         // Extract pending orders
         const pendingOrders = stockTransactions

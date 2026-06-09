@@ -153,9 +153,10 @@ export async function buildUserPortfolioContext(
                 price: t.nav_at_transaction,
             })) || []),
         ]
+            // Optimization: Lexicographical string comparison instead of new Date() in O(N log N) sort
             .sort(
                 (a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
+                    b.date < a.date ? -1 : (b.date > a.date ? 1 : 0)
             )
             .slice(0, 5);
 
