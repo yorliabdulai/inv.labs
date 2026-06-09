@@ -29,7 +29,15 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
     return (
         <div
             onClick={onClick}
-            className={`group relative bg-card rounded-2xl p-6 md:p-8 border transition-all duration-300 cursor-pointer shadow-premium hover:border-primary/40 touch-manipulation active:scale-[0.98] overflow-hidden ${isOwned ? "border-primary/30" : "border-border"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClick?.();
+                }
+            }}
+            className={`group relative bg-card rounded-2xl p-6 md:p-8 border transition-all duration-300 cursor-pointer shadow-premium hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98] overflow-hidden ${isOwned ? "border-primary/30" : "border-border"
                 }`}
         >
             {/* ── Ownership Badge ── */}
@@ -119,10 +127,10 @@ export function MutualFundCard({ fund, onClick, dailyChange, performance, isOwne
 
             {/* ── Analysis Trigger ── */}
             <div className="mt-8 pt-6 border-t border-border flex items-center justify-between group-hover:border-primary/20 transition-colors">
-                <span className="text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 uppercase tracking-widest">
+                <span className="text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 group-focus-visible:translate-x-0 uppercase tracking-widest">
                     Technical Analysis
                 </span>
-                <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-premium">
+                <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-primary group-focus-visible:bg-primary group-hover:text-primary-foreground group-focus-visible:text-primary-foreground transition-all shadow-premium">
                     <Info size={16} />
                 </div>
             </div>
