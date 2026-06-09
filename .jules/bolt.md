@@ -21,3 +21,6 @@
 ## 2025-03-05 - React.memo for Primitive Presentation Components
 **Learning:** The `KeyMetrics` component takes only primitive values (numbers) as props but was re-rendering unnecessarily whenever its parent (`DashboardHeader`) or higher-level contexts updated.
 **Action:** Wrap purely presentational components that receive only primitive props (numbers, strings, booleans) in `React.memo` to prevent cascading re-renders across the dashboard.
+## 2026-06-09 - Optimize Date Sorting in Arrays
+**Learning:** Instantiating new `Date` objects or calling `getTime()` inside an `Array.prototype.sort()` callback creates significant overhead because it executes O(N log N) times. Additionally, re-sorting an already sorted array in reverse order instead of using `slice(-N).reverse()` is inefficient.
+**Action:** Compare ISO 8601 date strings lexicographically directly in sort callbacks (e.g., `a.date < b.date ? -1 : (a.date > b.date ? 1 : 0)`). For reversed subsets of sorted arrays, prefer `slice(-N).reverse()` over re-sorting the entire array.
