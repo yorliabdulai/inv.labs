@@ -59,28 +59,35 @@ export function generatePortfolioHistory(
     const intervalMs = totalMs / points;
     const periodStartTime = now.getTime() - totalMs;
 
+    // ⚡ Bolt: Pre-parse dates to avoid repeated instantiations in loops (O(N) vs O(N*P))
+    const parsedTx = sortedTx.map(tx => ({
+        ...tx,
+        timestamp: new Date(tx.date).getTime()
+    })).filter(tx => !isNaN(tx.timestamp)); // Filter out invalid dates to prevent loop breaking
+
     // 1. Analyze First Purchase Data per Asset
     const firstPurchase = new Map<string, { price: number; time: number }>();
-    for (const tx of sortedTx) {
+    for (const tx of parsedTx) {
         if ((tx.type === 'BUY' || tx.type === 'FUND_BUY') && !firstPurchase.has(tx.symbol)) {
             firstPurchase.set(tx.symbol, {
                 price: tx.price || (tx.amount / (tx.units || 1)),
-                time: new Date(tx.date).getTime()
+                time: tx.timestamp
             });
         }
     }
+
+    // ⚡ Bolt: Maintain state linearly to avoid restarting transaction loop from 0 on every point (O(N+P) instead of O(N*P))
+    let txIndex = 0;
+    let cash = STARTING_BALANCE;
+    const holdings = new Map<string, number>();
 
     // 2. Generate point for each interval
     for (let i = points; i >= 0; i--) {
         const t = now.getTime() - (i * intervalMs);
         
-        let cash = STARTING_BALANCE;
-        const holdings = new Map<string, number>();
-
         // Replay transactions strictly up to time `t`
-        for (const tx of sortedTx) {
-            if (new Date(tx.date).getTime() > t) break;
-            
+        while (txIndex < parsedTx.length && parsedTx[txIndex].timestamp <= t) {
+            const tx = parsedTx[txIndex];
             const qty = holdings.get(tx.symbol) || 0;
             const units = tx.units || 0;
             
@@ -91,6 +98,7 @@ export function generatePortfolioHistory(
                 cash += tx.amount;
                 holdings.set(tx.symbol, Math.max(0, qty - units));
             }
+            txIndex++;
         }
 
         let assetsValue = 0;
@@ -111,7 +119,7 @@ export function generatePortfolioHistory(
             }
         });
 
-        let totalValue = Math.max(0, cash + assetsValue);
+        const totalValue = Math.max(0, cash + assetsValue);
         
         // Minor OHLC visual generation based on organic total value
         const noise = (Math.random() - 0.5) * (totalValue * 0.005);
