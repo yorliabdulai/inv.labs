@@ -33,8 +33,9 @@ export function generatePortfolioHistory(
     period: string = '1M',
     currentTotalBackup: number = STARTING_BALANCE
 ): ChartData[] {
+    // Bolt Performance: Replaced expensive Date instantiations during sort with Date.parse() for safer and faster performance
     const sortedTx = [...transactions].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => Date.parse(a.date) - Date.parse(b.date)
     );
 
     const now = new Date();
