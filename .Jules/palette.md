@@ -16,3 +16,6 @@
 ## 2026-03-09 - Missing ARIA Labels on Search Inputs
 **Learning:** Visual-only search and filter inputs (using placeholder text and icons) often lack `<label>` elements or `aria-label` attributes across dashboard views (Market, Mutual Funds, Leaderboard). This makes them inaccessible to screen reader users who cannot see the placeholder text or visual context.
 **Action:** Always ensure that standalone search or filter `<input>` elements have a descriptive `aria-label` attribute if they do not have an associated `<label>`.
+## 2026-06-12 - BottomNav Focus States
+**Learning:** The mobile BottomNav component's interactive `Link` elements lacked visible focus indicators for keyboard navigation.
+**Action:** Applied `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl` directly to the Link components to ensure accessibility on mobile views.

@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, PieChart, GraduationCap, Award, User, Share2, Zap, LayoutGrid } from "lucide-react";
-import { useUserProfile } from "@/lib/useUserProfile";
+import { Home, PieChart, Award, Zap, LayoutGrid } from "lucide-react";
 
 export function BottomNav() {
     const pathname = usePathname();
-    const { isPartner } = useUserProfile();
+
 
     const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
@@ -32,7 +31,7 @@ export function BottomNav() {
                                 key={href}
                                 href={href}
                                 id={id}
-                                className="flex flex-col items-center justify-center -translate-y-6 group"
+                                className="flex flex-col items-center justify-center -translate-y-6 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
                                 aria-label={label}
                             >
                                 <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/40 group-active:scale-90 transition-all duration-200 border-4 border-background">
@@ -48,7 +47,7 @@ export function BottomNav() {
                             key={href}
                             href={href}
                             id={id}
-                            className={`flex flex-col items-center justify-center min-w-[64px] h-full transition-all duration-200 ${
+                            className={`flex flex-col items-center justify-center min-w-[64px] h-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl ${
                                 active ? "text-primary" : "text-muted-foreground opacity-70"
                             }`}
                             aria-label={label}
