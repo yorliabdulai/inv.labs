@@ -273,7 +273,12 @@ export async function getUserChallenges(): Promise<(Challenge & { xp_earned: num
 // ─── Sync participant XP after an XP event ───────────────────────────────────
 // Called from xp.ts after awarding XP
 
-export async function syncChallengeXP(userId: string, newXP: number) {
+export async function syncChallengeXP(newXP: number) {
+    const authClient = await createClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+    const userId = user.id;
+
     const supabase = getServiceClient();
 
     // Update all active challenge participations for this user
@@ -285,7 +290,12 @@ export async function syncChallengeXP(userId: string, newXP: number) {
 
 // ─── Complete a challenge (mark as done, award XP) ────────────────────────────
 
-export async function completeChallengeForUser(challengeId: string, userId: string) {
+export async function completeChallengeForUser(challengeId: string) {
+    const authClient = await createClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+    const userId = user.id;
+
     const supabase = getServiceClient();
 
     const { data: participation } = await supabase
