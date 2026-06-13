@@ -181,8 +181,9 @@ export async function getPortfolioData(): Promise<PortfolioData | null> {
             };
         });
 
+        // ⚡ Bolt: Optimize sorting by using Date.parse() instead of repeatedly instantiating Date objects
         const unifiedTransactions = [...stockActivity, ...mfActivity]
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
 
         // Extract pending orders
         const pendingOrders = stockTransactions
