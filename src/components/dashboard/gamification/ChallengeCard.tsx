@@ -142,11 +142,12 @@ export function ChallengeCard({
                     <button
                         onClick={handleCopy}
                         className="w-full flex items-center justify-between px-3 py-2.5 bg-muted/50 hover:bg-muted border border-border hover:border-primary/20 rounded-xl transition-all group text-left"
+                        aria-label={copied ? 'Link copied' : 'Share link'}
                     >
-                        <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground truncate flex-1 mr-2">
+                        <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground truncate flex-1 mr-2" aria-hidden="true">
                             {shareUrl}
                         </span>
-                        <span className="flex-shrink-0 flex items-center gap-1 text-[10px] font-bold text-primary">
+                        <span className="flex-shrink-0 flex items-center gap-1 text-[10px] font-bold text-primary" aria-hidden="true">
                             {copied ? <Check size={12} /> : <Copy size={12} />}
                             {copied ? "Copied!" : "Share"}
                         </span>

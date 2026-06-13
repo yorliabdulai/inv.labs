@@ -1,0 +1,3 @@
+## 2026-06-13 - Redundant Aria-Labels
+**Learning:** Applying an `aria-label` that exactly matches the visible text of a button (e.g., 'Copy Link' on a button that says 'Copy Link') is functionally redundant and an anti-pattern. If a button's visible text is already descriptive, it doesn't need an `aria-label`. When summarizing complex visible text (like a raw URL) with an `aria-label` (e.g., 'Copy link'), the child elements containing the complex text should be marked with `aria-hidden="true"` to prevent screen readers from reading both.
+**Action:** Only add `aria-label` to icon-only buttons or when summarizing complex, non-semantic visible content. Ensure child elements are hidden from assistive technology when their content is overridden by the parent's `aria-label`.
